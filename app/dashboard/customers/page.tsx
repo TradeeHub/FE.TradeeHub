@@ -4,8 +4,8 @@ import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   CustomersByNameDocument,
-  CustomersByNameQuery,
-  CustomersByNameQueryVariables,
+  type CustomersByNameQuery,
+  type CustomersByNameQueryVariables,
 } from "@/generatedGraphql";
 
 const Customers = () => {

@@ -2,9 +2,9 @@
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
-type Props = {
+interface Props {
   children: React.ReactNode;
-};
+}
 
 const GRAPHQL_ENDPOINT = "http://localhost:5269/graphql/";
 

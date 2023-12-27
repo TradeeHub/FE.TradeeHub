@@ -1,13 +1,11 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ReactElement } from "react";
+import { type ReactElement } from "react";
 import WorkIcon from "@mui/icons-material/Work";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import HouseIcon from "@mui/icons-material/House";
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import ReorderIcon from "@mui/icons-material/Reorder";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
@@ -84,38 +82,31 @@ const Sidebar = () => {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <div className="sticky top-0 h-screen bg-white text-black font-roboto">
-      <div className="flex items-center p-4 gap-2.5 font-bold">
-        <ReorderIcon className="text-gray-600 mr-2 text-xl" />
-        <span>TradeeHub</span>
-      </div>
-      {/* User Section */}
-      {/* ... */}
-      <ul className="list-none m-0 p-0">
-        {sideBarItems.map((group, groupIndex) => (
-          <li key={groupIndex} className="m-0 p-0">
-            <ul className="list-none m-0 p-0">
+    <aside className="fixed top-0 left-0 z-40 w-64 h-screen bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 font-roboto">
+      <div className="h-full overflow-y-auto">
+        <div className="flex items-center p-2 gap-2.5">
+          <ReorderIcon className="text-gray-600 text-lg" /> {/* Corrected text-l to text-lg */}
+          <span className="text-blue-600 text-xl font-bold">TradeeHub</span> {/* TradeeHub title */}
+        </div>
+
+        <ul className="space-y-2">
+          {sideBarItems.map((group, groupIndex) => (
+            <li key={groupIndex}>
               {group.list.map((item, itemIndex) => (
-                <li key={itemIndex} className="m-0 p-0">
-                  <Link href={item.path}>
-                    <div
-                      className={`flex items-center p-3 gap-2.5 cursor-pointer ${
-                        isActive(item.path)
-                          ? "bg-red-600 text-white font-bold"
-                          : "text-black"
-                      } hover:bg-red-600 hover:text-white`}
-                    >
-                      {item.icon}
-                      <span>{item.title}</span>
-                    </div>
-                  </Link>
-                </li>
+                <Link href={item.path} key={itemIndex} passHref>
+                  <div className={`flex items-center p-2 rounded-lg group cursor-pointer ${
+                      isActive(item.path) ? "bg-blue-600 text-white" : "text-gray-900 dark:text-white"
+                    } hover:bg-gray-100 dark:hover:bg-gray-700 text-sm`}> {/* Applied text-sm here */}
+                    <span className="text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition duration-75">{item.icon}</span>
+                    <span className="ml-3">{item.title}</span> {/* Sidebar item text */}
+                  </div>
+                </Link>
               ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
-    </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </aside>
   );
 };
 

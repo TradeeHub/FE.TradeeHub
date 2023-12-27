@@ -7,8 +7,9 @@
   --bgSoft: #182237;
   --text: #2c2 c2c;
   --textSoft: #b7bac1;
-  --brandText: #EFB90A
+  --brandText: #efb90a;
 }
+
 * {
   margin: 0;
   padding: 0;

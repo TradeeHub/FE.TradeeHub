@@ -4,7 +4,7 @@
 
 .menu {
   flex: 1;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   /* padding: 20px; */
 }
 
@@ -14,14 +14,20 @@
 }
 
 .containerItems {
-  padding: 20px;  
+  padding: 20px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 /* Apply Roboto font to all text within the sidebar */
-.container *, .siteName, .username, .email, .list, .containerItems {
-    font-family: 'Roboto', sans-serif;
-    font-size: 14px; /* Ensure font size is set to 16px for sidebar text */
+.container *,
+.siteName,
+.username,
+.email,
+.list,
+.containerItems {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  /* Ensure font size is set to 16px for sidebar text */
 }

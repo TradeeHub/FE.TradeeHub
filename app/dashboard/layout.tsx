@@ -1,7 +1,6 @@
 import React from "react";
 import Navbar from "../ui/dashboard/navbar/navbar";
 import Sidebar from "../ui/dashboard/sidebar/sidebar";
-import styles from "../ui/dashboard/dashboard.module.css";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,16 +8,18 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className={styles.container}>
-      <div className={styles.menu}>
+    <div className="flex">
+      <div className="w-64"> {/* Adjust width as necessary */}
         <Sidebar />
       </div>
-      <div className={styles.content}>
+      <div className="flex-1 flex flex-col">
         <Navbar />
-        {children}
+        <main className="overflow-y-auto">
+          {children}
+        </main>
       </div>
     </div>
   );
 };
 
-export default Layout;
+export default Layout
