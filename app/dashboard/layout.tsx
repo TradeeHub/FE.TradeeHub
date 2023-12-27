@@ -8,18 +8,18 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="flex">
-      <div className="w-64"> {/* Adjust width as necessary */}
+      <div className="flex min-h-screen">
         <Sidebar />
+        <div className="flex-1 pl-[205px] min-h-screen"> {/* Adjust this pl value to match the width of your sidebar */}
+          <main className="p-4 pb-0">
+            <Navbar />
+          </main>
+          <main className="p-4 pt-0">
+            {children} {/* This is where your content will go */}
+          </main>
+        </div>
       </div>
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="overflow-y-auto">
-          {children}
-        </main>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Layout

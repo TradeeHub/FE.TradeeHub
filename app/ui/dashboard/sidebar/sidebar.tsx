@@ -82,11 +82,12 @@ const Sidebar = () => {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <aside className="fixed top-0 left-0 z-40 w-64 h-screen bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 font-roboto">
+    <aside className="fixed top-0 left-0 z-40 w-54 h-screen p-4 pt-2 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 font-roboto">
       <div className="h-full overflow-y-auto">
-        <div className="flex items-center p-2 gap-2.5">
-          <ReorderIcon className="text-gray-600 text-lg" /> {/* Corrected text-l to text-lg */}
-          <span className="text-blue-600 text-xl font-bold">TradeeHub</span> {/* TradeeHub title */}
+        <div className="flex items-center p-2">
+          <ReorderIcon className="text-gray-600 text-lg" /> {/* Corrected text-l to text-lg */}<div className="pl-4">
+          <span className="text-xl font-bold pr-0">Tradee</span>
+          <span className="bg-orange-600 text-white text-xl font-bold px-2 p-1 rounded">Hub</span></div>
         </div>
 
         <ul className="space-y-2">
@@ -95,7 +96,7 @@ const Sidebar = () => {
               {group.list.map((item, itemIndex) => (
                 <Link href={item.path} key={itemIndex} passHref>
                   <div className={`flex items-center p-2 rounded-lg group cursor-pointer ${
-                      isActive(item.path) ? "bg-blue-600 text-white" : "text-gray-900 dark:text-white"
+                      isActive(item.path) ? "bg-gray-100 text-black font-bold" : "text-gray-900 dark:text-white"
                     } hover:bg-gray-100 dark:hover:bg-gray-700 text-sm`}> {/* Applied text-sm here */}
                     <span className="text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition duration-75">{item.icon}</span>
                     <span className="ml-3">{item.title}</span> {/* Sidebar item text */}
