@@ -1,0 +1,20 @@
+query CustomersByName($nameContains: String!) {
+  customers(where: { name: { contains: $nameContains } }) {
+    edges {
+      node {
+        id
+        name
+        surname
+        properties {
+          propertyAddress {
+            address
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
