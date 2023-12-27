@@ -19,7 +19,6 @@ const Customers = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  // Define columns for DataGrid
   const columns = [
     { field: "id", headerName: "ID", width: 200 },
     { field: "name", headerName: "Name", width: 200 },
@@ -27,7 +26,6 @@ const Customers = () => {
     { field: "address", headerName: "Address", width: 300 },
   ];
 
-  // Map the data to the format required by DataGrid
   const rows =
     data?.customers?.edges?.map((edge) => ({
       id: edge.node.id,
