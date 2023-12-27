@@ -12,7 +12,6 @@ import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import SportsMartialArtsOutlinedIcon from "@mui/icons-material/SportsMartialArtsOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 
-// Define the structure for individual link items
 interface LinkItem {
   title: string;
   path: string;
