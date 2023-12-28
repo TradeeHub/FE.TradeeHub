@@ -2,18 +2,11 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
-  CalendarIcon,
-  ChartPieIcon,
   Cog6ToothIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type ReactElement } from "react";
 import { HiOutlineUsers } from "react-icons/hi2";
 import { HiUsers } from "react-icons/hi";
 import { AiFillThunderbolt } from "react-icons/ai";
@@ -94,14 +87,6 @@ export default function Example() {
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
@@ -160,7 +145,7 @@ export default function Example() {
                     <div className="flex h-16 shrink-0 items-center">
                       <img
                         className="h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                        src="logoth.png"
                         alt="Your Company"
                       />
                     </div>
@@ -208,15 +193,17 @@ export default function Example() {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-60 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
-              <img
+              <span className="text-2xl font-bold text-brand-accent3d">Tradee</span>
+              <span className="text-2xl font-bold text-brand-accent2">Hub</span>
+              {/* <img
                 className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                src="https://media.discordapp.net/attachments/1052723407277523044/1190047729875943594/glen92_letter_T_and_H_minimal_web_log_2d_png_image_9ddb9e6e-e64d-48ba-a3df-ef820c6e8354.png?ex=65a06150&is=658dec50&hm=965800e1bd94caf23472568c219e153aa0826e872a08083e77fc5326ef93cbb3&=&format=webp&quality=lossless&width=1365&height=910"
                 alt="Your Company"
-              />
+              /> */}
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
