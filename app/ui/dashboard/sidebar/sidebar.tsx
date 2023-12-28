@@ -18,7 +18,6 @@ import { PiChartPieSliceFill } from "react-icons/pi";
 import { IoReorderFourOutline } from "react-icons/io5";
 import { VscTools } from "react-icons/vsc";
 
-// Define the structure for individual link items
 interface LinkItem {
   title: string;
   path: string;
