@@ -1,27 +1,29 @@
 "use client";
 import { usePathname } from "next/navigation";
 import SearchIcon from "@mui/icons-material/Search";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import SettingsIcon from "@mui/icons-material/Settings";
+import { IoMdNotifications } from "react-icons/io";
+import { IoSettingsSharp } from "react-icons/io5";
 
 const Navbar = () => {
   const pathname = usePathname();
 
   return (
-    <div className="relative z-50 p-5 rounded-lg mb-5 bg-gray-100 flex items-center justify-between">
-      <div className="text-gray-500 font-bold capitalize">{pathname.split("/").pop()}</div>
+    <div className="relative z-50 mb-5 flex items-center justify-between rounded-lg bg-brand-secondary1d px-4 py-2 shadow-custom">
+      <div className="font-bold capitalize text-white">
+        {pathname.split("/").pop()}
+      </div>
       <div className="flex items-center gap-5">
-        <div className="flex items-center gap-2 bg-gray-700 p-2.5 rounded-lg">
-          <SearchIcon className="text-white" />
+        <div className="flex items-center gap-2 rounded-lg bg-brand-secondary2l p-0.5">
+          <SearchIcon className="text-bg-secondary1d text-1xl" /> {/* Adjusted size with Tailwind class */}
           <input
             type="text"
             placeholder="Search..."
-            className="bg-transparent border-none text-white placeholder-gray-300 focus:outline-none"
+            className="border-none bg-transparent text-secondary1d placeholder-gray-300 focus:outline-none"
           />
         </div>
         <div className="flex gap-5">
-          <NotificationsIcon className="text-gray-600 cursor-pointer" />
-          <SettingsIcon className="text-gray-600 cursor-pointer" />
+          <IoSettingsSharp className="cursor-pointer text-white text-2xl" /> {/* Adjusted size with Tailwind class */}
+          <IoMdNotifications className="cursor-pointer text-white text-2xl" /> {/* Adjusted size with Tailwind class */}
         </div>
       </div>
     </div>

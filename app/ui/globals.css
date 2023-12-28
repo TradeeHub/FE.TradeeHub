@@ -2,18 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/* styles.css */
+
 :root {
-  --bg: white;
-  --bgSoft: #182237;
-  --text: #2c2 c2c;
-  --textSoft: #b7bac1;
-  --brandText: #efb90a;
+  --color-brand-secondary1: 38, 70, 83;
+  --color-brand-secondary1d: 0, 58, 81;
+  --color-brand-secondary2: 42, 157, 143;
+  --color-brand-secondary2l: 216, 235, 233;
+  --color-brand-accent1: 233, 196, 106;
+  --color-brand-accent2: 244, 162, 97;
+  --color-brand-accent3: 231, 111, 81;
+  --font-roboto: 'roboto', sans-serif;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: --font-roboto;
 }
 
 body {
