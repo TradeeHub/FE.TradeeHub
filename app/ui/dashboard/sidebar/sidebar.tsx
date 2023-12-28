@@ -1,4 +1,16 @@
 "use client";
+import { Fragment, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import {
+  CalendarIcon,
+  ChartPieIcon,
+  Cog6ToothIcon,
+  DocumentDuplicateIcon,
+  FolderIcon,
+  HomeIcon,
+  UsersIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactElement } from "react";
@@ -15,140 +27,236 @@ import { IoCalendarOutline } from "react-icons/io5";
 import { IoCalendarSharp } from "react-icons/io5";
 import { PiChartPieSliceThin } from "react-icons/pi";
 import { PiChartPieSliceFill } from "react-icons/pi";
-import { IoReorderFourOutline } from "react-icons/io5";
 import { VscTools } from "react-icons/vsc";
-
+import { IconType } from "react-icons";
 interface LinkItem {
   title: string;
   path: string;
-  icon: ReactElement;
-  inactiveIcon: ReactElement;
+  icon: IconType;
+  inactiveIcon: IconType;
 }
 
-// Define the structure for a group of sidebar items
-interface SidebarGroup {
-  title: string;
-  list: LinkItem[];
-}
-
-// Data for the sidebar items
-const sideBarItems: SidebarGroup[] = [
+const navigation: LinkItem[] = [
   {
-    title: "Manage",
-    list: [
-      {
-        title: "Dashboard",
-        path: "/dashboard",
-        icon: <AiOutlineDashboard />,
-        inactiveIcon: <AiFillDashboard />,
-      },
-      {
-        title: "Customers",
-        path: "/dashboard/customers",
-        icon: <HiOutlineUsers />,
-        inactiveIcon: <HiUsers />,
-      },
-      {
-        title: "Properties",
-        path: "/dashboard/properties",
-        icon: <BsHouses />,
-        inactiveIcon: <BsHousesFill />,
-      },
-      {
-        title: "Quotes",
-        path: "/dashboard/quotes",
-        icon: <AiOutlineThunderbolt />,
-        inactiveIcon: <AiFillThunderbolt />,
-      },
-      {
-        title: "Jobs",
-        path: "/dashboard/jobs",
-        icon: (
-          <VscTools style={{ stroke: "currentColor", strokeWidth: "0.1" }} />
-        ),
-        inactiveIcon: (
-          <VscTools style={{ stroke: "currentColor", strokeWidth: "0.5" }} />
-        ),
-      },
-      {
-        title: "Invoices",
-        path: "/dashboard/invoices",
-        icon: (
-          <LiaFileInvoiceDollarSolid
-            style={{ stroke: "currentColor", strokeWidth: "0.1" }}
-          />
-        ),
-        inactiveIcon: (
-          <LiaFileInvoiceDollarSolid
-            style={{ stroke: "currentColor", strokeWidth: "1.1" }}
-          />
-        ),
-      },
-      {
-        title: "Appointments",
-        path: "/dashboard/appointments",
-        icon: <IoCalendarOutline />,
-        inactiveIcon: <IoCalendarSharp />,
-      },
-      {
-        title: "Analytics",
-        path: "/dashboard/analytics",
-        icon: <PiChartPieSliceThin />,
-        inactiveIcon: <PiChartPieSliceFill />,
-      },
-    ],
+    title: "Dashboard",
+    path: "/dashboard",
+    icon: AiOutlineDashboard,
+    inactiveIcon: AiFillDashboard,
   },
-  // ...other sidebar groups
+  {
+    title: "Customers",
+    path: "/dashboard/customers",
+    icon: HiOutlineUsers,
+    inactiveIcon: HiUsers,
+  },
+  {
+    title: "Properties",
+    path: "/dashboard/properties",
+    icon: BsHouses,
+    inactiveIcon: BsHousesFill,
+  },
+  {
+    title: "Quotes",
+    path: "/dashboard/quotes",
+    icon: AiOutlineThunderbolt,
+    inactiveIcon: AiFillThunderbolt,
+  },
+  {
+    title: "Jobs",
+    path: "/dashboard/jobs",
+    icon: VscTools,
+    inactiveIcon: VscTools,
+  },
+  {
+    title: "Invoices",
+    path: "/dashboard/invoices",
+    icon: LiaFileInvoiceDollarSolid,
+    inactiveIcon: LiaFileInvoiceDollarSolid,
+  },
+  {
+    title: "Appointments",
+    path: "/dashboard/appointments",
+    icon: IoCalendarOutline,
+    inactiveIcon: IoCalendarSharp,
+  },
+  {
+    title: "Analytics",
+    path: "/dashboard/analytics",
+    icon: PiChartPieSliceThin,
+    inactiveIcon: PiChartPieSliceFill,
+  },
 ];
 
-const Sidebar = () => {
+export default function Example() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
+
   return (
-    <aside className="w-54 bg fixed left-0 top-0 z-40 h-screen border-r border-gray-200 p-4 pt-2 font-roboto shadow-custom dark:border-gray-200">
-      <div className="h-full overflow-y-auto">
-        <div className="flex items-center p-2">
-          <IoReorderFourOutline className="text-lg text-brand-secondary1" />
-          <div className="pl-4">
-            <span className="rounded-l bg-brand-secondary1d p-1 px-2 pr-0 text-xl font-bold text-brand-accent1">
-              Tradee
-            </span>
-            <span className="rounded-r bg-brand-accent3d p-1 px-2 text-xl font-bold text-brand-secondary2l">
-              Hub
-            </span>
+    <>
+      {/*
+        This example requires updating your template:
+
+        ```
+        <html class="h-full bg-white">
+        <body class="h-full">
+        ```
+      */}
+      <div>
+        <Transition.Root show={sidebarOpen} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-50 lg:hidden"
+            onClose={setSidebarOpen}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="transition-opacity ease-linear duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="transition-opacity ease-linear duration-300"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-gray-900/80" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 flex">
+              <Transition.Child
+                as={Fragment}
+                enter="transition ease-in-out duration-300 transform"
+                enterFrom="-translate-x-full"
+                enterTo="translate-x-0"
+                leave="transition ease-in-out duration-300 transform"
+                leaveFrom="translate-x-0"
+                leaveTo="-translate-x-full"
+              >
+                <Dialog.Panel className="relative mr-16 flex w-full max-w-xs flex-1">
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-in-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in-out duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
+                      <button
+                        type="button"
+                        className="-m-2.5 p-2.5"
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        <span className="sr-only">Close sidebar</span>
+                        <XMarkIcon
+                          className="h-6 w-6 text-white"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    </div>
+                  </Transition.Child>
+                  {/* Sidebar component, swap this element with another sidebar if you like */}
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
+                    <div className="flex h-16 shrink-0 items-center">
+                      <img
+                        className="h-8 w-auto"
+                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                        alt="Your Company"
+                      />
+                    </div>
+                    <nav className="flex flex-1 flex-col">
+                      <ul role="list" className="flex flex-1 flex-col gap-y-7">
+                        <li>
+                          <ul role="list" className="-mx-2 space-y-1">
+                            {navigation.map((item) => (
+                              <li key={item.title}>
+                                <Link href={item.path} passHref>
+                                  <div
+                                    className={`group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 ${
+                                      isActive(item.path)
+                                        ? "bg-gray-800 text-white"
+                                        : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                                    } text-m hover:bg-gray-200 dark:hover:bg-gray-100`}
+                                  >
+                                    {!isActive(item.path) ? <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" /> : <item.inactiveIcon className="h-6 w-6 shrink-0" aria-hidden="true" />}
+                                    <span>{item.title}</span>
+                                  </div>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </li>
+                        <li className="mt-auto">
+                          <a
+                            href="#"
+                            className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                          >
+                            <Cog6ToothIcon
+                              className="h-6 w-6 shrink-0"
+                              aria-hidden="true"
+                            />
+                            Settings
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </Dialog>
+        </Transition.Root>
+
+        {/* Static sidebar for desktop */}
+        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+          {/* Sidebar component, swap this element with another sidebar if you like */}
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
+            <div className="flex h-16 shrink-0 items-center">
+              <img
+                className="h-8 w-auto"
+                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                alt="Your Company"
+              />
+            </div>
+            <nav className="flex flex-1 flex-col">
+              <ul role="list" className="flex flex-1 flex-col gap-y-7">
+                <li>
+                  <ul role="list" className="-mx-2 space-y-1">
+                    {navigation.map((item) => (
+                      <li key={item.title}>
+                        <Link href={item.path} passHref>
+                          <div
+                            className={`group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 ${
+                              isActive(item.path)
+                                ? "bg-gray-800 text-white"
+                                : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                            } text-m hover:bg-gray-200 dark:hover:bg-gray-100`}
+                          >
+                            {!isActive(item.path) ? <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" /> : <item.inactiveIcon className="h-6 w-6 shrink-0" aria-hidden="true" />}
+                            <span>{item.title}</span>
+                          </div>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+                <li className="mt-auto">
+                  <a
+                    href="#"
+                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                  >
+                    <Cog6ToothIcon
+                      className="h-6 w-6 shrink-0"
+                      aria-hidden="true"
+                    />
+                    Settings
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
-
-        <ul className="space-y-2">
-          {sideBarItems.map((group) => (
-            <li key={group.title}>
-              {group.list.map((item) => (
-                <div
-                  className="border-b"
-                  key={item.path}
-                >
-                  <Link href={item.path} passHref>
-                    <div
-                      className={`group flex cursor-pointer items-center rounded-lg p-2 ${
-                        isActive(item.path)
-                          ? "bg-brand-secondary2l font-bold text-brand-secondary1d"
-                          : "text-brand-secondary1 dark:text-brand-secondary1"
-                      } text-m hover:bg-gray-200 dark:hover:bg-gray-100`}
-                    >
-                      <span className="mr-2 text-xl text-brand-secondary1d">
-                        {!isActive(item.path) ? item.icon : item.inactiveIcon}
-                      </span>
-                      <span className="ml-3">{item.title}</span>
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </li>
-          ))}
-        </ul>
       </div>
-    </aside>
+    </>
   );
-};
-
-export default Sidebar;
+}
