@@ -1,33 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* styles.css */
-
-:root {
-  --color-brand-secondary1: 38, 70, 83;
-  --color-brand-secondary1d: 0, 58, 81;
-  --color-brand-secondary2: 42, 157, 143;
-  --color-brand-secondary2l: 216, 235, 233;
-  --color-brand-accent1: 233, 196, 106;
-  --color-brand-accent2: 244, 162, 97;
-  --color-brand-accent3: 231, 111, 81;
-  --font-roboto: 'roboto', sans-serif;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: --font-roboto;
-}
-
-body {
-  background-color: var(--bg);
-  color: var(--text);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
+/* globals.css */
+@import '@fontsource/roboto/300.css';
+/* Weight 300 */
+@import '@fontsource/roboto/400.css';
+/* Weight 400 */
+@import '@fontsource/roboto/500.css';
+/* Weight 500 */
+@import '@fontsource/roboto/700.css';
+/* Weight 700 */

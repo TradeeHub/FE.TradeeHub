@@ -105,32 +105,37 @@ const Sidebar = () => {
   const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
   return (
-    <aside className="w-54 bg fixed left-0 top-0 z-40 h-screen border-r border-gray-200 p-4 pt-2 font-roboto dark:border-gray-700 shadow-custom">
+    <aside className="w-54 bg fixed left-0 top-0 z-40 h-screen border-r border-gray-200 p-4 pt-2 font-roboto shadow-custom dark:border-gray-200">
       <div className="h-full overflow-y-auto">
         <div className="flex items-center p-2">
           <IoReorderFourOutline className="text-lg text-brand-secondary1" />
           <div className="pl-4">
-            <span className="pr-0 text-xl font-bold">Tradee</span>
-            <span className="rounded bg-brand-accent3 p-1 px-2 text-xl font-bold text-white">
+            <span className="rounded-l bg-brand-secondary1d p-1 px-2 pr-0 text-xl font-bold text-brand-accent1">
+              Tradee
+            </span>
+            <span className="rounded-r bg-brand-accent3d p-1 px-2 text-xl font-bold text-brand-secondary2l">
               Hub
             </span>
           </div>
         </div>
 
         <ul className="space-y-2">
-          {sideBarItems.map((group, groupIndex) => (
-            <li key={groupIndex}>
-              {group.list.map((item, itemIndex) => (
-                <div className="border-b border-brand-secondary1">
-                  <Link href={item.path} key={itemIndex} passHref>
+          {sideBarItems.map((group) => (
+            <li key={group.title}>
+              {group.list.map((item) => (
+                <div
+                  className="border-b"
+                  key={item.path}
+                >
+                  <Link href={item.path} passHref>
                     <div
                       className={`group flex cursor-pointer items-center rounded-lg p-2 ${
                         isActive(item.path)
-                          ? "font-bold text-brand-secondary1 bg-brand-secondary2l"
+                          ? "bg-brand-secondary2l font-bold text-brand-secondary1d"
                           : "text-brand-secondary1 dark:text-brand-secondary1"
                       } text-m hover:bg-gray-200 dark:hover:bg-gray-100`}
                     >
-                      <span className="mr-2 text-xl text-brand-secondary1">
+                      <span className="mr-2 text-xl text-brand-secondary1d">
                         {!isActive(item.path) ? item.icon : item.inactiveIcon}
                       </span>
                       <span className="ml-3">{item.title}</span>

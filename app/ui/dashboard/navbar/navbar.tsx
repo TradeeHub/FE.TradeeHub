@@ -14,16 +14,19 @@ const Navbar = () => {
       </div>
       <div className="flex items-center gap-5">
         <div className="flex items-center gap-2 rounded-lg bg-brand-secondary2l p-0.5">
-          <SearchIcon className="text-bg-secondary1d text-1xl" /> {/* Adjusted size with Tailwind class */}
+          <SearchIcon className="text-bg-secondary1d text-1xl" />{" "}
+          {/* Adjusted size with Tailwind class */}
           <input
             type="text"
             placeholder="Search..."
-            className="border-none bg-transparent text-secondary1d placeholder-gray-300 focus:outline-none"
+            className="text-secondary1d border-none bg-transparent placeholder-brand-secondary1d focus:outline-none"
           />
         </div>
         <div className="flex gap-5">
-          <IoSettingsSharp className="cursor-pointer text-white text-2xl" /> {/* Adjusted size with Tailwind class */}
-          <IoMdNotifications className="cursor-pointer text-white text-2xl" /> {/* Adjusted size with Tailwind class */}
+          <IoSettingsSharp className="cursor-pointer text-2xl text-white" />{" "}
+          {/* Adjusted size with Tailwind class */}
+          <IoMdNotifications className="cursor-pointer text-2xl text-white" />{" "}
+          {/* Adjusted size with Tailwind class */}
         </div>
       </div>
     </div>

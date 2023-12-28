@@ -1,4 +1,4 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: [
@@ -19,17 +19,24 @@ const config: Config = {
         textSoft: '#b7bac1',
         brandText: '#efb90a',
         brand: {
-          secondary1: 'rgb(var(--color-brand-secondary1))',
-          secondary1d: 'rgb(var(--color-brand-secondary1d))',
-          secondary2: 'rgb(var(--color-brand-secondary2))',
-          secondary2l: 'rgb(var(--color-brand-secondary2l))',
-          accent1: 'rgb(var(--color-brand-accent1))',
-          accent2: 'rgb(var(--color-brand-accent2))',
-          accent3: 'rgb(var(--color-brand-accent3))'
+          secondary1: 'rgb(38, 70, 83)',
+          secondary1d: 'rgb(3, 12, 64)', //disney
+          // secondary1d: 'rgb(2, 48, 71)',
+
+          // secondary1d: 'rgb(0, 58, 81)',
+
+          secondary2: 'rgb(0, 58, 81)',
+          secondary2l: 'rgb(216, 235, 233)',
+          accent1: 'rgb(233, 196, 106)',
+          accent2: 'rgb(244, 162, 97)',
+          accent3: 'rgb(231, 111, 81)',
+          // accent3d: 'rgb(229, 45, 0)'
+          accent3d: 'rgb(255, 69, 0)'
+
         },
       },
       fontFamily: {
-        roboto: ['roboto', 'sans-serif'],
+        roboto: ['Roboto', 'sans-serif'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
