@@ -14,19 +14,12 @@ const config: Config = {
         'custom': '0 10px 10px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -1px rgba(0, 0, 0, 0.2)'
       },
       colors: {
-        bg: '#ffffff',
-        bgSoft: '#182237',
-        text: '#2c2c2c',
-        textSoft: '#b7bac1',
         brandText: '#efb90a',
         brand: {
+          white: '#ffffff',
           secondary1: 'rgb(38, 70, 83)',
           secondary1d: 'rgb(3, 12, 64)', //disney 
           secondary1l: 'rgb(36, 42, 61)',
-          // secondary1d: 'rgb(2, 48, 71)',
-
-          // secondary1d: 'rgb(0, 58, 81)',
-
           secondary2: 'rgb(0, 58, 81)',
           secondary2l: 'rgb(216, 235, 233)',
           accent1: 'rgb(233, 196, 106)',

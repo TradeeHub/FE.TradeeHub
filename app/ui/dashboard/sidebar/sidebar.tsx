@@ -1,10 +1,7 @@
 "use client";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import {
-  Cog6ToothIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HiOutlineUsers } from "react-icons/hi2";
@@ -163,7 +160,17 @@ export default function Example() {
                                         : "text-gray-400 hover:bg-gray-800 hover:text-white"
                                     } text-m hover:bg-gray-200 dark:hover:bg-gray-100`}
                                   >
-                                    {!isActive(item.path) ? <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" /> : <item.inactiveIcon className="h-6 w-6 shrink-0" aria-hidden="true" />}
+                                    {!isActive(item.path) ? (
+                                      <item.icon
+                                        className="h-6 w-6 shrink-0"
+                                        aria-hidden="true"
+                                      />
+                                    ) : (
+                                      <item.inactiveIcon
+                                        className="h-6 w-6 shrink-0"
+                                        aria-hidden="true"
+                                      />
+                                    )}
                                     <span>{item.title}</span>
                                   </div>
                                 </Link>
@@ -193,17 +200,14 @@ export default function Example() {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-60 lg:flex-col font-roboto">
+        <div className="hidden font-roboto lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-60 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col overflow-y-auto bg-brand-secondary1d px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
-              <span className="text-2xl font-bold text-brand-accent3d">Tradee</span>
+              <span className="text-2xl font-bold text-brand-accent3d">
+                Tradee
+              </span>
               <span className="text-2xl font-bold text-brand-accent2">Hub</span>
-              {/* <img
-                className="h-8 w-auto"
-                src="https://media.discordapp.net/attachments/1052723407277523044/1190047729875943594/glen92_letter_T_and_H_minimal_web_log_2d_png_image_9ddb9e6e-e64d-48ba-a3df-ef820c6e8354.png?ex=65a06150&is=658dec50&hm=965800e1bd94caf23472568c219e153aa0826e872a08083e77fc5326ef93cbb3&=&format=webp&quality=lossless&width=1365&height=910"
-                alt="Your Company"
-              /> */}
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -215,11 +219,21 @@ export default function Example() {
                           <div
                             className={`group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 ${
                               isActive(item.path)
-                                ? "bg-brand-secondary1l text-white"
-                                : "text-gray-400 hover:bg-gray-800 hover:text-white"
-                            } text-m hover:bg-gray-200 dark:hover:bg-gray-100`}
+                                ? "bg-white text-brand-secondary1d"
+                                : "hover:bg-brad-white text-gray-300 hover:text-brand-white"
+                            } text-m hover:bg-brand dark:hover:bg-gray-100`}
                           >
-                            {!isActive(item.path) ? <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" /> : <item.inactiveIcon className="h-6 w-6 shrink-0" aria-hidden="true" />}
+                            {!isActive(item.path) ? (
+                              <item.icon
+                                className="h-6 w-6 shrink-0"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <item.inactiveIcon
+                                className="h-6 w-6 shrink-0"
+                                aria-hidden="true"
+                              />
+                            )}
                             <span>{item.title}</span>
                           </div>
                         </Link>

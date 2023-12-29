@@ -1,12 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* globals.css */
 @import "@fontsource/roboto/300.css";
-/* Weight 300 */
 @import "@fontsource/roboto/400.css";
-/* Weight 400 */
 @import "@fontsource/roboto/500.css";
-/* Weight 500 */
 @import "@fontsource/roboto/700.css";
-/* Weight 700 */
+
+@layer components {
+  .skew-custom {
+    @apply flex h-10 w-40 items-center;
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 0%,
+      90% 50%,
+      100% 100%,
+      100% 100%,
+      0 100%
+    );
+  }
+}
+/* Example how to use the above custom */
+/* <div className="skew-custom bg-brand-secondary1d mt-4"><span className="ml-5 text-white font-bold">Appointments</span></div> */
