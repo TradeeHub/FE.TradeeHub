@@ -158,7 +158,7 @@ export default function Example() {
                                       isActive(item.path)
                                         ? "bg-gray-800 text-white"
                                         : "text-gray-400 hover:bg-gray-800 hover:text-white"
-                                    } text-m hover:bg-gray-200 dark:hover:bg-gray-100`}
+                                    } text-m hover:bg-gray-800 dark:hover:bg-gray-800`}
                                   >
                                     {!isActive(item.path) ? (
                                       <item.icon
@@ -221,7 +221,7 @@ export default function Example() {
                               isActive(item.path)
                                 ? "bg-white text-brand-secondary1d"
                                 : "hover:bg-brad-white text-gray-300 hover:text-brand-white"
-                            } text-m hover:bg-brand dark:hover:bg-gray-100`}
+                            } text-m hover:bg-gray-400 dark:hover:bg-gray-100`}
                           >
                             {!isActive(item.path) ? (
                               <item.icon
@@ -244,7 +244,7 @@ export default function Example() {
                 <li className="mt-auto">
                   <a
                     href="#"
-                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-brand-800 hover:text-white"
                   >
                     <Cog6ToothIcon
                       className="h-6 w-6 shrink-0"
