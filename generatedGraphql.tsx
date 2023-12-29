@@ -297,7 +297,7 @@ export type CustomersByNameQueryVariables = Exact<{
 }>;
 
 
-export type CustomersByNameQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, name?: string | null, surname?: string | null, properties?: Array<{ __typename?: 'PropertyDbObject', propertyAddress: { __typename?: 'AddressDbObject', address?: string | null } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+export type CustomersByNameQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, title?: string | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', propertyAddress: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 
 export const CustomersByNameDocument = gql`
@@ -306,11 +306,17 @@ export const CustomersByNameDocument = gql`
     edges {
       node {
         id
+        title
         name
         surname
+        modifiedAt
+        phoneNumbers {
+          phoneNumber
+        }
         properties {
           propertyAddress {
             address
+            fullAddress
           }
         }
       }

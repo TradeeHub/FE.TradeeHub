@@ -3,11 +3,17 @@ query CustomersByName($nameContains: String!) {
     edges {
       node {
         id
+        title
         name
         surname
+        modifiedAt
+        phoneNumbers {
+          phoneNumber
+        }
         properties {
           propertyAddress {
             address
+            fullAddress
           }
         }
       }

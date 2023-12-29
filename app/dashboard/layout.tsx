@@ -11,7 +11,11 @@ const Layout = ({ children }: LayoutProps) => {
     <div>
       <Sidebar />
       <Navbar />
-      <div className="lg:pl-72 p-4">{children}</div>
+      <div className="lg:pl-64 p-4">
+        <div className="p-4">
+          {children}
+        </div>
+      </div>
     </div>
   );
 };

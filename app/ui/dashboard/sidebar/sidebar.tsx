@@ -193,9 +193,9 @@ export default function Example() {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-60 lg:flex-col">
+        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-60 lg:flex-col font-roboto">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
+          <div className="flex grow flex-col overflow-y-auto bg-brand-secondary1d px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
               <span className="text-2xl font-bold text-brand-accent3d">Tradee</span>
               <span className="text-2xl font-bold text-brand-accent2">Hub</span>
@@ -215,7 +215,7 @@ export default function Example() {
                           <div
                             className={`group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 ${
                               isActive(item.path)
-                                ? "bg-gray-800 text-white"
+                                ? "bg-brand-secondary1l text-white"
                                 : "text-gray-400 hover:bg-gray-800 hover:text-white"
                             } text-m hover:bg-gray-200 dark:hover:bg-gray-100`}
                           >

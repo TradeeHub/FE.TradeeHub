@@ -7,6 +7,7 @@ const config: Config = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  // important: '#root', //strips the base tailwind styles useful if you wanted to add MUI 
   theme: {
     extend: {
       boxShadow: {
@@ -20,7 +21,8 @@ const config: Config = {
         brandText: '#efb90a',
         brand: {
           secondary1: 'rgb(38, 70, 83)',
-          secondary1d: 'rgb(3, 12, 64)', //disney
+          secondary1d: 'rgb(3, 12, 64)', //disney 
+          secondary1l: 'rgb(36, 42, 61)',
           // secondary1d: 'rgb(2, 48, 71)',
 
           // secondary1d: 'rgb(0, 58, 81)',
