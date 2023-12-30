@@ -17,6 +17,7 @@ const config: Config = {
         brandText: '#efb90a',
         brand: {
           white: '#ffffff',
+          blue: 'rgb(88, 80, 236)',
           secondary1: 'rgb(38, 70, 83)',
           secondary1d: 'rgb(3, 12, 64)', //disney 
           secondary1l: 'rgb(36, 42, 61)',

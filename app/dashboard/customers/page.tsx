@@ -1,8 +1,8 @@
 "use client";
-import React from "react";
+import React, { useState, useRef } from "react";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { AgGridReact } from "ag-grid-react";
-import { ColDef, ValueGetterParams } from 'ag-grid-community';
+import { ColDef, ValueGetterParams } from "ag-grid-community";
 import {
   CustomersPagedDocument,
   PropertyDbObject,
@@ -12,6 +12,23 @@ import {
   CustomerDbObject,
 } from "@/generatedGraphql";
 import moment from "moment";
+import CustomSidebar from "@/app/components/SideBar";
+import { PlusIcon, TableCellsIcon } from "@heroicons/react/20/solid";
+import { CiViewColumn } from "react-icons/ci";
+import { PiGridFour } from "react-icons/pi";
+
+interface ToggleButtonProps {
+  onToggleSidebar: () => void;
+}
+
+const gridOptions = {
+  defaultColDef: {
+    sortable: true,
+    filter: true,
+    floatingFilter: true,
+    resizable: true,
+  },
+};
 
 const getInitials = (fullName: string) => {
   const nameParts = fullName.split(" ");
@@ -29,13 +46,16 @@ const getInitials = (fullName: string) => {
   return initials.toUpperCase();
 };
 
-const columnDefs: ColDef<CustomerDbObject>[] = [
+const initialColumnDefs: ColDef<CustomerDbObject>[] = [
   {
     headerName: "Name",
+    field: "name",
     valueGetter: (params: ValueGetterParams) => {
       // You may need to assert the type of params.data if TypeScript complains about it
       const data = params.data as CustomerDbObject;
-      return `${data.title || ''} ${data.name || ''} ${data.surname || ''}`.trim();
+      return `${data.title || ""} ${data.name || ""} ${
+        data.surname || ""
+      }`.trim();
     },
     cellRenderer: (params: { value: string }) => {
       const initials = getInitials(params.value);
@@ -49,43 +69,97 @@ const columnDefs: ColDef<CustomerDbObject>[] = [
       );
     },
     sortable: true,
+    headerClass: "text-base",
     filter: true,
+    hide: false,
     flex: 1,
-    headerClass: "text-lg",
     cellClass: "items-center font-roboto",
   },
   {
     headerName: "Phone",
+    field: "phoneNumbers",
     valueGetter: (params: ValueGetterParams) => {
-        return params.data.phoneNumbers.map((phone : PhoneNumberDbObject) => phone.phoneNumber).join(", ");
+      return params.data.phoneNumbers
+        .map((phone: PhoneNumberDbObject) => phone.phoneNumber)
+        .join(", ");
     },
     sortable: true,
+    headerClass: "text-base",
     filter: true,
-    headerClass: "text-lg",
+    hide: false,
     flex: 1,
   },
   {
     headerName: "Properties",
+    field: "properties",
     valueGetter: (params: ValueGetterParams) => {
-      return params.data.properties.map((property:PropertyDbObject) => property.propertyAddress.fullAddress).join(", ");
+      return params.data.properties
+        .map(
+          (property: PropertyDbObject) => property.propertyAddress.fullAddress,
+        )
+        .join(", ");
     },
     sortable: true,
+    headerClass: "text-base",
     filter: true,
-    headerClass: "text-lg",
+    hide: false,
     flex: 1,
   },
   {
     headerName: "Last Activity",
+    field: "modifiedAt",
     valueGetter: (params: ValueGetterParams) => {
       return moment(params.data.modifiedAt).format("Do MMM YYYY h:mma");
     },
     sortable: true,
-    headerClass: "text-lg",
+    headerClass: "text-base",
     filter: true,
+    hide: false,
+    flex: 1,
   },
+  {
+    headerName: "Created By",
+    field: "createdBy",
+    sortable: true,
+    headerClass: "text-base",
+    filter: true,
+    hide: true,
+    flex: 1,
+  },
+  {
+    headerName: "Created Date",
+    field: "createdAt",
+    valueGetter: (params: ValueGetterParams) => {
+      return moment(params.data.createdAt).format("Do MMM YYYY h:mma");
+    },
+    sortable: true,
+    headerClass: "text-base",
+    filter: true,
+    hide: true,
+    flex: 1,
+  }
 ];
 
 const Customers = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [columnDefs, setColumnDefs] = useState(initialColumnDefs);
+  const buttonRef = useRef(null);
+
+  const onToggle = (field: string) => {
+    setColumnDefs((currentDefs) =>
+      currentDefs.map((col) => {
+        if (col.field === field) {
+          return { ...col, hide: !col.hide };
+        }
+        return col;
+      }),
+    );
+  };
+
+  const onToggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   const { data, error, loading } = useQuery<
     CustomersPagedQuery,
     CustomersPagedQueryVariables
@@ -97,26 +171,55 @@ const Customers = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div
-      className="ag-theme-material"
-      style={{ height: "calc(100vh - 8rem)", width: "100%" }}
-    >
-      <AgGridReact
-    rowData={
-      data?.customers?.edges?.map(edge => ({
-        ...edge.node,
-        title: edge.node.title || '',
-        name: edge.node.name || '',
-        surname: edge.node.surname || '',
-        createdAt: edge.node.createdAt || '',
-        createdBy: edge.node.createdBy || '',
-        // ... other properties
-      })) ?? []
-    }      
-        columnDefs={columnDefs}
-        style={{ height: "100%", width: "100%" }} // Ensure the grid fills the container
-      />
-    </div>
+    <>
+      <div className="flex w-full">
+        <div className="flex-grow" style={{ width: "3%" }}>
+            <button
+              ref={buttonRef}
+              type="button"
+              onClick={onToggleSidebar}
+              style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.6)' }} // Custom darker shadow
+              className="rounded-full bg-brand-accent1 p-1 text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              <PiGridFour className="h-7 w-7" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+                style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.6)' }} // Custom darker shadow
+              className="mt-4 rounded-full bg-brand-accent1 p-1 text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-6 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+             <PlusIcon className="h-7 w-7" aria-hidden="true" />
+            </button>
+            {/* <button
+              ref={buttonRef}
+              type="button"
+              onClick={onToggleSidebar}
+              className="absolute z-20 mt-14 -translate-x-6 rotate-90 transform bg-gray-200 px-2 text-black shadow-md"
+            >
+              Columns
+            </button> */}
+          <CustomSidebar
+            columnDefs={columnDefs}
+            onToggle={onToggle}
+            isOpen={sidebarOpen}
+            buttonRef={buttonRef} // Pass the ref to the sidebar
+          />
+        </div>
+        <div className="flex-grow" style={{ width: "97%" }}>
+          <div
+            className="ag-theme-material"
+            style={{ height: "calc(100vh - 9rem)", width: "100%" }}
+          >
+            <AgGridReact
+              rowData={data?.customers?.edges?.map((edge) => edge.node) ?? []}
+              columnDefs={columnDefs}
+              gridOptions={gridOptions}
+              className="h-full"
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
