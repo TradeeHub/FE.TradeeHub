@@ -5,6 +5,8 @@
 @import "@fontsource/roboto/400.css";
 @import "@fontsource/roboto/500.css";
 @import "@fontsource/roboto/700.css";
+@import "~ag-grid-community/styles/ag-grid.css";
+@import "~ag-grid-community/styles/ag-theme-material.css";
 
 @layer components {
   .skew-custom {
@@ -19,6 +21,10 @@
       0 100%
     );
   }
+}
+
+.ag-header-cell .ag-header-cell-label {
+  justify-content: center !important;
 }
 /* Example how to use the above custom */
 /* <div className="skew-custom bg-brand-secondary1d mt-4"><span className="ml-5 text-white font-bold">Appointments</span></div> */
