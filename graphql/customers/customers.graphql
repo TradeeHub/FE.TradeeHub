@@ -1,5 +1,5 @@
-query CustomersByName($nameContains: String!) {
-  customers(where: { name: { contains: $nameContains } }) {
+query CustomersPaged($pageSize: Int!, $cursor: String) {
+  customers(first: $pageSize, after: $cursor) {
     edges {
       node {
         id

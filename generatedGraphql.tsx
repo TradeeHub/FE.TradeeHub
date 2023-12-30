@@ -292,17 +292,18 @@ export type UuidOperationFilterInput = {
   nlte?: InputMaybe<Scalars['UUID']['input']>;
 };
 
-export type CustomersByNameQueryVariables = Exact<{
-  nameContains: Scalars['String']['input'];
+export type CustomersPagedQueryVariables = Exact<{
+  pageSize: Scalars['Int']['input'];
+  cursor?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type CustomersByNameQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, title?: string | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', propertyAddress: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, title?: string | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', propertyAddress: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 
-export const CustomersByNameDocument = gql`
-    query CustomersByName($nameContains: String!) {
-  customers(where: {name: {contains: $nameContains}}) {
+export const CustomersPagedDocument = gql`
+    query CustomersPaged($pageSize: Int!, $cursor: String) {
+  customers(first: $pageSize, after: $cursor) {
     edges {
       node {
         id
@@ -330,34 +331,35 @@ export const CustomersByNameDocument = gql`
     `;
 
 /**
- * __useCustomersByNameQuery__
+ * __useCustomersPagedQuery__
  *
- * To run a query within a React component, call `useCustomersByNameQuery` and pass it any options that fit your needs.
- * When your component renders, `useCustomersByNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCustomersPagedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCustomersPagedQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCustomersByNameQuery({
+ * const { data, loading, error } = useCustomersPagedQuery({
  *   variables: {
- *      nameContains: // value for 'nameContains'
+ *      pageSize: // value for 'pageSize'
+ *      cursor: // value for 'cursor'
  *   },
  * });
  */
-export function useCustomersByNameQuery(baseOptions: Apollo.QueryHookOptions<CustomersByNameQuery, CustomersByNameQueryVariables>) {
+export function useCustomersPagedQuery(baseOptions: Apollo.QueryHookOptions<CustomersPagedQuery, CustomersPagedQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CustomersByNameQuery, CustomersByNameQueryVariables>(CustomersByNameDocument, options);
+        return Apollo.useQuery<CustomersPagedQuery, CustomersPagedQueryVariables>(CustomersPagedDocument, options);
       }
-export function useCustomersByNameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CustomersByNameQuery, CustomersByNameQueryVariables>) {
+export function useCustomersPagedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CustomersPagedQuery, CustomersPagedQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CustomersByNameQuery, CustomersByNameQueryVariables>(CustomersByNameDocument, options);
+          return Apollo.useLazyQuery<CustomersPagedQuery, CustomersPagedQueryVariables>(CustomersPagedDocument, options);
         }
-export function useCustomersByNameSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CustomersByNameQuery, CustomersByNameQueryVariables>) {
+export function useCustomersPagedSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CustomersPagedQuery, CustomersPagedQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<CustomersByNameQuery, CustomersByNameQueryVariables>(CustomersByNameDocument, options);
+          return Apollo.useSuspenseQuery<CustomersPagedQuery, CustomersPagedQueryVariables>(CustomersPagedDocument, options);
         }
-export type CustomersByNameQueryHookResult = ReturnType<typeof useCustomersByNameQuery>;
-export type CustomersByNameLazyQueryHookResult = ReturnType<typeof useCustomersByNameLazyQuery>;
-export type CustomersByNameSuspenseQueryHookResult = ReturnType<typeof useCustomersByNameSuspenseQuery>;
-export type CustomersByNameQueryResult = Apollo.QueryResult<CustomersByNameQuery, CustomersByNameQueryVariables>;
+export type CustomersPagedQueryHookResult = ReturnType<typeof useCustomersPagedQuery>;
+export type CustomersPagedLazyQueryHookResult = ReturnType<typeof useCustomersPagedLazyQuery>;
+export type CustomersPagedSuspenseQueryHookResult = ReturnType<typeof useCustomersPagedSuspenseQuery>;
+export type CustomersPagedQueryResult = Apollo.QueryResult<CustomersPagedQuery, CustomersPagedQueryVariables>;
