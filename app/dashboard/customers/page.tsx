@@ -56,7 +56,7 @@ const initialColumnDefs: ColDef[] = [
       const initials = getInitials(params.value);
       return (
         <div className="flex items-center">
-          <div className="mr-2 flex h-9 w-9 items-center justify-center rounded-full bg-gray-200">
+          <div className="flex-shrink-0 mr-2 flex h-9 w-9 items-center justify-center rounded-full bg-gray-200">
             {initials}
           </div>
           <span>{params.value}</span>
@@ -139,14 +139,6 @@ const Customers = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [columnDefs, setColumnDefs] = useState(initialColumnDefs);
   const buttonRef = useRef(null);
-
-  const [gridApi, setGridApi] = useState<GridApi | null>(null);
-
-  const onGridReady = (params: GridReadyEvent) => {
-    setGridApi(params.api);
-  };
-
-  console.log("grid api", gridApi)
   
   const onToggle = (field: string) => {
     setColumnDefs((currentDefs) =>
@@ -193,14 +185,6 @@ const Customers = () => {
           >
             <PlusIcon className="h-7 w-7" aria-hidden="true" />
           </button>
-          {/* <button
-              ref={buttonRef}
-              type="button"
-              onClick={onToggleSidebar}
-              className="absolute z-20 mt-14 -translate-x-6 rotate-90 transform bg-gray-200 px-2 text-black shadow-md"
-            >
-              Columns
-            </button> */}
           <CustomSidebar
             columnDefs={columnDefs}
             onToggle={onToggle}
@@ -217,7 +201,7 @@ const Customers = () => {
               rowData={data?.customers?.edges?.map((edge) => edge.node) ?? []}
               columnDefs={columnDefs}
               gridOptions={gridOptions}
-              onGridReady={onGridReady}
+              // onGridReady={onGridReady}
               className="h-full"
             />
           </div>

@@ -19,7 +19,7 @@ const userNavigation = [
 
 const Navbar = () => {
   return (
-    <div className="sticky top-0 lg:pl-60">
+    <div className="sticky top-0">
       <div className="z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
         <button
           type="button"
