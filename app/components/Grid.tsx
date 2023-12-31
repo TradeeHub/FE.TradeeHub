@@ -38,7 +38,7 @@ const CustomGrid = ({ gridData, columnDefs }: { gridData: any; columnDefs: ColDe
 
     return (
     <>
-        <div className='flex flex-col md:flex-row gap-4 md:gap-4'>
+        <div className='flex flex-col md:flex-row gap-4 md:gap-4 mr-12'>
         <div className='flex flex-row md:flex-col xs:flex-row items-center sm:items-start md:mr-1 p-2 sm:p-0 gap-5'>
             <CustomSidebar
             columnDefs={gridColumnDef}
