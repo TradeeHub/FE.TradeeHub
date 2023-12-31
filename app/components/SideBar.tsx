@@ -12,8 +12,9 @@ const CustomSidebar = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Add a container div with relative positioning
   return (
-    <>
+    <div className='relative'>
       <RoundButton
         icon={<PiGridFour className='h-7 w-7' aria-hidden='true' />}
         onClick={() => setIsOpen(!isOpen)}
@@ -25,7 +26,7 @@ const CustomSidebar = ({
           onToggleColumnVisibility={onToggleColumnVisibility}
         />
       )}
-    </>
+    </div>
   );
 };
 
@@ -37,10 +38,11 @@ const SidebarContent = ({
   columnDefs: ColDef[];
   onToggleColumnVisibility: (index: number) => void;
 }) => {
-
   return (
+    // Position the sidebar content below the button and adjust with padding if necessary
     <div
-      className='absolute z-10 -mr-1 w-56 origin-top-right rounded-2xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ' // Applied border utilities
+      className='absolute z-10 left-0 mt-2 w-56 rounded-2xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'
+      style={{ top: '100%' }} // Ensures that the sidebar opens right below the button
     >
       <h4 className='text-md text-center font-bold'>Columns</h4>
       {columnDefs.map((col: ColDef, index: number) => (
@@ -52,7 +54,7 @@ const SidebarContent = ({
               type='checkbox'
               checked={!col.hide}
               onChange={() => onToggleColumnVisibility(index)}
-              className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600'
+              className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
             />
             <span className='ml-3 text-sm leading-6'>{col.headerName}</span>
           </label>

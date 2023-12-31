@@ -37,35 +37,33 @@ const CustomGrid = ({ gridData, columnDefs }: { gridData: any; columnDefs: ColDe
     };
 
     return (
-        <>
-            <div className='flex'>
-                <div className='mr-1 flex-col gap-10' style={{ width: '3%' }}>
-                    <div>
-                        <CustomSidebar
-                            columnDefs={gridColumnDef}
-                            onToggleColumnVisibility={onToggleColumnVisibility}
-                        />
-                    </div>
-                    <div>
-                        <RoundButton
-                            icon={<PlusIcon className='h-7 w-7' aria-hidden='true' />}
-                            onClick={() => {}}
-                        />
-                    </div>
-                </div>
-                <div className='flex-grow' style={{ width: '97%' }}>
-                    <div className='ag-theme-material' style={{ height: 'calc(100vh - 9rem)', width: '100%' }}>
-                        {<AgGridReact<CustomersPagedQuery>
-                            rowData={gridData}
-                            columnDefs={gridColumnDef}
-                            gridOptions={gridOptions}
-                            className='h-full'
-                        />}
-                    </div>
-                </div>
+    <>
+        <div className='flex flex-col md:flex-row gap-4 md:gap-4'>
+        <div className='flex flex-row md:flex-col xs:flex-row items-center sm:items-start md:mr-1 p-2 sm:p-0 gap-5'>
+            <CustomSidebar
+            columnDefs={gridColumnDef}
+            onToggleColumnVisibility={onToggleColumnVisibility}
+            />
+            <RoundButton
+            icon={<PlusIcon className='h-7 w-7' />}
+            onClick={() => {}}
+            />
+        </div>
+        <div className='flex-grow'>
+            <div className='ag-theme-material w-full' style={{ height: 'calc(100vh - 9rem)' }}>
+            <AgGridReact<CustomersPagedQuery>
+                rowData={gridData}
+                columnDefs={gridColumnDef}
+                gridOptions={gridOptions}
+                className='h-full'
+            />
             </div>
-        </>
+        </div>
+        </div>
+    </>
     );
+
+
 };
 
 export default CustomGrid;
