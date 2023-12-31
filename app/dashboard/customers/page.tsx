@@ -1,7 +1,5 @@
 'use client';
-import React, { useState } from 'react';
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr';
-import { AgGridReact } from 'ag-grid-react';
 import { ColDef, ValueGetterParams } from 'ag-grid-community';
 import {
   CustomersPagedDocument,
@@ -12,18 +10,7 @@ import {
   CustomerDbObject,
 } from '@/generatedGraphql';
 import moment from 'moment';
-import CustomSidebar from '@/app/components/SideBar';
-import { PlusIcon } from '@heroicons/react/20/solid';
-import RoundButton from '@/app/components/RoundButton';
-
-const gridOptions = {
-  defaultColDef: {
-    sortable: true,
-    filter: true,
-    floatingFilter: true,
-    resizable: true,
-  },
-};
+import CustomGrid from '@/app/components/Grid';
 
 const getInitials = (fullName: string) => {
   const nameParts = fullName.split(' ');
@@ -41,7 +28,7 @@ const getInitials = (fullName: string) => {
   return initials.toUpperCase();
 };
 
-const initialColumnDefs: ColDef[] = [
+const gridColumnDef: ColDef[] = [
   {
     headerName: 'Name',
     field: 'name',
@@ -136,63 +123,21 @@ const initialColumnDefs: ColDef[] = [
 ];
 
 const Customers = () => {
-  const [columnDefs, setColumnDefs] = useState(initialColumnDefs);
-
-  const onToggleColumnVisibility = (index: number) => {
-    setColumnDefs((currentDefs) =>
-      currentDefs.map((col, idx) => {
-        if (idx === index) {
-          // Toggle the hide property of the column at this index
-          return { ...col, hide: !col.hide };
-        }
-        return col;
-      }),
-    );
-  };
-
   const { data, error, loading } = useQuery<
     CustomersPagedQuery,
     CustomersPagedQueryVariables
   >(CustomersPagedDocument, {
-    variables: { pageSize: 10 },
+    variables: { pageSize: 1000 },
   });
 
-  console.log('errrorrrr', error)
+  const rowData = data?.customers?.edges?.map((edge) => edge.node);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
     <>
-      <div className='flex'>
-        <div className='mr-1 flex-col gap-10' style={{ width: '3%' }}>
-          <div>
-            <CustomSidebar
-              columnDefs={columnDefs}
-              onToggleColumnVisibility={onToggleColumnVisibility}
-            />
-          </div>
-          <div>
-            <RoundButton
-              icon={<PlusIcon className='h-7 w-7' aria-hidden='true' />}
-              onClick={() => {}}
-            />
-          </div>
-        </div>
-        <div className='flex-grow' style={{ width: '97%' }}>
-          <div
-            className='ag-theme-material'
-            style={{ height: 'calc(100vh - 9rem)', width: '100%' }}
-          >
-            <AgGridReact<CustomersPagedQuery>
-              rowData={data?.customers?.edges?.map((edge) => edge.node)}
-              columnDefs={columnDefs}
-              gridOptions={gridOptions}
-              // onGridReady={onGridReady}
-              className='h-full'
-            />
-          </div>
-        </div>
-      </div>
+      <CustomGrid gridData={rowData} columnDefs={gridColumnDef} />
     </>
   );
 };

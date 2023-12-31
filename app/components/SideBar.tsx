@@ -37,6 +37,7 @@ const SidebarContent = ({
   columnDefs: ColDef[];
   onToggleColumnVisibility: (index: number) => void;
 }) => {
+
   return (
     <div
       className='absolute z-10 -mr-1 w-56 origin-top-right rounded-2xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ' // Applied border utilities
