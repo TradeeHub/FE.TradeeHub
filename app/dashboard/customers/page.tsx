@@ -2,7 +2,12 @@
 import React, { useState, useRef } from "react";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { AgGridReact } from "ag-grid-react";
-import { ColDef, ValueGetterParams, GridReadyEvent, GridApi} from "ag-grid-community";
+import {
+  ColDef,
+  ValueGetterParams,
+  GridReadyEvent,
+  GridApi,
+} from "ag-grid-community";
 import {
   CustomersPagedDocument,
   PropertyDbObject,
@@ -14,7 +19,6 @@ import {
 import moment from "moment";
 import CustomSidebar from "@/app/components/SideBar";
 import { PlusIcon } from "@heroicons/react/20/solid";
-import { PiGridFour } from "react-icons/pi";
 
 const gridOptions = {
   defaultColDef: {
@@ -56,7 +60,7 @@ const initialColumnDefs: ColDef[] = [
       const initials = getInitials(params.value);
       return (
         <div className="flex items-center">
-          <div className="flex-shrink-0 mr-2 flex h-9 w-9 items-center justify-center rounded-full bg-gray-200">
+          <div className="mr-2 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gray-200">
             {initials}
           </div>
           <span>{params.value}</span>
@@ -136,14 +140,13 @@ const initialColumnDefs: ColDef[] = [
 ];
 
 const Customers = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [columnDefs, setColumnDefs] = useState(initialColumnDefs);
-  const buttonRef = useRef(null);
-  
-  const onToggle = (field: string) => {
+
+  const onToggleColumnVisibility = (index: number) => {
     setColumnDefs((currentDefs) =>
-      currentDefs.map((col) => {
-        if (col.field === field) {
+      currentDefs.map((col, idx) => {
+        if (idx === index) {
+          // Toggle the hide property of the column at this index
           return { ...col, hide: !col.hide };
         }
         return col;
@@ -151,17 +154,14 @@ const Customers = () => {
     );
   };
 
-  const onToggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
   const { data, error, loading } = useQuery<
     CustomersPagedQuery,
     CustomersPagedQueryVariables
   >(CustomersPagedDocument, {
-    variables: { pageSize: 100 },
+    variables: { pageSize: 10 },
   });
-  
+
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
@@ -169,15 +169,10 @@ const Customers = () => {
     <>
       <div className="flex w-full">
         <div className="mr-4 flex-grow" style={{ width: "3%" }}>
-          <button
-            ref={buttonRef}
-            type="button"
-            onClick={onToggleSidebar}
-            style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.6)" }} // Custom darker shadow
-            className="rounded-full bg-brand-accent1 p-1 text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            <PiGridFour className="h-7 w-7" aria-hidden="true" />
-          </button>
+          <CustomSidebar
+            columnDefs={columnDefs}
+            onToggleColumnVisibility={onToggleColumnVisibility}
+          />
           <button
             type="button"
             style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.6)" }} // Custom darker shadow
@@ -185,12 +180,6 @@ const Customers = () => {
           >
             <PlusIcon className="h-7 w-7" aria-hidden="true" />
           </button>
-          <CustomSidebar
-            columnDefs={columnDefs}
-            onToggle={onToggle}
-            isOpen={sidebarOpen}
-            buttonRef={buttonRef} // Pass the ref to the sidebar
-          />
         </div>
         <div className="flex-grow" style={{ width: "97%" }}>
           <div

@@ -10,18 +10,16 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="flex">
       {/* Sidebar - hidden on small screens and visible on large screens */}
-      <div className="hidden lg:flex flex-none w-60">
+      <div className="hidden w-60 flex-none lg:flex">
         <Sidebar />
       </div>
 
-      <div className="flex flex-col flex-grow">
+      <div className="flex flex-grow flex-col">
         {/* Navbar */}
         <Navbar />
 
         {/* Page content */}
-        <div className="p-4 overflow-auto">
-          {children}
-        </div>
+        <div className="overflow-auto p-4">{children}</div>
       </div>
     </div>
   );
