@@ -166,7 +166,7 @@ const Customers = () => {
   return (
     <>
       <div className="flex">
-        <div className="mr-4 flex-col gap-10" style={{ width: "3%" }}>
+        <div className="mr-1 flex-col gap-10" style={{ width: "3%" }}>
           <div>
             <CustomSidebar
               columnDefs={columnDefs}
@@ -183,7 +183,7 @@ const Customers = () => {
             style={{ height: "calc(100vh - 9rem)", width: "100%" }}
           >
             <AgGridReact<CustomersPagedQuery>
-              rowData={data?.customers?.edges?.map((edge) => edge.node) ?? []}
+              rowData={data?.customers?.edges?.map((edge) => edge.node)}
               columnDefs={columnDefs}
               gridOptions={gridOptions}
               // onGridReady={onGridReady}
