@@ -1,9 +1,9 @@
-"use client";
-import React from "react";
+'use client';
+import React from 'react';
 
 const Appointments = () => {
   return (
-    <div style={{ height: 400, width: "100%" }}>Appointments Calendar</div>
+    <div style={{ height: 400, width: '100%' }}>Appointments Calendar</div>
   );
 };
 

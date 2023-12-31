@@ -19,5 +19,8 @@
     "plugins": [
         "@typescript-eslint"
     ],
-    "rules": {}
+    "rules": {
+        "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
+        "jsx-quotes": ["error", "prefer-single"]
+    }
 }
