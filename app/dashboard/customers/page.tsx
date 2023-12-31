@@ -98,6 +98,7 @@ const gridColumnDef: ColDef[] = [
     filter: true,
     hide: false,
     flex: 1,
+    cellClass: 'text-center', // Custom class for centering cell content
   },
   {
     headerName: 'Created By',
