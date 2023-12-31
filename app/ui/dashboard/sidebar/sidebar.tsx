@@ -203,7 +203,7 @@ export default function Example() {
         <div className="font-roboto lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-60 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col overflow-y-auto bg-brand-secondary1d px-6 pb-4">
-            <div className="flex h-16 shrink-0 items-center">
+            <div className="flex h-16 shrink-0 items-center text-center">
               <span className="text-2xl font-bold text-brand-accent3d">
                 Tradee
               </span>

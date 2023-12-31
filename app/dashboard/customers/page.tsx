@@ -1,12 +1,10 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { AgGridReact } from "ag-grid-react";
 import {
   ColDef,
-  ValueGetterParams,
-  GridReadyEvent,
-  GridApi,
+  ValueGetterParams
 } from "ag-grid-community";
 import {
   CustomersPagedDocument,
@@ -19,6 +17,7 @@ import {
 import moment from "moment";
 import CustomSidebar from "@/app/components/SideBar";
 import { PlusIcon } from "@heroicons/react/20/solid";
+import RoundButton from "@/app/components/RoundButton";
 
 const gridOptions = {
   defaultColDef: {
@@ -161,25 +160,22 @@ const Customers = () => {
     variables: { pageSize: 10 },
   });
 
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
     <>
-      <div className="flex w-full">
-        <div className="mr-4 flex-grow" style={{ width: "3%" }}>
-          <CustomSidebar
-            columnDefs={columnDefs}
-            onToggleColumnVisibility={onToggleColumnVisibility}
-          />
-          <button
-            type="button"
-            style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.6)" }} // Custom darker shadow
-            className="focus-visible:outline-6 mt-4 rounded-full bg-brand-accent1 p-1 text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            <PlusIcon className="h-7 w-7" aria-hidden="true" />
-          </button>
+      <div className="flex">
+        <div className="mr-4 flex-col gap-10" style={{ width: "3%" }}>
+          <div>
+            <CustomSidebar
+              columnDefs={columnDefs}
+              onToggleColumnVisibility={onToggleColumnVisibility}
+            />
+          </div>
+          <div>
+            <RoundButton icon={<PlusIcon className="h-7 w-7" aria-hidden="true" />} onClick={() => {}}/>
+          </div>
         </div>
         <div className="flex-grow" style={{ width: "97%" }}>
           <div

@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import { PiGridFour } from "react-icons/pi";
+import RoundButton from "./RoundButton";
 
-const CustomSidebar = ({ columnDefs, onToggleColumnVisibility}) => {
+const CustomSidebar = ({ columnDefs, onToggleColumnVisibility }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="rounded-full bg-brand-blue p-1 text-white shadow-lg hover:bg-brand-accent1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      >
-      <PiGridFour className="h-7 w-7" aria-hidden="true" />
-      </button>
-
-      {isOpen && <SidebarContent columnDefs={columnDefs} onToggleColumnVisibility={onToggleColumnVisibility} />}
+      <RoundButton icon={<PiGridFour className="h-7 w-7" aria-hidden="true" />} onClick={() => setIsOpen(!isOpen)}/>
+      
+      {isOpen && (
+        <SidebarContent
+          columnDefs={columnDefs}
+          onToggleColumnVisibility={onToggleColumnVisibility}
+        />
+      )}
     </>
   );
 };
@@ -44,6 +44,5 @@ const SidebarContent = ({ columnDefs, onToggleColumnVisibility }) => {
     </div>
   );
 };
-
 
 export default CustomSidebar;
