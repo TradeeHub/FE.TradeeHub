@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { AgGridReact } from "ag-grid-react";
-import { ColDef, ValueGetterParams } from "ag-grid-community";
+import { ColDef, ValueGetterParams, GridReadyEvent, GridApi} from "ag-grid-community";
 import {
   CustomersPagedDocument,
   PropertyDbObject,
@@ -13,13 +13,8 @@ import {
 } from "@/generatedGraphql";
 import moment from "moment";
 import CustomSidebar from "@/app/components/SideBar";
-import { PlusIcon, TableCellsIcon } from "@heroicons/react/20/solid";
-import { CiViewColumn } from "react-icons/ci";
+import { PlusIcon } from "@heroicons/react/20/solid";
 import { PiGridFour } from "react-icons/pi";
-
-interface ToggleButtonProps {
-  onToggleSidebar: () => void;
-}
 
 const gridOptions = {
   defaultColDef: {
@@ -46,7 +41,7 @@ const getInitials = (fullName: string) => {
   return initials.toUpperCase();
 };
 
-const initialColumnDefs: ColDef<CustomerDbObject>[] = [
+const initialColumnDefs: ColDef[] = [
   {
     headerName: "Name",
     field: "name",
@@ -137,7 +132,7 @@ const initialColumnDefs: ColDef<CustomerDbObject>[] = [
     filter: true,
     hide: true,
     flex: 1,
-  }
+  },
 ];
 
 const Customers = () => {
@@ -145,6 +140,14 @@ const Customers = () => {
   const [columnDefs, setColumnDefs] = useState(initialColumnDefs);
   const buttonRef = useRef(null);
 
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
+
+  const onGridReady = (params: GridReadyEvent) => {
+    setGridApi(params.api);
+  };
+
+  console.log("grid api", gridApi)
+  
   const onToggle = (field: string) => {
     setColumnDefs((currentDefs) =>
       currentDefs.map((col) => {
@@ -166,31 +169,31 @@ const Customers = () => {
   >(CustomersPagedDocument, {
     variables: { pageSize: 100 },
   });
-
+  
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
     <>
       <div className="flex w-full">
-        <div className="flex-grow" style={{ width: "3%" }}>
-            <button
-              ref={buttonRef}
-              type="button"
-              onClick={onToggleSidebar}
-              style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.6)' }} // Custom darker shadow
-              className="rounded-full bg-brand-accent1 p-1 text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              <PiGridFour className="h-7 w-7" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-                style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.6)' }} // Custom darker shadow
-              className="mt-4 rounded-full bg-brand-accent1 p-1 text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-6 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-             <PlusIcon className="h-7 w-7" aria-hidden="true" />
-            </button>
-            {/* <button
+        <div className="mr-4 flex-grow" style={{ width: "3%" }}>
+          <button
+            ref={buttonRef}
+            type="button"
+            onClick={onToggleSidebar}
+            style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.6)" }} // Custom darker shadow
+            className="rounded-full bg-brand-accent1 p-1 text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            <PiGridFour className="h-7 w-7" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.6)" }} // Custom darker shadow
+            className="focus-visible:outline-6 mt-4 rounded-full bg-brand-accent1 p-1 text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            <PlusIcon className="h-7 w-7" aria-hidden="true" />
+          </button>
+          {/* <button
               ref={buttonRef}
               type="button"
               onClick={onToggleSidebar}
@@ -210,10 +213,11 @@ const Customers = () => {
             className="ag-theme-material"
             style={{ height: "calc(100vh - 9rem)", width: "100%" }}
           >
-            <AgGridReact
+            <AgGridReact<CustomersPagedQuery>
               rowData={data?.customers?.edges?.map((edge) => edge.node) ?? []}
               columnDefs={columnDefs}
               gridOptions={gridOptions}
+              onGridReady={onGridReady}
               className="h-full"
             />
           </div>

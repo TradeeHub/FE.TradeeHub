@@ -27,7 +27,7 @@ const CustomSidebar = ({
         zIndex: 20,
       }}
     >
-      <h4 className="text-center text-md font-bold">Columns</h4>
+      <h4 className="text-md text-center font-bold">Columns</h4>
       {columnDefs.map((col, index) => (
         <div key={index} className="relative rounded-lg p-2 hover:bg-gray-50">
           <label>
