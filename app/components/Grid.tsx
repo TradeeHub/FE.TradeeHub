@@ -1,7 +1,6 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef } from 'ag-grid-community';
 
 import CustomSidebar from '@/app/components/SideBar';
 import { PlusIcon } from '@heroicons/react/20/solid';
@@ -31,21 +30,17 @@ const CustomGrid = ({ columnDefs, fetchMoreData, initialData, endCursor }) => {
     const [gridColumnDef, setColumnDefs] = useState(columnDefs || []);
     const currentEndCursor = useRef(endCursor); // Using useRef for cursor
     const isFirstLoad = useRef(true);
-    console.log('IS FIRST LOAD ', isFirstLoad)
+
     const dataSource  = () => ({
         getRows: async (params) => {
             try {
-
-                console.log("aaaaaaaaaaaaaaaaaa", isFirstLoad.current === true)
                 if (isFirstLoad.current === true)
                 {
-                    console.log("SETTING FIRST LOAD ", initialData)
                     params.successCallback(initialData, endCursor ? -1 : null);
                     isFirstLoad.current = false;
                 }
                 else{
                     const { rows, pageInfo} = await fetchMoreData(currentEndCursor.current);
-                    console.log('Fetched Result GRID:', rows, pageInfo);
                     currentEndCursor.current = pageInfo?.endCursor;
                     params.successCallback(rows, pageInfo?.hasNextPage ? -1 : null);
                 }

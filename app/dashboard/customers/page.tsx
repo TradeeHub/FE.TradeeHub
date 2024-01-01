@@ -1,17 +1,12 @@
 'use client';
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr';
 import { ColDef, ValueGetterParams } from 'ag-grid-community';
 import {
-  CustomersPagedDocument,
   PropertyDbObject,
-  CustomersPagedQuery,
-  CustomersPagedQueryVariables,
   PhoneNumberDbObject,
   CustomerDbObject,
 } from '@/generatedGraphql';
 import moment from 'moment';
 import CustomGrid from '@/app/components/Grid';
-import { useCallback } from 'react';
 import useCustomerData from '@/app/hooks/useCustomerData';
 
 const getInitials = (fullName: string) => {
@@ -126,7 +121,7 @@ const gridColumnDef: ColDef[] = [
 ];    
 
 const Customers = () => {
-  const { data, loading, error, fetchMoreData } = useCustomerData();
+  const { data, fetchMoreData } = useCustomerData();
   const endCursor = data?.customers?.pageInfo?.endCursor ? data?.customers?.pageInfo?.endCursor : null;
   const initialData = data?.customers?.edges?.map(edge => edge.node);
 
