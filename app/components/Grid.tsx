@@ -2,14 +2,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-community';
-import {
-  CustomersPagedQuery,
-} from '@/generatedGraphql';
 
 import CustomSidebar from '@/app/components/SideBar';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import RoundButton from '@/app/components/RoundButton';
-import useCustomerData from '../hooks/useCustomerData';
 
 const gridOptions = {
     defaultColDef: {
@@ -31,28 +27,24 @@ const gridOptions = {
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomGrid = ({ columnDefs }) => {
-   const { customerData, loading, error, fetchMoreData } = useCustomerData();
+const CustomGrid = ({ columnDefs, fetchMoreData, initialData, endCursor }) => {
     const [gridColumnDef, setColumnDefs] = useState(columnDefs || []);
-    const customerDataRef = useRef(customerData);
-    const [endCursor, setEndCursor] = useState(null);
-
-    useEffect(() => {
-        customerDataRef.current = customerData; // Update the ref whenever customerData changes
-    }, [customerData]);
-
+    const currentEndCursor = useRef(endCursor); // Using useRef for cursor
+    const isFirstLoad = useRef(true);
+    console.log('IS FIRST LOAD ', isFirstLoad)
     const dataSource  = () => ({
         getRows: async (params) => {
-            params.context = null;
-            console.log('MY PARAMS', params.context)
-            params.context
             try {
-                console.log('#########', customerDataRef.current, customerDataRef.current?.pageInfo?.endCursor); // Access the latest data via ref
-                console.log('?????????', endCursor); // Access the latest data via ref
-                const { rows, pageInfo} = await fetchMoreData(endCursor);
-                setEndCursor(pageInfo?.endCursor ? pageInfo?.endCursor : null)
-                console.log('Fetched Result GRID:', rows, pageInfo);
-                params.successCallback(rows, pageInfo?.hasNextPage ? -1 : null);
+                if (isFirstLoad.current)
+                {
+                    params.successCallback(initialData, pageInfo?.hasNextPage ? -1 : null);
+                }
+                else{
+                    const { rows, pageInfo} = await fetchMoreData(currentEndCursor.current);
+                    console.log('Fetched Result GRID:', rows, pageInfo);
+                    currentEndCursor.current = pageInfo?.endCursor;
+                    params.successCallback(rows, pageInfo?.hasNextPage ? -1 : null);
+                }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 params.failCallback();
@@ -61,7 +53,6 @@ const CustomGrid = ({ columnDefs }) => {
     });
 
     const onGridReady = (params) => {
-        console.log('ON GRID READY ', customerData)
         params.api.setGridOption('datasource', dataSource()); // Ensure this is correctly spelled and set
     };
 
@@ -73,6 +64,8 @@ const CustomGrid = ({ columnDefs }) => {
             })),
         );
     };
+
+    isFirstLoad.current = false;
     return (
     <>
         <div className='flex flex-col md:flex-row gap-4 md:gap-4 md:mr-12'>
@@ -88,10 +81,9 @@ const CustomGrid = ({ columnDefs }) => {
         </div>
         <div className='flex-grow'>
             <div className='ag-theme-material w-full' style={{ height: 'calc(100vh - 9rem)' }}>
-            <AgGridReact<CustomersPagedQuery>
+            <AgGridReact
                 columnDefs={gridColumnDef}
                 gridOptions={gridOptions}
-                pagination={true}
                 rowModelType='infinite'
                 onGridReady={onGridReady}
             />

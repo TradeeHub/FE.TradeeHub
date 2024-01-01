@@ -10,20 +10,10 @@ const useCustomerData = () => {
 
 
     console.log('CUSTOEMR DATAA', data)
-    // Initialize state with an empty array for data and null for pageInfo
     const [customerData, setCustomerData] = useState({ data: [], pageInfo: null });
 
-    // useEffect(() => {
-    //     console.log('I AM USING EFFECT HERE ' )
-    //     if (data) {
-    //         const initialData = data.customers.edges.map(edge => edge.node);
-    //         console.log('I AM USING EFFECT HERE ', initialData, data.customers.pageInfo )
 
-    //         setCustomerData({ data: initialData, pageInfo: data.customers.pageInfo });
-    //     }
-    // }, [data]);
-
-const fetchMoreData = useCallback((endCursor) => {
+    const fetchMoreData = useCallback((endCursor) => {
     console.log('before fetching more data', endCursor)
     return fetchMore({
         variables: { cursor: endCursor, pageSize: 30 },

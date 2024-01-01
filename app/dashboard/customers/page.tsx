@@ -126,10 +126,13 @@ const gridColumnDef: ColDef[] = [
 ];    
 
 const Customers = () => {
-  console.log('RENDERING CUSTOMERSSSSSSSSS')
+  const { data, loading, error, fetchMoreData } = useCustomerData();
+  const endCursor = data?.customers?.pageInfo?.endCursor ? data?.customers?.pageInfo?.endCursor : null;
+  const initialData = data?.customers?.edges?.map(edge => edge.node);
+
   return (
     <>
-      <CustomGrid columnDefs={gridColumnDef} />
+      {data && <CustomGrid columnDefs={gridColumnDef} fetchMoreData={fetchMoreData} initialData={initialData} endCursor={endCursor} />}
     </>
   );
 };
