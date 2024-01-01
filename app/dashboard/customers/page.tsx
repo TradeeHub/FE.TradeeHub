@@ -11,6 +11,8 @@ import {
 } from '@/generatedGraphql';
 import moment from 'moment';
 import CustomGrid from '@/app/components/Grid';
+import { useCallback } from 'react';
+import useCustomerData from '@/app/hooks/useCustomerData';
 
 const getInitials = (fullName: string) => {
   const nameParts = fullName.split(' ');
@@ -124,54 +126,10 @@ const gridColumnDef: ColDef[] = [
 ];    
 
 const Customers = () => {
-  const { data, error, loading, fetchMore } = useQuery<
-    CustomersPagedQuery,
-    CustomersPagedQueryVariables
-  >(CustomersPagedDocument, {
-    variables: { pageSize: 40 },
-    notifyOnNetworkStatusChange: true, // This helps to update 'loading' during fetchMore
-  });
-  console.log("data from customerrrr", data)
-
-  const fetchMoreDataQuery = async () => {
-    console.log("FETCHING MOREEEEEE ")
-    try {
-      // Check if there are more pages to fetch
-      if (data?.customers?.pageInfo.hasNextPage) {
-        // Use endCursor for the next fetch operation
-        const endCursor = data?.customers?.pageInfo.endCursor;
-
-        await fetchMore({
-          variables: {
-            after: endCursor,
-            pageSize: 40,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) return prev;
-            return {
-              ...prev,
-              customers: {
-                ...fetchMoreResult.customers,
-                edges: [...prev.customers?.edges, ...fetchMoreResult.customers?.edges],
-                pageInfo: fetchMoreResult.customers?.pageInfo, // Update pageInfo
-              },
-            };
-          },
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching more data:', error);
-    }
-  };
-
-    const initialRowData = data?.customers?.edges?.map((edge) => edge.node);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
 
   return (
     <>
-      <CustomGrid initialRowData={initialRowData} fetchMoreDataQuery={fetchMoreDataQuery} columnDefs={gridColumnDef} />
+      <CustomGrid columnDefs={gridColumnDef} />
     </>
   );
 };

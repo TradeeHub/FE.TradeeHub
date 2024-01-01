@@ -9,6 +9,7 @@ import {
 import CustomSidebar from '@/app/components/SideBar';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import RoundButton from '@/app/components/RoundButton';
+import useCustomerData from '../hooks/useCustomerData';
 
 const gridOptions = {
   defaultColDef: {
@@ -25,85 +26,38 @@ const gridOptions = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomGrid = ({ initialRowData, fetchMoreDataQuery, columnDefs }) => {
-
+const CustomGrid = ({ columnDefs }) => {
+    const { rowData, loading, error, fetchMoreData } = useCustomerData();
+    console.log('INITIAL ROW DATA', rowData)
     const [gridColumnDef, setColumnDefs] = useState(columnDefs || []);
+    // const [gridApi, setGridApi] = useState(null);
 
-    const [gridApi, setGridApi] = useState(null);
-    console.log("inittiall data", initialRowData    )
-
-    const onToggleColumnVisibility = (index: number) => {
-        setColumnDefs((currentDefs) =>
-            currentDefs.map((col, idx) => {
-                if (idx === index) {
-                    // Toggle the hide property of the column at this index
-                    return { ...col, hide: !col.hide };
-                }
-                return col;
-            }),
+    const onToggleColumnVisibility = (index) => {
+        setColumnDefs(currentDefs =>
+            currentDefs.map((col, idx) => ({
+                ...col,
+                hide: idx === index ? !col.hide : col.hide,
+            })),
         );
     };
-    //  const dataSource = {
-    //         getRows: (params) => {
-    //             // Load initial data
-    //             console.log("HEREEEE")
-    //             let initialDataLoaded = false;
 
-    //             // if (!initialDataLoaded && initialRowData) {
-    //             //     console.log("Loading initial data");
-    //             //     params.successCallback(initialRowData, initialRowData.length);
-    //             //     initialDataLoaded = true;
-    //             //     return;
-    //             // }
-
-    //             // Fetch more data
-    //              fetchMoreDataQuery()
-    //                 .then(data => {
-    //                     console.log("Data fetched:", data);
-    //                     params.successCallback(data.rows, data.lastRow);
-    //                 })
-    //                 .catch(() => {
-    //                     params.failCallback();
-    //                 });
-    //         }
-    //     };
-    const dataSource = {
-        getRows: (params) => {
-            console.log("Fetching more data:", params.startRow, params.endRow);
-
-            fetchMoreDataQuery(params.startRow, params.endRow)
-                .then(data => {
-                    const lastRow = data.lastRow ? data.lastRow : -1;
-                    params.successCallback(data.rows, lastRow);
-                })
-                .catch(() => {
-                    params.failCallback();
-                });
-        }
-    };
+const dataSource = {
+  getRows: async (params) => {
+    try {
+      const { startRow, endRow } = params;
+      const fetchedData = await fetchMoreData();
+      console.log('Fetched Result:', fetchedData);
+      params.successCallback(fetchedData.rows, fetchedData.lastRow);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      params.failCallback();
+    }
+  }
+};
 
     const onGridReady = (params) => {
-        setGridApi(params.api);
-        console.log("APIII", params.api)
-
-       
-
-        params.api.setGridOption('datasource',dataSource); // Corrected method to set datasource
-    };
-
-    // Determine if more rows should be fetched based on the current scroll position
-    const shouldFetchMoreRows = (params) => {
-        console.log("CHECK IF SHOULD GET DATA")
-        const currentLastRow = params.endRow;
-        console.log("CHECK IF SHOULD GET DATA2222", currentLastRow)
-
-        const totalRows = gridApi?.getDisplayedRowCount();
-
-        console.log("CHECK IF SHOULD GET data33333", totalRows)
-        console.log("CHECK IF SHOULD GET data44444", currentLastRow >= totalRows - 1)
-
-        // Fetch more rows if the current last row is near the total displayed rows
-        return currentLastRow >= totalRows - 1;
+        // setGridApi(params.api);
+        params.api.setGridOption('datasource',dataSource); // Ensure this is correctly spelled and set
     };
 
     return (
@@ -128,7 +82,7 @@ const CustomGrid = ({ initialRowData, fetchMoreDataQuery, columnDefs }) => {
                 rowModelType='infinite'
                 onGridReady={onGridReady}
                 // domLayout='autoHeight'
-                className='h-full'
+                // className='h-full'
             />
             </div>
         </div>
