@@ -38,7 +38,7 @@
 .email,
 .list,
 .containerItems {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 14px;
   /* Ensure font size is set to 16px for sidebar text */
 }

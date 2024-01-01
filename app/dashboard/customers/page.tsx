@@ -118,16 +118,25 @@ const gridColumnDef: ColDef[] = [
     hide: true,
     flex: 1,
   },
-];    
+];
 
 const Customers = () => {
   const { data, fetchMoreData } = useCustomerData();
-  const endCursor = data?.customers?.pageInfo?.endCursor ? data?.customers?.pageInfo?.endCursor : null;
-  const initialData = data?.customers?.edges?.map(edge => edge.node);
+  const endCursor = data?.customers?.pageInfo?.endCursor
+    ? data?.customers?.pageInfo?.endCursor
+    : null;
+  const initialData = data?.customers?.edges?.map((edge) => edge.node);
 
   return (
     <>
-      {data && <CustomGrid columnDefs={gridColumnDef} fetchMoreData={fetchMoreData} initialData={initialData} endCursor={endCursor} />}
+      {data && (
+        <CustomGrid
+          columnDefs={gridColumnDef}
+          fetchMoreData={fetchMoreData}
+          initialData={initialData}
+          endCursor={endCursor}
+        />
+      )}
     </>
   );
 };
