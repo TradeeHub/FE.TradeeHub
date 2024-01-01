@@ -126,7 +126,7 @@ const gridColumnDef: ColDef[] = [
 ];    
 
 const Customers = () => {
-
+  console.log('RENDERING CUSTOMERSSSSSSSSS')
   return (
     <>
       <CustomGrid columnDefs={gridColumnDef} />
