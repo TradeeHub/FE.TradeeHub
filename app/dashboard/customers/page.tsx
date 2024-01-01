@@ -35,8 +35,8 @@ const gridColumnDef: ColDef[] = [
     valueGetter: (params: ValueGetterParams) => {
       // You may need to assert the type of params.data if TypeScript complains about it
       const data = params.data as CustomerDbObject;
-      return `${data.title || ''} ${data.name || ''} ${
-        data.surname || ''
+      return `${data?.title || ''} ${data?.name || ''} ${
+        data?.surname || ''
       }`.trim();
     },
     cellRenderer: (params: { value: string }) => {
@@ -61,7 +61,7 @@ const gridColumnDef: ColDef[] = [
     headerName: 'Phone',
     field: 'phoneNumbers',
     valueGetter: (params: ValueGetterParams) => {
-      return params.data.phoneNumbers
+      return params.data?.phoneNumbers
         .map((phone: PhoneNumberDbObject) => phone.phoneNumber)
         .join(', ');
     },
@@ -75,7 +75,7 @@ const gridColumnDef: ColDef[] = [
     headerName: 'Properties',
     field: 'properties',
     valueGetter: (params: ValueGetterParams) => {
-      return params.data.properties
+      return params.data?.properties
         .map(
           (property: PropertyDbObject) => property.propertyAddress.fullAddress,
         )
@@ -91,7 +91,7 @@ const gridColumnDef: ColDef[] = [
     headerName: 'Last Activity',
     field: 'modifiedAt',
     valueGetter: (params: ValueGetterParams) => {
-      return moment(params.data.modifiedAt).format('Do MMM YYYY h:mma');
+      return moment(params.data?.modifiedAt).format('Do MMM YYYY h:mma');
     },
     sortable: true,
     headerClass: 'text-base',
@@ -121,24 +121,57 @@ const gridColumnDef: ColDef[] = [
     hide: true,
     flex: 1,
   },
-];
+];    
 
 const Customers = () => {
-  const { data, error, loading } = useQuery<
+  const { data, error, loading, fetchMore } = useQuery<
     CustomersPagedQuery,
     CustomersPagedQueryVariables
   >(CustomersPagedDocument, {
-    variables: { pageSize: 1000 },
+    variables: { pageSize: 40 },
+    notifyOnNetworkStatusChange: true, // This helps to update 'loading' during fetchMore
   });
+  console.log("data from customerrrr", data)
 
-  const rowData = data?.customers?.edges?.map((edge) => edge.node);
+  const fetchMoreDataQuery = async () => {
+    console.log("FETCHING MOREEEEEE ")
+    try {
+      // Check if there are more pages to fetch
+      if (data?.customers?.pageInfo.hasNextPage) {
+        // Use endCursor for the next fetch operation
+        const endCursor = data?.customers?.pageInfo.endCursor;
+
+        await fetchMore({
+          variables: {
+            after: endCursor,
+            pageSize: 40,
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) return prev;
+            return {
+              ...prev,
+              customers: {
+                ...fetchMoreResult.customers,
+                edges: [...prev.customers?.edges, ...fetchMoreResult.customers?.edges],
+                pageInfo: fetchMoreResult.customers?.pageInfo, // Update pageInfo
+              },
+            };
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching more data:', error);
+    }
+  };
+
+    const initialRowData = data?.customers?.edges?.map((edge) => edge.node);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
     <>
-      <CustomGrid gridData={rowData} columnDefs={gridColumnDef} />
+      <CustomGrid initialRowData={initialRowData} fetchMoreDataQuery={fetchMoreDataQuery} columnDefs={gridColumnDef} />
     </>
   );
 };
