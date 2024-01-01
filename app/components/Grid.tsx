@@ -35,9 +35,13 @@ const CustomGrid = ({ columnDefs, fetchMoreData, initialData, endCursor }) => {
     const dataSource  = () => ({
         getRows: async (params) => {
             try {
-                if (isFirstLoad.current)
+
+                console.log("aaaaaaaaaaaaaaaaaa", isFirstLoad.current === true)
+                if (isFirstLoad.current === true)
                 {
-                    params.successCallback(initialData, pageInfo?.hasNextPage ? -1 : null);
+                    console.log("SETTING FIRST LOAD ", initialData)
+                    params.successCallback(initialData, endCursor ? -1 : null);
+                    isFirstLoad.current = false;
                 }
                 else{
                     const { rows, pageInfo} = await fetchMoreData(currentEndCursor.current);
@@ -65,7 +69,6 @@ const CustomGrid = ({ columnDefs, fetchMoreData, initialData, endCursor }) => {
         );
     };
 
-    isFirstLoad.current = false;
     return (
     <>
         <div className='flex flex-col md:flex-row gap-4 md:gap-4 md:mr-12'>
