@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { CustomerByIdQuery } from '@/generatedGraphql';
+import { ApolloError } from '@apollo/client';
 import { ColDef } from 'ag-grid-community';
 
 export type FetchMoreDataResult = {
@@ -17,4 +19,10 @@ export type CustomGridProps = {
   fetchMoreData: (endCursor: string | null) => Promise<FetchMoreDataResult>;
   initialData: object[];
   endCursor: string | null;
+};
+
+export type UseCustomerReturnType = {
+  data: CustomerByIdQuery | undefined;
+  loading: boolean;
+  error: ApolloError | undefined;
 };

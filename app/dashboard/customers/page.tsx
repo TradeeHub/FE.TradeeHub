@@ -7,7 +7,7 @@ import {
 } from '@/generatedGraphql';
 import moment from 'moment';
 import CustomGrid from '@/app/components/Grid';
-import useCustomerData from '@/app/hooks/customer/useCustomerData';
+import useCustomers from '@/app/hooks/customer/useCustomers';
 import ArrayDataPopover from '@/app/components/ArrayDataPopover';
 
 const getInitials = (fullName: string) => {
@@ -129,7 +129,7 @@ const gridColumnDef: ColDef[] = [
 ];
 
 const Customers = () => {
-  const { data, fetchMoreData } = useCustomerData();
+  const { data, fetchMoreData } = useCustomers();
   const endCursor = data?.customers?.pageInfo?.endCursor
     ? data?.customers?.pageInfo?.endCursor
     : null;
