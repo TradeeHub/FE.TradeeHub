@@ -7,7 +7,7 @@ import {
 } from '@/generatedGraphql';
 import moment from 'moment';
 import CustomGrid from '@/app/components/Grid';
-import useCustomerData from '@/app/hooks/useCustomerData';
+import useCustomerData from '@/app/hooks/customer/useCustomerData';
 import ArrayDataPopover from '@/app/components/ArrayDataPopover';
 
 const getInitials = (fullName: string) => {
@@ -63,7 +63,6 @@ const gridColumnDef: ColDef[] = [
       return <ArrayDataPopover items={phoneNumbers} />;
     },
     valueGetter: (params) => {
-      // Assuming params.data.phoneNumbers is an array of phone objects
       return params.data?.phoneNumbers;
     },
     sortable: true,

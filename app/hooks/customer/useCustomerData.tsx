@@ -6,7 +6,7 @@ import {
   CustomersPagedQueryVariables,
 } from '@/generatedGraphql';
 
-const useCustomerData = () => {
+const useCustomers = () => {
   const { data, error, loading, fetchMore } = useQuery<
     CustomersPagedQuery,
     CustomersPagedQueryVariables
@@ -44,4 +44,4 @@ const useCustomerData = () => {
   return { data, loading, error, fetchMoreData };
 };
 
-export default useCustomerData;
+export default useCustomers;
