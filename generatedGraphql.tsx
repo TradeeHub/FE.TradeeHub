@@ -292,6 +292,13 @@ export type UuidOperationFilterInput = {
   nlte?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type CustomerByIdQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerDbObject', id: string, title?: string | null, name?: string | null, surname?: string | null, alias?: string | null, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, referredByCustomer?: string | null, referredByOther?: string | null, referralFeeFixed?: number | null, referralFeePercentage?: number | null, additionalNotes?: string | null, emails?: Array<{ __typename?: 'EmailDbObject', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', id: string, propertyAddress: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } | null };
+
 export type CustomersPagedQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
   cursor?: InputMaybe<Scalars['String']['input']>;
@@ -301,6 +308,74 @@ export type CustomersPagedQueryVariables = Exact<{
 export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, title?: string | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', propertyAddress: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 
+export const CustomerByIdDocument = gql`
+    query CustomerById($id: ID!) {
+  customerById(id: $id) {
+    id
+    title
+    name
+    surname
+    alias
+    createdAt
+    createdBy
+    modifiedAt
+    modifiedBy
+    referredByCustomer
+    referredByOther
+    referralFeeFixed
+    referralFeePercentage
+    additionalNotes
+    emails {
+      email
+      emailType
+    }
+    phoneNumbers {
+      phoneNumber
+      phoneNumberType
+    }
+    properties {
+      id
+      propertyAddress {
+        address
+        fullAddress
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCustomerByIdQuery__
+ *
+ * To run a query within a React component, call `useCustomerByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCustomerByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCustomerByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCustomerByIdQuery(baseOptions: Apollo.QueryHookOptions<CustomerByIdQuery, CustomerByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CustomerByIdQuery, CustomerByIdQueryVariables>(CustomerByIdDocument, options);
+      }
+export function useCustomerByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CustomerByIdQuery, CustomerByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CustomerByIdQuery, CustomerByIdQueryVariables>(CustomerByIdDocument, options);
+        }
+export function useCustomerByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CustomerByIdQuery, CustomerByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CustomerByIdQuery, CustomerByIdQueryVariables>(CustomerByIdDocument, options);
+        }
+export type CustomerByIdQueryHookResult = ReturnType<typeof useCustomerByIdQuery>;
+export type CustomerByIdLazyQueryHookResult = ReturnType<typeof useCustomerByIdLazyQuery>;
+export type CustomerByIdSuspenseQueryHookResult = ReturnType<typeof useCustomerByIdSuspenseQuery>;
+export type CustomerByIdQueryResult = Apollo.QueryResult<CustomerByIdQuery, CustomerByIdQueryVariables>;
 export const CustomersPagedDocument = gql`
     query CustomersPaged($pageSize: Int!, $cursor: String) {
   customers(first: $pageSize, after: $cursor) {

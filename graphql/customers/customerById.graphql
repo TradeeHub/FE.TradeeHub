@@ -1,0 +1,33 @@
+query CustomerById($id: ID!) {
+  customerById(id: $id) {
+    id
+    title
+    name
+    surname
+    alias
+    createdAt
+    createdBy
+    modifiedAt
+    modifiedBy
+    referredByCustomer
+    referredByOther
+    referralFeeFixed
+    referralFeePercentage
+    additionalNotes
+    emails {
+      email
+      emailType
+    }
+    phoneNumbers {
+      phoneNumber
+      phoneNumberType
+    }
+    properties {
+      id
+      propertyAddress {
+        address
+        fullAddress
+      }
+    }
+  }
+}
