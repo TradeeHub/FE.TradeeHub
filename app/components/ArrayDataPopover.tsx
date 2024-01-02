@@ -86,7 +86,7 @@ const ArrayDataPopover: FunctionComponent<ArrayDataPopoverProps> = ({
       <button
         ref={buttonRef}
         onClick={handleButtonClick}
-        className='focus:outline-none'
+        className='popover-trigger focus:outline-none'
       >
         <div className='flex items-center'>
           {items.length > 1 && (

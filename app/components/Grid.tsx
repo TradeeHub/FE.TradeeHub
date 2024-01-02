@@ -2,12 +2,17 @@
 import React, { useRef, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import CustomSidebar from '@/app/components/SideBar';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import RoundButton from '@/app/components/RoundButton';
 import { CustomGridProps } from '../types/sharedTypes';
-import { GridReadyEvent, IDatasource, IGetRowsParams } from 'ag-grid-community';
+import {
+  GridReadyEvent,
+  IDatasource,
+  IGetRowsParams,
+  RowClickedEvent,
+} from 'ag-grid-community';
 
 const gridOptions = {
   defaultColDef: {
@@ -35,7 +40,7 @@ const CustomGrid = ({
   const [gridColumnDef, setColumnDefs] = useState(columnDefs || []);
   const currentEndCursor = useRef<string | null>(endCursor); // Using useRef for cursor
   const isFirstLoad = useRef<boolean>(true);
-  const router = useRouter()
+  const router = useRouter();
   const pathname = usePathname();
 
   const dataSource = (): IDatasource => ({
@@ -65,7 +70,13 @@ const CustomGrid = ({
     params.api.setGridOption('datasource', dataSource()); // Ensure this is correctly spelled and set
   };
 
-  const onRowClicked = (event: { data: { id: string; }; }) => {
+  const onRowClicked = (event: RowClickedEvent) => {
+    const target = event?.event?.target as Element;
+
+    if (target && target.closest('.popover-trigger')) {
+      return;
+    }
+
     router.push(`${pathname}/${event.data.id}`);
   };
 

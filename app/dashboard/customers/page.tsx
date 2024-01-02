@@ -8,7 +8,7 @@ import {
 import moment from 'moment';
 import CustomGrid from '@/app/components/Grid';
 import useCustomerData from '@/app/hooks/useCustomerData';
-import ArrayDataPopover from '@/app/components/MultiDataPopover';
+import ArrayDataPopover from '@/app/components/ArrayDataPopover';
 
 const getInitials = (fullName: string) => {
   const nameParts = fullName.split(' ');
