@@ -109,6 +109,7 @@ const gridColumnDef: ColDef[] = [
     field: 'createdBy',
     sortable: true,
     headerClass: 'text-base',
+    cellClass: 'text-center',
     filter: true,
     hide: true,
     flex: 1,
@@ -117,8 +118,9 @@ const gridColumnDef: ColDef[] = [
     headerName: 'Created Date',
     field: 'createdAt',
     valueGetter: (params: ValueGetterParams) => {
-      return moment(params.data.createdAt).format('Do MMM YYYY h:mma');
+      return moment(params?.data?.createdAt).format('Do MMM YYYY h:mma');
     },
+    cellClass: 'text-center',
     sortable: true,
     headerClass: 'text-base',
     filter: true,

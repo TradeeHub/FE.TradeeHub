@@ -1,7 +1,8 @@
 'use client';
 import React, { useRef, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation'
 import CustomSidebar from '@/app/components/SideBar';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import RoundButton from '@/app/components/RoundButton';
@@ -34,6 +35,8 @@ const CustomGrid = ({
   const [gridColumnDef, setColumnDefs] = useState(columnDefs || []);
   const currentEndCursor = useRef<string | null>(endCursor); // Using useRef for cursor
   const isFirstLoad = useRef<boolean>(true);
+  const router = useRouter()
+  const pathname = usePathname();
 
   const dataSource = (): IDatasource => ({
     getRows: async (params: IGetRowsParams) => {
@@ -60,6 +63,10 @@ const CustomGrid = ({
 
   const onGridReady = (params: GridReadyEvent) => {
     params.api.setGridOption('datasource', dataSource()); // Ensure this is correctly spelled and set
+  };
+
+  const onRowClicked = (event: { data: { id: string; }; }) => {
+    router.push(`${pathname}/${event.data.id}`);
   };
 
   const onToggleColumnVisibility = (index: number) => {
@@ -94,6 +101,7 @@ const CustomGrid = ({
               gridOptions={gridOptions}
               rowModelType='infinite'
               onGridReady={onGridReady}
+              onRowClicked={onRowClicked}
             />
           </div>
         </div>
