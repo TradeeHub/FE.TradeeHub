@@ -24,13 +24,18 @@ const useCustomerData = () => {
         const newRows =
           fetchResult?.data?.customers?.edges?.map((edge) => edge.node) || [];
 
-        return {
-          rows: newRows,
-          pageInfo: fetchResult?.data?.customers?.pageInfo,
-        };
+        // Adjust pageInfo to conform to PageInfo type
+        const pageInfo = fetchResult?.data?.customers?.pageInfo
+          ? {
+              ...fetchResult.data.customers.pageInfo,
+              endCursor: fetchResult.data.customers.pageInfo.endCursor || null, // Convert undefined to null
+            }
+          : null;
+
+        return { rows: newRows, pageInfo };
       } catch (error) {
         console.error('Error fetching more data:', error);
-        return { rows: [], pageInfo: undefined };
+        return { rows: [], pageInfo: null };
       }
     },
     [fetchMore],
