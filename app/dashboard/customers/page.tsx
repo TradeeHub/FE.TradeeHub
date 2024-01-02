@@ -77,9 +77,9 @@ const gridColumnDef: ColDef[] = [
     field: 'properties',
     cellRenderer: (params: { value: PropertyDbObject[] }) => {
       const propertyAddresses = params?.value?.map(
-        (x) => x.propertyAddress.fullAddress,
+        (x) => x.propertyAddress?.fullAddress as string,
       );
-      return <ArrayDataPopover items={propertyAddresses} />;
+      return <ArrayDataPopover items={propertyAddresses || []} />;
     },
     valueGetter: (params) => {
       return params.data?.properties;
