@@ -8,6 +8,7 @@ import {
 import moment from 'moment';
 import CustomGrid from '@/app/components/Grid';
 import useCustomerData from '@/app/hooks/useCustomerData';
+import MultiDataPopover from '@/app/components/MultiDataPopover';
 
 const getInitials = (fullName: string) => {
   const nameParts = fullName.split(' ');
@@ -68,22 +69,21 @@ const gridColumnDef: ColDef[] = [
     hide: false,
     flex: 1,
   },
-  {
-    headerName: 'Properties',
-    field: 'properties',
-    valueGetter: (params: ValueGetterParams) => {
-      return params.data?.properties
-        .map(
-          (property: PropertyDbObject) => property.propertyAddress.fullAddress,
-        )
-        .join(', ');
-    },
-    sortable: true,
-    headerClass: 'text-base',
-    filter: true,
-    hide: false,
-    flex: 1,
+{
+  headerName: 'Properties',
+  field: 'properties',
+  cellRenderer: (params) => {
+    return <MultiDataPopover properties={params.value} />;
   },
+  valueGetter: (params: ValueGetterParams) => {
+    return params.data?.properties;
+  },
+  sortable: true,
+  headerClass: 'text-base',
+  filter: true,
+  hide: false,
+  flex: 1,
+},
   {
     headerName: 'Last Activity',
     field: 'modifiedAt',
