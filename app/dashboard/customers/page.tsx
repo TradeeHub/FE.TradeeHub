@@ -140,8 +140,8 @@ const Customers = () => {
         <CustomGrid
           columnDefs={gridColumnDef}
           fetchMoreData={fetchMoreData}
-          initialData={initialData}
-          endCursor={endCursor}
+          initialData={initialData as object[]}
+          endCursor={endCursor as string}
         />
       )}
     </>

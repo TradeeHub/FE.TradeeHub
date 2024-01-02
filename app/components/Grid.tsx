@@ -5,6 +5,8 @@ import { AgGridReact } from 'ag-grid-react';
 import CustomSidebar from '@/app/components/SideBar';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import RoundButton from '@/app/components/RoundButton';
+import { CustomGridProps } from '../types/sharedTypes';
+import { GridReadyEvent, IDatasource, IGetRowsParams } from 'ag-grid-community';
 
 const gridOptions = {
   defaultColDef: {
@@ -23,23 +25,31 @@ const gridOptions = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomGrid = ({ columnDefs, fetchMoreData, initialData, endCursor }) => {
+const CustomGrid = ({
+  columnDefs,
+  fetchMoreData,
+  initialData,
+  endCursor,
+}: CustomGridProps) => {
   const [gridColumnDef, setColumnDefs] = useState(columnDefs || []);
-  const currentEndCursor = useRef(endCursor); // Using useRef for cursor
-  const isFirstLoad = useRef(true);
+  const currentEndCursor = useRef<string | null>(endCursor); // Using useRef for cursor
+  const isFirstLoad = useRef<boolean>(true);
 
-  const dataSource = () => ({
-    getRows: async (params) => {
+  const dataSource = (): IDatasource => ({
+    getRows: async (params: IGetRowsParams) => {
       try {
         if (isFirstLoad.current === true) {
-          params.successCallback(initialData, endCursor ? -1 : null);
+          params.successCallback(initialData as [], -1);
           isFirstLoad.current = false;
         } else {
           const { rows, pageInfo } = await fetchMoreData(
             currentEndCursor.current,
           );
-          currentEndCursor.current = pageInfo?.endCursor;
-          params.successCallback(rows, pageInfo?.hasNextPage ? -1 : null);
+          currentEndCursor.current = pageInfo?.endCursor ?? null;
+          params.successCallback(
+            rows as [],
+            pageInfo?.hasNextPage ? -1 : undefined,
+          );
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -48,11 +58,11 @@ const CustomGrid = ({ columnDefs, fetchMoreData, initialData, endCursor }) => {
     },
   });
 
-  const onGridReady = (params) => {
+  const onGridReady = (params: GridReadyEvent) => {
     params.api.setGridOption('datasource', dataSource()); // Ensure this is correctly spelled and set
   };
 
-  const onToggleColumnVisibility = (index) => {
+  const onToggleColumnVisibility = (index: number) => {
     setColumnDefs((currentDefs) =>
       currentDefs.map((col, idx) => ({
         ...col,

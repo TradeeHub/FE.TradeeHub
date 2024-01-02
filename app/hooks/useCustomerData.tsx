@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useQuery } from '@apollo/client';
 import {
   CustomersPagedDocument,
@@ -15,13 +15,8 @@ const useCustomerData = () => {
     notifyOnNetworkStatusChange: true,
   });
 
-  const [customerData, setCustomerData] = useState({
-    data: [],
-    pageInfo: null,
-  });
-
   const fetchMoreData = useCallback(
-    async (endCursor) => {
+    async (endCursor: string | null) => {
       try {
         const fetchResult = await fetchMore({
           variables: { cursor: endCursor, pageSize: 30 },
@@ -29,14 +24,6 @@ const useCustomerData = () => {
         const newRows =
           fetchResult?.data?.customers?.edges?.map((edge) => edge.node) || [];
 
-        if (customerData.data.length === 0) {
-          setCustomerData({
-            data: newRows,
-            pageInfo: fetchResult?.data?.customers?.pageInfo,
-          });
-        } else {
-          console.log(' I GOT PREVIOUS DATAAAAAA', customerData.data.length);
-        }
         return {
           rows: newRows,
           pageInfo: fetchResult?.data?.customers?.pageInfo,
