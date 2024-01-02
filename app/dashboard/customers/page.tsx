@@ -2,6 +2,8 @@
 import { ColDef, ValueGetterParams } from 'ag-grid-community';
 import {
   CustomerDbObject,
+  PhoneNumberDbObject,
+  PropertyDbObject,
 } from '@/generatedGraphql';
 import moment from 'moment';
 import CustomGrid from '@/app/components/Grid';
@@ -56,7 +58,7 @@ const gridColumnDef: ColDef[] = [
   {
     headerName: 'Phone',
     field: 'phoneNumbers',
-    cellRenderer: (params) => {
+    cellRenderer: (params: { value: PhoneNumberDbObject[] }) => {
       const phoneNumbers = params?.value?.map((x) => x?.phoneNumber);
       return <ArrayDataPopover items={phoneNumbers} />;
     },
@@ -73,7 +75,7 @@ const gridColumnDef: ColDef[] = [
   {
     headerName: 'Properties',
     field: 'properties',
-    cellRenderer: (params) => {
+    cellRenderer: (params: { value: PropertyDbObject[] }) => {
       const propertyAddresses = params?.value?.map(
         (x) => x.propertyAddress.fullAddress,
       );
