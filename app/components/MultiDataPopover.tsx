@@ -1,23 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
-const MultiDataPopover = ({ properties }) => {
+const ArrayDataPopover = ({ items }) => {
   const [showPopover, setShowPopover] = useState(false);
-  const buttonRef = useRef(null); // Reference to the button
-  const popoverRef = useRef(null); // Reference to the popover
+  const buttonRef = useRef(null);
+  const popoverRef = useRef(null);
 
-  // Toggle popover display
   const handleButtonClick = (event) => {
-    // Stop propagation and prevent default to ensure grid doesn't handle click
     event.stopPropagation();
     event.preventDefault();
-    // Only toggle the popover if there's more than one property
-    if (properties?.length > 1) {
+    if (items?.length > 1) {
       setShowPopover(!showPopover);
     }
   };
 
-  // Position the popover relative to the button
   const positionPopover = () => {
     if (!buttonRef.current) return;
     const rect = buttonRef.current.getBoundingClientRect();
@@ -27,7 +23,6 @@ const MultiDataPopover = ({ properties }) => {
     }
   };
 
-  // Close popover when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
@@ -35,36 +30,32 @@ const MultiDataPopover = ({ properties }) => {
       }
     };
 
-    // Position popover initially and on resize
     positionPopover();
     window.addEventListener('resize', positionPopover);
-
     document.addEventListener('mousedown', handleClickOutside);
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       window.removeEventListener('resize', positionPopover);
     };
   }, [showPopover]);
 
-  if (!properties || properties.length === 0) {
-    // Return null or a placeholder if no properties are available
+  if (!items || items.length === 0) {
     return null;
   }
 
-  const firstPropertyAddress = properties[0]?.propertyAddress?.fullAddress || 'No address';
+  const firstItem = items[0] || 'Unavailable';
 
   const popoverContent = (
     <div
       ref={popoverRef}
       className="absolute z-10 mt-1 bg-white p-3 shadow-lg rounded-2xl ring-1 ring-black ring-opacity-5"
-      style={{
-        minWidth: '200px', // You can adjust this as needed
-      }}
+      style={{ minWidth: '200px' }}
     >
-      <div className="flex flex-col text-sm"> {/* Apply smaller text size */}
-        {properties.map((property, index) => (
+      <div className="flex flex-col text-sm">
+        {items.map((item, index) => (
           <div key={index} className="hover:bg-gray-100 p-1">
-            {property?.propertyAddress?.fullAddress || 'Address unavailable'}
+            {item || 'Unavailable'}
           </div>
         ))}
       </div>
@@ -73,33 +64,26 @@ const MultiDataPopover = ({ properties }) => {
 
   return (
     <div className="relative inline-block text-sm">
-      <button
-        ref={buttonRef}
-        onClick={handleButtonClick}
-        className="focus:outline-none"
-      >
-      {properties.length > 1 ? (
+      <button ref={buttonRef} onClick={handleButtonClick} className="focus:outline-none">
+        {items.length > 1 ? (
           <div className="flex items-center">
             <span className="text-xs font-semibold mr-2 py-1 px-2 bg-gray-200 rounded-full">
-              {properties.length} 
+              {items.length} 
             </span>
-      <span>{firstPropertyAddress}</span>
+            <span>{firstItem}</span>
           </div>
-  ) : (
-    <div className="flex items-center">
-      <span>{firstPropertyAddress}</span>
-    </div>
-  )
-}
-
+        ) : (
+          <div className="flex items-center">
+            <span>{firstItem}</span>
+          </div>
+        )}
       </button>
-
       {showPopover && ReactDOM.createPortal(
         popoverContent,
-        document.body // Append the popover to the body of the document
+        document.body
       )}
     </div>
   );
 };
 
-export default MultiDataPopover;
+export default ArrayDataPopover;

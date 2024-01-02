@@ -9,6 +9,7 @@ import moment from 'moment';
 import CustomGrid from '@/app/components/Grid';
 import useCustomerData from '@/app/hooks/useCustomerData';
 import MultiDataPopover from '@/app/components/MultiDataPopover';
+import ArrayDataPopover from '@/app/components/MultiDataPopover';
 
 const getInitials = (fullName: string) => {
   const nameParts = fullName.split(' ');
@@ -55,27 +56,31 @@ const gridColumnDef: ColDef[] = [
     flex: 1,
     cellClass: 'items-center font-roboto',
   },
-  {
-    headerName: 'Phone',
-    field: 'phoneNumbers',
-    valueGetter: (params: ValueGetterParams) => {
-      return params.data?.phoneNumbers
-        .map((phone: PhoneNumberDbObject) => phone.phoneNumber)
-        .join(', ');
-    },
-    sortable: true,
-    headerClass: 'text-base',
-    filter: true,
-    hide: false,
-    flex: 1,
+{
+  headerName: 'Phone',
+  field: 'phoneNumbers',
+  cellRenderer: (params) => {
+    const phoneNumbers = params?.value?.map(x=> x?.phoneNumber)
+    return <ArrayDataPopover items={phoneNumbers} />;
   },
+  valueGetter: (params) => {
+    // Assuming params.data.phoneNumbers is an array of phone objects
+    return params.data?.phoneNumbers;
+  },
+  sortable: true,
+  headerClass: 'text-base',
+  filter: true,
+  hide: false,
+  flex: 1,
+},
 {
   headerName: 'Properties',
   field: 'properties',
   cellRenderer: (params) => {
-    return <MultiDataPopover properties={params.value} />;
+    const propertyAddresses = params?.value?.map(x=> x.propertyAddress.fullAddress);
+    return <ArrayDataPopover items={propertyAddresses} />;
   },
-  valueGetter: (params: ValueGetterParams) => {
+  valueGetter: (params) => {
     return params.data?.properties;
   },
   sortable: true,
@@ -84,6 +89,7 @@ const gridColumnDef: ColDef[] = [
   hide: false,
   flex: 1,
 },
+
   {
     headerName: 'Last Activity',
     field: 'modifiedAt',
