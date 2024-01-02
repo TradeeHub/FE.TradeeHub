@@ -23,22 +23,29 @@ const ArrayDataPopover = ({ items }) => {
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (popoverRef.current && !popoverRef.current.contains(event.target)) {
-        setShowPopover(false);
-      }
-    };
+ useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (popoverRef.current && !popoverRef.current.contains(event.target)) {
+      setShowPopover(false);
+    }
+  };
 
-    positionPopover();
-    window.addEventListener('resize', positionPopover);
-    document.addEventListener('mousedown', handleClickOutside);
+  const handleScroll = () => {
+    setShowPopover(false);
+  };
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      window.removeEventListener('resize', positionPopover);
-    };
-  }, [showPopover]);
+  positionPopover();
+  window.addEventListener('resize', positionPopover);
+  document.addEventListener('mousedown', handleClickOutside);
+  window.addEventListener('scroll', handleScroll, true); // Use capture phase to handle scroll events early
+
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+    window.removeEventListener('resize', positionPopover);
+    window.removeEventListener('scroll', handleScroll, true);
+  };
+}, [showPopover]);
+
 
   if (!items || items.length === 0) {
     return null;
