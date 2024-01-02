@@ -1,14 +1,11 @@
 'use client';
 import { ColDef, ValueGetterParams } from 'ag-grid-community';
 import {
-  PropertyDbObject,
-  PhoneNumberDbObject,
   CustomerDbObject,
 } from '@/generatedGraphql';
 import moment from 'moment';
 import CustomGrid from '@/app/components/Grid';
 import useCustomerData from '@/app/hooks/useCustomerData';
-import MultiDataPopover from '@/app/components/MultiDataPopover';
 import ArrayDataPopover from '@/app/components/MultiDataPopover';
 
 const getInitials = (fullName: string) => {
@@ -56,39 +53,41 @@ const gridColumnDef: ColDef[] = [
     flex: 1,
     cellClass: 'items-center font-roboto',
   },
-{
-  headerName: 'Phone',
-  field: 'phoneNumbers',
-  cellRenderer: (params) => {
-    const phoneNumbers = params?.value?.map(x=> x?.phoneNumber)
-    return <ArrayDataPopover items={phoneNumbers} />;
+  {
+    headerName: 'Phone',
+    field: 'phoneNumbers',
+    cellRenderer: (params) => {
+      const phoneNumbers = params?.value?.map((x) => x?.phoneNumber);
+      return <ArrayDataPopover items={phoneNumbers} />;
+    },
+    valueGetter: (params) => {
+      // Assuming params.data.phoneNumbers is an array of phone objects
+      return params.data?.phoneNumbers;
+    },
+    sortable: true,
+    headerClass: 'text-base',
+    filter: true,
+    hide: false,
+    flex: 1,
   },
-  valueGetter: (params) => {
-    // Assuming params.data.phoneNumbers is an array of phone objects
-    return params.data?.phoneNumbers;
+  {
+    headerName: 'Properties',
+    field: 'properties',
+    cellRenderer: (params) => {
+      const propertyAddresses = params?.value?.map(
+        (x) => x.propertyAddress.fullAddress,
+      );
+      return <ArrayDataPopover items={propertyAddresses} />;
+    },
+    valueGetter: (params) => {
+      return params.data?.properties;
+    },
+    sortable: true,
+    headerClass: 'text-base',
+    filter: true,
+    hide: false,
+    flex: 1,
   },
-  sortable: true,
-  headerClass: 'text-base',
-  filter: true,
-  hide: false,
-  flex: 1,
-},
-{
-  headerName: 'Properties',
-  field: 'properties',
-  cellRenderer: (params) => {
-    const propertyAddresses = params?.value?.map(x=> x.propertyAddress.fullAddress);
-    return <ArrayDataPopover items={propertyAddresses} />;
-  },
-  valueGetter: (params) => {
-    return params.data?.properties;
-  },
-  sortable: true,
-  headerClass: 'text-base',
-  filter: true,
-  hide: false,
-  flex: 1,
-},
 
   {
     headerName: 'Last Activity',
