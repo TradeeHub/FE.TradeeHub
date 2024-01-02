@@ -1,15 +1,27 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  MouseEvent,
+  FunctionComponent,
+} from 'react';
 import ReactDOM from 'react-dom';
 
-const ArrayDataPopover = ({ items }) => {
-  const [showPopover, setShowPopover] = useState(false);
-  const buttonRef = useRef(null);
-  const popoverRef = useRef(null);
+interface ArrayDataPopoverProps {
+  items: string[];
+}
 
-  const handleButtonClick = (event) => {
+const ArrayDataPopover: FunctionComponent<ArrayDataPopoverProps> = ({
+  items,
+}) => {
+  const [showPopover, setShowPopover] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  const handleButtonClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     event.preventDefault();
-    if (items?.length > 1) {
+    if (items.length > 1) {
       setShowPopover(!showPopover);
     }
   };
@@ -24,25 +36,28 @@ const ArrayDataPopover = ({ items }) => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside: EventListener = (event) => {
+      if (!(event.target instanceof Node)) {
+        return;
+      }
+
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
         setShowPopover(false);
       }
     };
 
-    const handleScroll = () => {
-      setShowPopover(false);
-    };
-
     positionPopover();
     window.addEventListener('resize', positionPopover);
-    document.addEventListener('mousedown', handleClickOutside);
-    window.addEventListener('scroll', handleScroll, true); // Use capture phase to handle scroll events early
+    document.addEventListener('mousedown', handleClickOutside as EventListener);
+    window.addEventListener('scroll', () => setShowPopover(false), true);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
       window.removeEventListener('resize', positionPopover);
-      window.removeEventListener('scroll', handleScroll, true);
+      document.addEventListener(
+        'mousedown',
+        handleClickOutside as EventListener,
+      );
+      window.removeEventListener('scroll', () => setShowPopover(false), true);
     };
   }, [showPopover]);
 
@@ -55,16 +70,14 @@ const ArrayDataPopover = ({ items }) => {
   const popoverContent = (
     <div
       ref={popoverRef}
-      className='absolute z-10 mt-1 rounded-2xl bg-white p-3 shadow-lg ring-1 ring-black ring-opacity-5'
+      className='absolute z-10 mt-1 rounded-2xl bg-white p-3 text-sm shadow-lg ring-1 ring-black ring-opacity-5'
       style={{ minWidth: '200px' }}
     >
-      <div className='flex flex-col text-sm'>
-        {items.map((item, index) => (
-          <div key={index} className='p-1 hover:bg-gray-100'>
-            {item || 'Unavailable'}
-          </div>
-        ))}
-      </div>
+      {items.map((item, index) => (
+        <div key={index} className='p-1 hover:bg-gray-100'>
+          {item || ''}
+        </div>
+      ))}
     </div>
   );
 
@@ -75,18 +88,14 @@ const ArrayDataPopover = ({ items }) => {
         onClick={handleButtonClick}
         className='focus:outline-none'
       >
-        {items.length > 1 ? (
-          <div className='flex items-center'>
+        <div className='flex items-center'>
+          {items.length > 1 && (
             <span className='mr-2 rounded-full bg-gray-200 px-2 py-1 text-xs font-semibold'>
               {items.length}
             </span>
-            <span>{firstItem}</span>
-          </div>
-        ) : (
-          <div className='flex items-center'>
-            <span>{firstItem}</span>
-          </div>
-        )}
+          )}
+          <span>{firstItem}</span>
+        </div>
       </button>
       {showPopover && ReactDOM.createPortal(popoverContent, document.body)}
     </div>
