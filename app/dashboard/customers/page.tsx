@@ -90,7 +90,32 @@ const gridColumnDef: ColDef[] = [
     hide: false,
     flex: 1,
   },
-
+  {
+    headerName: 'Status',
+    field: 'status',
+    sortable: true,
+    headerClass: 'text-base',
+    cellClass: 'text-center',
+    filter: true,
+    hide: false,
+    flex: 1,
+  },
+  {
+    headerName: 'Tags',
+    field: 'tags',
+    cellRenderer: (params: { value: string[] }) => {
+      console.log('aaa', params.value)
+      return <ArrayDataPopover items={params.value || []} />;
+    },
+    valueGetter: (params) => {
+      return params.data?.tags;
+    },
+    sortable: true,
+    headerClass: 'text-base',
+    filter: true,
+    hide: false,
+    flex: 1,
+  },
   {
     headerName: 'Last Activity',
     field: 'modifiedAt',

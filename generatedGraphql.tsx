@@ -349,7 +349,7 @@ export type CustomersPagedQueryVariables = Exact<{
 }>;
 
 
-export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, title?: string | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', property: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, title?: string | null, status: string, tags?: Array<string> | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', property: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 
 export const CustomerByIdDocument = gql`
@@ -435,6 +435,8 @@ export const CustomersPagedDocument = gql`
       node {
         id
         title
+        status
+        tags
         name
         surname
         modifiedAt

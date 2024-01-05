@@ -4,6 +4,8 @@ query CustomersPaged($pageSize: Int!, $cursor: String) {
       node {
         id
         title
+        status
+        tags
         name
         surname
         modifiedAt
