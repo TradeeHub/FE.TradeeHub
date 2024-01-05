@@ -27,7 +27,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
     .local()
     .format('Do MMM YYYY HH:mm');
   const mainPhone = customer?.phoneNumbers[0].phoneNumber;
-  const recentProperty = customer?.properties[0]?.propertyAddress.fullAddress;
+  const recentProperty = customer?.properties[0]?.property.fullAddress;
   const iconClass = 'h-6 w-5 text-brand-accent1';
   const textClass = 'text-sm leading-6 text-brand-secondary1d items-center';
   const tabs = [
@@ -39,9 +39,8 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
   ];
 
   const toggleProperties = () => setShowProperties(!showProperties);
-  const toggleContactInfo = () => setShowContactInfo(!showContactInfo);
 
-  function classNames(...classes) {
+  function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
   }
   return (
@@ -88,44 +87,53 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                   </dd>
                 </div>
 
-<div className='flex flex-col px-6 mt-2'>
-  <div className='flex items-center justify-between'>
-    <div className='flex items-center gap-x-4'>
-      <BsHouses className='h-6 w-5 text-brand-accent3' aria-hidden='true' />
-      <span className='text-sm leading-6 text-brand-secondary1d'>
-        {recentProperty}
-      </span>
-    </div>
-    {customer?.properties?.length > 1 && 
-    <button
-      onClick={toggleProperties}
-      className='text-brand-accent3 focus:outline-none'
-    >
-      {showProperties ? (
-        <ChevronUpIcon className='h-5 w-5' />
-      ) : (
-        <ChevronDownIcon className='h-5 w-5' />
-      )}
-    </button>}
-  </div>
+                <div className='mt-2 flex flex-col px-6'>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex items-center gap-x-4'>
+                      <BsHouses
+                        className='h-6 w-5 text-brand-accent3'
+                        aria-hidden='true'
+                      />
+                      <span className='text-sm leading-6 text-brand-secondary1d'>
+                        {recentProperty}
+                      </span>
+                    </div>
+                    {customer?.properties?.length > 1 && (
+                      <button
+                        onClick={toggleProperties}
+                        className='text-brand-accent3 focus:outline-none'
+                      >
+                        {showProperties ? (
+                          <ChevronUpIcon className='h-5 w-5' />
+                        ) : (
+                          <ChevronDownIcon className='h-5 w-5' />
+                        )}
+                      </button>
+                    )}
+                  </div>
 
-  {showProperties && (
-    <div className=''>
-      {customer?.properties?.map((property, index) => (
-          index !== 0 && (
-
-        <div key={index} className='flex items-center gap-x-2 pl-8'>
-          <PiHouseLineLight className={iconClass} aria-hidden='true' />
-          <span className='text-sm leading-6 text-brand-secondary1d'>
-            {property?.propertyAddress?.fullAddress}
-          </span>
-        </div>
-          )
-      ))}
-    </div>
-  )}
-</div>
-
+                  {showProperties && (
+                    <div className=''>
+                      {customer?.properties?.map(
+                        (property, index) =>
+                          index !== 0 && (
+                            <div
+                              key={index}
+                              className='flex items-center gap-x-2 pl-8'
+                            >
+                              <PiHouseLineLight
+                                className={iconClass}
+                                aria-hidden='true'
+                              />
+                              <span className='text-sm leading-6 text-brand-secondary1d'>
+                                {property?.property?.fullAddress}
+                              </span>
+                            </div>
+                          ),
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 <div className='mt-2 flex w-full flex-none gap-x-4 px-6'>
                   <dt>
@@ -192,7 +200,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                       />
                     </dt>
                     <dd className={textClass}>
-                      <span>{property?.propertyAddress?.fullAddress}</span>
+                      <span>{property?.property?.fullAddress}</span>
                     </dd>
                   </div>
                 ))}
@@ -212,7 +220,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
               id='tabs'
               name='tabs'
               className='block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'
-              defaultValue={tabs.find((tab) => tab.current).name}
+              defaultValue={tabs.find((tab) => tab.current)?.name}
             >
               {tabs.map((tab) => (
                 <option key={tab.name}>{tab.name}</option>

@@ -16,6 +16,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   DateTime: { input: any; output: any; }
+  Decimal: { input: any; output: any; }
   ObjectId: { input: any; output: any; }
   UUID: { input: any; output: any; }
 };
@@ -28,34 +29,55 @@ export type AddressDbObject = {
   postcode?: Maybe<Scalars['String']['output']>;
 };
 
+export type CommentDbObject = {
+  __typename?: 'CommentDbObject';
+  comment?: Maybe<Scalars['String']['output']>;
+  uploadUrls: Array<Scalars['String']['output']>;
+};
+
+export type CommentDbObjectFilterInput = {
+  and?: InputMaybe<Array<CommentDbObjectFilterInput>>;
+  comment?: InputMaybe<StringOperationFilterInput>;
+  or?: InputMaybe<Array<CommentDbObjectFilterInput>>;
+  uploadUrls?: InputMaybe<ListStringOperationFilterInput>;
+};
+
 export type CustomerDbObject = {
   __typename?: 'CustomerDbObject';
-  additionalNotes?: Maybe<Scalars['String']['output']>;
   alias?: Maybe<Scalars['String']['output']>;
+  comments?: Maybe<Array<CommentDbObject>>;
   createdAt: Scalars['DateTime']['output'];
   createdBy: Scalars['UUID']['output'];
+  customerRating?: Maybe<Scalars['Decimal']['output']>;
+  customerReferenceNumber: Scalars['String']['output'];
   emails?: Maybe<Array<EmailDbObject>>;
+  fullName: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
   modifiedBy?: Maybe<Scalars['UUID']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   phoneNumbers?: Maybe<Array<PhoneNumberDbObject>>;
   properties?: Maybe<Array<Maybe<PropertyDbObject>>>;
-  referralFeeFixed?: Maybe<Scalars['Float']['output']>;
-  referralFeePercentage?: Maybe<Scalars['Float']['output']>;
+  referralFeeFixed?: Maybe<Scalars['Decimal']['output']>;
+  referralFeePercentage?: Maybe<Scalars['Decimal']['output']>;
   referredByCustomer?: Maybe<Scalars['ID']['output']>;
   referredByOther?: Maybe<Scalars['String']['output']>;
+  status: Scalars['String']['output'];
   surname?: Maybe<Scalars['String']['output']>;
+  tags?: Maybe<Array<Scalars['String']['output']>>;
   title?: Maybe<Scalars['String']['output']>;
 };
 
 export type CustomerDbObjectFilterInput = {
-  additionalNotes?: InputMaybe<StringOperationFilterInput>;
   alias?: InputMaybe<StringOperationFilterInput>;
   and?: InputMaybe<Array<CustomerDbObjectFilterInput>>;
+  comments?: InputMaybe<ListFilterInputTypeOfCommentDbObjectFilterInput>;
   createdAt?: InputMaybe<DateTimeOperationFilterInput>;
   createdBy?: InputMaybe<UuidOperationFilterInput>;
+  customerRating?: InputMaybe<DecimalOperationFilterInput>;
+  customerReferenceNumber?: InputMaybe<StringOperationFilterInput>;
   emails?: InputMaybe<ListFilterInputTypeOfEmailDbObjectFilterInput>;
+  fullName?: InputMaybe<StringOperationFilterInput>;
   id?: InputMaybe<ObjectIdOperationFilterInput>;
   modifiedAt?: InputMaybe<DateTimeOperationFilterInput>;
   modifiedBy?: InputMaybe<UuidOperationFilterInput>;
@@ -63,19 +85,23 @@ export type CustomerDbObjectFilterInput = {
   or?: InputMaybe<Array<CustomerDbObjectFilterInput>>;
   phoneNumbers?: InputMaybe<ListFilterInputTypeOfPhoneNumberDbObjectFilterInput>;
   properties?: InputMaybe<ListObjectIdOperationFilterInput>;
-  referralFeeFixed?: InputMaybe<FloatOperationFilterInput>;
-  referralFeePercentage?: InputMaybe<FloatOperationFilterInput>;
+  referralFeeFixed?: InputMaybe<DecimalOperationFilterInput>;
+  referralFeePercentage?: InputMaybe<DecimalOperationFilterInput>;
   referredByCustomer?: InputMaybe<ObjectIdOperationFilterInput>;
   referredByOther?: InputMaybe<StringOperationFilterInput>;
+  status?: InputMaybe<StringOperationFilterInput>;
   surname?: InputMaybe<StringOperationFilterInput>;
+  tags?: InputMaybe<ListStringOperationFilterInput>;
   title?: InputMaybe<StringOperationFilterInput>;
 };
 
 export type CustomerDbObjectSortInput = {
-  additionalNotes?: InputMaybe<SortEnumType>;
   alias?: InputMaybe<SortEnumType>;
   createdAt?: InputMaybe<SortEnumType>;
   createdBy?: InputMaybe<SortEnumType>;
+  customerRating?: InputMaybe<SortEnumType>;
+  customerReferenceNumber?: InputMaybe<SortEnumType>;
+  fullName?: InputMaybe<SortEnumType>;
   id?: InputMaybe<SortEnumType>;
   modifiedAt?: InputMaybe<SortEnumType>;
   modifiedBy?: InputMaybe<SortEnumType>;
@@ -84,6 +110,7 @@ export type CustomerDbObjectSortInput = {
   referralFeePercentage?: InputMaybe<SortEnumType>;
   referredByCustomer?: InputMaybe<SortEnumType>;
   referredByOther?: InputMaybe<SortEnumType>;
+  status?: InputMaybe<SortEnumType>;
   surname?: InputMaybe<SortEnumType>;
   title?: InputMaybe<SortEnumType>;
 };
@@ -123,6 +150,21 @@ export type DateTimeOperationFilterInput = {
   nlte?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
+export type DecimalOperationFilterInput = {
+  eq?: InputMaybe<Scalars['Decimal']['input']>;
+  gt?: InputMaybe<Scalars['Decimal']['input']>;
+  gte?: InputMaybe<Scalars['Decimal']['input']>;
+  in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
+  lt?: InputMaybe<Scalars['Decimal']['input']>;
+  lte?: InputMaybe<Scalars['Decimal']['input']>;
+  neq?: InputMaybe<Scalars['Decimal']['input']>;
+  ngt?: InputMaybe<Scalars['Decimal']['input']>;
+  ngte?: InputMaybe<Scalars['Decimal']['input']>;
+  nin?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
+  nlt?: InputMaybe<Scalars['Decimal']['input']>;
+  nlte?: InputMaybe<Scalars['Decimal']['input']>;
+};
+
 export type EmailDbObject = {
   __typename?: 'EmailDbObject';
   email: Scalars['String']['output'];
@@ -136,19 +178,11 @@ export type EmailDbObjectFilterInput = {
   or?: InputMaybe<Array<EmailDbObjectFilterInput>>;
 };
 
-export type FloatOperationFilterInput = {
-  eq?: InputMaybe<Scalars['Float']['input']>;
-  gt?: InputMaybe<Scalars['Float']['input']>;
-  gte?: InputMaybe<Scalars['Float']['input']>;
-  in?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
-  lt?: InputMaybe<Scalars['Float']['input']>;
-  lte?: InputMaybe<Scalars['Float']['input']>;
-  neq?: InputMaybe<Scalars['Float']['input']>;
-  ngt?: InputMaybe<Scalars['Float']['input']>;
-  ngte?: InputMaybe<Scalars['Float']['input']>;
-  nin?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
-  nlt?: InputMaybe<Scalars['Float']['input']>;
-  nlte?: InputMaybe<Scalars['Float']['input']>;
+export type ListFilterInputTypeOfCommentDbObjectFilterInput = {
+  all?: InputMaybe<CommentDbObjectFilterInput>;
+  any?: InputMaybe<Scalars['Boolean']['input']>;
+  none?: InputMaybe<CommentDbObjectFilterInput>;
+  some?: InputMaybe<CommentDbObjectFilterInput>;
 };
 
 export type ListFilterInputTypeOfEmailDbObjectFilterInput = {
@@ -170,6 +204,23 @@ export type ListObjectIdOperationFilterInput = {
   any?: InputMaybe<Scalars['Boolean']['input']>;
   none?: InputMaybe<ObjectIdOperationFilterInput>;
   some?: InputMaybe<ObjectIdOperationFilterInput>;
+};
+
+export type ListStringOperationFilterInput = {
+  all?: InputMaybe<StringOperationFilterInput>;
+  any?: InputMaybe<Scalars['Boolean']['input']>;
+  none?: InputMaybe<StringOperationFilterInput>;
+  some?: InputMaybe<StringOperationFilterInput>;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  generateFakeCustomers: Scalars['String']['output'];
+};
+
+
+export type MutationGenerateFakeCustomersArgs = {
+  quantity: Scalars['Int']['input'];
 };
 
 export type ObjectIdOperationFilterInput = {
@@ -215,7 +266,7 @@ export type PhoneNumberDbObjectFilterInput = {
 
 export type PropertyDbObject = {
   __typename?: 'PropertyDbObject';
-  billingAddress?: Maybe<AddressDbObject>;
+  billing?: Maybe<AddressDbObject>;
   createdAt: Scalars['DateTime']['output'];
   createdBy: Scalars['UUID']['output'];
   /** The customers associated with this property. */
@@ -225,26 +276,19 @@ export type PropertyDbObject = {
   location?: Maybe<Scalars['String']['output']>;
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
   modifiedBy?: Maybe<Scalars['UUID']['output']>;
-  propertyAddress: AddressDbObject;
+  property: AddressDbObject;
   quotes?: Maybe<Array<Scalars['ID']['output']>>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  allCustomers: Array<CustomerDbObject>;
   customerById?: Maybe<CustomerDbObject>;
-  customerByIdCustom: CustomerDbObject;
   customers?: Maybe<CustomersConnection>;
 };
 
 
 export type QueryCustomerByIdArgs = {
   id: Scalars['ID']['input'];
-};
-
-
-export type QueryCustomerByIdCustomArgs = {
-  customerId: Scalars['ID']['input'];
 };
 
 
@@ -297,7 +341,7 @@ export type CustomerByIdQueryVariables = Exact<{
 }>;
 
 
-export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerDbObject', id: string, title?: string | null, name?: string | null, surname?: string | null, alias?: string | null, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, referredByCustomer?: string | null, referredByOther?: string | null, referralFeeFixed?: number | null, referralFeePercentage?: number | null, additionalNotes?: string | null, emails?: Array<{ __typename?: 'EmailDbObject', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', id: string, propertyAddress: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } | null };
+export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerDbObject', id: string, customerReferenceNumber: string, title?: string | null, name?: string | null, surname?: string | null, fullName: string, alias?: string | null, status: string, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, referredByCustomer?: string | null, referredByOther?: string | null, referralFeeFixed?: any | null, referralFeePercentage?: any | null, customerRating?: any | null, tags?: Array<string> | null, comments?: Array<{ __typename?: 'CommentDbObject', comment?: string | null, uploadUrls: Array<string> }> | null, emails?: Array<{ __typename?: 'EmailDbObject', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', id: string, property: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } | null };
 
 export type CustomersPagedQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -305,17 +349,20 @@ export type CustomersPagedQueryVariables = Exact<{
 }>;
 
 
-export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, title?: string | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', propertyAddress: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, title?: string | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', property: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 
 export const CustomerByIdDocument = gql`
     query CustomerById($id: ID!) {
   customerById(id: $id) {
     id
+    customerReferenceNumber
     title
     name
     surname
+    fullName
     alias
+    status
     createdAt
     createdBy
     modifiedAt
@@ -324,7 +371,11 @@ export const CustomerByIdDocument = gql`
     referredByOther
     referralFeeFixed
     referralFeePercentage
-    additionalNotes
+    customerRating
+    comments {
+      comment
+      uploadUrls
+    }
     emails {
       email
       emailType
@@ -335,11 +386,12 @@ export const CustomerByIdDocument = gql`
     }
     properties {
       id
-      propertyAddress {
+      property {
         address
         fullAddress
       }
     }
+    tags
   }
 }
     `;
@@ -390,7 +442,7 @@ export const CustomersPagedDocument = gql`
           phoneNumber
         }
         properties {
-          propertyAddress {
+          property {
             address
             fullAddress
           }

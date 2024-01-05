@@ -1,10 +1,13 @@
 query CustomerById($id: ID!) {
   customerById(id: $id) {
     id
+    customerReferenceNumber
     title
     name
     surname
+    fullName
     alias
+    status
     createdAt
     createdBy
     modifiedAt
@@ -13,7 +16,11 @@ query CustomerById($id: ID!) {
     referredByOther
     referralFeeFixed
     referralFeePercentage
-    additionalNotes
+    customerRating
+    comments {
+      comment
+      uploadUrls
+    }
     emails {
       email
       emailType
@@ -24,10 +31,11 @@ query CustomerById($id: ID!) {
     }
     properties {
       id
-      propertyAddress {
+      property {
         address
         fullAddress
       }
     }
+    tags
   }
 }

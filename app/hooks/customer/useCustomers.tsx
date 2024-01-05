@@ -16,10 +16,10 @@ const useCustomers = () => {
   });
 
   const fetchMoreData = useCallback(
-    async (endCursor: string | null) => {
+    async (endCursor: string | null, pageSize: number) => {
       try {
         const fetchResult = await fetchMore({
-          variables: { cursor: endCursor, pageSize: 30 },
+          variables: { cursor: endCursor, pageSize: pageSize },
         });
         const newRows =
           fetchResult?.data?.customers?.edges?.map((edge) => edge.node) || [];

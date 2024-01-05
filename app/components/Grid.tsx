@@ -6,8 +6,9 @@ import { useRouter } from 'next/navigation';
 import CustomSidebar from '@/app/components/SideBar';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import RoundButton from '@/app/components/RoundButton';
-import { CustomGridProps } from '../types/sharedTypes';
+import { CustomGridProps, PageInfoSlim } from '../types/sharedTypes';
 import {
+  GridApi,
   GridReadyEvent,
   IDatasource,
   IGetRowsParams,
@@ -35,11 +36,15 @@ const CustomGrid = ({
   columnDefs,
   fetchMoreData,
   initialData,
-  endCursor,
+  initialPageInfo,
 }: CustomGridProps) => {
   const [gridColumnDef, setColumnDefs] = useState(columnDefs || []);
-  const currentEndCursor = useRef<string | null>(endCursor); // Using useRef for cursor
+  const pageInfoTrack = useRef<PageInfoSlim>(initialPageInfo); // Using useRef for cursor
   const isFirstLoad = useRef<boolean>(true);
+  const gridRowCount = useRef<number>(0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const gridApiRef = useRef<GridApi<any> | null>(null);
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -47,16 +52,27 @@ const CustomGrid = ({
     getRows: async (params: IGetRowsParams) => {
       try {
         if (isFirstLoad.current === true) {
-          params.successCallback(initialData as [], -1);
+          console.log(
+            'aaaa',
+            pageInfoTrack.current.endCursor,
+            pageInfoTrack.current.hasNextPage,
+          );
+          params.successCallback(
+            initialData as [],
+            pageInfoTrack.current.hasNextPage ? -1 : initialData.length,
+          );
+          gridRowCount.current = initialData.length;
           isFirstLoad.current = false;
         } else {
           const { rows, pageInfo } = await fetchMoreData(
-            currentEndCursor.current,
+            pageInfoTrack.current.endCursor,
+            gridOptions.cacheBlockSize,
           );
-          currentEndCursor.current = pageInfo?.endCursor ?? null;
+          gridRowCount.current += rows.length;
+          pageInfoTrack.current = pageInfo as PageInfoSlim;
           params.successCallback(
             rows as [],
-            pageInfo?.hasNextPage ? -1 : undefined,
+            pageInfoTrack.current.hasNextPage ? -1 : gridRowCount.current,
           );
         }
       } catch (error) {
@@ -68,6 +84,7 @@ const CustomGrid = ({
 
   const onGridReady = (params: GridReadyEvent) => {
     params.api.setGridOption('datasource', dataSource()); // Ensure this is correctly spelled and set
+    gridApiRef.current = params.api;
   };
 
   const onRowClicked = (event: RowClickedEvent) => {

@@ -9,6 +9,7 @@ import moment from 'moment';
 import CustomGrid from '@/app/components/Grid';
 import useCustomers from '@/app/hooks/customer/useCustomers';
 import ArrayDataPopover from '@/app/components/ArrayDataPopover';
+import { PageInfoSlim } from '@/app/types/sharedTypes';
 
 const getInitials = (fullName: string) => {
   const nameParts = fullName.split(' ');
@@ -76,7 +77,7 @@ const gridColumnDef: ColDef[] = [
     field: 'properties',
     cellRenderer: (params: { value: PropertyDbObject[] }) => {
       const propertyAddresses = params?.value?.map(
-        (x) => x.propertyAddress?.fullAddress as string,
+        (x) => x.property?.fullAddress as string,
       );
       return <ArrayDataPopover items={propertyAddresses || []} />;
     },
@@ -130,11 +131,10 @@ const gridColumnDef: ColDef[] = [
 
 const Customers = () => {
   const { data, fetchMoreData } = useCustomers();
-  const endCursor = data?.customers?.pageInfo?.endCursor
-    ? data?.customers?.pageInfo?.endCursor
+  const pageInfo = data?.customers?.pageInfo?.endCursor
+    ? data?.customers?.pageInfo
     : null;
   const initialData = data?.customers?.edges?.map((edge) => edge.node);
-
   return (
     <>
       {data && (
@@ -142,7 +142,7 @@ const Customers = () => {
           columnDefs={gridColumnDef}
           fetchMoreData={fetchMoreData}
           initialData={initialData as object[]}
-          endCursor={endCursor as string}
+          initialPageInfo={pageInfo as PageInfoSlim}
         />
       )}
     </>
