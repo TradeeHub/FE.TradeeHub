@@ -1,7 +1,11 @@
 'use client';
 import useCustomer from '@/app/hooks/customer/useCustomer';
-import { UserCircleIcon } from '@heroicons/react/20/solid';
-import { Suspense } from 'react';
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  UserCircleIcon,
+} from '@heroicons/react/20/solid';
+import { Suspense, useState } from 'react';
 import moment from 'moment';
 import { HiOutlinePhone } from 'react-icons/hi2';
 import { AiOutlineMail } from 'react-icons/ai';
@@ -12,6 +16,8 @@ import { PiHouseLineLight } from 'react-icons/pi';
 import { BsHouses } from 'react-icons/bs';
 
 const Customer = ({ params }: { params: { customerId: string } }) => {
+  const [showProperties, setShowProperties] = useState(false);
+  const [showContactInfo, setShowContactInfo] = useState(false);
   const { data, loading } = useCustomer(params.customerId);
   const customer = data?.customerById;
   const createdAtFormatted = moment(customer?.createdAt)
@@ -23,7 +29,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
   const mainPhone = customer?.phoneNumbers[0].phoneNumber;
   const recentProperty = customer?.properties[0]?.propertyAddress.fullAddress;
   const iconClass = 'h-6 w-5 text-brand-accent1';
-  const textClass = 'text-sm leading-6 text-brand-secondary1d';
+  const textClass = 'text-sm leading-6 text-brand-secondary1d items-center';
   const tabs = [
     { name: 'Quotes', href: '#', current: true },
     { name: 'Jobs', href: '#', current: false },
@@ -31,6 +37,9 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
     { name: 'Appointments', href: '#', current: false },
     { name: 'Activity', href: '#', current: false },
   ];
+
+  const toggleProperties = () => setShowProperties(!showProperties);
+  const toggleContactInfo = () => setShowContactInfo(!showContactInfo);
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -41,7 +50,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
         <div className='gap-5 lg:col-start-3 lg:row-end-1'>
           <div className='flex flex-row gap-10'>
             <h2 className='sr-only'>Customer Details</h2>
-
+            {/* Customer Details */}
             <div className='rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5'>
               <dl className='flex flex-col'>
                 <div className='flex w-full flex-none items-center gap-x-4 border-b border-gray-900/5 px-6 pb-3 pt-3'>
@@ -79,17 +88,44 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                   </dd>
                 </div>
 
-                <div className='mt-2 flex w-full flex-none gap-x-4 px-6'>
-                  <dt>
-                    <PiHouseLineLight
-                      className={iconClass}
-                      aria-hidden='true'
-                    />
-                  </dt>
-                  <dd className={textClass}>
-                    <span>{recentProperty}</span>
-                  </dd>
-                </div>
+<div className='flex flex-col px-6 mt-2'>
+  <div className='flex items-center justify-between'>
+    <div className='flex items-center gap-x-4'>
+      <BsHouses className='h-6 w-5 text-brand-accent3' aria-hidden='true' />
+      <span className='text-sm leading-6 text-brand-secondary1d'>
+        {recentProperty}
+      </span>
+    </div>
+    {customer?.properties?.length > 1 && 
+    <button
+      onClick={toggleProperties}
+      className='text-brand-accent3 focus:outline-none'
+    >
+      {showProperties ? (
+        <ChevronUpIcon className='h-5 w-5' />
+      ) : (
+        <ChevronDownIcon className='h-5 w-5' />
+      )}
+    </button>}
+  </div>
+
+  {showProperties && (
+    <div className=''>
+      {customer?.properties?.map((property, index) => (
+          index !== 0 && (
+
+        <div key={index} className='flex items-center gap-x-2 pl-8'>
+          <PiHouseLineLight className={iconClass} aria-hidden='true' />
+          <span className='text-sm leading-6 text-brand-secondary1d'>
+            {property?.propertyAddress?.fullAddress}
+          </span>
+        </div>
+          )
+      ))}
+    </div>
+  )}
+</div>
+
 
                 <div className='mt-2 flex w-full flex-none gap-x-4 px-6'>
                   <dt>
@@ -125,6 +161,9 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                 </div>
               </dl>
             </div>
+
+            {/* Properties */}
+            <h2 className='sr-only'>Properties</h2>
             <div className='rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5'>
               <dl className='flex flex-col'>
                 <div className='flex w-full flex-none items-center gap-x-4 border-b border-gray-900/5 px-6 pb-3 pt-3'>
@@ -162,7 +201,8 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
           </div>
         </div>
 
-        <div>
+        {/* Tabs */}
+        <div className='mt-20'>
           <div className='sm:hidden'>
             <label htmlFor='tabs' className='sr-only'>
               Select a tab
