@@ -5,6 +5,7 @@ query CustomersPaged($pageSize: Int!, $cursor: String) {
         id
         title
         status
+        fullName
         tags
         name
         surname

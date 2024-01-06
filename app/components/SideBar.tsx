@@ -56,11 +56,16 @@ const SidebarContent = ({
       >
         <Card>
           <CardHeader className='flex'>
-            <CardTitle className='text-center font-bold text-lg'>Columns</CardTitle>
+            <CardTitle className='text-center text-lg font-bold'>
+              Columns
+            </CardTitle>
           </CardHeader>
           <CardContent className='flex flex-col'>
             {columnDefs.map((col: ColDef, index: number) => (
-              <div key={index} className='flex items-center space-x-2 p-2 hover:bg-border rounded-xl'>
+              <div
+                key={index}
+                className='flex items-center space-x-2 rounded-xl p-2 hover:bg-border'
+              >
                 <Checkbox
                   id={col.headerName}
                   checked={!col.hide}

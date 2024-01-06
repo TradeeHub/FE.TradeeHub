@@ -8,8 +8,11 @@ type RoundButtonProps = {
 };
 
 const RoundButton = ({ icon, onClick }: RoundButtonProps) => (
-  <Button variant='default' onClick={onClick} className='focus-visible:outline-6 hover:bg-secondary rounded-full p-1 shadow-md dark:bg-accent dark:hover:bg-accent/80'
->
+  <Button
+    variant='default'
+    onClick={onClick}
+    className='focus-visible:outline-6 rounded-full p-1 shadow-md hover:bg-secondary dark:bg-accent dark:hover:bg-accent/80'
+  >
     <Label className=''>{icon}</Label>
   </Button>
 );

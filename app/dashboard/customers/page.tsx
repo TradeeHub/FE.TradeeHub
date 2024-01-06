@@ -10,6 +10,8 @@ import CustomGrid from '@/app/components/Grid';
 import useCustomers from '@/app/hooks/customer/useCustomers';
 import ArrayDataPopover from '@/app/components/ArrayDataPopover';
 import { PageInfoSlim } from '@/app/types/sharedTypes';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Label } from '@/components/ui/label';
 
 const getInitials = (fullName: string) => {
   const nameParts = fullName.split(' ');
@@ -34,18 +36,16 @@ const gridColumnDef: ColDef[] = [
     valueGetter: (params: ValueGetterParams) => {
       // You may need to assert the type of params.data if TypeScript complains about it
       const data = params.data as CustomerDbObject;
-      return `${data?.title || ''} ${data?.name || ''} ${
-        data?.surname || ''
-      }`.trim();
+      return data?.fullName || '';
     },
     cellRenderer: (params: { value: string }) => {
       const initials = getInitials(params.value);
       return (
-        <div className='flex items-center'>
-          <div className='mr-2 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gray-200'>
-            {initials}
-          </div>
-          <span>{params.value}</span>
+        <div className='flex items-center gap-2'>
+          <Avatar>
+            <AvatarFallback className='dark:bg-primary dark:text-border'>{initials}</AvatarFallback>
+          </Avatar>
+          <Label>{params.value}</Label>
         </div>
       );
     },
