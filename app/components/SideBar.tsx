@@ -2,6 +2,16 @@ import React, { useState } from 'react';
 import { PiGridFour } from 'react-icons/pi';
 import RoundButton from './RoundButton';
 import { ColDef } from 'ag-grid-community';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 const GridSettingManager = ({
   columnDefs,
@@ -39,28 +49,33 @@ const SidebarContent = ({
   onToggleColumnVisibility: (index: number) => void;
 }) => {
   return (
-    // Position the sidebar content below the button and adjust with padding if necessary
-    <div
-      className='absolute left-0 z-10 mt-2 w-56 rounded-2xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'
-      style={{ top: '100%' }} // Ensures that the sidebar opens right below the button
-    >
-      <h4 className='text-md text-center font-bold'>Columns</h4>
-      {columnDefs.map((col: ColDef, index: number) => (
-        <div key={index} className='relative rounded-lg p-2 hover:bg-gray-50'>
-          <label>
-            <input
-              id={col.headerName}
-              aria-describedby={col.headerName}
-              type='checkbox'
-              checked={!col.hide}
-              onChange={() => onToggleColumnVisibility(index)}
-              className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
-            />
-            <span className='ml-3 text-sm leading-6'>{col.headerName}</span>
-          </label>
-        </div>
-      ))}
-    </div>
+    <>
+      <div
+        className='absolute left-0 z-10 mt-2 w-56 rounded-2xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'
+        style={{ top: '100%' }} // Ensures that the sidebar opens right below the button
+      >
+        <Card>
+          <CardHeader className='flex'>
+            <CardTitle className='text-center'>Columns</CardTitle>
+          </CardHeader>
+          <CardContent className='flex flex-col'>
+            {columnDefs.map((col: ColDef, index: number) => (
+              <div key={index} className='flex items-center space-x-2 p-2'>
+                <Checkbox
+                  id={col.headerName}
+                  checked={!col.hide}
+                  onClick={() => onToggleColumnVisibility(index)}
+                  aria-describedby={col.headerName}
+                />
+                <Label htmlFor={col.headerName} className='text-sm'>
+                  {col.headerName}
+                </Label>
+              </div>
+            ))}{' '}
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 };
 
