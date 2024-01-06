@@ -252,7 +252,10 @@ export default function Example() {
                     onClick={() =>
                       setTheme(theme === 'dark' ? 'light' : 'dark')
                     }
-                  > Set Theme</Button>
+                  >
+                    {' '}
+                    Set Theme
+                  </Button>
                   <a
                     href='#'
                     className='hover:bg-brand-800 group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:text-white'

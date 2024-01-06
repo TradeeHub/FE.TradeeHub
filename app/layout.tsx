@@ -19,9 +19,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <ApolloWrapper>
-        <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <body className={inter.className}>{children}</body>
-        </ThemeProvider>
+        <body className={inter.className}>{children}</body>
       </ApolloWrapper>
     </html>
   );
