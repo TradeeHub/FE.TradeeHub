@@ -72,11 +72,11 @@ const ArrayDataPopover: FunctionComponent<ArrayDataPopoverProps> = ({
   const popoverContent = (
     <div
       ref={popoverRef}
-      className='absolute z-10 mt-1 rounded-2xl bg-white p-3 text-sm shadow-lg ring-1 ring-black ring-opacity-5'
+      className='absolute z-10 mt-1 rounded-xl bg-card p-3 text-sm text-primary shadow-lg ring-1 ring-black ring-opacity-5 border'
       style={{ minWidth: '200px' }}
     >
       {items.map((item, index) => (
-        <div key={index} className='p-1 hover:bg-gray-100'>
+        <div key={index} className='p-1 hover:bg-border rounded-xl'>
           {item || ''}
         </div>
       ))}
