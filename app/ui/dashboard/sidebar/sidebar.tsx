@@ -246,14 +246,12 @@ export default function Example() {
                 </li>
                 <li className='mt-auto'>
                   <Button
-                    variant='ghost'
                     size='icon'
                     aria-label='Toggle Theme'
                     onClick={() =>
                       setTheme(theme === 'dark' ? 'light' : 'dark')
                     }
                   >
-                    {' '}
                     Set Theme
                   </Button>
                   <a
