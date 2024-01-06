@@ -56,7 +56,7 @@ const SidebarContent = ({
       >
         <Card>
           <CardHeader className='flex'>
-            <CardTitle className='text-center'>Columns</CardTitle>
+            <CardTitle className='text-center font-bold text-lg'>Columns</CardTitle>
           </CardHeader>
           <CardContent className='flex flex-col'>
             {columnDefs.map((col: ColDef, index: number) => (
@@ -66,6 +66,7 @@ const SidebarContent = ({
                   checked={!col.hide}
                   onClick={() => onToggleColumnVisibility(index)}
                   aria-describedby={col.headerName}
+                  className={col.hide ? 'dark:bg-background' : 'dark:bg-accent'}
                 />
                 <Label htmlFor={col.headerName} className='text-sm'>
                   {col.headerName}

@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button';
+import { Label } from '@radix-ui/react-label';
 import React, {
   useState,
   useRef,
@@ -82,23 +84,20 @@ const ArrayDataPopover: FunctionComponent<ArrayDataPopoverProps> = ({
   );
 
   return (
-    <div className='relative inline-block text-sm'>
-      <button
-        ref={buttonRef}
-        onClick={handleButtonClick}
-        className='popover-trigger focus:outline-none'
-      >
-        <div className='flex items-center'>
-          {items.length > 1 && (
-            <span className='mr-2 rounded-full bg-gray-200 px-2 py-1 text-xs font-semibold'>
-              {items.length}
-            </span>
-          )}
-          <span>{firstItem}</span>
-        </div>
-      </button>
-      {showPopover && ReactDOM.createPortal(popoverContent, document.body)}
+<div className='relative inline-block text-sm'>
+  <span ref={buttonRef} onClick={handleButtonClick} className='popover-trigger focus:outline-none'>
+    <div className='flex items-center gap-2'> {/* Add gap for space */}
+      {items.length > 1 && (
+      <Button variant='outline' className='rounded-full p-1 w-6 h-6 text-xs font-semibold flex items-center justify-center dark:bg-card-foreground dark:text-card'>
+        {items.length}
+      </Button>
+      )}
+      <span>{firstItem}</span>
     </div>
+  </span>
+
+  {showPopover && ReactDOM.createPortal(popoverContent, document.body)}
+</div>
   );
 };
 
