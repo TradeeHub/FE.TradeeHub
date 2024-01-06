@@ -87,7 +87,7 @@ export default function Example() {
 
   return (
     <>
-      <div>
+      <div className='border-r'>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as='div'
@@ -160,7 +160,7 @@ export default function Example() {
                                     className={`group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 ${
                                       isActive(item.path)
                                         ? 'bg-gray-800 text-white'
-                                        : 'hover:bg-mute text-gray-400 hover:text-white'
+                                        : 'hover:bg-mute text-mute hover:text-white'
                                     } text-m hover:bg-mute dark:hover:bg-gray-800`}
                                   >
                                     {!isActive(item.path) ? (
@@ -206,8 +206,8 @@ export default function Example() {
         <div className='flex flex-col overflow-y-auto px-6 pb-4'>
           <div className='flex h-16 items-center justify-start'>
             <div className='pl-2 text-3xl font-bold'>
-              <span className='text-secondary-foreground'>Tradee</span>
-              <span className='text-primary'>Hub</span>
+              <span className='text-primary dark:text-accent'>Tradee</span>
+              <span className='text-secondary'>Hub</span>
             </div>
           </div>
           <nav>
@@ -218,24 +218,22 @@ export default function Example() {
                     <Button
                       variant='ghost'
                       className={`w-full justify-start gap-2 text-left text-lg ${
-                        isActive(item.path) ? 'bg-secondary' : ''
+                        isActive(item.path) ? 'bg-border' : ''
                       }`}
                     >
                       {' '}
                       {!isActive(item.path) ? (
                         <item.icon
-                          className='h-6 w-6 shrink-0 text-primary-foreground'
+                          className='h-6 w-6 shrink-0 text-primary'
                           aria-hidden='true'
                         />
                       ) : (
                         <item.inactiveIcon
-                          className='h-6 w-6 shrink-0 text-primary-foreground'
+                          className='h-6 w-6 shrink-0 text-primary'
                           aria-hidden='true'
                         />
                       )}
-                      <span className='text-primary-foreground'>
-                        {item.title}
-                      </span>
+                      <span className='text-primary'>{item.title}</span>
                     </Button>
                   </Link>
                 </li>

@@ -3,7 +3,7 @@
 @tailwind utilities;
 @import '~ag-grid-community/styles/ag-grid.css';
 @import '~ag-grid-community/styles/ag-theme-material.css';
-@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
 
 /* Weight 500 */
 @layer base {
@@ -14,15 +14,13 @@
     --card-foreground: 20 14.3% 4.1%;
     --popover: 0 0% 100%;
     --popover-foreground: 20 14.3% 4.1%;
-    --primary: 48 97% 60%;
-    /* disney blue text primary-foreground */
-    --primary-foreground: 231 91% 13%;
-    --secondary: 60 4.8% 95.9%;
-    /* reddit red  secondary-foreground*/
-    --secondary-foreground: 16 100% 50%;
-    --muted: 60 4.8% 95.9%;
-    --muted-foreground: 25 5.3% 44.7%;
-    --accent: 60 4.8% 95.9%;
+    --primary: 231 91% 13%; /* disney blue */
+    --primary-foreground: 48 97% 99%;
+    --secondary: 16 100% 50%; /* reddit red */
+    --secondary-foreground: 60 4.8% 95.9%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 48 97% 60%; /* yellow binance */
     --accent-foreground: 24 9.8% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 60 9.1% 97.8%;
@@ -33,25 +31,23 @@
   }
 
   .dark {
-    --background: 0 0% 7%;
+    --background: 216 17% 6%;
     --foreground: 0 0% 7%;
     --card: 0 0% 12%;
     --card-foreground: 60 9.1% 97.8%;
     --popover: 20 14.3% 4.1%;
     --popover-foreground: 60 9.1% 97.8%;
-    --primary: 48 97% 60%;
-    /* disney blue text primary-foreground */
-    --primary-foreground: 60 9.1% 97.8%;
-    --secondary: 231 91% 13%;
-    /* reddit red  secondary-foreground*/
-    --secondary-foreground: 16 100% 50%;
+    --primary: 216 13% 93%;  /* disney blue */
+    --primary-foreground: 231 91% 13%;
+    --secondary: 16 100% 50%;  /* reddit red */
+    --secondary-foreground: 60 4.8% 95.9%;
     --muted: 12 6.5% 15.1%;
     --muted-foreground: 24 5.4% 63.9%;
-    --accent: 12 6.5% 15.1%;
+    --accent: 48 97% 60%;
     --accent-foreground: 60 9.1% 97.8%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 60 9.1% 97.8%;
-    --border: 12 6.5% 15.1%;
+    --border: 214 14% 20%;
     --input: 12 6.5% 15.1%;
     --ring: 35.5 91.7% 32.9%;
   }
@@ -72,17 +68,22 @@
   border-bottom: 1px solid hsl(var(--border));
 }
 
-/* Override AG Grid row styles */
+.ag-header-cell:hover {
+  background-color: hsl(var(--border));
+  color: hsl(var(--border));
+  border-bottom: 1px solid hsl(var(--border));
+}
+
 .ag-row {
   background-color: hsl(var(--card));
-  color: hsl(var(--card-foreground));
+  color: hsl(var(--primary));
 }
 
-.ag-header-group-cell {
+.dark .ag-theme-material .ag-row:hover {
+  color: hsl(var(--card));
+}
+
+.ag-theme-material .ag-header {
   background-color: hsl(var(--card));
-  color: hsl(var(--card-foreground));
-}
-
-.ag-header-cell .ag-header-cell-label {
-  justify-content: center !important;
+    color: hsl(var(--card));
 }
