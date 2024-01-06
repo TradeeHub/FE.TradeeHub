@@ -203,30 +203,17 @@ export default function Example() {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <div className='font-roboto lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-60 lg:flex-col'>
-          {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className='bg-brand-secondary1d flex grow flex-col overflow-y-auto px-6 pb-4'>
-            <div className='flex h-16 shrink-0 items-center text-center'>
-              <span className='text-brand-accent3d text-2xl font-bold'>
-                Tradee
-              </span>
-              <span className='text-brand-accent2 text-2xl font-bold'>Hub</span>
-            </div>
-            <nav className='flex flex-1 flex-col'>
-              <ul role='list' className='flex flex-1 flex-col gap-y-7'>
-                <li>
-                  <ul role='list' className='-mx-2 space-y-1'>
-                    {navigation.map((item) => (
-                      <li key={item.title}>
-                        <Link href={item.path} passHref>
-                          <div
-                            className={`group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 ${
-                              isActive(item.path)
-                                ? 'text-brand-secondary1d bg-white'
-                                : 'hover:bg-brad-white hover:text-brand-white text-gray-300'
-                            } text-m hover:bg-gray-400 dark:hover:bg-gray-100`}
-                          >
-                            {!isActive(item.path) ? (
+<div className='flex flex-col overflow-y-auto px-6 pb-4'>
+  <div className='flex h-16 items-center justify-start'>
+    <span className='text-3xl font-bold pl-2'>TradeeHub</span>
+  </div>
+  <nav>
+    <ul role='list' className='space-y-1'>
+      {navigation.map((item) => (
+        <li key={item.title} className='w-full'>
+          <Link href={item.path} passHref>
+            <Button variant='ghost' className='w-full justify-start gap-2 text-left text-lg'>
+               {!isActive(item.path) ? (
                               <item.icon
                                 className='h-6 w-6 shrink-0'
                                 aria-hidden='true'
@@ -237,38 +224,27 @@ export default function Example() {
                                 aria-hidden='true'
                               />
                             )}
-                            <span>{item.title}</span>
-                          </div>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-                <li className='mt-auto'>
-                  <Button
-                    size='icon'
-                    aria-label='Toggle Theme'
-                    onClick={() =>
-                      setTheme(theme === 'dark' ? 'light' : 'dark')
-                    }
-                  >
-                    Set Theme
-                  </Button>
-                  <a
-                    href='#'
-                    className='hover:bg-brand-800 group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:text-white'
-                  >
-                    <Cog6ToothIcon
-                      className='h-6 w-6 shrink-0'
-                      aria-hidden='true'
-                    />
-                    Settings
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
+              <span>{item.title}</span>
+            </Button>
+          </Link>
+        </li>
+      ))}
+    </ul>
+    <Button
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      className='mt-4 w-full'
+      aria-label='Toggle Theme'
+    >
+      Set Theme
+    </Button>
+  </nav>
+</div>
+
+
+
+
+
+        
       </div>
     </>
   );
