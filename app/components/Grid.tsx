@@ -26,7 +26,7 @@ const gridOptions = {
   cacheBlockSize: 30, // Number of rows per block
   cacheOverflowSize: 1, // Number of extra rows to request outside current view
   maxConcurrentDatasourceRequests: -1, // Number of concurrent data requests
-  infiniteInitialRowCount: 0, // Initial placeholder count
+  infiniteInitialRowCount: 1, // Initial placeholder count
   // maxBlocksInCache: undefined, // No limit to the number of blocks in cache
   // Additional properties can be set as needed
 };
