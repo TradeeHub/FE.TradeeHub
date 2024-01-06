@@ -73,9 +73,31 @@ const config = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      fontFamily: {
+        roboto: ['Roboto', 'sans-serif'],
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],
 } satisfies Config
 
 export default config
+
+
+// brand: {
+//       white: '#ffffff',
+//       textLight: 'rgb(119, 128, 136)',
+//       lightBackground: 'rgb(249, 250, 251)',
+//       blue: 'rgb(103, 117, 245)',
+//       secondary1: 'rgb(38, 70, 83)',
+//       secondary1d: 'rgb(3, 12, 64)', //disney
+//       secondary1l: 'rgb(36, 42, 61)',
+//       secondary2: 'rgb(0, 58, 81)',
+//       secondary2l: 'rgb(216, 235, 233)',
+//       accent1: 'rgb(233, 196, 106)',
+//       accent2: 'rgb(244, 162, 97)',
+//       accent3: 'rgb(231, 111, 81)',
+//       // accent3d: 'rgb(229, 45, 0)'
+//       accent3d: 'rgb(255, 69, 0)'
+
+//     },

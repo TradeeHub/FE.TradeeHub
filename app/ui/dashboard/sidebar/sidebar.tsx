@@ -160,8 +160,8 @@ export default function Example() {
                                     className={`group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 ${
                                       isActive(item.path)
                                         ? 'bg-gray-800 text-white'
-                                        : 'text-gray-400 hover:bg-gray-800 hover:text-white'
-                                    } text-m hover:bg-gray-800 dark:hover:bg-gray-800`}
+                                        : 'hover:bg-mute text-gray-400 hover:text-white'
+                                    } text-m hover:bg-mute dark:hover:bg-gray-800`}
                                   >
                                     {!isActive(item.path) ? (
                                       <item.icon
@@ -203,48 +203,53 @@ export default function Example() {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-<div className='flex flex-col overflow-y-auto px-6 pb-4'>
-  <div className='flex h-16 items-center justify-start'>
-    <span className='text-3xl font-bold pl-2'>TradeeHub</span>
-  </div>
-  <nav>
-    <ul role='list' className='space-y-1'>
-      {navigation.map((item) => (
-        <li key={item.title} className='w-full'>
-          <Link href={item.path} passHref>
-            <Button variant='ghost' className='w-full justify-start gap-2 text-left text-lg'>
-               {!isActive(item.path) ? (
-                              <item.icon
-                                className='h-6 w-6 shrink-0'
-                                aria-hidden='true'
-                              />
-                            ) : (
-                              <item.inactiveIcon
-                                className='h-6 w-6 shrink-0'
-                                aria-hidden='true'
-                              />
-                            )}
-              <span>{item.title}</span>
+        <div className='flex flex-col overflow-y-auto px-6 pb-4'>
+          <div className='flex h-16 items-center justify-start'>
+            <div className='pl-2 text-3xl font-bold'>
+              <span className='text-secondary-foreground'>Tradee</span>
+              <span className='text-primary'>Hub</span>
+            </div>
+          </div>
+          <nav>
+            <ul role='list' className='space-y-1'>
+              {navigation.map((item) => (
+                <li key={item.title} className='w-full'>
+                  <Link href={item.path} passHref>
+                    <Button
+                      variant='ghost'
+                      className={`w-full justify-start gap-2 text-left text-lg ${
+                        isActive(item.path) ? 'bg-secondary' : ''
+                      }`}
+                    >
+                      {' '}
+                      {!isActive(item.path) ? (
+                        <item.icon
+                          className='h-6 w-6 shrink-0 text-primary-foreground'
+                          aria-hidden='true'
+                        />
+                      ) : (
+                        <item.inactiveIcon
+                          className='h-6 w-6 shrink-0 text-primary-foreground'
+                          aria-hidden='true'
+                        />
+                      )}
+                      <span className='text-primary-foreground'>
+                        {item.title}
+                      </span>
+                    </Button>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className='mt-4 w-full'
+              aria-label='Toggle Theme'
+            >
+              Set Theme
             </Button>
-          </Link>
-        </li>
-      ))}
-    </ul>
-    <Button
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className='mt-4 w-full'
-      aria-label='Toggle Theme'
-    >
-      Set Theme
-    </Button>
-  </nav>
-</div>
-
-
-
-
-
-        
+          </nav>
+        </div>
       </div>
     </>
   );

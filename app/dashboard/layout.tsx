@@ -11,7 +11,7 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className='flex'>
       {/* Sidebar - hidden on small screens and visible on large screens */}
-      <div className='hidden w-60 flex-none lg:flex'>
+      <div className='hidden min-h-screen w-60 flex-none bg-card lg:flex'>
         <Sidebar />
       </div>
 
