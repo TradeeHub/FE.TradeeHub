@@ -68,7 +68,7 @@
   border-bottom: 1px solid hsl(var(--border));
 }
 
-.ag-header-cell:hover {
+.dark .ag-theme-material .ag-header-cell:hover {
   background-color: hsl(var(--border));
   color: hsl(var(--border));
   border-bottom: 1px solid hsl(var(--border));
