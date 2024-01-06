@@ -26,7 +26,7 @@ const gridOptions = {
   cacheBlockSize: 30, // Number of rows per block
   cacheOverflowSize: 1, // Number of extra rows to request outside current view
   maxConcurrentDatasourceRequests: -1, // Number of concurrent data requests
-  infiniteInitialRowCount: 1, // Initial placeholder count
+  infiniteInitialRowCount: 0, // Initial placeholder count
   // maxBlocksInCache: undefined, // No limit to the number of blocks in cache
   // Additional properties can be set as needed
 };
@@ -52,6 +52,7 @@ const CustomGrid = ({
     getRows: async (params: IGetRowsParams) => {
       try {
         if (isFirstLoad.current === true) {
+          console.log(initialData.length)
           params.successCallback(
             initialData as [],
             pageInfoTrack.current.hasNextPage ? -1 : initialData.length,
