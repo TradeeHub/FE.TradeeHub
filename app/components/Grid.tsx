@@ -52,7 +52,6 @@ const CustomGrid = ({
     getRows: async (params: IGetRowsParams) => {
       try {
         if (isFirstLoad.current === true) {
-          console.log(initialData.length)
           params.successCallback(
             initialData as [],
             pageInfoTrack.current.hasNextPage ? -1 : initialData.length,
