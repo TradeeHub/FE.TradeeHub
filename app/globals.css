@@ -37,9 +37,9 @@
     --card-foreground: 60 9.1% 97.8%;
     --popover: 20 14.3% 4.1%;
     --popover-foreground: 60 9.1% 97.8%;
-    --primary: 216 13% 93%; /* disney blue */
+    --primary: 216 13% 93%;  /* disney blue */
     --primary-foreground: 231 91% 13%;
-    --secondary: 16 100% 50%; /* reddit red */
+    --secondary: 16 100% 50%;  /* reddit red */
     --secondary-foreground: 60 4.8% 95.9%;
     --muted: 12 6.5% 15.1%;
     --muted-foreground: 24 5.4% 63.9%;
@@ -85,5 +85,5 @@
 
 .ag-theme-material .ag-header {
   background-color: hsl(var(--card));
-  color: hsl(var(--card));
+    color: hsl(var(--card));
 }

@@ -43,7 +43,7 @@ const gridColumnDef: ColDef[] = [
       return (
         <div className='flex items-center gap-2'>
           <Avatar>
-            <AvatarFallback className='dark:bg-primary dark:text-border'>{initials}</AvatarFallback>
+            <AvatarFallback className='dark:bg-primary dark:text-border font-medium'>{initials}</AvatarFallback>
           </Avatar>
           <Label>{params.value}</Label>
         </div>
