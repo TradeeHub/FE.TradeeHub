@@ -19,6 +19,8 @@ import { PiChartPieSliceThin } from 'react-icons/pi';
 import { PiChartPieSliceFill } from 'react-icons/pi';
 import { VscTools } from 'react-icons/vsc';
 import { IconType } from 'react-icons';
+import { Button } from '@/components/ui/button';
+import { useTheme } from 'next-themes';
 interface LinkItem {
   title: string;
   path: string;
@@ -78,6 +80,7 @@ const navigation: LinkItem[] = [
 ];
 
 export default function Example() {
+  const { theme, setTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
@@ -202,12 +205,12 @@ export default function Example() {
         {/* Static sidebar for desktop */}
         <div className='font-roboto lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-60 lg:flex-col'>
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className='flex grow flex-col overflow-y-auto bg-brand-secondary1d px-6 pb-4'>
+          <div className='bg-brand-secondary1d flex grow flex-col overflow-y-auto px-6 pb-4'>
             <div className='flex h-16 shrink-0 items-center text-center'>
-              <span className='text-2xl font-bold text-brand-accent3d'>
+              <span className='text-brand-accent3d text-2xl font-bold'>
                 Tradee
               </span>
-              <span className='text-2xl font-bold text-brand-accent2'>Hub</span>
+              <span className='text-brand-accent2 text-2xl font-bold'>Hub</span>
             </div>
             <nav className='flex flex-1 flex-col'>
               <ul role='list' className='flex flex-1 flex-col gap-y-7'>
@@ -219,8 +222,8 @@ export default function Example() {
                           <div
                             className={`group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 ${
                               isActive(item.path)
-                                ? 'bg-white text-brand-secondary1d'
-                                : 'hover:bg-brad-white text-gray-300 hover:text-brand-white'
+                                ? 'text-brand-secondary1d bg-white'
+                                : 'hover:bg-brad-white hover:text-brand-white text-gray-300'
                             } text-m hover:bg-gray-400 dark:hover:bg-gray-100`}
                           >
                             {!isActive(item.path) ? (
@@ -242,6 +245,14 @@ export default function Example() {
                   </ul>
                 </li>
                 <li className='mt-auto'>
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    aria-label='Toggle Theme'
+                    onClick={() =>
+                      setTheme(theme === 'dark' ? 'light' : 'dark')
+                    }
+                  > Set Theme</Button>
                   <a
                     href='#'
                     className='hover:bg-brand-800 group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:text-white'

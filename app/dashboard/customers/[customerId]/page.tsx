@@ -61,11 +61,11 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                     />
                   </dt>
                   <dd className='text-md font-semibold leading-6 text-gray-900'>
-                    <h3 className='text-base font-semibold leading-6 text-brand-secondary1d'>
+                    <h3 className='text-brand-secondary1d text-base font-semibold leading-6'>
                       {' '}
                       {customer?.title} {customer?.name} {customer?.surname}
                     </h3>
-                    <p className='text-sm text-brand-textLight'>
+                    <p className='text-brand-textLight text-sm'>
                       <label>{customer?.customerReferenceNumber}</label>
                     </p>
                   </dd>
@@ -92,7 +92,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                     <div className='flex items-center gap-x-4'>
                       {customer?.properties?.length > 1 ? (
                         <BsHouses
-                          className='h-6 w-5 text-brand-accent3'
+                          className='text-brand-accent3 h-6 w-5'
                           aria-hidden='true'
                         />
                       ) : (
@@ -101,7 +101,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                           aria-hidden='true'
                         />
                       )}
-                      <span className='text-sm leading-6 text-brand-secondary1d'>
+                      <span className='text-brand-secondary1d text-sm leading-6'>
                         {recentProperty}
                       </span>
                     </div>
@@ -132,7 +132,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                                 className={iconClass}
                                 aria-hidden='true'
                               />
-                              <span className='text-sm leading-6 text-brand-secondary1d'>
+                              <span className='text-brand-secondary1d text-sm leading-6'>
                                 {property?.property?.fullAddress}
                               </span>
                             </div>
@@ -185,12 +185,12 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                   <dt>
                     <span className='sr-only'>Properties</span>
                     <BsHouses
-                      className='h-10 w-10 text-brand-accent3'
+                      className='text-brand-accent3 h-10 w-10'
                       aria-hidden='true'
                     />
                   </dt>
                   <dd className='text-md font-semibold leading-6 text-gray-900'>
-                    <h3 className='text-base font-semibold leading-6 text-brand-secondary1d'>
+                    <h3 className='text-brand-secondary1d text-base font-semibold leading-6'>
                       <span>Properties</span>
                     </h3>
                   </dd>
