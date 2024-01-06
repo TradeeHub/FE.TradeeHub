@@ -66,7 +66,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                       {customer?.title} {customer?.name} {customer?.surname}
                     </h3>
                     <p className='text-sm text-brand-textLight'>
-                      <label>#CRN-1</label>
+                      <label>{customer?.customerReferenceNumber}</label>
                     </p>
                   </dd>
                 </div>
@@ -75,7 +75,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                     <FaBatteryEmpty className={iconClass} aria-hidden='true' />
                   </dt>
                   <dd className='rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-blue-600 ring-1 ring-inset ring-blue-600/20'>
-                    Lead
+                    {customer?.status}
                   </dd>
                 </div>
                 <div className='mt-2 flex w-full flex-none gap-x-4 px-6'>
@@ -90,10 +90,17 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                 <div className='mt-2 flex flex-col px-6'>
                   <div className='flex items-center justify-between'>
                     <div className='flex items-center gap-x-4'>
-                      <BsHouses
-                        className='h-6 w-5 text-brand-accent3'
-                        aria-hidden='true'
-                      />
+                      {customer?.properties?.length > 1 ? (
+                        <BsHouses
+                          className='h-6 w-5 text-brand-accent3'
+                          aria-hidden='true'
+                        />
+                      ) : (
+                        <PiHouseLineLight
+                          className={iconClass}
+                          aria-hidden='true'
+                        />
+                      )}
                       <span className='text-sm leading-6 text-brand-secondary1d'>
                         {recentProperty}
                       </span>

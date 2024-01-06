@@ -15,8 +15,6 @@ const useCustomer = (customerId: string): UseCustomerReturnType => {
     notifyOnNetworkStatusChange: true,
   });
 
-  console.log('Customer Data ', data);
-
   return { data, loading, error };
 };
 

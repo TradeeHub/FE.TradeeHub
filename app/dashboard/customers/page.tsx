@@ -104,7 +104,6 @@ const gridColumnDef: ColDef[] = [
     headerName: 'Tags',
     field: 'tags',
     cellRenderer: (params: { value: string[] }) => {
-      console.log('aaa', params.value)
       return <ArrayDataPopover items={params.value || []} />;
     },
     valueGetter: (params) => {

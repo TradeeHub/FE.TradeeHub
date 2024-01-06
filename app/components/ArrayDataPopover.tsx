@@ -19,9 +19,9 @@ const ArrayDataPopover: FunctionComponent<ArrayDataPopoverProps> = ({
   const popoverRef = useRef<HTMLDivElement>(null);
 
   const handleButtonClick = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
     if (items.length > 1) {
+      event.stopPropagation();
+      event.preventDefault();
       setShowPopover(!showPopover);
     }
   };

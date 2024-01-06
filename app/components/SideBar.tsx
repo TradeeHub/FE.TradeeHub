@@ -3,7 +3,7 @@ import { PiGridFour } from 'react-icons/pi';
 import RoundButton from './RoundButton';
 import { ColDef } from 'ag-grid-community';
 
-const CustomSidebar = ({
+const GridSettingManager = ({
   columnDefs,
   onToggleColumnVisibility,
 }: {
@@ -64,4 +64,4 @@ const SidebarContent = ({
   );
 };
 
-export default CustomSidebar;
+export default GridSettingManager;
