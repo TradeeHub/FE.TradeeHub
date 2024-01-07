@@ -22,7 +22,7 @@ const Layout = ({ children }: LayoutProps) => {
         {/* Navbar */}
 
         {/* Page content */}
-        <div className='p-4'>{children}</div>
+        <div className='overflow-auto p-4'>{children}</div>
       </div>
     </div>
   );
