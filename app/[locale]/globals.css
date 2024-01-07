@@ -50,6 +50,7 @@
     --border: 214 14% 20%;
     --input: 12 6.5% 15.1%;
     --ring: 35.5 91.7% 32.9%;
+    --radius: 1rem;
   }
 }
 
@@ -66,7 +67,6 @@
   background-color: hsl(var(--card));
   color: hsl(var(--card-foreground));
   border-bottom: 1px solid hsl(var(--border));
-  text-align: center;
 }
 
 .dark .ag-theme-material .ag-header-cell:hover {
@@ -87,4 +87,15 @@
 .ag-theme-material .ag-header {
   background-color: hsl(var(--card));
   color: hsl(var(--card));
+}
+
+.ag-theme-material {
+  border-radius: 1.5rem;
+  /* This should be on the container that holds the entire grid */
+  overflow: hidden;
+  /* This will ensure that any child elements do not bleed outside the rounded corners */
+}
+
+.ag-header-cell .ag-header-cell-label {
+  justify-content: center !important;
 }
