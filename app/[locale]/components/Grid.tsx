@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import CustomSidebar from '@/app/[locale]/components/SideBar';
+import CustomSidebar from '@/app/[locale]/components/GridSettingManager';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import RoundButton from '@/app/[locale]/components/RoundButton';
 import { CustomGridProps, PageInfoSlim } from '../types/sharedTypes';
