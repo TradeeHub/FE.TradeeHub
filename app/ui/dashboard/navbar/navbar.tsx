@@ -24,28 +24,32 @@ const Navbar = () => {
 
   // Correct the icon when the page loads or when the theme changes
   useEffect(() => {
-    console.log('THEME', theme, resolvedTheme)
+    console.log('THEME', theme, resolvedTheme);
     setTheme(resolvedTheme as string);
   }, [setTheme, resolvedTheme]);
 
   return (
     <>
-      <div className='flex flex-1 items-center p-4 gap-x-4'>
+      <div className='flex flex-1 items-center gap-x-4 p-4'>
         {/* Menu Icon, visible only on small (sm) screens */}
-        <div className='lg:hidden flex'>
+        <div className='flex lg:hidden'>
           <Sheet>
             <SheetTrigger>
               <Bars3Icon className='h-6 w-6' aria-hidden='true' />
             </SheetTrigger>
-            <SheetContent side='left' style={{ maxWidth: '280px' }} className='pl-0 pr-0'>
+            <SheetContent
+              side='left'
+              style={{ maxWidth: '280px' }}
+              className='pl-0 pr-0'
+            >
               <Sidebar />
             </SheetContent>
           </Sheet>
         </div>
 
         {/* Search Input with icon */}
-        <div className='flex-grow relative'>
-          <MdSearch className='absolute left-3 top-1/2 transform -translate-y-1/2 text-primary' />
+        <div className='relative flex-grow'>
+          <MdSearch className='absolute left-3 top-1/2 -translate-y-1/2 transform text-primary' />
           <Input placeholder='Search...' className='pl-10' />
         </div>
 
@@ -57,11 +61,11 @@ const Navbar = () => {
             aria-label='Switch Theme'
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           >
-            {theme === 'dark' ?
-              <BsMoonStars  className='h-6 w-6' aria-hidden='true' />
-             :
+            {theme === 'dark' ? (
+              <BsMoonStars className='h-6 w-6' aria-hidden='true' />
+            ) : (
               <MdOutlineWbSunny className='h-6 w-6' aria-hidden='true' />
-            }
+            )}
           </Button>
 
           <Button variant='ghost' size='icon' aria-label='Notifications'>
@@ -79,11 +83,19 @@ const Navbar = () => {
             <DropdownMenuContent>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className='cursor-pointer'>Profile</DropdownMenuItem>
-              <DropdownMenuItem className='cursor-pointer'>Billing</DropdownMenuItem>
-              <DropdownMenuItem className='cursor-pointer'>Settings</DropdownMenuItem>
+              <DropdownMenuItem className='cursor-pointer'>
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem className='cursor-pointer'>
+                Billing
+              </DropdownMenuItem>
+              <DropdownMenuItem className='cursor-pointer'>
+                Settings
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className='cursor-pointer'>Logout</DropdownMenuItem>
+              <DropdownMenuItem className='cursor-pointer'>
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
