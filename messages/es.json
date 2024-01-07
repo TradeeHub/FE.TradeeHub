@@ -1,0 +1,15 @@
+{
+  "LeftToRight": true,
+  "Language" : "Spanish",
+  "Code": "es",
+  "General": {
+    "dashboard": "Tablero",
+    "customers": "Clientes",
+    "properties": "Propiedades",
+    "quotes": "Cotizaciones",
+    "jobs": "Empleos",
+    "invoices": "Facturas",
+    "appointments": "Citas",
+    "analytics": "Analíticas"
+  }
+}

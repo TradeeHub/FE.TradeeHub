@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import Sidebar from '../sidebar/sidebar';
-import ThemeChanger from '@/app/components/ThemeChanger';
+import ThemeChanger from '@/app/[locale]/components/ThemeChanger';
 
 const Navbar = () => {
   return (

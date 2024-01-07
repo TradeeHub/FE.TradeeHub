@@ -6,10 +6,10 @@ import {
   PropertyDbObject,
 } from '@/generatedGraphql';
 import moment from 'moment';
-import CustomGrid from '@/app/components/Grid';
-import useCustomers from '@/app/hooks/customer/useCustomers';
-import ArrayDataPopover from '@/app/components/ArrayDataPopover';
-import { PageInfoSlim } from '@/app/types/sharedTypes';
+import CustomGrid from '@/app/[locale]/components/Grid';
+import useCustomers from '@/app/[locale]/hooks/customer/useCustomers';
+import ArrayDataPopover from '@/app/[locale]/components/ArrayDataPopover';
+import { PageInfoSlim } from '@/app/[locale]/types/sharedTypes';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Label } from '@/components/ui/label';
 

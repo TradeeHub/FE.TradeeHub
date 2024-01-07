@@ -1,0 +1,15 @@
+{
+  "LeftToRight": true,
+  "Language" : "Hindi",
+  "Code": "hi",
+  "General": {
+    "dashboard": "डैशबोर्ड",
+    "customers": "ग्राहक",
+    "properties": "संपत्ति",
+    "quotes": "उद्धरण",
+    "jobs": "नौकरियां",
+    "invoices": "चालान",
+    "appointments": "नियुक्तियां",
+    "analytics": "विश्लेषण"
+  }
+}

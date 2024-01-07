@@ -1,0 +1,15 @@
+{
+  "LeftToRight": true,
+  "Language" : "Arabic",
+  "Code": "ar",
+  "General": {
+    "dashboard": "لوحة القيادة",
+    "customers": "العملاء",
+    "properties": "الخصائص",
+    "quotes": "يقتبس",
+    "jobs": "Punët",
+    "invoices": "وظائف",
+    "appointments": "تعيينات",
+    "analytics": "تحليلات"
+  }
+}

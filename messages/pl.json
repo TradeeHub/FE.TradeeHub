@@ -1,0 +1,15 @@
+{
+  "LeftToRight": true,
+  "Language" : "Polish",
+  "Code": "pl",
+  "General": {
+    "dashboard": "Deska rozdzielcza",
+    "customers": "Klienci",
+    "properties": "Właściwości",
+    "quotes": "Wyceny",
+    "jobs": "Prace",
+    "invoices": "Faktury",
+    "appointments": "Spotkania",
+    "analytics": "Analityka"
+  }
+}

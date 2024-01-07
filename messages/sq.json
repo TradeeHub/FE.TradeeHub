@@ -1,0 +1,15 @@
+{
+  "LeftToRight": true,
+  "Language" : "Albanian",
+  "Code": "sq",
+  "General": {
+    "dashboard": "Paneli",
+    "customers": "Klientët",
+    "properties": "Prona",
+    "quotes": "Kuotat",
+    "jobs": "Punët",
+    "invoices": "Faturat",
+    "appointments": "Takimet",
+    "analytics": "Analitikë"
+  }
+}

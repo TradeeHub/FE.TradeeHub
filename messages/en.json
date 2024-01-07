@@ -1,0 +1,15 @@
+{
+  "LeftToRight": true,
+  "Language" : "English",
+  "Code": "en",
+  "General": {
+    "dashboard": "Dashboard",
+    "customers": "Customers",
+    "properties": "Properties",
+    "quotes": "Quotes",
+    "jobs": "Jobs",
+    "invoices": "Invoices",
+    "appointments": "Appointments",
+    "analytics": "Analytics"
+  }
+}

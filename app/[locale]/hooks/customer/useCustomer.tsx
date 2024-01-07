@@ -4,7 +4,7 @@ import {
   CustomerByIdQuery,
   CustomerByIdQueryVariables,
 } from '@/generatedGraphql';
-import { UseCustomerReturnType } from '@/app/types/sharedTypes';
+import { UseCustomerReturnType } from '@/app/[locale]/types/sharedTypes';
 
 const useCustomer = (customerId: string): UseCustomerReturnType => {
   const { data, error, loading } = useQuery<

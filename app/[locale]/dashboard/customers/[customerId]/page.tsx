@@ -1,5 +1,5 @@
 'use client';
-import useCustomer from '@/app/hooks/customer/useCustomer';
+import useCustomer from '@/app/[locale]/hooks/customer/useCustomer';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -17,7 +17,6 @@ import { BsHouses } from 'react-icons/bs';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -26,7 +25,6 @@ import { Button } from '@/components/ui/button';
 
 const Customer = ({ params }: { params: { customerId: string } }) => {
   const [showProperties, setShowProperties] = useState(false);
-  const [showContactInfo, setShowContactInfo] = useState(false);
   const { data, loading } = useCustomer(params.customerId);
   const customer = data?.customerById;
   const createdAtFormatted = moment(customer?.createdAt)

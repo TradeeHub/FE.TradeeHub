@@ -1,0 +1,15 @@
+{
+  "LeftToRight": true,
+  "Language" : "Italian",
+  "Code": "it",
+  "General": {
+    "dashboard": "Bacheca",
+    "customers": "Clienti",
+    "properties": "Proprietà",
+    "quotes": "Preventivi",
+    "jobs": "Lavori",
+    "invoices": "Fatture",
+    "appointments": "Appuntamenti",
+    "analytics": "Analitica"
+  }
+}

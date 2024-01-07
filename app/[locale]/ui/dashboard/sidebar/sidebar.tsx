@@ -22,61 +22,68 @@ interface LinkItem {
   icon: IconType;
   inactiveIcon: IconType;
 }
+import {useLocale} from 'next-intl';
+import {useTranslations} from 'next-intl';
+
+export default function Example() {
+    // const t = useTranslations('Index');
+    // console.log("")
+    // <h1>{t('title')}</h1>
+
+  const locale = useLocale();
+  const pathname = usePathname();
+  const isActive = (path: string) => pathname === path;
 
 const navigation: LinkItem[] = [
   {
     title: 'Dashboard',
-    path: '/dashboard',
+    path: `/${locale}/dashboard`,
     icon: AiOutlineDashboard,
     inactiveIcon: AiFillDashboard,
   },
   {
     title: 'Customers',
-    path: '/dashboard/customers',
+    path: `/${locale}/dashboard/customers`,
     icon: HiOutlineUsers,
     inactiveIcon: HiUsers,
   },
   {
     title: 'Properties',
-    path: '/dashboard/properties',
+    path: `/${locale}/dashboard/properties`,
     icon: BsHouses,
     inactiveIcon: BsHousesFill,
   },
   {
     title: 'Quotes',
-    path: '/dashboard/quotes',
+    path: `/${locale}/dashboard/quotes`,
     icon: AiOutlineThunderbolt,
     inactiveIcon: AiFillThunderbolt,
   },
   {
     title: 'Jobs',
-    path: '/dashboard/jobs',
+    path: `/${locale}/dashboard/jobs`,
     icon: VscTools,
     inactiveIcon: VscTools,
   },
   {
     title: 'Invoices',
-    path: '/dashboard/invoices',
+    path: `/${locale}/dashboard/invoices`,
     icon: LiaFileInvoiceDollarSolid,
     inactiveIcon: LiaFileInvoiceDollarSolid,
   },
   {
     title: 'Appointments',
-    path: '/dashboard/appointments',
+    path: `/${locale}/dashboard/appointments`,
     icon: IoCalendarOutline,
     inactiveIcon: IoCalendarSharp,
   },
   {
     title: 'Analytics',
-    path: '/dashboard/analytics',
+    path: `/${locale}/dashboard/analytics`,
     icon: PiChartPieSliceThin,
     inactiveIcon: PiChartPieSliceFill,
   },
 ];
-
-export default function Example() {
-  const pathname = usePathname();
-  const isActive = (path: string) => pathname === path;
 
   return (
     <>

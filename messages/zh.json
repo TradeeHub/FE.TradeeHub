@@ -1,0 +1,15 @@
+{
+  "LeftToRight": true,
+  "Language" : "Chinese",
+  "Code": "zh",
+  "General": {
+    "dashboard": "仪表板",
+    "customers": "客户",
+    "properties": "属性",
+    "quotes": "报价",
+    "jobs": "工作",
+    "invoices": "发票",
+    "appointments": "预约",
+    "analytics": "分析"
+  }
+}
