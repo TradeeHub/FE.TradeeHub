@@ -87,7 +87,7 @@ export default function Example() {
 
   return (
     <>
-      <div className='border-r'>
+      <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as='div'
@@ -243,6 +243,7 @@ export default function Example() {
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className='mt-4 w-full'
               aria-label='Toggle Theme'
+              variant={'secondary'}
             >
               Set Theme
             </Button>

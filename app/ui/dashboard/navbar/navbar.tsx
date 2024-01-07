@@ -1,124 +1,99 @@
 'use client';
+import { useEffect } from 'react';
 import { Bars3Icon, BellIcon } from '@heroicons/react/24/outline';
+import { MdOutlineWbSunny, MdSearch } from 'react-icons/md';
+import { useTheme } from 'next-themes';
+import { BsMoonStars } from 'react-icons/bs';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Label } from '@/components/ui/label';
 import {
-  ChevronDownIcon,
-  MagnifyingGlassIcon,
-} from '@heroicons/react/20/solid';
-import { Menu } from '@headlessui/react';
-import { Transition } from '@headlessui/react';
-import { Fragment } from 'react';
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
-const userNavigation = [
-  { name: 'Your profile', href: '#' },
-  { name: 'Sign out', href: '#' },
-];
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import Sidebar from '../sidebar/sidebar';
 
 const Navbar = () => {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  // Correct the icon when the page loads or when the theme changes
+  useEffect(() => {
+    console.log('THEME', theme, resolvedTheme)
+    setTheme(resolvedTheme as string);
+  }, [setTheme, resolvedTheme]);
+
   return (
-    <div className='sticky top-0'>
-      <div className='z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8'>
-        <button
-          type='button'
-          className='-m-2.5 p-2.5 text-gray-700 lg:hidden'
-          // onClick={() => setSidebarOpen(true)}
-        >
-          <span className='sr-only'>Open sidebar</span>
-          <Bars3Icon className='h-6 w-6' aria-hidden='true' />
-        </button>
+    <>
+      <div className='flex flex-1 items-center p-4 gap-x-4'>
+        {/* Menu Icon, visible only on small (sm) screens */}
+        <div className='lg:hidden flex'>
+          <Sheet>
+            <SheetTrigger>
+              <Bars3Icon className='h-6 w-6' aria-hidden='true' />
+            </SheetTrigger>
+            <SheetContent side='left' style={{ maxWidth: '280px' }} className='pl-0 pr-0'>
+              <Sidebar />
+            </SheetContent>
+          </Sheet>
+        </div>
 
-        {/* Separator */}
-        <div className='h-6 w-px bg-gray-900/10 lg:hidden' aria-hidden='true' />
+        {/* Search Input with icon */}
+        <div className='flex-grow relative'>
+          <MdSearch className='absolute left-3 top-1/2 transform -translate-y-1/2 text-primary' />
+          <Input placeholder='Search...' className='pl-10' />
+        </div>
 
-        <div className='flex flex-1 gap-x-4 self-stretch lg:gap-x-6'>
-          <form className='relative flex flex-1' action='#' method='GET'>
-            <label htmlFor='search-field' className='sr-only'>
-              Search
-            </label>
-            <MagnifyingGlassIcon
-              className='pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400'
-              aria-hidden='true'
-            />
-            <input
-              id='search-field'
-              className='block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm'
-              placeholder='Search...'
-              type='search'
-              name='search'
-            />
-          </form>
-          <div className='flex items-center gap-x-4 lg:gap-x-6'>
-            <button
-              type='button'
-              className='-m-2.5 p-2.5 text-gray-400 hover:text-gray-500'
-            >
-              <span className='sr-only'>View notifications</span>
-              <BellIcon className='h-6 w-6' aria-hidden='true' />
-            </button>
+        {/* Theme Toggle and Notifications Button */}
+        <div className='flex items-center gap-4'>
+          <Button
+            variant='ghost'
+            size='icon'
+            aria-label='Switch Theme'
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          >
+            {theme === 'dark' ?
+              <BsMoonStars  className='h-6 w-6' aria-hidden='true' />
+             :
+              <MdOutlineWbSunny className='h-6 w-6' aria-hidden='true' />
+            }
+          </Button>
 
-            {/* Separator */}
-            <div
-              className='hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10'
-              aria-hidden='true'
-            />
+          <Button variant='ghost' size='icon' aria-label='Notifications'>
+            <BellIcon className='h-6 w-6' aria-hidden='true' />
+          </Button>
 
-            {/* Profile dropdown */}
-            <Menu as='div' className='relative'>
-              <Menu.Button className='-m-1.5 flex items-center p-1.5'>
-                <span className='sr-only'>Open user menu</span>
-                <img
-                  className='h-8 w-8 rounded-full bg-gray-50'
-                  src='https://i.pinimg.com/736x/2c/af/e9/2cafe919952a053d85dd664f6649bf45.jpg'
-                  alt=''
-                />
-                <span className='hidden lg:flex lg:items-center'>
-                  <span
-                    className='ml-4 text-sm font-semibold leading-6 text-gray-900'
-                    aria-hidden='true'
-                  >
-                    Marenglen Doci
-                  </span>
-                  <ChevronDownIcon
-                    className='ml-2 h-5 w-5 text-gray-400'
-                    aria-hidden='true'
-                  />
-                </span>
-              </Menu.Button>
-              <Transition
-                as={Fragment}
-                enter='transition ease-out duration-100'
-                enterFrom='transform opacity-0 scale-95'
-                enterTo='transform opacity-100 scale-100'
-                leave='transition ease-in duration-75'
-                leaveFrom='transform opacity-100 scale-100'
-                leaveTo='transform opacity-0 scale-95'
-              >
-                <Menu.Items className='absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none'>
-                  {userNavigation.map((item) => (
-                    <Menu.Item key={item.name}>
-                      {({ active }) => (
-                        <a
-                          href={item.href}
-                          className={classNames(
-                            active ? 'bg-gray-50' : '',
-                            'block px-3 py-1 text-sm leading-6 text-gray-900',
-                          )}
-                        >
-                          {item.name}
-                        </a>
-                      )}
-                    </Menu.Item>
-                  ))}
-                </Menu.Items>
-              </Transition>
-            </Menu>
+          {/* Avatar and Dropdown Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Avatar>
+                <AvatarImage src='https://i.pinimg.com/736x/2c/af/e9/2cafe919952a053d85dd664f6649bf45.jpg' />
+                <AvatarFallback>MD</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className='cursor-pointer'>Profile</DropdownMenuItem>
+              <DropdownMenuItem className='cursor-pointer'>Billing</DropdownMenuItem>
+              <DropdownMenuItem className='cursor-pointer'>Settings</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className='cursor-pointer'>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Rd HandyPro Label */}
+          <div className='flex-shrink-0 md:mr-16'>
+            <Label>Rd HandyPro</Label>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
