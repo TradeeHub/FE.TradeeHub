@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
-import {useTranslations} from 'next-intl';
-
+import { useTranslations } from 'next-intl';
 import {
   Card,
   CardContent,
@@ -10,15 +9,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import React from 'react';
-export const locales = ['en', 'de', 'it'];
-const localePattern = locales.join('|');
-console.log('LOCALES', localePattern)
+
 const Properties = () => {
   const t = useTranslations('General');
 
   return (
-    <>      
-    <h1>{t('properties')}</h1>
+    <>
+      <h1>{t('properties')}</h1>
 
       <Card className='w-[350px]'>
         <CardHeader>

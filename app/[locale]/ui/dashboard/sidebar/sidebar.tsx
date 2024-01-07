@@ -22,68 +22,68 @@ interface LinkItem {
   icon: IconType;
   inactiveIcon: IconType;
 }
-import {useLocale} from 'next-intl';
-import {useTranslations} from 'next-intl';
+import { useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 
-export default function Example() {
-    // const t = useTranslations('Index');
-    // console.log("")
-    // <h1>{t('title')}</h1>
+export default function SideBar() {
+  const t = useTranslations('General');
+  // console.log("")
+  // <h1>{t('title')}</h1>
 
   const locale = useLocale();
   const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
 
-const navigation: LinkItem[] = [
-  {
-    title: 'Dashboard',
-    path: `/${locale}/dashboard`,
-    icon: AiOutlineDashboard,
-    inactiveIcon: AiFillDashboard,
-  },
-  {
-    title: 'Customers',
-    path: `/${locale}/dashboard/customers`,
-    icon: HiOutlineUsers,
-    inactiveIcon: HiUsers,
-  },
-  {
-    title: 'Properties',
-    path: `/${locale}/dashboard/properties`,
-    icon: BsHouses,
-    inactiveIcon: BsHousesFill,
-  },
-  {
-    title: 'Quotes',
-    path: `/${locale}/dashboard/quotes`,
-    icon: AiOutlineThunderbolt,
-    inactiveIcon: AiFillThunderbolt,
-  },
-  {
-    title: 'Jobs',
-    path: `/${locale}/dashboard/jobs`,
-    icon: VscTools,
-    inactiveIcon: VscTools,
-  },
-  {
-    title: 'Invoices',
-    path: `/${locale}/dashboard/invoices`,
-    icon: LiaFileInvoiceDollarSolid,
-    inactiveIcon: LiaFileInvoiceDollarSolid,
-  },
-  {
-    title: 'Appointments',
-    path: `/${locale}/dashboard/appointments`,
-    icon: IoCalendarOutline,
-    inactiveIcon: IoCalendarSharp,
-  },
-  {
-    title: 'Analytics',
-    path: `/${locale}/dashboard/analytics`,
-    icon: PiChartPieSliceThin,
-    inactiveIcon: PiChartPieSliceFill,
-  },
-];
+  const navigation: LinkItem[] = [
+    {
+      title: t('dashboard'),
+      path: `/${locale}/dashboard`,
+      icon: AiOutlineDashboard,
+      inactiveIcon: AiFillDashboard,
+    },
+    {
+      title: t('customers'),
+      path: `/${locale}/dashboard/customers`,
+      icon: HiOutlineUsers,
+      inactiveIcon: HiUsers,
+    },
+    {
+      title: t('properties'),
+      path: `/${locale}/dashboard/properties`,
+      icon: BsHouses,
+      inactiveIcon: BsHousesFill,
+    },
+    {
+      title: t('quotes'),
+      path: `/${locale}/dashboard/quotes`,
+      icon: AiOutlineThunderbolt,
+      inactiveIcon: AiFillThunderbolt,
+    },
+    {
+      title: t('jobs'),
+      path: `/${locale}/dashboard/jobs`,
+      icon: VscTools,
+      inactiveIcon: VscTools,
+    },
+    {
+      title: t('invoices'),
+      path: `/${locale}/dashboard/invoices`,
+      icon: LiaFileInvoiceDollarSolid,
+      inactiveIcon: LiaFileInvoiceDollarSolid,
+    },
+    {
+      title: t('appointments'),
+      path: `/${locale}/dashboard/appointments`,
+      icon: IoCalendarOutline,
+      inactiveIcon: IoCalendarSharp,
+    },
+    {
+      title: t('analytics'),
+      path: `/${locale}/dashboard/analytics`,
+      icon: PiChartPieSliceThin,
+      inactiveIcon: PiChartPieSliceFill,
+    },
+  ];
 
   return (
     <>
@@ -98,7 +98,7 @@ const navigation: LinkItem[] = [
           <ul role='list' className='space-y-1'>
             {navigation.map((item) => (
               <li key={item.title} className='w-full'>
-                <Link href={item.path} passHref>
+                <Link href={item.path} passHref locale={locale}>
                   <Button
                     variant='ghost'
                     className={`w-full justify-start gap-2 text-left text-lg ${
