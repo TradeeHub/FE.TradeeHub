@@ -9,9 +9,9 @@ type RoundButtonProps = {
 
 const RoundButton = ({ icon, onClick }: RoundButtonProps) => (
   <Button
-    variant='default'
+    variant='secondary'
     onClick={onClick}
-    className='focus-visible:outline-6 rounded-full p-1 shadow-md hover:bg-secondary dark:bg-accent dark:hover:bg-accent/80'
+    className='focus-visible:outline-6 rounded-full p-1 shadow-md hover:bg-secondary/90'
   >
     <Label className=''>{icon}</Label>
   </Button>
