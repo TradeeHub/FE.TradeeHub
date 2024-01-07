@@ -19,9 +19,9 @@ import ThemeChanger from '@/app/components/ThemeChanger';
 const Navbar = () => {
   return (
     <>
-      <div className='flex flex-1 items-center gap-x-4 p-4 bg-card'>
+      <div className='flex flex-1 items-center gap-x-4 bg-card p-4'>
         {/* Menu Icon, visible only on small (sm) screens */}
-        <div className='flex lg:hidden text-primary'>
+        <div className='flex text-primary lg:hidden'>
           <Sheet>
             <SheetTrigger>
               <Bars3Icon className='h-6 w-6' aria-hidden='true' />
@@ -39,21 +39,22 @@ const Navbar = () => {
         {/* Search Input with icon */}
         <div className='relative flex-grow text-primary'>
           <MdSearch className='absolute left-3 top-1/2 -translate-y-1/2 transform text-primary' />
-          <Input placeholder='Search...' className='pl-10 border-border bg-background' />
+          <Input
+            placeholder='Search...'
+            className='border-border bg-background pl-10'
+          />
         </div>
 
         {/* Theme Toggle and Notifications Button */}
         <div className='flex items-center gap-4'>
-        
           <div className='text-primary'>
-          <ThemeChanger/>
+            <ThemeChanger />
           </div>
           <div className='text-primary'>
-          <Button variant='ghost' size='icon' aria-label='Notifications'>
-            <BellIcon className='h-6 w-6' aria-hidden='true' />
-          </Button>
+            <Button variant='ghost' size='icon' aria-label='Notifications'>
+              <BellIcon className='h-6 w-6' aria-hidden='true' />
+            </Button>
           </div>
-       
 
           {/* Avatar and Dropdown Menu */}
           <DropdownMenu>
@@ -83,7 +84,7 @@ const Navbar = () => {
           </DropdownMenu>
 
           {/* Rd HandyPro Label */}
-          <div className='flex-shrink-0 md:mr-16 text-primary'>
+          <div className='flex-shrink-0 text-primary md:mr-16'>
             <Label className='text-lg font-bold'>Rd HandyPro</Label>
           </div>
         </div>

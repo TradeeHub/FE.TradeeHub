@@ -5,7 +5,6 @@ import { useTheme } from 'next-themes';
 import { BsMoonStars } from 'react-icons/bs';
 import { Button } from '@/components/ui/button';
 
-
 const ThemeChanger = () => {
   const { theme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
@@ -21,19 +20,19 @@ const ThemeChanger = () => {
 
   return (
     <>
-        <div>
-          <Button
-            variant='ghost'
-            size='icon'
-            aria-label='Switch Theme'
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          >
-            {theme === 'dark' ? (
-              <BsMoonStars className='h-6 w-6' aria-hidden='true' />
-            ) : (
-              <MdOutlineWbSunny className='h-6 w-6' aria-hidden='true' />
-            )}
-          </Button>
+      <div>
+        <Button
+          variant='ghost'
+          size='icon'
+          aria-label='Switch Theme'
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        >
+          {theme === 'dark' ? (
+            <BsMoonStars className='h-6 w-6' aria-hidden='true' />
+          ) : (
+            <MdOutlineWbSunny className='h-6 w-6' aria-hidden='true' />
+          )}
+        </Button>
       </div>
     </>
   );
