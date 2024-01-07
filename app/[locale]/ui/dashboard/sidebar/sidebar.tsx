@@ -24,11 +24,10 @@ interface LinkItem {
 }
 import { useLocale } from 'next-intl';
 import { useTranslations } from 'next-intl';
+import ChangeLanguage from '@/app/[locale]/components/ChangeLanguage';
 
 export default function SideBar() {
-  const t = useTranslations('General');
-  // console.log("")
-  // <h1>{t('title')}</h1>
+  const t = useTranslations('general');
 
   const locale = useLocale();
   const pathname = usePathname();
@@ -124,6 +123,10 @@ export default function SideBar() {
             ))}
           </ul>
         </nav>
+
+        <div className='mt-auto'>
+          <ChangeLanguage />
+        </div>
       </div>
     </>
   );

@@ -1,8 +1,11 @@
 {
-  "LeftToRight": true,
-  "Language" : "Hindi",
-  "Code": "hi",
-  "General": {
+  "settings" : {
+    "leftToRight": true,
+    "englishName" : "Hindi",
+    "language" : "हिन्दी",
+    "code": "hi"
+  },
+  "general": {
     "dashboard": "डैशबोर्ड",
     "customers": "ग्राहक",
     "properties": "संपत्ति",

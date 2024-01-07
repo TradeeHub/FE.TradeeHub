@@ -1,8 +1,11 @@
 {
-  "LeftToRight": true,
-  "Language" : "Chinese",
-  "Code": "zh",
-  "General": {
+  "settings" : {
+    "leftToRight": true,
+    "englishName" : "Chinese",
+    "language" : "中文",
+    "code": "zh"
+  },
+  "general": {
     "dashboard": "仪表板",
     "customers": "客户",
     "properties": "属性",

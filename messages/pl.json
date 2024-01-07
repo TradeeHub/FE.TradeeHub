@@ -1,8 +1,11 @@
 {
-  "LeftToRight": true,
-  "Language" : "Polish",
-  "Code": "pl",
-  "General": {
+  "settings" : {
+    "leftToRight": true,
+    "englishName" : "Polish",
+    "language" : "Polski",
+    "code": "pl"
+  },
+  "general": {
     "dashboard": "Deska rozdzielcza",
     "customers": "Klienci",
     "properties": "Właściwości",

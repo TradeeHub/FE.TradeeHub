@@ -1,8 +1,11 @@
 {
-  "LeftToRight": true,
-  "Language" : "Italian",
-  "Code": "it",
-  "General": {
+  "settings" : {
+    "leftToRight": true,
+    "englishName" : "Italian",
+    "language" : "Italiano",
+    "code": "it"
+  },
+  "general": {
     "dashboard": "Bacheca",
     "customers": "Clienti",
     "properties": "Proprietà",

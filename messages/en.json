@@ -1,8 +1,11 @@
 {
-  "LeftToRight": true,
-  "Language" : "English",
-  "Code": "en",
-  "General": {
+  "settings" : {
+    "leftToRight": true,
+    "englishName" : "English",
+    "language" : "English",
+    "code": "en"
+  },
+  "general": {
     "dashboard": "Dashboard",
     "customers": "Customers",
     "properties": "Properties",

@@ -89,6 +89,7 @@ const CustomGrid = ({
       return;
     }
 
+    console.log(pathname);
     router.push(`${pathname}/${event.data.id}`);
   };
 

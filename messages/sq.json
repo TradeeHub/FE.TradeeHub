@@ -1,8 +1,11 @@
 {
-  "LeftToRight": true,
-  "Language" : "Albanian",
-  "Code": "sq",
-  "General": {
+  "settings" : {
+    "leftToRight": true,
+    "englishName" : "Albanian",
+    "language" : "Shqip",
+    "code": "sq"
+  },
+  "general": {
     "dashboard": "Paneli",
     "customers": "Klientët",
     "properties": "Prona",

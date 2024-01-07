@@ -1,8 +1,11 @@
 {
-  "LeftToRight": true,
-  "Language" : "Arabic",
-  "Code": "ar",
-  "General": {
+  "settings" : {
+    "leftToRight": true,
+    "englishName" : "Arabic",
+    "language" : "العربية", 
+    "code": "ar"
+  },
+  "general": {
     "dashboard": "لوحة القيادة",
     "customers": "العملاء",
     "properties": "الخصائص",

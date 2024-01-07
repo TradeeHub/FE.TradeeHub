@@ -1,8 +1,11 @@
 {
-  "LeftToRight": true,
-  "Language" : "Spanish",
-  "Code": "es",
-  "General": {
+  "settings" : {
+    "leftToRight": true,
+    "en" : "Spanish",
+    "language" : "Español",
+    "code": "es"
+  },
+  "general": {
     "dashboard": "Tablero",
     "customers": "Clientes",
     "properties": "Propiedades",

@@ -11,7 +11,7 @@ import {
 import React from 'react';
 
 const Properties = () => {
-  const t = useTranslations('General');
+  const t = useTranslations('general');
 
   return (
     <>

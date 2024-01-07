@@ -24,6 +24,10 @@ export type CustomGridProps = {
   initialPageInfo: PageInfoSlim;
 };
 
+export type LanguageOption = {
+  name: string;
+};
+
 export type UseCustomerReturnType = {
   data: CustomerByIdQuery | undefined;
   loading: boolean;
