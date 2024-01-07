@@ -104,7 +104,7 @@ const CustomGrid = ({
 
   return (
     <>
-      <div className='flex flex-col gap-4 rounded-lg md:mr-12 md:flex-row  md:gap-4'>
+      <div className='flex flex-col gap-4 rounded-lg md:mr-12 md:flex-row  md:gap-4 mt-2'>
         <div className='xs:flex-row flex flex-row items-center gap-5 p-2 sm:items-start sm:p-0 md:mr-1 md:flex-col'>
           <CustomSidebar
             columnDefs={gridColumnDef}
@@ -116,10 +116,9 @@ const CustomGrid = ({
           />
         </div>
         <div className='flex-grow'>
-          <div
-            className='ag-theme-material w-full'
-            style={{ height: 'calc(100vh - 9rem)' }}
-          >
+     <div
+  className='ag-theme-material w-full h-[calc(100vh-11rem)] md:h-[calc(100vh-7.5rem)]'
+>
             <AgGridReact
               columnDefs={gridColumnDef}
               gridOptions={gridOptions}
