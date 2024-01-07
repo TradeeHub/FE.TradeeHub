@@ -100,7 +100,7 @@ export default function SideBar() {
                 <Link href={item.path} passHref locale={locale}>
                   <Button
                     variant='ghost'
-                    className={`w-full justify-start gap-4 text-left text-md ${
+                    className={`text-md w-full justify-start gap-4 text-left ${
                       isActive(item.path) ? 'bg-border' : ''
                     }`}
                   >
@@ -116,7 +116,9 @@ export default function SideBar() {
                         aria-hidden='true'
                       />
                     )}
-                    <span className='text-primary font-roboto'>{item.title}</span>
+                    <span className='font-roboto text-primary'>
+                      {item.title}
+                    </span>
                   </Button>
                 </Link>
               </li>

@@ -84,7 +84,7 @@ const Navbar = () => {
           </DropdownMenu>
 
           {/* Rd HandyPro Label */}
-          <div className='flex-shrink-0 text-primary md:mr-16'>
+          <div className='hidden flex-shrink-0 text-primary md:mr-12 md:block'>
             <Label className='text-lg font-bold'>Rd HandyPro</Label>
           </div>
         </div>
