@@ -47,7 +47,7 @@ const SidebarContent = ({
         className='absolute left-0 z-10 mt-2 w-56 rounded-2xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'
         style={{ top: '100%' }} // Ensures that the sidebar opens right below the button
       >
-        <Card>
+        <Card className='bg-background'>
           <CardHeader className='flex'>
             <CardTitle className='text-center text-lg font-bold'>
               Columns

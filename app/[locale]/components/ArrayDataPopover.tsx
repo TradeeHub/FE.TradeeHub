@@ -71,7 +71,7 @@ const ArrayDataPopover: FunctionComponent<ArrayDataPopoverProps> = ({
   const popoverContent = (
     <div
       ref={popoverRef}
-      className='absolute z-10 mt-1 rounded-xl border bg-card p-3 text-sm text-primary shadow-lg ring-1 ring-black ring-opacity-5'
+      className='absolute z-10 mt-1 rounded-xl border bg-background p-3 text-sm text-primary shadow-lg ring-1 ring-black ring-opacity-5'
       style={{ minWidth: '200px' }}
     >
       {items.map((item, index) => (
