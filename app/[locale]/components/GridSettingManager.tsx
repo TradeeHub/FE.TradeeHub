@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PiGridFour } from 'react-icons/pi';
 import RoundButton from './RoundButton';
 import { ColDef } from 'ag-grid-community';
@@ -14,8 +14,22 @@ const GridSettingManager = ({
   onToggleColumnVisibility: (index: number) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const sidebarRef = useRef(null); // Create a ref for the sidebar
 
-  // Add a container div with relative positioning
+  // Click event handler to close sidebar if clicked outside
+  const handleClickOutside = (event) => {
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      setIsOpen(false); // Close the sidebar
+    }
+  };
+
+  useEffect(() => {
+    // Add when the component is mounted
+    document.addEventListener('mousedown', handleClickOutside);
+    // Remove event listener on cleanup
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []); // Empty dependency array ensures effect only runs on mount and unmount
+
   return (
     <div className='relative'>
       <RoundButton
@@ -24,10 +38,12 @@ const GridSettingManager = ({
       />
 
       {isOpen && (
-        <SidebarContent
-          columnDefs={columnDefs}
-          onToggleColumnVisibility={onToggleColumnVisibility}
-        />
+        <div ref={sidebarRef}>
+          <SidebarContent
+            columnDefs={columnDefs}
+            onToggleColumnVisibility={onToggleColumnVisibility}
+          />
+        </div>
       )}
     </div>
   );
