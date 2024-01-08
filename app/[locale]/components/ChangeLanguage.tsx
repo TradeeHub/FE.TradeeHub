@@ -51,7 +51,7 @@ const ChangeLanguage = () => {
             <SelectItem
               key={locale}
               value={locale}
-              className='flex items-center justify-center font-roboto cursor-pointer'
+              className='flex items-center justify-center font-roboto cursor-pointer focus:text-secondary'
             >
               {languageOptions[locale].name}
             </SelectItem>
