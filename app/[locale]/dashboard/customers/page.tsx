@@ -41,16 +41,19 @@ const gridColumnDef: ColDef[] = [
     cellRenderer: (params: { value: string }) => {
       const initials = getInitials(params.value);
       return (
-        <div className='flex items-center gap-2'>
-          <Avatar>
-            <AvatarFallback className='font-medium dark:bg-primary dark:text-border'>
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          <Label>{params.value}</Label>
+        <div className='flex h-full'>
+          <div className='flex items-center gap-2'>
+            <Avatar className='h-9 w-9'>
+              <AvatarFallback className='dark:bg-primary dark:text-border'>
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <Label>{params.value}</Label>
+          </div>
         </div>
       );
     },
+
     sortable: true,
     headerClass: 'text-base',
     filter: true,

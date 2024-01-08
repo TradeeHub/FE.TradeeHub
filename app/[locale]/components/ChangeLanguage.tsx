@@ -40,15 +40,19 @@ const ChangeLanguage = () => {
   return (
     <>
       <Select value={currentCode} onValueChange={handleLocaleChange}>
-        <SelectTrigger className='flex items-center bg-background text-center text-primary'>
+        <SelectTrigger className='flex items-center justify-center bg-background font-roboto text-primary'>
           <SelectValue placeholder={t('language')} />
         </SelectTrigger>
         <SelectContent
           position='popper'
-          className='flex items-center text-center text-primary'
+          className='flex items-center justify-start text-center text-primary'
         >
           {locales.map((locale) => (
-            <SelectItem key={locale} value={locale}>
+            <SelectItem
+              key={locale}
+              value={locale}
+              className='flex items-center justify-center font-roboto'
+            >
               {languageOptions[locale].name}
             </SelectItem>
           ))}

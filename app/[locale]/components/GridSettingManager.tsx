@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import { PiGridFour } from 'react-icons/pi';
 import RoundButton from './RoundButton';
 import { ColDef } from 'ag-grid-community';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 
