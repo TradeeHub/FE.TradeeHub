@@ -17,7 +17,8 @@ export type Scalars = {
   Float: { input: number; output: number; }
   DateTime: { input: any; output: any; }
   Decimal: { input: any; output: any; }
-  ObjectId: { input: any; output: any; }
+  Long: { input: any; output: any; }
+  Short: { input: any; output: any; }
   UUID: { input: any; output: any; }
 };
 
@@ -29,18 +30,65 @@ export type AddressDbObject = {
   postcode?: Maybe<Scalars['String']['output']>;
 };
 
+export enum ApplyPolicy {
+  AfterResolver = 'AFTER_RESOLVER',
+  BeforeResolver = 'BEFORE_RESOLVER',
+  Validation = 'VALIDATION'
+}
+
+export enum ChecksumValidationStatus {
+  Invalid = 'INVALID',
+  NotValidated = 'NOT_VALIDATED',
+  PendingResponseRead = 'PENDING_RESPONSE_READ',
+  Successful = 'SUCCESSFUL'
+}
+
+export type CodeDeliveryDetailsType = {
+  __typename?: 'CodeDeliveryDetailsType';
+  attributeName?: Maybe<Scalars['String']['output']>;
+  deliveryMedium?: Maybe<DeliveryMediumType>;
+  destination?: Maybe<Scalars['String']['output']>;
+};
+
 export type CommentDbObject = {
   __typename?: 'CommentDbObject';
   comment?: Maybe<Scalars['String']['output']>;
   uploadUrls: Array<Scalars['String']['output']>;
 };
 
-export type CommentDbObjectFilterInput = {
-  and?: InputMaybe<Array<CommentDbObjectFilterInput>>;
-  comment?: InputMaybe<StringOperationFilterInput>;
-  or?: InputMaybe<Array<CommentDbObjectFilterInput>>;
-  uploadUrls?: InputMaybe<ListStringOperationFilterInput>;
+export type CommentDbObjectFilter = {
+  AND?: InputMaybe<Array<CommentDbObjectFilter>>;
+  OR?: InputMaybe<Array<CommentDbObjectFilter>>;
+  comment?: InputMaybe<Scalars['String']['input']>;
+  comment_contains?: InputMaybe<Scalars['String']['input']>;
+  comment_ends_with?: InputMaybe<Scalars['String']['input']>;
+  comment_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  comment_not?: InputMaybe<Scalars['String']['input']>;
+  comment_not_contains?: InputMaybe<Scalars['String']['input']>;
+  comment_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  comment_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  comment_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  comment_starts_with?: InputMaybe<Scalars['String']['input']>;
+  uploadUrls_all?: InputMaybe<ISingleFilterOfStringFilter>;
+  uploadUrls_any?: InputMaybe<Scalars['Boolean']['input']>;
+  uploadUrls_none?: InputMaybe<ISingleFilterOfStringFilter>;
+  uploadUrls_some?: InputMaybe<ISingleFilterOfStringFilter>;
 };
+
+export type ConfirmSignUpResponse = {
+  __typename?: 'ConfirmSignUpResponse';
+  contentLength: Scalars['Long']['output'];
+  httpStatusCode: HttpStatusCode;
+  responseMetadata?: Maybe<ResponseMetadata>;
+};
+
+export enum CoreChecksumAlgorithm {
+  Crc32 = 'CRC32',
+  Crc32C = 'CRC32C',
+  None = 'NONE',
+  Sha1 = 'SHA1',
+  Sha256 = 'SHA256'
+}
 
 export type CustomerDbObject = {
   __typename?: 'CustomerDbObject';
@@ -68,51 +116,211 @@ export type CustomerDbObject = {
   title?: Maybe<Scalars['String']['output']>;
 };
 
-export type CustomerDbObjectFilterInput = {
-  alias?: InputMaybe<StringOperationFilterInput>;
-  and?: InputMaybe<Array<CustomerDbObjectFilterInput>>;
-  comments?: InputMaybe<ListFilterInputTypeOfCommentDbObjectFilterInput>;
-  createdAt?: InputMaybe<DateTimeOperationFilterInput>;
-  createdBy?: InputMaybe<UuidOperationFilterInput>;
-  customerRating?: InputMaybe<DecimalOperationFilterInput>;
-  customerReferenceNumber?: InputMaybe<StringOperationFilterInput>;
-  emails?: InputMaybe<ListFilterInputTypeOfEmailDbObjectFilterInput>;
-  fullName?: InputMaybe<StringOperationFilterInput>;
-  id?: InputMaybe<ObjectIdOperationFilterInput>;
-  modifiedAt?: InputMaybe<DateTimeOperationFilterInput>;
-  modifiedBy?: InputMaybe<UuidOperationFilterInput>;
-  name?: InputMaybe<StringOperationFilterInput>;
-  or?: InputMaybe<Array<CustomerDbObjectFilterInput>>;
-  phoneNumbers?: InputMaybe<ListFilterInputTypeOfPhoneNumberDbObjectFilterInput>;
-  properties?: InputMaybe<ListObjectIdOperationFilterInput>;
-  referralFeeFixed?: InputMaybe<DecimalOperationFilterInput>;
-  referralFeePercentage?: InputMaybe<DecimalOperationFilterInput>;
-  referredByCustomer?: InputMaybe<ObjectIdOperationFilterInput>;
-  referredByOther?: InputMaybe<StringOperationFilterInput>;
-  status?: InputMaybe<StringOperationFilterInput>;
-  surname?: InputMaybe<StringOperationFilterInput>;
-  tags?: InputMaybe<ListStringOperationFilterInput>;
-  title?: InputMaybe<StringOperationFilterInput>;
+export type CustomerDbObjectFilter = {
+  AND?: InputMaybe<Array<CustomerDbObjectFilter>>;
+  OR?: InputMaybe<Array<CustomerDbObjectFilter>>;
+  alias?: InputMaybe<Scalars['String']['input']>;
+  alias_contains?: InputMaybe<Scalars['String']['input']>;
+  alias_ends_with?: InputMaybe<Scalars['String']['input']>;
+  alias_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  alias_not?: InputMaybe<Scalars['String']['input']>;
+  alias_not_contains?: InputMaybe<Scalars['String']['input']>;
+  alias_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  alias_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  alias_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  alias_starts_with?: InputMaybe<Scalars['String']['input']>;
+  comments_all?: InputMaybe<CommentDbObjectFilter>;
+  comments_any?: InputMaybe<Scalars['Boolean']['input']>;
+  comments_none?: InputMaybe<CommentDbObjectFilter>;
+  comments_some?: InputMaybe<CommentDbObjectFilter>;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdBy?: InputMaybe<Scalars['UUID']['input']>;
+  createdBy_gt?: InputMaybe<Scalars['UUID']['input']>;
+  createdBy_gte?: InputMaybe<Scalars['UUID']['input']>;
+  createdBy_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  createdBy_lt?: InputMaybe<Scalars['UUID']['input']>;
+  createdBy_lte?: InputMaybe<Scalars['UUID']['input']>;
+  createdBy_not?: InputMaybe<Scalars['UUID']['input']>;
+  createdBy_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  createdBy_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  createdBy_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  createdBy_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  createdBy_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  customerRating?: InputMaybe<Scalars['Decimal']['input']>;
+  customerRating_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  customerRating_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  customerRating_in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
+  customerRating_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  customerRating_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  customerRating_not?: InputMaybe<Scalars['Decimal']['input']>;
+  customerRating_not_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  customerRating_not_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  customerRating_not_in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
+  customerRating_not_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  customerRating_not_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  customerReferenceNumber?: InputMaybe<Scalars['String']['input']>;
+  customerReferenceNumber_contains?: InputMaybe<Scalars['String']['input']>;
+  customerReferenceNumber_ends_with?: InputMaybe<Scalars['String']['input']>;
+  customerReferenceNumber_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  customerReferenceNumber_not?: InputMaybe<Scalars['String']['input']>;
+  customerReferenceNumber_not_contains?: InputMaybe<Scalars['String']['input']>;
+  customerReferenceNumber_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  customerReferenceNumber_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  customerReferenceNumber_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  customerReferenceNumber_starts_with?: InputMaybe<Scalars['String']['input']>;
+  emails_all?: InputMaybe<EmailDbObjectFilter>;
+  emails_any?: InputMaybe<Scalars['Boolean']['input']>;
+  emails_none?: InputMaybe<EmailDbObjectFilter>;
+  emails_some?: InputMaybe<EmailDbObjectFilter>;
+  fullName?: InputMaybe<Scalars['String']['input']>;
+  fullName_contains?: InputMaybe<Scalars['String']['input']>;
+  fullName_ends_with?: InputMaybe<Scalars['String']['input']>;
+  fullName_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  fullName_not?: InputMaybe<Scalars['String']['input']>;
+  fullName_not_contains?: InputMaybe<Scalars['String']['input']>;
+  fullName_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  fullName_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  fullName_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  fullName_starts_with?: InputMaybe<Scalars['String']['input']>;
+  modifiedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  modifiedAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  modifiedAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedBy?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedBy_gt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedBy_gte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedBy_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  modifiedBy_lt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedBy_lte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedBy_not?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedBy_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedBy_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedBy_not_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  modifiedBy_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedBy_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  name_not?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  name_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  name_starts_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumbers_all?: InputMaybe<PhoneNumberDbObjectFilter>;
+  phoneNumbers_any?: InputMaybe<Scalars['Boolean']['input']>;
+  phoneNumbers_none?: InputMaybe<PhoneNumberDbObjectFilter>;
+  phoneNumbers_some?: InputMaybe<PhoneNumberDbObjectFilter>;
+  properties_all?: InputMaybe<ObjectIdFilter>;
+  properties_any?: InputMaybe<Scalars['Boolean']['input']>;
+  properties_none?: InputMaybe<ObjectIdFilter>;
+  properties_some?: InputMaybe<ObjectIdFilter>;
+  referralFeeFixed?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeeFixed_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeeFixed_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeeFixed_in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
+  referralFeeFixed_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeeFixed_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeeFixed_not?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeeFixed_not_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeeFixed_not_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeeFixed_not_in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
+  referralFeeFixed_not_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeeFixed_not_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeePercentage?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeePercentage_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeePercentage_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeePercentage_in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
+  referralFeePercentage_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeePercentage_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeePercentage_not?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeePercentage_not_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeePercentage_not_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeePercentage_not_in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
+  referralFeePercentage_not_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  referralFeePercentage_not_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  referredByOther?: InputMaybe<Scalars['String']['input']>;
+  referredByOther_contains?: InputMaybe<Scalars['String']['input']>;
+  referredByOther_ends_with?: InputMaybe<Scalars['String']['input']>;
+  referredByOther_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  referredByOther_not?: InputMaybe<Scalars['String']['input']>;
+  referredByOther_not_contains?: InputMaybe<Scalars['String']['input']>;
+  referredByOther_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  referredByOther_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  referredByOther_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  referredByOther_starts_with?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  status_contains?: InputMaybe<Scalars['String']['input']>;
+  status_ends_with?: InputMaybe<Scalars['String']['input']>;
+  status_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  status_not?: InputMaybe<Scalars['String']['input']>;
+  status_not_contains?: InputMaybe<Scalars['String']['input']>;
+  status_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  status_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  status_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  status_starts_with?: InputMaybe<Scalars['String']['input']>;
+  surname?: InputMaybe<Scalars['String']['input']>;
+  surname_contains?: InputMaybe<Scalars['String']['input']>;
+  surname_ends_with?: InputMaybe<Scalars['String']['input']>;
+  surname_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  surname_not?: InputMaybe<Scalars['String']['input']>;
+  surname_not_contains?: InputMaybe<Scalars['String']['input']>;
+  surname_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  surname_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  surname_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  surname_starts_with?: InputMaybe<Scalars['String']['input']>;
+  tags_all?: InputMaybe<ISingleFilterOfStringFilter>;
+  tags_any?: InputMaybe<Scalars['Boolean']['input']>;
+  tags_none?: InputMaybe<ISingleFilterOfStringFilter>;
+  tags_some?: InputMaybe<ISingleFilterOfStringFilter>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  title_contains?: InputMaybe<Scalars['String']['input']>;
+  title_ends_with?: InputMaybe<Scalars['String']['input']>;
+  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  title_not?: InputMaybe<Scalars['String']['input']>;
+  title_not_contains?: InputMaybe<Scalars['String']['input']>;
+  title_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  title_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  title_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type CustomerDbObjectSortInput = {
-  alias?: InputMaybe<SortEnumType>;
-  createdAt?: InputMaybe<SortEnumType>;
-  createdBy?: InputMaybe<SortEnumType>;
-  customerRating?: InputMaybe<SortEnumType>;
-  customerReferenceNumber?: InputMaybe<SortEnumType>;
-  fullName?: InputMaybe<SortEnumType>;
-  id?: InputMaybe<SortEnumType>;
-  modifiedAt?: InputMaybe<SortEnumType>;
-  modifiedBy?: InputMaybe<SortEnumType>;
-  name?: InputMaybe<SortEnumType>;
-  referralFeeFixed?: InputMaybe<SortEnumType>;
-  referralFeePercentage?: InputMaybe<SortEnumType>;
-  referredByCustomer?: InputMaybe<SortEnumType>;
-  referredByOther?: InputMaybe<SortEnumType>;
-  status?: InputMaybe<SortEnumType>;
-  surname?: InputMaybe<SortEnumType>;
-  title?: InputMaybe<SortEnumType>;
+export type CustomerDbObjectSort = {
+  alias?: InputMaybe<SortOperationKind>;
+  createdAt?: InputMaybe<SortOperationKind>;
+  createdBy?: InputMaybe<SortOperationKind>;
+  customerRating?: InputMaybe<SortOperationKind>;
+  customerReferenceNumber?: InputMaybe<SortOperationKind>;
+  fullName?: InputMaybe<SortOperationKind>;
+  modifiedAt?: InputMaybe<SortOperationKind>;
+  modifiedBy?: InputMaybe<SortOperationKind>;
+  name?: InputMaybe<SortOperationKind>;
+  referralFeeFixed?: InputMaybe<SortOperationKind>;
+  referralFeePercentage?: InputMaybe<SortOperationKind>;
+  referredByOther?: InputMaybe<SortOperationKind>;
+  status?: InputMaybe<SortOperationKind>;
+  surname?: InputMaybe<SortOperationKind>;
+  title?: InputMaybe<SortOperationKind>;
 };
 
 /** A connection to a list of items. */
@@ -135,34 +343,9 @@ export type CustomersEdge = {
   node: CustomerDbObject;
 };
 
-export type DateTimeOperationFilterInput = {
-  eq?: InputMaybe<Scalars['DateTime']['input']>;
-  gt?: InputMaybe<Scalars['DateTime']['input']>;
-  gte?: InputMaybe<Scalars['DateTime']['input']>;
-  in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  lt?: InputMaybe<Scalars['DateTime']['input']>;
-  lte?: InputMaybe<Scalars['DateTime']['input']>;
-  neq?: InputMaybe<Scalars['DateTime']['input']>;
-  ngt?: InputMaybe<Scalars['DateTime']['input']>;
-  ngte?: InputMaybe<Scalars['DateTime']['input']>;
-  nin?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  nlt?: InputMaybe<Scalars['DateTime']['input']>;
-  nlte?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type DecimalOperationFilterInput = {
-  eq?: InputMaybe<Scalars['Decimal']['input']>;
-  gt?: InputMaybe<Scalars['Decimal']['input']>;
-  gte?: InputMaybe<Scalars['Decimal']['input']>;
-  in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
-  lt?: InputMaybe<Scalars['Decimal']['input']>;
-  lte?: InputMaybe<Scalars['Decimal']['input']>;
-  neq?: InputMaybe<Scalars['Decimal']['input']>;
-  ngt?: InputMaybe<Scalars['Decimal']['input']>;
-  ngte?: InputMaybe<Scalars['Decimal']['input']>;
-  nin?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
-  nlt?: InputMaybe<Scalars['Decimal']['input']>;
-  nlte?: InputMaybe<Scalars['Decimal']['input']>;
+export type DeliveryMediumType = {
+  __typename?: 'DeliveryMediumType';
+  value?: Maybe<Scalars['String']['output']>;
 };
 
 export type EmailDbObject = {
@@ -171,51 +354,147 @@ export type EmailDbObject = {
   emailType: Scalars['String']['output'];
 };
 
-export type EmailDbObjectFilterInput = {
-  and?: InputMaybe<Array<EmailDbObjectFilterInput>>;
-  email?: InputMaybe<StringOperationFilterInput>;
-  emailType?: InputMaybe<StringOperationFilterInput>;
-  or?: InputMaybe<Array<EmailDbObjectFilterInput>>;
+export type EmailDbObjectFilter = {
+  AND?: InputMaybe<Array<EmailDbObjectFilter>>;
+  OR?: InputMaybe<Array<EmailDbObjectFilter>>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  emailType?: InputMaybe<Scalars['String']['input']>;
+  emailType_contains?: InputMaybe<Scalars['String']['input']>;
+  emailType_ends_with?: InputMaybe<Scalars['String']['input']>;
+  emailType_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  emailType_not?: InputMaybe<Scalars['String']['input']>;
+  emailType_not_contains?: InputMaybe<Scalars['String']['input']>;
+  emailType_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  emailType_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  emailType_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  emailType_starts_with?: InputMaybe<Scalars['String']['input']>;
+  email_contains?: InputMaybe<Scalars['String']['input']>;
+  email_ends_with?: InputMaybe<Scalars['String']['input']>;
+  email_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  email_not?: InputMaybe<Scalars['String']['input']>;
+  email_not_contains?: InputMaybe<Scalars['String']['input']>;
+  email_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  email_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  email_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  email_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type ListFilterInputTypeOfCommentDbObjectFilterInput = {
-  all?: InputMaybe<CommentDbObjectFilterInput>;
-  any?: InputMaybe<Scalars['Boolean']['input']>;
-  none?: InputMaybe<CommentDbObjectFilterInput>;
-  some?: InputMaybe<CommentDbObjectFilterInput>;
+export type GeneralCompanyInfoDbObject = {
+  __typename?: 'GeneralCompanyInfoDbObject';
+  annualRevenue: Scalars['String']['output'];
+  companyPriority: Scalars['String']['output'];
+  companySize: Scalars['String']['output'];
+  marketingPreference: Scalars['String']['output'];
 };
 
-export type ListFilterInputTypeOfEmailDbObjectFilterInput = {
-  all?: InputMaybe<EmailDbObjectFilterInput>;
-  any?: InputMaybe<Scalars['Boolean']['input']>;
-  none?: InputMaybe<EmailDbObjectFilterInput>;
-  some?: InputMaybe<EmailDbObjectFilterInput>;
+export enum HttpStatusCode {
+  Accepted = 'ACCEPTED',
+  AlreadyReported = 'ALREADY_REPORTED',
+  BadGateway = 'BAD_GATEWAY',
+  BadRequest = 'BAD_REQUEST',
+  Conflict = 'CONFLICT',
+  Continue = 'CONTINUE',
+  Created = 'CREATED',
+  EarlyHints = 'EARLY_HINTS',
+  ExpectationFailed = 'EXPECTATION_FAILED',
+  FailedDependency = 'FAILED_DEPENDENCY',
+  Forbidden = 'FORBIDDEN',
+  Found = 'FOUND',
+  GatewayTimeout = 'GATEWAY_TIMEOUT',
+  Gone = 'GONE',
+  HttpVersionNotSupported = 'HTTP_VERSION_NOT_SUPPORTED',
+  ImUsed = 'IM_USED',
+  InsufficientStorage = 'INSUFFICIENT_STORAGE',
+  InternalServerError = 'INTERNAL_SERVER_ERROR',
+  LengthRequired = 'LENGTH_REQUIRED',
+  Locked = 'LOCKED',
+  LoopDetected = 'LOOP_DETECTED',
+  MethodNotAllowed = 'METHOD_NOT_ALLOWED',
+  MisdirectedRequest = 'MISDIRECTED_REQUEST',
+  MovedPermanently = 'MOVED_PERMANENTLY',
+  MultipleChoices = 'MULTIPLE_CHOICES',
+  MultiStatus = 'MULTI_STATUS',
+  NetworkAuthenticationRequired = 'NETWORK_AUTHENTICATION_REQUIRED',
+  NonAuthoritativeInformation = 'NON_AUTHORITATIVE_INFORMATION',
+  NotAcceptable = 'NOT_ACCEPTABLE',
+  NotExtended = 'NOT_EXTENDED',
+  NotFound = 'NOT_FOUND',
+  NotImplemented = 'NOT_IMPLEMENTED',
+  NotModified = 'NOT_MODIFIED',
+  NoContent = 'NO_CONTENT',
+  Ok = 'OK',
+  PartialContent = 'PARTIAL_CONTENT',
+  PaymentRequired = 'PAYMENT_REQUIRED',
+  PermanentRedirect = 'PERMANENT_REDIRECT',
+  PreconditionFailed = 'PRECONDITION_FAILED',
+  PreconditionRequired = 'PRECONDITION_REQUIRED',
+  Processing = 'PROCESSING',
+  ProxyAuthenticationRequired = 'PROXY_AUTHENTICATION_REQUIRED',
+  RedirectKeepVerb = 'REDIRECT_KEEP_VERB',
+  RequestedRangeNotSatisfiable = 'REQUESTED_RANGE_NOT_SATISFIABLE',
+  RequestEntityTooLarge = 'REQUEST_ENTITY_TOO_LARGE',
+  RequestHeaderFieldsTooLarge = 'REQUEST_HEADER_FIELDS_TOO_LARGE',
+  RequestTimeout = 'REQUEST_TIMEOUT',
+  RequestUriTooLong = 'REQUEST_URI_TOO_LONG',
+  ResetContent = 'RESET_CONTENT',
+  SeeOther = 'SEE_OTHER',
+  ServiceUnavailable = 'SERVICE_UNAVAILABLE',
+  SwitchingProtocols = 'SWITCHING_PROTOCOLS',
+  TooManyRequests = 'TOO_MANY_REQUESTS',
+  Unauthorized = 'UNAUTHORIZED',
+  UnavailableForLegalReasons = 'UNAVAILABLE_FOR_LEGAL_REASONS',
+  UnprocessableEntity = 'UNPROCESSABLE_ENTITY',
+  UnsupportedMediaType = 'UNSUPPORTED_MEDIA_TYPE',
+  Unused = 'UNUSED',
+  UpgradeRequired = 'UPGRADE_REQUIRED',
+  UseProxy = 'USE_PROXY',
+  VariantAlsoNegotiates = 'VARIANT_ALSO_NEGOTIATES'
+}
+
+export type ISingleFilterOfStringFilter = {
+  AND?: InputMaybe<Array<ISingleFilterOfStringFilter>>;
+  OR?: InputMaybe<Array<ISingleFilterOfStringFilter>>;
+  element?: InputMaybe<Scalars['String']['input']>;
+  element_contains?: InputMaybe<Scalars['String']['input']>;
+  element_ends_with?: InputMaybe<Scalars['String']['input']>;
+  element_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  element_not?: InputMaybe<Scalars['String']['input']>;
+  element_not_contains?: InputMaybe<Scalars['String']['input']>;
+  element_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  element_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  element_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  element_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type ListFilterInputTypeOfPhoneNumberDbObjectFilterInput = {
-  all?: InputMaybe<PhoneNumberDbObjectFilterInput>;
-  any?: InputMaybe<Scalars['Boolean']['input']>;
-  none?: InputMaybe<PhoneNumberDbObjectFilterInput>;
-  some?: InputMaybe<PhoneNumberDbObjectFilterInput>;
+export type KeyValuePairOfStringAndString = {
+  __typename?: 'KeyValuePairOfStringAndString';
+  key: Scalars['String']['output'];
+  value: Scalars['String']['output'];
 };
 
-export type ListObjectIdOperationFilterInput = {
-  all?: InputMaybe<ObjectIdOperationFilterInput>;
-  any?: InputMaybe<Scalars['Boolean']['input']>;
-  none?: InputMaybe<ObjectIdOperationFilterInput>;
-  some?: InputMaybe<ObjectIdOperationFilterInput>;
-};
-
-export type ListStringOperationFilterInput = {
-  all?: InputMaybe<StringOperationFilterInput>;
-  any?: InputMaybe<Scalars['Boolean']['input']>;
-  none?: InputMaybe<StringOperationFilterInput>;
-  some?: InputMaybe<StringOperationFilterInput>;
+export type LoginRequestInput = {
+  password: Scalars['String']['input'];
+  username: Scalars['String']['input'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addRandomUser: UserDbObject;
+  confirmRegistration: ConfirmSignUpResponse;
   generateFakeCustomers: Scalars['String']['output'];
+  register: SignUpResponse;
+  resendConfirmationCode: ResendConfirmationCodeResponse;
+};
+
+
+export type MutationAddRandomUserArgs = {
+  request: RegisterRequestInput;
+};
+
+
+export type MutationConfirmRegistrationArgs = {
+  confirmationCode: Scalars['String']['input'];
+  email: Scalars['String']['input'];
 };
 
 
@@ -223,19 +502,79 @@ export type MutationGenerateFakeCustomersArgs = {
   quantity: Scalars['Int']['input'];
 };
 
-export type ObjectIdOperationFilterInput = {
-  eq?: InputMaybe<Scalars['ObjectId']['input']>;
-  gt?: InputMaybe<Scalars['ObjectId']['input']>;
-  gte?: InputMaybe<Scalars['ObjectId']['input']>;
-  in?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  lt?: InputMaybe<Scalars['ObjectId']['input']>;
-  lte?: InputMaybe<Scalars['ObjectId']['input']>;
-  neq?: InputMaybe<Scalars['ObjectId']['input']>;
-  ngt?: InputMaybe<Scalars['ObjectId']['input']>;
-  ngte?: InputMaybe<Scalars['ObjectId']['input']>;
-  nin?: InputMaybe<Array<InputMaybe<Scalars['ObjectId']['input']>>>;
-  nlt?: InputMaybe<Scalars['ObjectId']['input']>;
-  nlte?: InputMaybe<Scalars['ObjectId']['input']>;
+
+export type MutationRegisterArgs = {
+  request: RegisterRequestInput;
+};
+
+
+export type MutationResendConfirmationCodeArgs = {
+  email: Scalars['String']['input'];
+};
+
+export type ObjectIdFilter = {
+  AND?: InputMaybe<Array<ObjectIdFilter>>;
+  OR?: InputMaybe<Array<ObjectIdFilter>>;
+  creationTime?: InputMaybe<Scalars['DateTime']['input']>;
+  creationTime_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  creationTime_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  creationTime_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  creationTime_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  creationTime_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  creationTime_not?: InputMaybe<Scalars['DateTime']['input']>;
+  creationTime_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  creationTime_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  creationTime_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  creationTime_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  creationTime_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  increment?: InputMaybe<Scalars['Int']['input']>;
+  increment_gt?: InputMaybe<Scalars['Int']['input']>;
+  increment_gte?: InputMaybe<Scalars['Int']['input']>;
+  increment_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  increment_lt?: InputMaybe<Scalars['Int']['input']>;
+  increment_lte?: InputMaybe<Scalars['Int']['input']>;
+  increment_not?: InputMaybe<Scalars['Int']['input']>;
+  increment_not_gt?: InputMaybe<Scalars['Int']['input']>;
+  increment_not_gte?: InputMaybe<Scalars['Int']['input']>;
+  increment_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  increment_not_lt?: InputMaybe<Scalars['Int']['input']>;
+  increment_not_lte?: InputMaybe<Scalars['Int']['input']>;
+  machine?: InputMaybe<Scalars['Int']['input']>;
+  machine_gt?: InputMaybe<Scalars['Int']['input']>;
+  machine_gte?: InputMaybe<Scalars['Int']['input']>;
+  machine_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  machine_lt?: InputMaybe<Scalars['Int']['input']>;
+  machine_lte?: InputMaybe<Scalars['Int']['input']>;
+  machine_not?: InputMaybe<Scalars['Int']['input']>;
+  machine_not_gt?: InputMaybe<Scalars['Int']['input']>;
+  machine_not_gte?: InputMaybe<Scalars['Int']['input']>;
+  machine_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  machine_not_lt?: InputMaybe<Scalars['Int']['input']>;
+  machine_not_lte?: InputMaybe<Scalars['Int']['input']>;
+  pid?: InputMaybe<Scalars['Short']['input']>;
+  pid_gt?: InputMaybe<Scalars['Short']['input']>;
+  pid_gte?: InputMaybe<Scalars['Short']['input']>;
+  pid_in?: InputMaybe<Array<Scalars['Short']['input']>>;
+  pid_lt?: InputMaybe<Scalars['Short']['input']>;
+  pid_lte?: InputMaybe<Scalars['Short']['input']>;
+  pid_not?: InputMaybe<Scalars['Short']['input']>;
+  pid_not_gt?: InputMaybe<Scalars['Short']['input']>;
+  pid_not_gte?: InputMaybe<Scalars['Short']['input']>;
+  pid_not_in?: InputMaybe<Array<Scalars['Short']['input']>>;
+  pid_not_lt?: InputMaybe<Scalars['Short']['input']>;
+  pid_not_lte?: InputMaybe<Scalars['Short']['input']>;
+  timestamp?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  timestamp_lt?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_not?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_not_gt?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_not_gte?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  timestamp_not_lt?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_not_lte?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** Information about pagination in a connection. */
@@ -257,11 +596,29 @@ export type PhoneNumberDbObject = {
   phoneNumberType: Scalars['String']['output'];
 };
 
-export type PhoneNumberDbObjectFilterInput = {
-  and?: InputMaybe<Array<PhoneNumberDbObjectFilterInput>>;
-  or?: InputMaybe<Array<PhoneNumberDbObjectFilterInput>>;
-  phoneNumber?: InputMaybe<StringOperationFilterInput>;
-  phoneNumberType?: InputMaybe<StringOperationFilterInput>;
+export type PhoneNumberDbObjectFilter = {
+  AND?: InputMaybe<Array<PhoneNumberDbObjectFilter>>;
+  OR?: InputMaybe<Array<PhoneNumberDbObjectFilter>>;
+  phoneNumber?: InputMaybe<Scalars['String']['input']>;
+  phoneNumberType?: InputMaybe<Scalars['String']['input']>;
+  phoneNumberType_contains?: InputMaybe<Scalars['String']['input']>;
+  phoneNumberType_ends_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumberType_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phoneNumberType_not?: InputMaybe<Scalars['String']['input']>;
+  phoneNumberType_not_contains?: InputMaybe<Scalars['String']['input']>;
+  phoneNumberType_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumberType_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phoneNumberType_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumberType_starts_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_contains?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_ends_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phoneNumber_not?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_not_contains?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phoneNumber_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type PropertyDbObject = {
@@ -284,6 +641,7 @@ export type Query = {
   __typename?: 'Query';
   customerById?: Maybe<CustomerDbObject>;
   customers?: Maybe<CustomersConnection>;
+  login: TokenResponse;
 };
 
 
@@ -297,43 +655,84 @@ export type QueryCustomersArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<Array<CustomerDbObjectSortInput>>;
-  where?: InputMaybe<CustomerDbObjectFilterInput>;
+  order_by?: InputMaybe<CustomerDbObjectSort>;
+  where?: InputMaybe<CustomerDbObjectFilter>;
 };
 
-export enum SortEnumType {
+
+export type QueryLoginArgs = {
+  request: LoginRequestInput;
+};
+
+export type RegisterRequestInput = {
+  address: Scalars['String']['input'];
+  annualRevenue: Scalars['String']['input'];
+  companyName: Scalars['String']['input'];
+  companyPriority: Scalars['String']['input'];
+  companySize: Scalars['String']['input'];
+  companyType: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  marketingPreference: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  phoneNumber: Scalars['String']['input'];
+};
+
+export type ResendConfirmationCodeResponse = {
+  __typename?: 'ResendConfirmationCodeResponse';
+  codeDeliveryDetails?: Maybe<CodeDeliveryDetailsType>;
+  contentLength: Scalars['Long']['output'];
+  httpStatusCode: HttpStatusCode;
+  responseMetadata?: Maybe<ResponseMetadata>;
+};
+
+export type ResponseMetadata = {
+  __typename?: 'ResponseMetadata';
+  checksumAlgorithm: CoreChecksumAlgorithm;
+  checksumValidationStatus: ChecksumValidationStatus;
+  metadata?: Maybe<Array<KeyValuePairOfStringAndString>>;
+  requestId?: Maybe<Scalars['String']['output']>;
+};
+
+export type SignUpResponse = {
+  __typename?: 'SignUpResponse';
+  codeDeliveryDetails?: Maybe<CodeDeliveryDetailsType>;
+  contentLength: Scalars['Long']['output'];
+  httpStatusCode: HttpStatusCode;
+  responseMetadata?: Maybe<ResponseMetadata>;
+  userConfirmed: Scalars['Boolean']['output'];
+  userSub?: Maybe<Scalars['String']['output']>;
+};
+
+export enum SortOperationKind {
   Asc = 'ASC',
   Desc = 'DESC'
 }
 
-export type StringOperationFilterInput = {
-  and?: InputMaybe<Array<StringOperationFilterInput>>;
-  contains?: InputMaybe<Scalars['String']['input']>;
-  endsWith?: InputMaybe<Scalars['String']['input']>;
-  eq?: InputMaybe<Scalars['String']['input']>;
-  in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  ncontains?: InputMaybe<Scalars['String']['input']>;
-  nendsWith?: InputMaybe<Scalars['String']['input']>;
-  neq?: InputMaybe<Scalars['String']['input']>;
-  nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  nstartsWith?: InputMaybe<Scalars['String']['input']>;
-  or?: InputMaybe<Array<StringOperationFilterInput>>;
-  startsWith?: InputMaybe<Scalars['String']['input']>;
+export type TokenResponse = {
+  __typename?: 'TokenResponse';
+  accessToken: Scalars['String']['output'];
+  idToken: Scalars['String']['output'];
+  refreshToken: Scalars['String']['output'];
 };
 
-export type UuidOperationFilterInput = {
-  eq?: InputMaybe<Scalars['UUID']['input']>;
-  gt?: InputMaybe<Scalars['UUID']['input']>;
-  gte?: InputMaybe<Scalars['UUID']['input']>;
-  in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
-  lt?: InputMaybe<Scalars['UUID']['input']>;
-  lte?: InputMaybe<Scalars['UUID']['input']>;
-  neq?: InputMaybe<Scalars['UUID']['input']>;
-  ngt?: InputMaybe<Scalars['UUID']['input']>;
-  ngte?: InputMaybe<Scalars['UUID']['input']>;
-  nin?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
-  nlt?: InputMaybe<Scalars['UUID']['input']>;
-  nlte?: InputMaybe<Scalars['UUID']['input']>;
+export type UserDbObject = {
+  __typename?: 'UserDbObject';
+  address: Scalars['String']['output'];
+  awsCognitoUserId: Scalars['UUID']['output'];
+  companiesMemberOf?: Maybe<Array<Maybe<UserDbObject>>>;
+  companyName: Scalars['String']['output'];
+  companyType: Scalars['String']['output'];
+  createdDate: Scalars['DateTime']['output'];
+  email: Scalars['String']['output'];
+  emailVerified: Scalars['Boolean']['output'];
+  generalInfo: GeneralCompanyInfoDbObject;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  phoneNumber: Scalars['String']['output'];
+  phoneVerified: Scalars['Boolean']['output'];
+  staff?: Maybe<Array<Maybe<UserDbObject>>>;
+  updatedDate?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type CustomerByIdQueryVariables = Exact<{
