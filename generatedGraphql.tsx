@@ -22,6 +22,13 @@ export type Scalars = {
   UUID: { input: any; output: any; }
 };
 
+export type AccountConfirmationResponse = {
+  __typename?: 'AccountConfirmationResponse';
+  confirmSignUpResponse?: Maybe<ConfirmSignUpResponse>;
+  isConfirmationSuccess: Scalars['Boolean']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+};
+
 export type AddressDbObject = {
   __typename?: 'AddressDbObject';
   address?: Maybe<Scalars['String']['output']>;
@@ -387,6 +394,58 @@ export type GeneralCompanyInfoDbObject = {
   marketingPreference: Scalars['String']['output'];
 };
 
+export type GeneralCompanyInfoDbObjectFilter = {
+  AND?: InputMaybe<Array<GeneralCompanyInfoDbObjectFilter>>;
+  OR?: InputMaybe<Array<GeneralCompanyInfoDbObjectFilter>>;
+  annualRevenue?: InputMaybe<Scalars['String']['input']>;
+  annualRevenue_contains?: InputMaybe<Scalars['String']['input']>;
+  annualRevenue_ends_with?: InputMaybe<Scalars['String']['input']>;
+  annualRevenue_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  annualRevenue_not?: InputMaybe<Scalars['String']['input']>;
+  annualRevenue_not_contains?: InputMaybe<Scalars['String']['input']>;
+  annualRevenue_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  annualRevenue_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  annualRevenue_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  annualRevenue_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companyPriority?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_contains?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companyPriority_not?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_not_contains?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companyPriority_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companySize?: InputMaybe<Scalars['String']['input']>;
+  companySize_contains?: InputMaybe<Scalars['String']['input']>;
+  companySize_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companySize_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companySize_not?: InputMaybe<Scalars['String']['input']>;
+  companySize_not_contains?: InputMaybe<Scalars['String']['input']>;
+  companySize_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companySize_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companySize_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companySize_starts_with?: InputMaybe<Scalars['String']['input']>;
+  marketingPreference?: InputMaybe<Scalars['String']['input']>;
+  marketingPreference_contains?: InputMaybe<Scalars['String']['input']>;
+  marketingPreference_ends_with?: InputMaybe<Scalars['String']['input']>;
+  marketingPreference_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  marketingPreference_not?: InputMaybe<Scalars['String']['input']>;
+  marketingPreference_not_contains?: InputMaybe<Scalars['String']['input']>;
+  marketingPreference_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  marketingPreference_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  marketingPreference_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  marketingPreference_starts_with?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GeneralCompanyInfoDbObjectSort = {
+  annualRevenue?: InputMaybe<SortOperationKind>;
+  companyPriority?: InputMaybe<SortOperationKind>;
+  companySize?: InputMaybe<SortOperationKind>;
+  marketingPreference?: InputMaybe<SortOperationKind>;
+};
+
 export enum HttpStatusCode {
   Accepted = 'ACCEPTED',
   AlreadyReported = 'ALREADY_REPORTED',
@@ -477,22 +536,24 @@ export type LoginRequestInput = {
   username: Scalars['String']['input'];
 };
 
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  isConfirmed: Scalars['Boolean']['output'];
+  isSuccess: Scalars['Boolean']['output'];
+  user?: Maybe<UserDbObject>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  addRandomUser: UserDbObject;
-  confirmRegistration: ConfirmSignUpResponse;
+  confirmAccount: AccountConfirmationResponse;
   generateFakeCustomers: Scalars['String']['output'];
+  login: LoginResponse;
   register: SignUpResponse;
-  resendConfirmationCode: ResendConfirmationCodeResponse;
+  resendVerificationCode: ResendConfirmationCodeResponse;
 };
 
 
-export type MutationAddRandomUserArgs = {
-  request: RegisterRequestInput;
-};
-
-
-export type MutationConfirmRegistrationArgs = {
+export type MutationConfirmAccountArgs = {
   confirmationCode: Scalars['String']['input'];
   email: Scalars['String']['input'];
 };
@@ -503,12 +564,17 @@ export type MutationGenerateFakeCustomersArgs = {
 };
 
 
+export type MutationLoginArgs = {
+  request: LoginRequestInput;
+};
+
+
 export type MutationRegisterArgs = {
   request: RegisterRequestInput;
 };
 
 
-export type MutationResendConfirmationCodeArgs = {
+export type MutationResendVerificationCodeArgs = {
   email: Scalars['String']['input'];
 };
 
@@ -641,7 +707,7 @@ export type Query = {
   __typename?: 'Query';
   customerById?: Maybe<CustomerDbObject>;
   customers?: Maybe<CustomersConnection>;
-  login: TokenResponse;
+  users?: Maybe<UsersConnection>;
 };
 
 
@@ -660,8 +726,13 @@ export type QueryCustomersArgs = {
 };
 
 
-export type QueryLoginArgs = {
-  request: LoginRequestInput;
+export type QueryUsersArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<UserDbObjectSort>;
+  where?: InputMaybe<UserDbObjectFilter>;
 };
 
 export type RegisterRequestInput = {
@@ -709,13 +780,6 @@ export enum SortOperationKind {
   Desc = 'DESC'
 }
 
-export type TokenResponse = {
-  __typename?: 'TokenResponse';
-  accessToken: Scalars['String']['output'];
-  idToken: Scalars['String']['output'];
-  refreshToken: Scalars['String']['output'];
-};
-
 export type UserDbObject = {
   __typename?: 'UserDbObject';
   address: Scalars['String']['output'];
@@ -735,6 +799,178 @@ export type UserDbObject = {
   updatedDate?: Maybe<Scalars['DateTime']['output']>;
 };
 
+export type UserDbObjectFilter = {
+  AND?: InputMaybe<Array<UserDbObjectFilter>>;
+  OR?: InputMaybe<Array<UserDbObjectFilter>>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  address_contains?: InputMaybe<Scalars['String']['input']>;
+  address_ends_with?: InputMaybe<Scalars['String']['input']>;
+  address_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  address_not?: InputMaybe<Scalars['String']['input']>;
+  address_not_contains?: InputMaybe<Scalars['String']['input']>;
+  address_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  address_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  address_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  address_starts_with?: InputMaybe<Scalars['String']['input']>;
+  awsCognitoUserId?: InputMaybe<Scalars['UUID']['input']>;
+  awsCognitoUserId_gt?: InputMaybe<Scalars['UUID']['input']>;
+  awsCognitoUserId_gte?: InputMaybe<Scalars['UUID']['input']>;
+  awsCognitoUserId_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  awsCognitoUserId_lt?: InputMaybe<Scalars['UUID']['input']>;
+  awsCognitoUserId_lte?: InputMaybe<Scalars['UUID']['input']>;
+  awsCognitoUserId_not?: InputMaybe<Scalars['UUID']['input']>;
+  awsCognitoUserId_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  awsCognitoUserId_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  awsCognitoUserId_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  awsCognitoUserId_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  awsCognitoUserId_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  companiesMemberOf_all?: InputMaybe<ObjectIdFilter>;
+  companiesMemberOf_any?: InputMaybe<Scalars['Boolean']['input']>;
+  companiesMemberOf_none?: InputMaybe<ObjectIdFilter>;
+  companiesMemberOf_some?: InputMaybe<ObjectIdFilter>;
+  companyName?: InputMaybe<Scalars['String']['input']>;
+  companyName_contains?: InputMaybe<Scalars['String']['input']>;
+  companyName_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companyName_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companyName_not?: InputMaybe<Scalars['String']['input']>;
+  companyName_not_contains?: InputMaybe<Scalars['String']['input']>;
+  companyName_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companyName_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companyName_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companyName_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companyType?: InputMaybe<Scalars['String']['input']>;
+  companyType_contains?: InputMaybe<Scalars['String']['input']>;
+  companyType_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companyType_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companyType_not?: InputMaybe<Scalars['String']['input']>;
+  companyType_not_contains?: InputMaybe<Scalars['String']['input']>;
+  companyType_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companyType_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companyType_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companyType_starts_with?: InputMaybe<Scalars['String']['input']>;
+  createdDate?: InputMaybe<Scalars['DateTime']['input']>;
+  createdDate_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdDate_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdDate_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdDate_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdDate_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdDate_not?: InputMaybe<Scalars['DateTime']['input']>;
+  createdDate_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdDate_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdDate_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdDate_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdDate_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  emailVerified?: InputMaybe<Scalars['Boolean']['input']>;
+  emailVerified_not?: InputMaybe<Scalars['Boolean']['input']>;
+  email_contains?: InputMaybe<Scalars['String']['input']>;
+  email_ends_with?: InputMaybe<Scalars['String']['input']>;
+  email_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  email_not?: InputMaybe<Scalars['String']['input']>;
+  email_not_contains?: InputMaybe<Scalars['String']['input']>;
+  email_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  email_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  email_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  email_starts_with?: InputMaybe<Scalars['String']['input']>;
+  generalInfo?: InputMaybe<GeneralCompanyInfoDbObjectFilter>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  name_starts_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_contains?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_ends_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phoneNumber_not?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_not_contains?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phoneNumber_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber_starts_with?: InputMaybe<Scalars['String']['input']>;
+  phoneVerified?: InputMaybe<Scalars['Boolean']['input']>;
+  phoneVerified_not?: InputMaybe<Scalars['Boolean']['input']>;
+  staff_all?: InputMaybe<ObjectIdFilter>;
+  staff_any?: InputMaybe<Scalars['Boolean']['input']>;
+  staff_none?: InputMaybe<ObjectIdFilter>;
+  staff_some?: InputMaybe<ObjectIdFilter>;
+  updatedDate?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedDate_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedDate_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedDate_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  updatedDate_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedDate_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedDate_not?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedDate_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedDate_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedDate_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  updatedDate_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedDate_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type UserDbObjectSort = {
+  address?: InputMaybe<SortOperationKind>;
+  awsCognitoUserId?: InputMaybe<SortOperationKind>;
+  companyName?: InputMaybe<SortOperationKind>;
+  companyType?: InputMaybe<SortOperationKind>;
+  createdDate?: InputMaybe<SortOperationKind>;
+  email?: InputMaybe<SortOperationKind>;
+  emailVerified?: InputMaybe<SortOperationKind>;
+  generalInfo?: InputMaybe<GeneralCompanyInfoDbObjectSort>;
+  name?: InputMaybe<SortOperationKind>;
+  phoneNumber?: InputMaybe<SortOperationKind>;
+  phoneVerified?: InputMaybe<SortOperationKind>;
+  updatedDate?: InputMaybe<SortOperationKind>;
+};
+
+/** A connection to a list of items. */
+export type UsersConnection = {
+  __typename?: 'UsersConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<UsersEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<UserDbObject>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type UsersEdge = {
+  __typename?: 'UsersEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: UserDbObject;
+};
+
+export type ConfirmAccountMutationVariables = Exact<{
+  confirmationCode: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+}>;
+
+
+export type ConfirmAccountMutation = { __typename?: 'Mutation', confirmAccount: { __typename?: 'AccountConfirmationResponse', isConfirmationSuccess: boolean, message?: string | null, confirmSignUpResponse?: { __typename?: 'ConfirmSignUpResponse', contentLength: any, httpStatusCode: HttpStatusCode, responseMetadata?: { __typename?: 'ResponseMetadata', checksumAlgorithm: CoreChecksumAlgorithm, checksumValidationStatus: ChecksumValidationStatus, requestId?: string | null, metadata?: Array<{ __typename?: 'KeyValuePairOfStringAndString', key: string, value: string }> | null } | null } | null } };
+
+export type LoginMutationVariables = Exact<{
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', isSuccess: boolean, isConfirmed: boolean, user?: { __typename?: 'UserDbObject', email: string, name: string, companyName: string, emailVerified: boolean } | null } };
+
+export type ResendVerificationCodeMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type ResendVerificationCodeMutation = { __typename?: 'Mutation', resendVerificationCode: { __typename?: 'ResendConfirmationCodeResponse', contentLength: any, httpStatusCode: HttpStatusCode, responseMetadata?: { __typename?: 'ResponseMetadata', checksumAlgorithm: CoreChecksumAlgorithm, checksumValidationStatus: ChecksumValidationStatus, requestId?: string | null, metadata?: Array<{ __typename?: 'KeyValuePairOfStringAndString', key: string, value: string }> | null } | null } };
+
 export type CustomerByIdQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -751,6 +987,138 @@ export type CustomersPagedQueryVariables = Exact<{
 export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, title?: string | null, status: string, fullName: string, tags?: Array<string> | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', property: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 
+export const ConfirmAccountDocument = gql`
+    mutation ConfirmAccount($confirmationCode: String!, $email: String!) {
+  confirmAccount(confirmationCode: $confirmationCode, email: $email) {
+    confirmSignUpResponse {
+      contentLength
+      httpStatusCode
+      responseMetadata {
+        checksumAlgorithm
+        checksumValidationStatus
+        metadata {
+          key
+          value
+        }
+        requestId
+      }
+    }
+    isConfirmationSuccess
+    message
+  }
+}
+    `;
+export type ConfirmAccountMutationFn = Apollo.MutationFunction<ConfirmAccountMutation, ConfirmAccountMutationVariables>;
+
+/**
+ * __useConfirmAccountMutation__
+ *
+ * To run a mutation, you first call `useConfirmAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConfirmAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [confirmAccountMutation, { data, loading, error }] = useConfirmAccountMutation({
+ *   variables: {
+ *      confirmationCode: // value for 'confirmationCode'
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useConfirmAccountMutation(baseOptions?: Apollo.MutationHookOptions<ConfirmAccountMutation, ConfirmAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConfirmAccountMutation, ConfirmAccountMutationVariables>(ConfirmAccountDocument, options);
+      }
+export type ConfirmAccountMutationHookResult = ReturnType<typeof useConfirmAccountMutation>;
+export type ConfirmAccountMutationResult = Apollo.MutationResult<ConfirmAccountMutation>;
+export type ConfirmAccountMutationOptions = Apollo.BaseMutationOptions<ConfirmAccountMutation, ConfirmAccountMutationVariables>;
+export const LoginDocument = gql`
+    mutation Login($username: String!, $password: String!) {
+  login(request: {username: $username, password: $password}) {
+    user {
+      email
+      name
+      companyName
+      emailVerified
+    }
+    isSuccess
+    isConfirmed
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const ResendVerificationCodeDocument = gql`
+    mutation ResendVerificationCode($email: String!) {
+  resendVerificationCode(email: $email) {
+    contentLength
+    httpStatusCode
+    responseMetadata {
+      checksumAlgorithm
+      checksumValidationStatus
+      metadata {
+        key
+        value
+      }
+      requestId
+    }
+  }
+}
+    `;
+export type ResendVerificationCodeMutationFn = Apollo.MutationFunction<ResendVerificationCodeMutation, ResendVerificationCodeMutationVariables>;
+
+/**
+ * __useResendVerificationCodeMutation__
+ *
+ * To run a mutation, you first call `useResendVerificationCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResendVerificationCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resendVerificationCodeMutation, { data, loading, error }] = useResendVerificationCodeMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useResendVerificationCodeMutation(baseOptions?: Apollo.MutationHookOptions<ResendVerificationCodeMutation, ResendVerificationCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResendVerificationCodeMutation, ResendVerificationCodeMutationVariables>(ResendVerificationCodeDocument, options);
+      }
+export type ResendVerificationCodeMutationHookResult = ReturnType<typeof useResendVerificationCodeMutation>;
+export type ResendVerificationCodeMutationResult = Apollo.MutationResult<ResendVerificationCodeMutation>;
+export type ResendVerificationCodeMutationOptions = Apollo.BaseMutationOptions<ResendVerificationCodeMutation, ResendVerificationCodeMutationVariables>;
 export const CustomerByIdDocument = gql`
     query CustomerById($id: ID!) {
   customerById(id: $id) {

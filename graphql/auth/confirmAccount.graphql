@@ -1,0 +1,19 @@
+mutation ConfirmAccount($confirmationCode: String!, $email: String!) {
+  confirmAccount(confirmationCode: $confirmationCode, email: $email) {
+    confirmSignUpResponse {
+      contentLength
+      httpStatusCode
+      responseMetadata {
+        checksumAlgorithm
+        checksumValidationStatus
+        metadata {
+          key
+          value
+        }
+        requestId
+      }
+    }
+    isConfirmationSuccess
+    message
+  }
+}

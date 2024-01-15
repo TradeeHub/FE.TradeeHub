@@ -1,0 +1,15 @@
+mutation ResendVerificationCode($email: String!) {
+  resendVerificationCode(email: $email) {
+    contentLength
+    httpStatusCode
+    responseMetadata {
+      checksumAlgorithm
+      checksumValidationStatus
+      metadata {
+        key
+        value
+      }
+      requestId
+    }
+  }
+}
