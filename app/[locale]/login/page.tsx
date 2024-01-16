@@ -172,7 +172,13 @@ const Login = () => {
                 <div className='relative flex-grow text-primary'>
                   <FaEnvelope className='absolute left-3 top-1/2 -translate-y-1/2 transform text-border' />
                   <Input
-                    placeholder='Email address'
+                    placeholder='Email Address'
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleEmailSubmit();
+                      }
+                    }}
+                    autoFocus
                     ref={emailRef}
                     className={`w-full py-2 pl-10 pr-3 ${loginError ? 'border-secondary' : 'border'}`}
                   />
@@ -199,6 +205,12 @@ const Login = () => {
                     placeholder='Password'
                     ref={passwordRef}
                     className='w-full pl-10'
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handlePasswordSubmit();
+                      }
+                    }}
+                    autoFocus
                   />
                 </div>
                 {loginError && (
@@ -222,6 +234,12 @@ const Login = () => {
                     type='text'
                     placeholder='Verification Code'
                     ref={confirmationCodeRef}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleAccountVerification();
+                      }
+                    }}
+                    autoFocus
                     className='w-full pl-10'
                     // You might want to add some validation for the confirmation code here
                   />
