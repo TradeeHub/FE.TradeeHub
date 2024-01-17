@@ -1,5 +1,6 @@
 import {
   useConfirmAccountMutation,
+  useLoggedInUserQuery,
   useLoginMutation,
   useResendVerificationCodeMutation,
 } from '@/generatedGraphql';
@@ -48,9 +49,7 @@ const useResendVerificationCode = () => {
   const [resendVerificationCodeMutation, { data, loading, error }] =
     useResendVerificationCodeMutation();
 
-  const resendConfirmationCode = async (
-    email: string
-  ) => {
+  const resendConfirmationCode = async (email: string) => {
     try {
       await resendVerificationCodeMutation({
         variables: {

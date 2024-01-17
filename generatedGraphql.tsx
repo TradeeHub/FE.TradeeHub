@@ -707,6 +707,8 @@ export type Query = {
   __typename?: 'Query';
   customerById?: Maybe<CustomerDbObject>;
   customers?: Maybe<CustomersConnection>;
+  loggedInUser?: Maybe<UserDbObject>;
+  userByAwsCognitoId: Array<UserDbObject>;
   users?: Maybe<UsersConnection>;
 };
 
@@ -723,6 +725,11 @@ export type QueryCustomersArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<CustomerDbObjectSort>;
   where?: InputMaybe<CustomerDbObjectFilter>;
+};
+
+
+export type QueryUserByAwsCognitoIdArgs = {
+  id: Scalars['UUID']['input'];
 };
 
 
@@ -956,6 +963,11 @@ export type ConfirmAccountMutationVariables = Exact<{
 
 export type ConfirmAccountMutation = { __typename?: 'Mutation', confirmAccount: { __typename?: 'AccountConfirmationResponse', isConfirmationSuccess: boolean, message?: string | null, confirmSignUpResponse?: { __typename?: 'ConfirmSignUpResponse', contentLength: any, httpStatusCode: HttpStatusCode, responseMetadata?: { __typename?: 'ResponseMetadata', checksumAlgorithm: CoreChecksumAlgorithm, checksumValidationStatus: ChecksumValidationStatus, requestId?: string | null, metadata?: Array<{ __typename?: 'KeyValuePairOfStringAndString', key: string, value: string }> | null } | null } | null } };
 
+export type LoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser?: { __typename?: 'UserDbObject', id: string, name: string, companyName: string, email: string } | null };
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -1035,6 +1047,48 @@ export function useConfirmAccountMutation(baseOptions?: Apollo.MutationHookOptio
 export type ConfirmAccountMutationHookResult = ReturnType<typeof useConfirmAccountMutation>;
 export type ConfirmAccountMutationResult = Apollo.MutationResult<ConfirmAccountMutation>;
 export type ConfirmAccountMutationOptions = Apollo.BaseMutationOptions<ConfirmAccountMutation, ConfirmAccountMutationVariables>;
+export const LoggedInUserDocument = gql`
+    query LoggedInUser {
+  loggedInUser {
+    id
+    name
+    companyName
+    email
+  }
+}
+    `;
+
+/**
+ * __useLoggedInUserQuery__
+ *
+ * To run a query within a React component, call `useLoggedInUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoggedInUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoggedInUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLoggedInUserQuery(baseOptions?: Apollo.QueryHookOptions<LoggedInUserQuery, LoggedInUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoggedInUserQuery, LoggedInUserQueryVariables>(LoggedInUserDocument, options);
+      }
+export function useLoggedInUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoggedInUserQuery, LoggedInUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoggedInUserQuery, LoggedInUserQueryVariables>(LoggedInUserDocument, options);
+        }
+export function useLoggedInUserSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<LoggedInUserQuery, LoggedInUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LoggedInUserQuery, LoggedInUserQueryVariables>(LoggedInUserDocument, options);
+        }
+export type LoggedInUserQueryHookResult = ReturnType<typeof useLoggedInUserQuery>;
+export type LoggedInUserLazyQueryHookResult = ReturnType<typeof useLoggedInUserLazyQuery>;
+export type LoggedInUserSuspenseQueryHookResult = ReturnType<typeof useLoggedInUserSuspenseQuery>;
+export type LoggedInUserQueryResult = Apollo.QueryResult<LoggedInUserQuery, LoggedInUserQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   login(request: {username: $username, password: $password}) {

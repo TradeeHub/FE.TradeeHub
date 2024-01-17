@@ -44,6 +44,7 @@ function makeClient() {
 
 // you need to create a component to wrap your app in
 export function ApolloWrapper({ children }: React.PropsWithChildren) {
+  console.log('I AM APOLLO PROVIDERR');
   return (
     <ApolloNextAppProvider makeClient={makeClient}>
       {children}

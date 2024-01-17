@@ -34,14 +34,14 @@ const ValidationMessage = ({
 }) => {
   return (
     <>
-    <span className='text-center'>
-      <p
-        className='text-sm text-secondary'
-        style={{ marginTop: '2px', marginBottom: '0px' }}
-      >
-        {validationMessage}
-      </p>
-    </span>
+      <span className='text-center'>
+        <p
+          className='text-sm text-secondary'
+          style={{ marginTop: '2px', marginBottom: '0px' }}
+        >
+          {validationMessage}
+        </p>
+      </span>
     </>
   );
 };
@@ -49,7 +49,8 @@ const ValidationMessage = ({
 const Login = () => {
   const { login, data: loginData } = useLogin();
   const { confirmAccount, data: confirmData } = useConfirmAccount();
-  const { resendConfirmationCode, data: resendConfirmationData } = useResendVerificationCode();
+  const { resendConfirmationCode, data: resendConfirmationData } =
+    useResendVerificationCode();
   const router = useRouter();
   const locale = useLocale();
 
@@ -58,7 +59,8 @@ const Login = () => {
   const [password, setPassword] = useState<string>('');
   const [step, setStep] = useState<number>(1); // 1 for email, 2 for password
   const [loginError, setLoginError] = useState<boolean>(false);
-  const [newConfirmationCodeSent, setNewConfirmationCodeSent] = useState<boolean>(false);
+  const [newConfirmationCodeSent, setNewConfirmationCodeSent] =
+    useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState('');
   const confirmationCodeRef = useRef(null);
   const userIsConfirmedRef = useRef(false);
@@ -139,18 +141,20 @@ const Login = () => {
         setLoginError(true);
         setValidationMessage(
           'Incorrect username or password. Please try again.',
-      );
-      }
-      else {
-        // const user = loginData.login.user;
+        );
+      } else {
         router.push(`/${locale}/dashboard`);
       }
     }
   }, [loginData]);
 
   useEffect(() => {
-    if (resendConfirmationData && resendConfirmationData.resendVerificationCode.httpStatusCode.toLowerCase() == 'ok') {
-      setNewConfirmationCodeSent(true);     
+    if (
+      resendConfirmationData &&
+      resendConfirmationData.resendVerificationCode.httpStatusCode.toLowerCase() ==
+        'ok'
+    ) {
+      setNewConfirmationCodeSent(true);
     }
   }, [resendConfirmationData]);
 
@@ -247,7 +251,7 @@ const Login = () => {
                 {loginError && (
                   <ValidationMessage validationMessage={validationMessage} />
                 )}
-                 <Button
+                <Button
                   variant='default'
                   className='mt-4 w-full'
                   onClick={handleAccountVerification}
@@ -263,13 +267,14 @@ const Login = () => {
                   >
                     Send a new code
                   </Button>
-                {isClient && newConfirmationCodeSent && (
-                <div className='mt-2 text-center'>
-                  <p className='text-sm font-semibold text-green-600'>
-                  <FaCheckCircle className='inline mr-2 text-lg' />
-                  A new verification code has been sent to your email.
-                  </p>
-                </div>)}
+                  {isClient && newConfirmationCodeSent && (
+                    <div className='mt-2 text-center'>
+                      <p className='text-sm font-semibold text-green-600'>
+                        <FaCheckCircle className='mr-2 inline text-lg' />A new
+                        verification code has been sent to your email.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </>
             )}

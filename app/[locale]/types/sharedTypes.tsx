@@ -33,3 +33,7 @@ export type UseCustomerReturnType = {
   loading: boolean;
   error: ApolloError | undefined;
 };
+
+export type LayoutProps = {
+  children: React.ReactNode;
+};
