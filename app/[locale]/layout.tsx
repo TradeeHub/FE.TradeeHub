@@ -4,6 +4,7 @@ import './globals.css';
 import { ApolloWrapper } from './ApolloWrapper';
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
+import AuthProvider from './contexts/AuthProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -31,7 +32,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <NextIntlClientProvider locale={locale} messages={messages}>
-              {children}
+              <AuthProvider>{children}</AuthProvider>
             </NextIntlClientProvider>
           </ThemeProvider>
         </body>

@@ -15,6 +15,10 @@ const useCustomer = (customerId: string): UseCustomerReturnType => {
     notifyOnNetworkStatusChange: true,
   });
 
+  if (error) {
+    console.error('Error fetching more data:', error);
+  }
+
   return { data, loading, error };
 };
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { CustomerByIdQuery } from '@/generatedGraphql';
+import { CustomerByIdQuery, UserDbObject } from '@/generatedGraphql';
 import { ApolloError } from '@apollo/client';
 import { ColDef } from 'ag-grid-community';
 
@@ -36,4 +36,11 @@ export type UseCustomerReturnType = {
 
 export type LayoutProps = {
   children: React.ReactNode;
+};
+
+export type AuthContextType = {
+  user: UserDbObject | null;
+  setUser: React.Dispatch<React.SetStateAction<UserDbObject | null>>;
+  loading: boolean;
+  error: ApolloError | undefined;
 };

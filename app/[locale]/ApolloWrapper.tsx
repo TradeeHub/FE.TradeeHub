@@ -1,6 +1,6 @@
 'use client';
 // ^ this file needs the "use client" pragma
-
+import { onError } from '@apollo/client/link/error';
 import { ApolloLink, HttpLink } from '@apollo/client';
 import {
   ApolloNextAppProvider,
@@ -8,45 +8,76 @@ import {
   NextSSRApolloClient,
   SSRMultipartLink,
 } from '@apollo/experimental-nextjs-app-support/ssr';
+import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
+import { useLocale } from 'next-intl';
 
 // have a function to create a client for you
-function makeClient() {
+function makeClient(navigateToLogin) {
   const httpLink = new HttpLink({
     // this needs to be an absolute url, as relative urls cannot be used in SSR
     uri: 'http://localhost:5020/graphql/',
     credentials: 'include',
-    // you can disable result caching here if you want to
-    // (this does not work if you are rendering your page with `export const dynamic = "force-static"`)
     fetchOptions: { cache: 'no-store' },
-    // you can override the default `fetchOptions` on a per query basis
-    // via the `context` property on the options passed as a second argument
-    // to an Apollo Client data fetching hook, e.g.:
-    // const { data } = useSuspenseQuery(MY_QUERY, { context: { fetchOptions: { cache: "force-cache" }}});
   });
 
+  const errorLink = onError(
+    ({ graphQLErrors, networkError, operation, forward }) => {
+      let isAuthError = false;
+
+      if (graphQLErrors) {
+        console.log('I GOT GRAPHQL ERRORS', graphQLErrors);
+        for (const err of graphQLErrors) {
+          if (err.extensions?.code === 'AUTH_NOT_AUTHORIZED') {
+            console.log('NOT LOGGED IN ERROR APOLLO');
+            navigateToLogin();
+            isAuthError = true;
+            break; // Exit the loop as we found an auth error
+          }
+        }
+      }
+
+      if (networkError) {
+        console.log(`[Network error]: ${networkError}`);
+      }
+
+      // Forward the operation only if it's not an auth error
+      if (!isAuthError) {
+        return forward(operation);
+      }
+    },
+  );
+
+  // Combine the error link with the http link
+  const combinedLink = ApolloLink.from([errorLink, httpLink]);
+
   return new NextSSRApolloClient({
-    // use the `NextSSRInMemoryCache`, not the normal `InMemoryCache`
     cache: new NextSSRInMemoryCache(),
     link:
       typeof window === 'undefined'
         ? ApolloLink.from([
-            // in a SSR environment, if you use multipart features like
-            // @defer, you need to decide how to handle these.
-            // This strips all interfaces with a `@defer` directive from your queries.
-            new SSRMultipartLink({
-              stripDefer: true,
-            }),
-            httpLink,
+            new SSRMultipartLink({ stripDefer: true }),
+            combinedLink,
           ])
-        : httpLink,
+        : combinedLink,
   });
 }
 
-// you need to create a component to wrap your app in
+// Component to wrap your app in
 export function ApolloWrapper({ children }: React.PropsWithChildren) {
-  console.log('I AM APOLLO PROVIDERR');
+  const router = useRouter();
+  const locale = useLocale();
+
+  const navigateToLogin = useCallback(() => {
+    console.log(' I NEED TO PUSH ', `/${locale}/login`,router);
+    router.push(`/${locale}/login`);
+  }, [router]);
+
+  // Pass a function to ApolloNextAppProvider that invokes makeClient
+  const makeClientFunc = () => makeClient(navigateToLogin);
+
   return (
-    <ApolloNextAppProvider makeClient={makeClient}>
+    <ApolloNextAppProvider makeClient={makeClientFunc}>
       {children}
     </ApolloNextAppProvider>
   );

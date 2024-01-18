@@ -19,8 +19,10 @@ import {
   useConfirmAccount,
   useResendVerificationCode,
 } from '../hooks/customer/auth/useAuth';
-import { ConfirmAccountMutation, LoginMutation } from '@/generatedGraphql';
+import { ConfirmAccountMutation, UserDbObject } from '@/generatedGraphql';
 import { useLocale } from 'next-intl';
+import { useAuth } from '../contexts/AuthProvider';
+import { useGetLoggedInUser } from '../hooks/customer/auth/useGetLoggedInUser';
 
 const isEmailValid = (email: string) => {
   const regex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -47,6 +49,8 @@ const ValidationMessage = ({
 };
 
 const Login = () => {
+  const { user, setUser } = useAuth();
+
   const { login, data: loginData } = useLogin();
   const { confirmAccount, data: confirmData } = useConfirmAccount();
   const { resendConfirmationCode, data: resendConfirmationData } =
@@ -83,13 +87,10 @@ const Login = () => {
 
   const handlePasswordSubmit = () => {
     const passwordValue = passwordRef.current.value as string;
-    console.log('I AM HERE', passwordValue, password.length > 0);
+
     if (passwordValue.length > 0) {
       setLoginError(false);
       setPassword(passwordValue);
-
-      console.log('I AM IN', password, email);
-
       login(email, passwordValue);
     } else {
       setLoginError(true);
@@ -99,6 +100,7 @@ const Login = () => {
 
   const handleAccountVerification = () => {
     const confirmationCode = confirmationCodeRef.current.value as string;
+
     if (confirmationCode.length > 0) {
       setNewConfirmationCodeSent(false);
       setLoginError(false);
@@ -128,7 +130,6 @@ const Login = () => {
   }, [confirmData]);
 
   useEffect(() => {
-    console.log('DATA CHANGED ', loginData as LoginMutation);
     if (loginData) {
       const accountConfirmed = loginData?.login.isConfirmed;
       const loginSuccess = loginData?.login.isSuccess;
@@ -143,6 +144,8 @@ const Login = () => {
           'Incorrect username or password. Please try again.',
         );
       } else {
+        setUser(loginData?.login?.user as UserDbObject);
+        console.log('WHY AM HERE');
         router.push(`/${locale}/dashboard`);
       }
     }
@@ -160,170 +163,184 @@ const Login = () => {
 
   useEffect(() => {
     setIsClient(true);
+    if (user) {
+      console.log('I AM BEING SENT HEREEE', user)
+      const { user: loggedInUser } = useGetLoggedInUser();
+      if (!loggedInUser) {
+        setUser(null);
+        router.push(`/${locale}/dashboard`);
+      }
+    }
   }, []);
 
-  return (
-    <>
-      <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
-        <div className='w-full max-w-md space-y-4'>
-          <Card className='w-full max-w-md space-y-4 bg-white p-6 shadow-md'>
-            <div className='pl-2 text-center text-3xl font-bold'>
-              <span className='text-primary dark:text-accent'>Tradee</span>
-              <span className='text-secondary'>Hub</span>
-            </div>
-            {isClient && step === 1 && (
-              <>
-                <div className='relative flex-grow text-primary'>
-                  <FaEnvelope className='absolute left-3 top-1/2 -translate-y-1/2 transform text-border' />
-                  <Input
-                    placeholder='Email Address'
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handleEmailSubmit();
-                      }
-                    }}
-                    autoFocus
-                    ref={emailRef}
-                    className={`w-full py-2 pl-10 pr-3 ${loginError ? 'border-secondary' : 'border'}`}
-                  />
-                </div>
-                {loginError && (
-                  <ValidationMessage validationMessage={validationMessage} />
-                )}
-                <Button
-                  variant='default'
-                  className='mt-4 w-full'
-                  onClick={handleEmailSubmit}
-                >
-                  Continue
-                </Button>
-              </>
-            )}
+  if (!user) {
+    return (
+      <>
+        <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
+          <div className='w-full max-w-md space-y-4'>
+            <Card className='w-full max-w-md space-y-4 bg-white p-6 shadow-md'>
+              <div className='pl-2 text-center text-3xl font-bold'>
+                <span className='text-primary dark:text-accent'>Tradee</span>
+                <span className='text-secondary'>Hub</span>
+              </div>
+              {isClient && step === 1 && (
+                <>
+                  <div className='relative flex-grow text-primary'>
+                    <FaEnvelope className='absolute left-3 top-1/2 -translate-y-1/2 transform text-border' />
+                    <Input
+                      placeholder='Email Address'
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleEmailSubmit();
+                        }
+                      }}
+                      autoFocus
+                      ref={emailRef}
+                      className={`w-full py-2 pl-10 pr-3 ${
+                        loginError ? 'border-secondary' : 'border'
+                      }`}
+                    />
+                  </div>
+                  {loginError && (
+                    <ValidationMessage validationMessage={validationMessage} />
+                  )}
+                  <Button
+                    variant='default'
+                    className='mt-4 w-full'
+                    onClick={handleEmailSubmit}
+                  >
+                    Continue
+                  </Button>
+                </>
+              )}
 
-            {isClient && step === 2 && (
-              <>
-                <div className='relative flex-grow text-primary'>
-                  <FaLock className='absolute left-3 top-1/2 -translate-y-1/2 transform text-border' />
-                  <Input
-                    type='password'
-                    placeholder='Password'
-                    ref={passwordRef}
-                    className='w-full pl-10'
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handlePasswordSubmit();
-                      }
-                    }}
-                    autoFocus
-                  />
-                </div>
-                {loginError && (
-                  <ValidationMessage validationMessage={validationMessage} />
-                )}
-                <Button
-                  variant='default'
-                  className='mt-4 w-full'
-                  onClick={handlePasswordSubmit}
-                >
-                  Continue
-                </Button>
-              </>
-            )}
+              {isClient && step === 2 && (
+                <>
+                  <div className='relative flex-grow text-primary'>
+                    <FaLock className='absolute left-3 top-1/2 -translate-y-1/2 transform text-border' />
+                    <Input
+                      type='password'
+                      placeholder='Password'
+                      ref={passwordRef}
+                      className='w-full pl-10'
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handlePasswordSubmit();
+                        }
+                      }}
+                      autoFocus
+                    />
+                  </div>
+                  {loginError && (
+                    <ValidationMessage validationMessage={validationMessage} />
+                  )}
+                  <Button
+                    variant='default'
+                    className='mt-4 w-full'
+                    onClick={handlePasswordSubmit}
+                  >
+                    Continue
+                  </Button>
+                </>
+              )}
 
-            {isClient && step === 3 && (
-              <>
-                <div className='relative flex-grow text-primary'>
-                  <FaKey className='absolute left-3 top-1/2 -translate-y-1/2 transform text-border' />
-                  <Input
-                    type='text'
-                    placeholder='Verification Code'
-                    ref={confirmationCodeRef}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handleAccountVerification();
-                      }
-                    }}
-                    autoFocus
-                    className='w-full pl-10'
-                    // You might want to add some validation for the confirmation code here
-                  />
-                </div>
-                {loginError && (
-                  <ValidationMessage validationMessage={validationMessage} />
-                )}
-                <Button
-                  variant='default'
-                  className='mt-4 w-full'
-                  onClick={handleAccountVerification}
-                >
-                  Continue
-                </Button>
-                <div className='mt-4 text-center'>
-                  <span className=''>{"Didn't receive a code?"}</span>
+              {isClient && step === 3 && (
+                <>
+                  <div className='relative flex-grow text-primary'>
+                    <FaKey className='absolute left-3 top-1/2 -translate-y-1/2 transform text-border' />
+                    <Input
+                      type='text'
+                      placeholder='Verification Code'
+                      ref={confirmationCodeRef}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleAccountVerification();
+                        }
+                      }}
+                      autoFocus
+                      className='w-full pl-10'
+                      // You might want to add some validation for the confirmation code here
+                    />
+                  </div>
+                  {loginError && (
+                    <ValidationMessage validationMessage={validationMessage} />
+                  )}
+                  <Button
+                    variant='default'
+                    className='mt-4 w-full'
+                    onClick={handleAccountVerification}
+                  >
+                    Continue
+                  </Button>
+                  <div className='mt-4 text-center'>
+                    <span className=''>{"Didn't receive a code?"}</span>
+                    <Button
+                      variant='link'
+                      size='sm'
+                      onClick={() => handleRequestNewCode()}
+                    >
+                      Send a new code
+                    </Button>
+                    {isClient && newConfirmationCodeSent && (
+                      <div className='mt-2 text-center'>
+                        <p className='text-sm font-semibold text-green-600'>
+                          <FaCheckCircle className='mr-2 inline text-lg' />A new
+                          verification code has been sent to your email.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {isClient && step !== 3 && (
+                <div className='text-center'>
+                  <span>Don't have an account? </span>
                   <Button
                     variant='link'
                     size='sm'
-                    onClick={() => handleRequestNewCode()}
+                    onClick={() => alert('Go to sign up page')}
                   >
-                    Send a new code
+                    Sign up
                   </Button>
-                  {isClient && newConfirmationCodeSent && (
-                    <div className='mt-2 text-center'>
-                      <p className='text-sm font-semibold text-green-600'>
-                        <FaCheckCircle className='mr-2 inline text-lg' />A new
-                        verification code has been sent to your email.
-                      </p>
-                    </div>
-                  )}
                 </div>
-              </>
-            )}
-
-            {isClient && step !== 3 && (
-              <div className='text-center'>
-                <span>Don't have an account? </span>
+              )}
+              <div className='flex items-center justify-between pt-4'>
+                <hr className='w-full' />
+                <p className='px-3'>OR</p>
+                <hr className='w-full' />
+              </div>
+              <div className='flex flex-col space-y-2'>
                 <Button
-                  variant='link'
+                  variant='outline'
                   size='sm'
-                  onClick={() => alert('Go to sign up page')}
+                  className='w-full items-center justify-center'
                 >
-                  Sign up
+                  <FaGoogle className='mr-2' /> Continue with Google
+                </Button>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='w-full items-center justify-center'
+                >
+                  <FaWindows className='mr-2' /> Continue with Microsoft
+                </Button>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='w-full items-center justify-center'
+                >
+                  <FaApple className='mr-2' /> Continue with Apple
                 </Button>
               </div>
-            )}
-            <div className='flex items-center justify-between pt-4'>
-              <hr className='w-full' />
-              <p className='px-3'>OR</p>
-              <hr className='w-full' />
-            </div>
-            <div className='flex flex-col space-y-2'>
-              <Button
-                variant='outline'
-                size='sm'
-                className='w-full items-center justify-center'
-              >
-                <FaGoogle className='mr-2' /> Continue with Google
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-                className='w-full items-center justify-center'
-              >
-                <FaWindows className='mr-2' /> Continue with Microsoft
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-                className='w-full items-center justify-center'
-              >
-                <FaApple className='mr-2' /> Continue with Apple
-              </Button>
-            </div>
-          </Card>
+            </Card>
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  } else {
+    return <></>;
+  }
 };
 
 export default Login;

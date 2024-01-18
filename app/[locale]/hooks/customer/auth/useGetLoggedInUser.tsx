@@ -1,15 +1,14 @@
-import { useLoggedInUserQuery } from '@/generatedGraphql';
+import { UserDbObject, useLoggedInUserQuery } from '@/generatedGraphql';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 const useGetLoggedInUser = () => {
-    
   const { data, loading, error } = useLoggedInUserQuery();
   const router = useRouter();
   const locale = useLocale();
   // Optional: Process data to get the user object in a more convenient format
-  const user = data?.loggedInUser; // Assuming loggedInUser returns an array of users, and you need the first one
+  const user = data?.loggedInUser as UserDbObject; // Assuming loggedInUser returns an array of users, and you need the first one
 
   useEffect(() => {
     console.log('USING EFFECT');

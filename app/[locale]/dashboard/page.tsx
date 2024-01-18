@@ -1,5 +1,10 @@
+'use client';
+import { useAuth } from '../contexts/AuthProvider';
+
 const Dashboard = () => {
-  return <div>Dashboard</div>;
+  const { user, setUser } = useAuth();
+
+  return <div>Dashboard WELCOME {user?.name} </div>;
 };
 
 export default Dashboard;

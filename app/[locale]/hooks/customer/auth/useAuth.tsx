@@ -1,6 +1,5 @@
 import {
   useConfirmAccountMutation,
-  useLoggedInUserQuery,
   useLoginMutation,
   useResendVerificationCodeMutation,
 } from '@/generatedGraphql';
