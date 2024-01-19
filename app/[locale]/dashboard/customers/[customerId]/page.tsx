@@ -25,16 +25,17 @@ import { Button } from '@/components/ui/button';
 
 const Customer = ({ params }: { params: { customerId: string } }) => {
   const [showProperties, setShowProperties] = useState(false);
-  const { data, loading } = useCustomer(params.customerId);
-  const customer = data?.customerById;
+  const { customer, loading } = useCustomer(params.customerId);
   const createdAtFormatted = moment(customer?.createdAt)
     .local()
     .format('Do MMM YYYY HH:mm');
   const modifiedAtFormatted = moment(customer?.modifiedAt)
     .local()
     .format('Do MMM YYYY HH:mm');
-  const mainPhone = customer?.phoneNumbers[0].phoneNumber;
-  const recentProperty = customer?.properties[0]?.property.fullAddress;
+  const mainPhone = customer?.phoneNumbers?.[0]?.phoneNumber || '';
+  const recentProperty = customer?.properties?.[0]?.property.fullAddress || '';
+  const mainEmail = customer?.emails?.[0].email || '';
+  const hasMultipleProperties = (customer?.properties?.length ?? 0) > 1;
   const iconClass = 'h-6 w-5 text-foreground';
   const textClass = 'text-sm text-destructive-foreground';
   const tabs = [
@@ -95,7 +96,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
               <div className='mt-2 flex flex-col px-6'>
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-x-4'>
-                    {customer?.properties?.length > 1 ? (
+                    {hasMultipleProperties ? (
                       <BsHouses
                         className='text-brand-accent3 h-6 w-5'
                         aria-hidden='true'
@@ -110,7 +111,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                       {recentProperty}
                     </span>
                   </div>
-                  {customer?.properties?.length > 1 && (
+                  {hasMultipleProperties && (
                     <button
                       onClick={toggleProperties}
                       className='text-brand-accent3 focus:outline-none'
@@ -152,7 +153,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                   <AiOutlineMail className={iconClass} aria-hidden='true' />
                 </dt>
                 <dd className={textClass}>
-                  <span>{customer?.emails[0].email}</span>
+                  <span>{mainEmail}</span>
                 </dd>
               </div>
 
@@ -231,7 +232,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                 <div className='mt-2 flex flex-col px-6'>
                   <div className='flex items-center justify-between'>
                     <div className='flex items-center gap-x-4'>
-                      {customer?.properties?.length > 1 ? (
+                      {hasMultipleProperties ? (
                         <BsHouses
                           className='text-brand-accent3 h-6 w-5'
                           aria-hidden='true'
@@ -246,7 +247,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                         {recentProperty}
                       </span>
                     </div>
-                    {customer?.properties?.length > 1 && (
+                    {hasMultipleProperties && (
                       <button
                         onClick={toggleProperties}
                         className='text-brand-accent3 focus:outline-none'
@@ -288,7 +289,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                     <AiOutlineMail className={iconClass} aria-hidden='true' />
                   </dt>
                   <dd className={textClass}>
-                    <span>{customer?.emails[0].email}</span>
+                    <span>{mainEmail}</span>
                   </dd>
                 </div>
 

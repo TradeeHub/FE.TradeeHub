@@ -3,6 +3,7 @@ import {
   CustomerByIdDocument,
   CustomerByIdQuery,
   CustomerByIdQueryVariables,
+  CustomerDbObject,
 } from '@/generatedGraphql';
 import { UseCustomerReturnType } from '@/app/[locale]/types/sharedTypes';
 
@@ -19,7 +20,9 @@ const useCustomer = (customerId: string): UseCustomerReturnType => {
     console.error('Error fetching more data:', error);
   }
 
-  return { data, loading, error };
+  const customer = data?.customerById as CustomerDbObject | null;
+
+  return { customer, loading, error };
 };
 
 export default useCustomer;

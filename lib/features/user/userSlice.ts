@@ -1,17 +1,20 @@
-// features/user/userSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+import { UserState } from '@/app/[locale]/types/sharedTypes';
+import { UserDbObject } from '@/generatedGraphql';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+const initialState: UserState = {
+  data: null,
+};
 
 export const userSlice = createSlice({
   name: 'user',
-  initialState: {
-    data: null,
-  },
+  initialState,
   reducers: {
-    setUser: (state, action) => {
+    setUser: (state, action: PayloadAction<UserDbObject>) => {
       state.data = action.payload;
     },
     resetUser: (state) => {
-      state.data = null; // Explicitly set data to null
+      state.data = null;
     },
   },
 });

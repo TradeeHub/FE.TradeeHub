@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { CustomerByIdQuery, UserDbObject } from '@/generatedGraphql';
+import { CustomerByIdQuery, CustomerDbObject, UserDbObject } from '@/generatedGraphql';
 import { ApolloError } from '@apollo/client';
 import { ColDef } from 'ag-grid-community';
 import { ReactNode } from 'react';
@@ -30,7 +30,7 @@ export type LanguageOption = {
 };
 
 export type UseCustomerReturnType = {
-  data: CustomerByIdQuery | undefined;
+  customer: CustomerDbObject | null;
   loading: boolean;
   error: ApolloError | undefined;
 };
@@ -55,4 +55,8 @@ export type RootLayoutProps = {
 
 export type AuthenticationGuardProps = {
   children: ReactNode;
+};
+
+export type UserState = {
+  data: UserDbObject | null;
 };

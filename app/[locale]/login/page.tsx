@@ -66,15 +66,15 @@ const Login = () => {
   const [newConfirmationCodeSent, setNewConfirmationCodeSent] =
     useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState('');
-  const confirmationCodeRef = useRef(null);
-  const userIsConfirmedRef = useRef(false);
-  const passwordRef = useRef(null);
-  const emailRef = useRef(null);
+  const confirmationCodeRef = useRef<HTMLInputElement>(null);
+  const userIsConfirmedRef = useRef<boolean>(false);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.data);
 
   const handleEmailSubmit = () => {
-    const emailValue = emailRef.current.value as string;
+    const emailValue = emailRef?.current?.value || '';
     if (isEmailValid(emailValue)) {
       setLoginError(false);
       setEmail(emailValue);
@@ -88,7 +88,7 @@ const Login = () => {
   };
 
   const handlePasswordSubmit = () => {
-    const passwordValue = passwordRef.current.value as string;
+    const passwordValue = passwordRef?.current?.value || '';
 
     if (passwordValue.length > 0) {
       setLoginError(false);
@@ -101,7 +101,7 @@ const Login = () => {
   };
 
   const handleAccountVerification = () => {
-    const confirmationCode = confirmationCodeRef.current.value as string;
+    const confirmationCode = confirmationCodeRef?.current?.value || '';
 
     if (confirmationCode.length > 0) {
       setNewConfirmationCodeSent(false);
@@ -136,7 +136,7 @@ const Login = () => {
       const accountConfirmed = loginData?.login.isConfirmed;
       const loginSuccess = loginData?.login.isSuccess;
       userIsConfirmedRef.current = accountConfirmed;
-      console.log('my logged in data', loginData);
+      
       if (!accountConfirmed && loginSuccess) {
         setLoginError(false);
         setStep(3);
@@ -156,10 +156,6 @@ const Login = () => {
 
   useEffect(() => {
     if (!loginData && user) {
-      console.log(
-        'user changed in loged but didnt login go to dashboard',
-        user,
-      );
       router.push(`/${locale}/dashboard`);
     }
   }, [user]);
