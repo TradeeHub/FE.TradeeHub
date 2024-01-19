@@ -23,7 +23,7 @@ const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Elemen
     if (!authenticated) {
       dispatch(resetUser());
       router.push(`/${locale}/login`); // Redirect to login if no loggedInUser and user is null
-      client.clearStore().then((te) => {
+      client.clearStore().then(() => {
       });
     } else {
       if (!loading && !error && loggedInUser) {
