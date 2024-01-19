@@ -14,11 +14,11 @@ const GridSettingManager = ({
   onToggleColumnVisibility: (index: number) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const sidebarRef = useRef(null); // Create a ref for the sidebar
+  const sidebarRef = useRef<HTMLDivElement>(null); // Create a ref for the sidebar
 
   // Click event handler to close sidebar if clicked outside
-  const handleClickOutside = (event) => {
-    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+  const handleClickOutside = (event : MouseEvent) => {
+    if (sidebarRef.current && event.target instanceof Node && !sidebarRef.current.contains(event.target)) {
       setIsOpen(false); // Close the sidebar
     }
   };
