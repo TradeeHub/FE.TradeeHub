@@ -4,7 +4,8 @@ import './globals.css';
 import { ApolloWrapper } from './ApolloWrapper';
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
-import AuthProvider from './contexts/AuthProvider';
+import AuthProvider, { AuthenticationGuard } from './contexts/AuthProvider';
+import StoreProvider from './StoreProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({
 
   return (
     <html lang={locale}>
+      <StoreProvider>
       <ApolloWrapper>
         <body className={inter.className}>
           <ThemeProvider
@@ -37,6 +39,7 @@ export default function RootLayout({
           </ThemeProvider>
         </body>
       </ApolloWrapper>
+      </StoreProvider>
     </html>
   );
 }

@@ -1,9 +1,10 @@
 'use client';
+import { RootState } from '@/lib/store';
 import React from 'react';
-import { useAuth } from '../../contexts/AuthProvider';
+import { useSelector } from 'react-redux';
 
 const Appointments = () => {
-  const { user } = useAuth(); // Use the useAuth hook to access the user
+  const user = useSelector((state: RootState) => state.user.data);
   console.log('user   is here ', user);
   return (
     <div style={{ height: 400, width: '100%' }}>

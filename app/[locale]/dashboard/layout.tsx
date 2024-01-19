@@ -1,13 +1,14 @@
 'use client';
 import React from 'react';
-import { useAuth } from '../contexts/AuthProvider';
 import { LayoutProps } from '../types/sharedTypes';
 import Sidebar from '../ui/dashboard/sidebar/sidebar';
 import Navbar from '../ui/dashboard/navbar/navbar';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/lib/store';
 
 const Layout = ({ children }: LayoutProps) => {
-  const { user } = useAuth();
-
+  const user = useSelector((state: RootState) => state.user.data);
+  
   if (!user) {
     return <></>;
   }

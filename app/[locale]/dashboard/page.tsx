@@ -1,10 +1,18 @@
 'use client';
-import { useAuth } from '../contexts/AuthProvider';
+import { RootState } from '@/lib/store';
+import { useSelector } from 'react-redux';
+import { UserDbObject } from '@/generatedGraphql';
+import { useEffect } from 'react';
 
 const Dashboard = () => {
-  const { user, setUser } = useAuth();
+  const user = useSelector((state: RootState) => state.user.data);
 
-  return <div>Dashboard WELCOME {user?.name} </div>;
+   useEffect(() => {
+      console.log('user changed', user)
+  }, [user]);
+
+  const myu = user as UserDbObject | null
+  return <div>Dashboard WELCOME {myu?.name} </div>;
 };
 
 export default Dashboard;

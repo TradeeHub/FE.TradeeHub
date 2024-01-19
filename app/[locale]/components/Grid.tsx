@@ -71,7 +71,6 @@ const CustomGrid = ({
           );
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
         params.failCallback();
       }
     },

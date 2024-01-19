@@ -21,8 +21,10 @@ import {
 } from '../hooks/customer/auth/useAuth';
 import { ConfirmAccountMutation, UserDbObject } from '@/generatedGraphql';
 import { useLocale } from 'next-intl';
-import { useAuth } from '../contexts/AuthProvider';
-import { useGetLoggedInUser } from '../hooks/customer/auth/useGetLoggedInUser';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '@/lib/features/user/userSlice';
+import { RootState } from '@/lib/store';
+import authenticatedVar from '../constants/authenticated';
 
 const isEmailValid = (email: string) => {
   const regex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -49,8 +51,6 @@ const ValidationMessage = ({
 };
 
 const Login = () => {
-  const { user, setUser } = useAuth();
-
   const { login, data: loginData } = useLogin();
   const { confirmAccount, data: confirmData } = useConfirmAccount();
   const { resendConfirmationCode, data: resendConfirmationData } =
@@ -70,6 +70,8 @@ const Login = () => {
   const userIsConfirmedRef = useRef(false);
   const passwordRef = useRef(null);
   const emailRef = useRef(null);
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user.data);
 
   const handleEmailSubmit = () => {
     const emailValue = emailRef.current.value as string;
@@ -134,7 +136,7 @@ const Login = () => {
       const accountConfirmed = loginData?.login.isConfirmed;
       const loginSuccess = loginData?.login.isSuccess;
       userIsConfirmedRef.current = accountConfirmed;
-
+      console.log('my logged in data', loginData)
       if (!accountConfirmed && loginSuccess) {
         setLoginError(false);
         setStep(3);
@@ -144,12 +146,20 @@ const Login = () => {
           'Incorrect username or password. Please try again.',
         );
       } else {
-        setUser(loginData?.login?.user as UserDbObject);
-        console.log('WHY AM HERE');
-        router.push(`/${locale}/dashboard`);
-      }
+        const user = loginData?.login?.user as UserDbObject
+        router.push(`/${locale}/dashboard`);  
+        authenticatedVar(true);
+        dispatch(setUser(user)); // Dispatch the setUser action
+      } 
     }
   }, [loginData]);
+
+    useEffect(() => {
+    if (!loginData && user) {
+      console.log('user changed in loged but didnt login go to dashboard', user)
+      router.push(`/${locale}/dashboard`);  
+    }
+  }, [user]);
 
   useEffect(() => {
     if (
@@ -163,17 +173,8 @@ const Login = () => {
 
   useEffect(() => {
     setIsClient(true);
-    if (user) {
-      console.log('I AM BEING SENT HEREEE', user)
-      const { user: loggedInUser } = useGetLoggedInUser();
-      if (!loggedInUser) {
-        setUser(null);
-        router.push(`/${locale}/dashboard`);
-      }
-    }
   }, []);
-
-  if (!user) {
+    if(!loginData?.login.isSuccess && !user){
     return (
       <>
         <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
@@ -338,9 +339,10 @@ const Login = () => {
         </div>
       </>
     );
-  } else {
-    return <></>;
-  }
+    }else{
+  return(<></>)
+}
 };
+
 
 export default Login;
