@@ -15,6 +15,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import Sidebar from '../sidebar/sidebar';
 import ThemeChanger from '@/app/[locale]/components/ThemeChanger';
+import Logout from './logout';
 
 const Navbar = () => {
   return (
@@ -78,7 +79,7 @@ const Navbar = () => {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className='cursor-pointer'>
-                Logout
+                <Logout />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

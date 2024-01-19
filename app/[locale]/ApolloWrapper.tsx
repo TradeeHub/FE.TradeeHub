@@ -19,21 +19,14 @@ function makeClient() {
   });
 
   const errorLink = onError(({ graphQLErrors }) => {
-    // let isAuthError = false;
-
     if (graphQLErrors) {
       for (const err of graphQLErrors) {
         if (err.extensions?.code === 'AUTH_NOT_AUTHORIZED') {
           authenticatedVar(false);
-          // isAuthError = true;
           break;
         }
       }
     }
-
-    // if (!isAuthError) {
-    //   return forward(operation);
-    // }
   });
 
   // Combine the error link with the http link

@@ -5,7 +5,7 @@ import { ApolloWrapper } from './ApolloWrapper';
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import StoreProvider from './StoreProvider';
-import AuthenticationGuard from './contexts/AuthenticationGuard';
+import AuthenticationGuard from './AuthenticationGuard';
 import { RootLayoutProps } from './types/sharedTypes';
 
 const inter = Inter({ subsets: ['latin'] });

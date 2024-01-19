@@ -2,6 +2,7 @@ import { LoginState } from '@/app/[locale]/types/sharedTypes';
 import {
   useConfirmAccountMutation,
   useLoginMutation,
+  useLogoutMutation,
   useResendVerificationCodeMutation,
 } from '@/generatedGraphql';
 
@@ -24,6 +25,20 @@ const useLogin = () => {
   const loginResponse = data?.login as LoginState;
 
   return { login, loginResponse, loading, error };
+};
+
+const useLogout = () => {
+  const [logoutMutation] = useLogoutMutation();
+
+  const logout = async () => {
+    try {
+      await logoutMutation();
+    } catch (e) {
+      console.error('Login error:', e);
+    }
+  };
+
+  return { logout };
 };
 
 const useConfirmAccount = () => {
@@ -70,4 +85,6 @@ const useResendVerificationCode = () => {
   return { resendConfirmationCode, data, loading, error };
 };
 
-export { useLogin, useConfirmAccount, useResendVerificationCode };
+
+
+export { useLogin, useLogout, useConfirmAccount, useResendVerificationCode };
