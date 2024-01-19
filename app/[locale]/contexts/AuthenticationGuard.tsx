@@ -10,7 +10,9 @@ import authenticatedVar from '../constants/authenticated';
 import { useApolloClient } from '@apollo/client';
 import { AuthenticationGuardProps } from '../types/sharedTypes';
 
-const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Element => {
+const AuthenticationGuard = ({
+  children,
+}: AuthenticationGuardProps): JSX.Element => {
   const dispatch = useDispatch();
   const router = useRouter();
   const locale = useLocale();
@@ -23,20 +25,15 @@ const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Elemen
     if (!authenticated) {
       dispatch(resetUser());
       router.push(`/${locale}/login`); // Redirect to login if no loggedInUser and user is null
-      client.clearStore().then(() => {
-      });
+      client.clearStore().then(() => {});
     } else {
       if (!loading && !error && loggedInUser) {
-          dispatch(setUser(loggedInUser)); // Update Redux user if loggedInUser is available
+        dispatch(setUser(loggedInUser)); // Update Redux user if loggedInUser is available
       }
     }
   }, [authenticated, pathname, loggedInUser]);
 
-  return (
-    <>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 };
 
 export default AuthenticationGuard;

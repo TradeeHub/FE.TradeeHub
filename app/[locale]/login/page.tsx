@@ -19,7 +19,7 @@ import {
   useConfirmAccount,
   useResendVerificationCode,
 } from '../hooks/customer/auth/useAuth';
-import { ConfirmAccountMutation, UserDbObject } from '@/generatedGraphql';
+import { ConfirmAccountMutation } from '@/generatedGraphql';
 import { useLocale } from 'next-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '@/lib/features/user/userSlice';
@@ -51,8 +51,9 @@ const ValidationMessage = ({
 };
 
 const Login = () => {
-  const { login, data: loginData } = useLogin();
-  const { confirmAccount, data: confirmData } = useConfirmAccount();
+  const { login, loginResponse } = useLogin();
+  const { confirmAccount, verificationResponse, verificationError } =
+    useConfirmAccount();
   const { resendConfirmationCode, data: resendConfirmationData } =
     useResendVerificationCode();
   const router = useRouter();
@@ -104,9 +105,9 @@ const Login = () => {
     const confirmationCode = confirmationCodeRef?.current?.value || '';
 
     if (confirmationCode.length > 0) {
+      confirmAccount(confirmationCode, email);
       setNewConfirmationCodeSent(false);
       setLoginError(false);
-      confirmAccount(confirmationCode, email);
     } else {
       setLoginError(true);
       setValidationMessage(
@@ -120,42 +121,46 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (confirmData) {
-      const confirmResult = confirmData as ConfirmAccountMutation;
-      if (confirmResult.confirmAccount.isConfirmationSuccess) {
-        login(email, password);
-      } else {
-        setLoginError(true);
-        setValidationMessage(confirmResult.confirmAccount.message as string);
-      }
+    const confirmResult =
+      (verificationResponse as ConfirmAccountMutation) || null;
+    if (
+      !verificationError &&
+      confirmResult?.confirmAccount?.isConfirmationSuccess
+    ) {
+      login(email, password);
+    } else {
+      setLoginError(true);
+      setValidationMessage(
+        'Invalid verification code provided, please try again.',
+      );
     }
-  }, [confirmData]);
+  }, [verificationResponse, verificationError]);
 
   useEffect(() => {
-    if (loginData) {
-      const accountConfirmed = loginData?.login.isConfirmed;
-      const loginSuccess = loginData?.login.isSuccess;
-      userIsConfirmedRef.current = accountConfirmed;
-      
-      if (!accountConfirmed && loginSuccess) {
+    if (loginResponse) {
+      userIsConfirmedRef.current = loginResponse?.isConfirmed;
+      if (!loginResponse?.isConfirmed && loginResponse?.isSuccess) {
         setLoginError(false);
         setStep(3);
-      } else if (!accountConfirmed && !loginSuccess) {
+      } else if (!loginResponse?.isConfirmed && !loginResponse?.isSuccess) {
         setLoginError(true);
         setValidationMessage(
           'Incorrect username or password. Please try again.',
         );
-      } else {
-        const user = loginData?.login?.user as UserDbObject;
+      } else if (
+        loginResponse?.isConfirmed &&
+        loginResponse?.isSuccess &&
+        loginResponse?.user
+      ) {
         authenticatedVar(true);
-        dispatch(setUser(user)); // Dispatch the setUser action
+        dispatch(setUser(loginResponse?.user)); // Dispatch the setUser action
         router.push(`/${locale}/dashboard`);
       }
     }
-  }, [loginData]);
+  }, [loginResponse]);
 
   useEffect(() => {
-    if (!loginData && user) {
+    if (!loginResponse?.user && user) {
       router.push(`/${locale}/dashboard`);
     }
   }, [user]);
@@ -171,9 +176,12 @@ const Login = () => {
   }, [resendConfirmationData]);
 
   useEffect(() => {
+    setLoginError(false);
+    setValidationMessage('');
     setIsClient(true);
   }, []);
-  if (!loginData?.login.isSuccess && !user) {
+
+  if ((!loginResponse?.isSuccess || !loginResponse?.isConfirmed) && !user) {
     return (
       <>
         <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>

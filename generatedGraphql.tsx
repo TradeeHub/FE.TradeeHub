@@ -510,6 +510,23 @@ export enum HttpStatusCode {
   VariantAlsoNegotiates = 'VARIANT_ALSO_NEGOTIATES'
 }
 
+export type ISingleFilterOfGuidFilter = {
+  AND?: InputMaybe<Array<ISingleFilterOfGuidFilter>>;
+  OR?: InputMaybe<Array<ISingleFilterOfGuidFilter>>;
+  element?: InputMaybe<Scalars['UUID']['input']>;
+  element_gt?: InputMaybe<Scalars['UUID']['input']>;
+  element_gte?: InputMaybe<Scalars['UUID']['input']>;
+  element_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  element_lt?: InputMaybe<Scalars['UUID']['input']>;
+  element_lte?: InputMaybe<Scalars['UUID']['input']>;
+  element_not?: InputMaybe<Scalars['UUID']['input']>;
+  element_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  element_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  element_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  element_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  element_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+};
+
 export type ISingleFilterOfStringFilter = {
   AND?: InputMaybe<Array<ISingleFilterOfStringFilter>>;
   OR?: InputMaybe<Array<ISingleFilterOfStringFilter>>;
@@ -790,7 +807,6 @@ export enum SortOperationKind {
 export type UserDbObject = {
   __typename?: 'UserDbObject';
   address: Scalars['String']['output'];
-  awsCognitoUserId: Scalars['UUID']['output'];
   companiesMemberOf?: Maybe<Array<Maybe<UserDbObject>>>;
   companyName: Scalars['String']['output'];
   companyType: Scalars['String']['output'];
@@ -798,7 +814,7 @@ export type UserDbObject = {
   email: Scalars['String']['output'];
   emailVerified: Scalars['Boolean']['output'];
   generalInfo: GeneralCompanyInfoDbObject;
-  id: Scalars['ID']['output'];
+  id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
   phoneNumber: Scalars['String']['output'];
   phoneVerified: Scalars['Boolean']['output'];
@@ -819,22 +835,10 @@ export type UserDbObjectFilter = {
   address_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   address_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   address_starts_with?: InputMaybe<Scalars['String']['input']>;
-  awsCognitoUserId?: InputMaybe<Scalars['UUID']['input']>;
-  awsCognitoUserId_gt?: InputMaybe<Scalars['UUID']['input']>;
-  awsCognitoUserId_gte?: InputMaybe<Scalars['UUID']['input']>;
-  awsCognitoUserId_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  awsCognitoUserId_lt?: InputMaybe<Scalars['UUID']['input']>;
-  awsCognitoUserId_lte?: InputMaybe<Scalars['UUID']['input']>;
-  awsCognitoUserId_not?: InputMaybe<Scalars['UUID']['input']>;
-  awsCognitoUserId_not_gt?: InputMaybe<Scalars['UUID']['input']>;
-  awsCognitoUserId_not_gte?: InputMaybe<Scalars['UUID']['input']>;
-  awsCognitoUserId_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  awsCognitoUserId_not_lt?: InputMaybe<Scalars['UUID']['input']>;
-  awsCognitoUserId_not_lte?: InputMaybe<Scalars['UUID']['input']>;
-  companiesMemberOf_all?: InputMaybe<ObjectIdFilter>;
+  companiesMemberOf_all?: InputMaybe<ISingleFilterOfGuidFilter>;
   companiesMemberOf_any?: InputMaybe<Scalars['Boolean']['input']>;
-  companiesMemberOf_none?: InputMaybe<ObjectIdFilter>;
-  companiesMemberOf_some?: InputMaybe<ObjectIdFilter>;
+  companiesMemberOf_none?: InputMaybe<ISingleFilterOfGuidFilter>;
+  companiesMemberOf_some?: InputMaybe<ISingleFilterOfGuidFilter>;
   companyName?: InputMaybe<Scalars['String']['input']>;
   companyName_contains?: InputMaybe<Scalars['String']['input']>;
   companyName_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -880,6 +884,18 @@ export type UserDbObjectFilter = {
   email_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   email_starts_with?: InputMaybe<Scalars['String']['input']>;
   generalInfo?: InputMaybe<GeneralCompanyInfoDbObjectFilter>;
+  id?: InputMaybe<Scalars['UUID']['input']>;
+  id_gt?: InputMaybe<Scalars['UUID']['input']>;
+  id_gte?: InputMaybe<Scalars['UUID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  id_lt?: InputMaybe<Scalars['UUID']['input']>;
+  id_lte?: InputMaybe<Scalars['UUID']['input']>;
+  id_not?: InputMaybe<Scalars['UUID']['input']>;
+  id_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  id_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  id_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  id_not_lte?: InputMaybe<Scalars['UUID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   name_contains?: InputMaybe<Scalars['String']['input']>;
   name_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -902,10 +918,10 @@ export type UserDbObjectFilter = {
   phoneNumber_starts_with?: InputMaybe<Scalars['String']['input']>;
   phoneVerified?: InputMaybe<Scalars['Boolean']['input']>;
   phoneVerified_not?: InputMaybe<Scalars['Boolean']['input']>;
-  staff_all?: InputMaybe<ObjectIdFilter>;
+  staff_all?: InputMaybe<ISingleFilterOfGuidFilter>;
   staff_any?: InputMaybe<Scalars['Boolean']['input']>;
-  staff_none?: InputMaybe<ObjectIdFilter>;
-  staff_some?: InputMaybe<ObjectIdFilter>;
+  staff_none?: InputMaybe<ISingleFilterOfGuidFilter>;
+  staff_some?: InputMaybe<ISingleFilterOfGuidFilter>;
   updatedDate?: InputMaybe<Scalars['DateTime']['input']>;
   updatedDate_gt?: InputMaybe<Scalars['DateTime']['input']>;
   updatedDate_gte?: InputMaybe<Scalars['DateTime']['input']>;
@@ -922,13 +938,13 @@ export type UserDbObjectFilter = {
 
 export type UserDbObjectSort = {
   address?: InputMaybe<SortOperationKind>;
-  awsCognitoUserId?: InputMaybe<SortOperationKind>;
   companyName?: InputMaybe<SortOperationKind>;
   companyType?: InputMaybe<SortOperationKind>;
   createdDate?: InputMaybe<SortOperationKind>;
   email?: InputMaybe<SortOperationKind>;
   emailVerified?: InputMaybe<SortOperationKind>;
   generalInfo?: InputMaybe<GeneralCompanyInfoDbObjectSort>;
+  id?: InputMaybe<SortOperationKind>;
   name?: InputMaybe<SortOperationKind>;
   phoneNumber?: InputMaybe<SortOperationKind>;
   phoneVerified?: InputMaybe<SortOperationKind>;
@@ -966,7 +982,7 @@ export type ConfirmAccountMutation = { __typename?: 'Mutation', confirmAccount: 
 export type LoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser?: { __typename?: 'UserDbObject', id: string, name: string, companyName: string, email: string } | null };
+export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser?: { __typename?: 'UserDbObject', id: any, name: string, companyName: string, email: string } | null };
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String']['input'];

@@ -1,3 +1,4 @@
+import { LoginState } from '@/app/[locale]/types/sharedTypes';
 import {
   useConfirmAccountMutation,
   useLoginMutation,
@@ -17,11 +18,12 @@ const useLogin = () => {
       });
     } catch (e) {
       console.error('Login error:', e);
-      // Handle the error appropriately
     }
   };
 
-  return { login, data, loading, error };
+  const loginResponse = data?.login as LoginState;
+
+  return { login, loginResponse, loading, error };
 };
 
 const useConfirmAccount = () => {
@@ -41,7 +43,12 @@ const useConfirmAccount = () => {
     }
   };
 
-  return { confirmAccount, data, loading, error };
+  return {
+    confirmAccount,
+    verificationResponse: data,
+    verificationLoading: loading,
+    verificationError: error,
+  };
 };
 
 const useResendVerificationCode = () => {

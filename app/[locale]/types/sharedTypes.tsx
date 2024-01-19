@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { CustomerByIdQuery, CustomerDbObject, UserDbObject } from '@/generatedGraphql';
+import {
+  CustomerByIdQuery,
+  CustomerDbObject,
+  UserDbObject,
+} from '@/generatedGraphql';
 import { ApolloError } from '@apollo/client';
 import { ColDef } from 'ag-grid-community';
 import { ReactNode } from 'react';
@@ -59,4 +63,10 @@ export type AuthenticationGuardProps = {
 
 export type UserState = {
   data: UserDbObject | null;
+};
+
+export type LoginState = {
+  isConfirmed: boolean;
+  isSuccess: boolean;
+  user: UserDbObject | null;
 };
