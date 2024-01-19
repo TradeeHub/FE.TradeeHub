@@ -24,7 +24,6 @@ function makeClient() {
     if (graphQLErrors) {
       for (const err of graphQLErrors) {
         if (err.extensions?.code === 'AUTH_NOT_AUTHORIZED') {
-          console.log('Changing auth to falseee');
           authenticatedVar(false);
           isAuthError = true;
           break;
