@@ -3,6 +3,7 @@
 import { CustomerByIdQuery, UserDbObject } from '@/generatedGraphql';
 import { ApolloError } from '@apollo/client';
 import { ColDef } from 'ag-grid-community';
+import { ReactNode } from 'react';
 
 export type FetchMoreDataResult = {
   rows: object[];
@@ -43,4 +44,15 @@ export type AuthContextType = {
   setUser: React.Dispatch<React.SetStateAction<UserDbObject | null>>;
   loading: boolean;
   error: ApolloError | undefined;
+};
+
+export type RootLayoutProps = {
+  children: React.ReactNode;
+  params: {
+    locale: string;
+  };
+};
+
+export type AuthenticationGuardProps = {
+  children: ReactNode;
 };
