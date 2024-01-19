@@ -136,7 +136,7 @@ const Login = () => {
       const accountConfirmed = loginData?.login.isConfirmed;
       const loginSuccess = loginData?.login.isSuccess;
       userIsConfirmedRef.current = accountConfirmed;
-      console.log('my logged in data', loginData)
+      console.log('my logged in data', loginData);
       if (!accountConfirmed && loginSuccess) {
         setLoginError(false);
         setStep(3);
@@ -146,18 +146,21 @@ const Login = () => {
           'Incorrect username or password. Please try again.',
         );
       } else {
-        const user = loginData?.login?.user as UserDbObject
-        router.push(`/${locale}/dashboard`);  
+        const user = loginData?.login?.user as UserDbObject;
         authenticatedVar(true);
         dispatch(setUser(user)); // Dispatch the setUser action
-      } 
+        router.push(`/${locale}/dashboard`);
+      }
     }
   }, [loginData]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (!loginData && user) {
-      console.log('user changed in loged but didnt login go to dashboard', user)
-      router.push(`/${locale}/dashboard`);  
+      console.log(
+        'user changed in loged but didnt login go to dashboard',
+        user,
+      );
+      router.push(`/${locale}/dashboard`);
     }
   }, [user]);
 
@@ -174,7 +177,7 @@ const Login = () => {
   useEffect(() => {
     setIsClient(true);
   }, []);
-    if(!loginData?.login.isSuccess && !user){
+  if (!loginData?.login.isSuccess && !user) {
     return (
       <>
         <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
@@ -339,10 +342,9 @@ const Login = () => {
         </div>
       </>
     );
-    }else{
-  return(<></>)
-}
+  } else {
+    return <></>;
+  }
 };
-
 
 export default Login;

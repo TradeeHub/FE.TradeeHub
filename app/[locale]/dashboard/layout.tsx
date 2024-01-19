@@ -8,7 +8,7 @@ import { RootState } from '@/lib/store';
 
 const Layout = ({ children }: LayoutProps) => {
   const user = useSelector((state: RootState) => state.user.data);
-  
+
   if (!user) {
     return <></>;
   }

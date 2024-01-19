@@ -11,7 +11,6 @@ import {
 import authenticatedVar from './constants/authenticated';
 
 function makeClient() {
-
   const httpLink = new HttpLink({
     // this needs to be an absolute url, as relative urls cannot be used in SSR
     uri: 'http://localhost:5020/graphql/',
@@ -19,12 +18,13 @@ function makeClient() {
     fetchOptions: { cache: 'no-store' },
   });
 
-   const errorLink = onError(({ graphQLErrors, operation, forward }) => {
+  const errorLink = onError(({ graphQLErrors, operation, forward }) => {
     let isAuthError = false;
 
     if (graphQLErrors) {
       for (const err of graphQLErrors) {
         if (err.extensions?.code === 'AUTH_NOT_AUTHORIZED') {
+          console.log('Changing auth to falseee');
           authenticatedVar(false);
           isAuthError = true;
           break;
@@ -53,7 +53,6 @@ function makeClient() {
 }
 
 export function ApolloWrapper({ children }: React.PropsWithChildren) {
-
   return (
     <ApolloNextAppProvider makeClient={makeClient}>
       {children}

@@ -34,7 +34,6 @@ const useCustomers = () => {
 
         return { rows: newRows, pageInfo };
       } catch (error) {
-        console.error('Error fetching more data:', error);
         return { rows: [], pageInfo: null };
       }
     },

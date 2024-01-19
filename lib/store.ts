@@ -2,11 +2,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './features/user/userSlice'; // Adjust the path as necessary
 
 export const makeStore = () => {
-    return configureStore({
-        reducer: {
-            user: userReducer // Include your user reducer here
-        }
-    });
+  return configureStore({
+    reducer: {
+      user: userReducer, // Include your user reducer here
+    },
+  });
 };
 
 // Infer the type of makeStore

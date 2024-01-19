@@ -7,11 +7,11 @@ import { useEffect } from 'react';
 const Dashboard = () => {
   const user = useSelector((state: RootState) => state.user.data);
 
-   useEffect(() => {
-      console.log('user changed', user)
+  useEffect(() => {
+    console.log('user changed', user);
   }, [user]);
 
-  const myu = user as UserDbObject | null
+  const myu = user as UserDbObject | null;
   return <div>Dashboard WELCOME {myu?.name} </div>;
 };
 

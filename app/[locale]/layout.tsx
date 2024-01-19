@@ -25,20 +25,20 @@ export default function RootLayout({
   return (
     <html lang={locale}>
       <StoreProvider>
-      <ApolloWrapper>
-        <body className={inter.className}>
-          <ThemeProvider
-            attribute='class'
-            defaultTheme='system'
-            enableSystem
-            disableTransitionOnChange
-          >
-            <NextIntlClientProvider locale={locale} messages={messages}>
-              <AuthProvider>{children}</AuthProvider>
-            </NextIntlClientProvider>
-          </ThemeProvider>
-        </body>
-      </ApolloWrapper>
+        <ApolloWrapper>
+          <body className={inter.className}>
+            <ThemeProvider
+              attribute='class'
+              defaultTheme='system'
+              enableSystem
+              disableTransitionOnChange
+            >
+              <NextIntlClientProvider locale={locale} messages={messages}>
+                <AuthProvider>{children}</AuthProvider>
+              </NextIntlClientProvider>
+            </ThemeProvider>
+          </body>
+        </ApolloWrapper>
       </StoreProvider>
     </html>
   );
