@@ -15,12 +15,8 @@ const LogoutButton = () => {
     }
   };
 
-    return (
- <MenuItemButton
-      name='Sign Out'
-      icon={FiLogOut}
-      onClick={handleLogout}
-    />
+  return (
+    <MenuItemButton name='Sign Out' icon={FiLogOut} onClick={handleLogout} />
   );
 };
 

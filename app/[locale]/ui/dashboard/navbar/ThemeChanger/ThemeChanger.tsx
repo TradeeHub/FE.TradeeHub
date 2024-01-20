@@ -9,13 +9,12 @@ const ThemeChanger = () => {
   const { theme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
 
-  // Correct the icon when the page loads or when the theme changes
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   if (!isMounted) {
-    return null; // Render null or a placeholder until the component mounts
+    return null;
   }
 
   return (

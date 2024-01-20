@@ -5,7 +5,7 @@ const SettingsButton = () => {
   const handleOpenSettings = async () => {};
 
   return (
- <MenuItemButton
+    <MenuItemButton
       name='Settings'
       icon={IoSettingsOutline}
       onClick={handleOpenSettings}

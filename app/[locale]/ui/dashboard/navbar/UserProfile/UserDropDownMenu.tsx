@@ -18,7 +18,7 @@ const UserDropDownMenu = () => {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarImage src='https://i.pinimg.com/736x/2c/af/e9/2cafe919952a053d85dd664f6649bf45.jpg' />
+            <AvatarImage src='https://i.pravatar.cc/300' />
             <AvatarFallback>MD</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
@@ -28,15 +28,14 @@ const UserDropDownMenu = () => {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem className='cursor-pointer p-0 focus:bg-border focus:text-accent-foreground '>
-              <UserProfileButton />
+            <UserProfileButton />
           </DropdownMenuItem>
           <DropdownMenuItem className='cursor-pointer p-0 focus:bg-border focus:text-accent-foreground'>
-              <SettingsButton />
+            <SettingsButton />
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-
           <DropdownMenuItem className='cursor-pointer p-0 focus:bg-border focus:text-accent-foreground'>
-              <LogoutButton />
+            <LogoutButton />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -5,7 +5,7 @@ const UserProfileButton = () => {
   const handleOpenProfile = async () => {};
 
   return (
- <MenuItemButton
+    <MenuItemButton
       name='Profile'
       icon={CgProfile}
       onClick={handleOpenProfile}
