@@ -2,6 +2,7 @@ import React from 'react';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { IconType } from 'react-icons'; 
+import { FormMessage } from '@/components/ui/form';
 
 type InputWithIconProps<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>> = {
   field: ControllerRenderProps<TFieldValues, TName>;
@@ -20,7 +21,7 @@ const InputWithIcon = <TFieldValues extends FieldValues, TName extends FieldPath
 }: InputWithIconProps<TFieldValues, TName>) => {
   return (
     <div className='relative'>
-      <Icon className='absolute left-3 top-1/2 -translate-y-1/2 transform text-border' />
+      <Icon className='absolute left-3 top-1/2 -translate-y-1/2 transform text-secondary' />
       <Input
         type={type}
         placeholder={placeholder}
@@ -32,4 +33,10 @@ const InputWithIcon = <TFieldValues extends FieldValues, TName extends FieldPath
   );
 };
 
-export default InputWithIcon;
+const StyledFormMessage = () => {
+  return (
+    <FormMessage style={{ marginTop: '2px' }} />
+  );
+};
+
+export { InputWithIcon, StyledFormMessage };

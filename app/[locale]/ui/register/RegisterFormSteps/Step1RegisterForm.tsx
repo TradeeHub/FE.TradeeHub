@@ -8,8 +8,7 @@ import {
 } from '@/components/ui/form';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
 import { TFieldValues } from '@/app/[locale]/types/sharedTypes';
-import InputWithIcon from './InputWithIcon';
-
+import { InputWithIcon, StyledFormMessage } from './CustomForm';
 
 const Step1RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
   return (
@@ -22,7 +21,7 @@ const Step1RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
             <FormControl>
               <InputWithIcon field={field} icon={FaEnvelope} autoFocus={true} placeholder='Email Address' />
             </FormControl>
-            <FormMessage />
+            <StyledFormMessage />
           </FormItem>
         )}
       />
@@ -34,7 +33,7 @@ const Step1RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
             <FormControl>
               <InputWithIcon field={field} icon={FaLock} autoFocus={false} placeholder='Password' type='password' />
             </FormControl>
-            <FormMessage />
+            <StyledFormMessage />
           </FormItem>
         )}
       />
@@ -46,7 +45,7 @@ const Step1RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
             <FormControl>
               <InputWithIcon field={field} icon={FaLock} autoFocus={false} placeholder='Confirm Password' type='password' />
             </FormControl>
-            <FormMessage />
+            <StyledFormMessage />
           </FormItem>
         )}
       />

@@ -44,7 +44,6 @@ const formSchema = z
 
 const RegisterForm = () => {
   const [isClient, setIsClient] = useState(false);
-
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
 
@@ -122,14 +121,14 @@ const RegisterForm = () => {
             <span className='text-secondary'>Hub</span>
           </div>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
               {renderStep(currentStep)}
               <Button
                 variant='default'
                 className='mt-4 w-full'
                 onClick={onContinue}
               >
-                {currentStep < totalSteps ? 'Next' : 'Register'}
+                {currentStep < totalSteps ? 'Continue' : 'Register'}
               </Button>
 
               {/* <Button type='submit'>Submit</Button> */}
