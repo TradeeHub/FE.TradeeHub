@@ -120,6 +120,10 @@ const Login = () => {
     resendConfirmationCode(email);
   };
 
+  const handleSignUp = () => {
+    router.push(`/${locale}/register`);
+  };
+
   useEffect(() => {
     const confirmResult =
       (verificationResponse as ConfirmAccountMutation) || null;
@@ -304,11 +308,7 @@ const Login = () => {
               {isClient && step !== 3 && (
                 <div className='text-center'>
                   <span>Don't have an account? </span>
-                  <Button
-                    variant='link'
-                    size='sm'
-                    onClick={() => alert('Go to sign up page')}
-                  >
+                  <Button variant='link' size='sm' onClick={handleSignUp}>
                     Sign up
                   </Button>
                 </div>

@@ -1,135 +1,116 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { useEffect, useState } from 'react';
+
 import { Button } from '@/components/ui/button';
+import {
+  Form
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import Step1RegisterForm from './RegisterFormSteps/Step1RegisterForm';
+import Step2RegisterForm from './RegisterFormSteps/Step2RegisterForm';
+import Step3RegisterForm from './RegisterFormSteps/Step3RegisterForm';
+import Step4RegisterForm from './RegisterFormSteps/Step4RegisterForm';
+
+// Define the schema for all steps
+const formSchema = z.object({
+  email: z.string().email({ message: 'Invalid email format.' }),
+  password: z
+    .string()
+    .min(6, { message: 'Password must be at least 6 characters.' }),
+  confirmPassword: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  name: z.string().min(2, { message: 'Please enter your name.' }),
+  phoneNumber: z.string().min(10, { message: 'Invalid phone number.' }),
+  address: z.string().min(5, { message: 'Please enter your address.' }),
+  companyName: z
+    .string()
+    .min(2, { message: 'Please enter your company name.' }),
+  companyPriority: z.string(),
+  companySize: z.string(),
+  companyType: z.string(),
+  marketingPreference: z.string(),
+  annualRevenue: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'Passwords don\'t match.',
+  path: ['confirmPassword'], // This shows where the error occurred
+});
+
 
 const RegisterForm = () => {
-  const [step, setStep] = useState(1);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [address, setAddress] = useState('');
-  const [companyName, setCompanyName] = useState('');
-  const [companyPriority, setCompanyPriority] = useState('');
-  const [companySize, setCompanySize] = useState('');
-  const [companyType, setCompanyType] = useState('');
-  const [marketingPreference, setMarketingPreference] = useState('');
-  const [annualRevenue, setAnnualRevenue] = useState('');
+  const [isClient, setIsClient] = useState(false);
 
-  const handleNextStep = () => {
-    setStep(step + 1);
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 4;
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+      name: '',
+      phoneNumber: '',
+      address: '',
+      companyName: '',
+      companyPriority: '',
+      companySize: '',
+      companyType: '',
+      marketingPreference: '',
+      annualRevenue: '',
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values)
+  }
+
+  const onContinue = () => {
+    if (currentStep < totalSteps) {
+      setCurrentStep((prev) => prev + 1);
+    } else {
+      // onSubmit();
+    }
   };
 
-  const handlePreviousStep = () => {
-    setStep(step - 1);
+  const renderStep = (step: number) => {
+    if (!isClient) return null; // Render nothing on server-side
+
+    switch (step) {
+      case 1:
+         return (<Step1RegisterForm control={form.control}/>);
+      case 2:
+         return (<Step2RegisterForm control={form.control}/>);
+      case 3:
+         return (<Step3RegisterForm control={form.control}/>);
+      case 4:
+         return (<Step4RegisterForm control={form.control}/>);
+    }
   };
 
-  const handleRegister = () => {
-    // Handle registration logic here
-  };
-
+  
+  useEffect(() => {
+    // This effect runs only on the client side
+    setIsClient(true);
+  }, []);
+  
   return (
-    <div className='flex min-h-screen items-center justify-center bg-background'>
-      <div className='w-full max-w-xl rounded-lg bg-white p-8 shadow'>
-        <h2 className='mb-6 text-center text-2xl font-bold text-primary'>
-          Step {step}: Register Your Account
-        </h2>
-        {step === 1 && (
-          <>
-            <Input
-              type='email'
-              placeholder='Email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              type='password'
-              placeholder='Password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </>
-        )}
-        {step === 2 && (
-          <>
-            <Input
-              type='text'
-              placeholder='Name'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Input
-              type='text'
-              placeholder='Phone Number'
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-            />
-            <Input
-              type='text'
-              placeholder='Address'
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-          </>
-        )}
-        {step === 3 && (
-          <>
-            <Input
-              type='text'
-              placeholder='Company Name'
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-            />
-            <Input
-              type='text'
-              placeholder='Company Priority'
-              value={companyPriority}
-              onChange={(e) => setCompanyPriority(e.target.value)}
-            />
-            <Input
-              type='text'
-              placeholder='Company Size'
-              value={companySize}
-              onChange={(e) => setCompanySize(e.target.value)}
-            />
-            <Input
-              type='text'
-              placeholder='Company Type'
-              value={companyType}
-              onChange={(e) => setCompanyType(e.target.value)}
-            />
-          </>
-        )}
-        {step === 4 && (
-          <>
-            <Input
-              type='text'
-              placeholder='Marketing Preference'
-              value={marketingPreference}
-              onChange={(e) => setMarketingPreference(e.target.value)}
-            />
-            <Input
-              type='text'
-              placeholder='Annual Revenue'
-              value={annualRevenue}
-              onChange={(e) => setAnnualRevenue(e.target.value)}
-            />
-          </>
-        )}
-        <div className='flex justify-between mt-8'>
-          {step > 1 && (
-            <Button onClick={handlePreviousStep}>Previous</Button>
-          )}
-          {step < 4 ? (
-            <Button onClick={handleNextStep}>Next</Button>
-          ) : (
-            <Button onClick={handleRegister}>Register</Button>
-          )}
-        </div>
-      </div>
+    <div className='space-y-8'>
+      {/* <ProgressBar currentStep={currentStep} totalSteps={totalSteps} /> */}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+          {renderStep(currentStep)}
+          <Button type='button' onClick={onContinue}>
+            {currentStep < totalSteps ? 'Next' : 'Register'}
+          </Button>
+        </form>
+      </Form>
     </div>
   );
-}
+};
 
 export default RegisterForm;
