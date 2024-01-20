@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { useEffect, useState } from 'react';
-
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import Step1RegisterForm from './RegisterFormSteps/Step1RegisterForm';
@@ -12,6 +11,7 @@ import Step2RegisterForm from './RegisterFormSteps/Step2RegisterForm';
 import Step3RegisterForm from './RegisterFormSteps/Step3RegisterForm';
 import Step4RegisterForm from './RegisterFormSteps/Step4RegisterForm';
 import { Card } from '@/components/ui/card';
+import { IoArrowBack } from 'react-icons/io5';
 
 // Define the schema for all steps
 const formSchema = z
@@ -41,6 +41,21 @@ const formSchema = z
     message: "Passwords don't match.",
     path: ['confirmPassword'], // This shows where the error occurred
   });
+
+const ProgressBar = ({ totalSteps, currentStep } : { totalSteps: number, currentStep: number}) => {
+  return (
+    <div className='flex justify-between w-full pb-1'>
+      {[...Array(totalSteps)].map((_, index) => (
+        <div
+          key={index}
+          className={`h-2 flex-1 mx-1 rounded ${
+            index < currentStep ? 'bg-primary' : 'bg-gray-300'
+          }`}
+        ></div>
+      ))}
+    </div>
+  );
+};
 
 const RegisterForm = () => {
   const [isClient, setIsClient] = useState(false);
@@ -107,7 +122,11 @@ const RegisterForm = () => {
         return <Step4RegisterForm control={form.control} />;
     }
   };
-
+  const goBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -116,10 +135,32 @@ const RegisterForm = () => {
     <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
       <div className='w-full max-w-md space-y-4'>
         <Card className='w-full max-w-md space-y-4 bg-white p-6 shadow-md'>
-          <div className='pl-2 text-center text-3xl font-bold'>
-            <span className='text-primary dark:text-accent'>Tradee</span>
-            <span className='text-secondary'>Hub</span>
+             <div className='flex items-center justify-between'>
+            {/* Render back arrow if currentStep > 1, otherwise render a placeholder to keep the title centered */}
+            {currentStep > 1 ? (
+              <Button
+                onClick={goBack}
+                variant='ghost'
+                className='text-primary dark:text-accent focus:outline-none'
+                aria-label='Go back'
+              >
+                <IoArrowBack size={24} />
+              </Button>
+            ) : (
+              // This empty div acts as a placeholder with the same size as the IoArrowBack icon
+              <div className='w-8 h-8'></div> 
+            )}
+
+            {/* Title */}
+            <div className='text-3xl font-bold'>
+              <span className='text-primary dark:text-accent'>Tradee</span>
+              <span className='text-secondary'>Hub</span>
+            </div>
+
+            {/* Invisible placeholder to ensure the title remains centered */}
+            <div className='w-8 h-8'></div> 
           </div>
+          <ProgressBar totalSteps={totalSteps} currentStep={currentStep} />
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
               {renderStep(currentStep)}
