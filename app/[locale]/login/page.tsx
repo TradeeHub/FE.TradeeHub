@@ -161,7 +161,7 @@ const Login = () => {
 
   useEffect(() => {
     if (!loginResponse?.user && user) {
-      console.log('I AM HERE', user)
+      console.log('I AM HERE', user);
       router.push(`/${locale}/dashboard`);
     }
   }, [user]);

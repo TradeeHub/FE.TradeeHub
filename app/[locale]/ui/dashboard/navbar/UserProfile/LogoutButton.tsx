@@ -1,7 +1,9 @@
 import authenticatedVar from '@/app/[locale]/constants/authenticated';
 import { useLogout } from '@/app/[locale]/hooks/customer/auth/useAuth';
+import { FiLogOut } from 'react-icons/fi';
+import MenuItemButton from './MenuItemButton';
 
-const Logout = () => {
+const LogoutButton = () => {
   const { logout } = useLogout();
 
   const handleLogout = async () => {
@@ -13,11 +15,13 @@ const Logout = () => {
     }
   };
 
-  return (
-    <span onClick={handleLogout} className=''>
-      Logout
-    </span>
+    return (
+ <MenuItemButton
+      name='Sign Out'
+      icon={FiLogOut}
+      onClick={handleLogout}
+    />
   );
 };
 
-export default Logout;
+export default LogoutButton;

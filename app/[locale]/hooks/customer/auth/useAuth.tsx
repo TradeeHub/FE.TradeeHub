@@ -85,6 +85,4 @@ const useResendVerificationCode = () => {
   return { resendConfirmationCode, data, loading, error };
 };
 
-
-
 export { useLogin, useLogout, useConfirmAccount, useResendVerificationCode };

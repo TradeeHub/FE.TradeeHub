@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 import { LayoutProps } from '../types/sharedTypes';
-import Sidebar from '../ui/dashboard/sidebar/sidebar';
-import Navbar from '../ui/dashboard/navbar/navbar';
+import Sidebar from '../ui/dashboard/sidebar/Sidebar';
+import Navbar from '../ui/dashboard/navbar/Navbar';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 

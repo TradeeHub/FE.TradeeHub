@@ -2,20 +2,11 @@ import { Bars3Icon, BellIcon } from '@heroicons/react/24/outline';
 import { MdSearch } from 'react-icons/md';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Label } from '@/components/ui/label';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import Sidebar from '../sidebar/sidebar';
+import Sidebar from '../sidebar/Sidebar';
 import ThemeChanger from '@/app/[locale]/components/ThemeChanger';
-import Logout from './logout';
+import UserDropDownMenu from './UserProfile/UserDropDownMenu';
 
 const Navbar = () => {
   return (
@@ -58,31 +49,7 @@ const Navbar = () => {
           </div>
 
           {/* Avatar and Dropdown Menu */}
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Avatar>
-                <AvatarImage src='https://i.pinimg.com/736x/2c/af/e9/2cafe919952a053d85dd664f6649bf45.jpg' />
-                <AvatarFallback>MD</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className='cursor-pointer'>
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem className='cursor-pointer'>
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem className='cursor-pointer'>
-                Settings
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className='cursor-pointer'>
-                <Logout />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <UserDropDownMenu />
 
           {/* Rd HandyPro Label */}
           <div className='hidden flex-shrink-0 text-primary md:mr-12 md:block'>
