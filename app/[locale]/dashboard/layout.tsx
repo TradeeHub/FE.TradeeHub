@@ -5,6 +5,7 @@ import Sidebar from '../ui/dashboard/sidebar/Sidebar';
 import Navbar from '../ui/dashboard/navbar/Navbar';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
+import AuthenticationGuard from './AuthenticationGuard';
 
 const Layout = ({ children }: LayoutProps) => {
   const user = useSelector((state: RootState) => state.user.data);
@@ -15,6 +16,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <>
+    <AuthenticationGuard>
       <div className='flex'>
         {/* Sidebar - hidden on small screens and visible on large screens */}
         <div className='hidden min-h-screen flex-none border-r bg-card lg:flex'>
@@ -29,6 +31,7 @@ const Layout = ({ children }: LayoutProps) => {
           <div className='overflow-auto p-4'>{children}</div>
         </div>
       </div>
+      </AuthenticationGuard>
     </>
   );
 };
