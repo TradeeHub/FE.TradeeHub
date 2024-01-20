@@ -70,3 +70,18 @@ export type LoginState = {
   isSuccess: boolean;
   user: UserDbObject | null;
 };
+
+export type TFieldValues = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  name: string;
+  phoneNumber: string;
+  address: string;
+  companyName: string;
+  companyPriority: string;
+  companySize: string;
+  companyType: string;
+  marketingPreference: string;
+  annualRevenue: string;
+};
