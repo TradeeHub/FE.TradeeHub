@@ -1,10 +1,6 @@
 import React from 'react';
 import { Control } from 'react-hook-form';
-import {
-  FormField,
-  FormItem,
-  FormControl
-} from '@/components/ui/form';
+import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
 import { TFieldValues } from '@/app/[locale]/types/sharedTypes';
 import { InputWithIcon, StyledFormMessage } from './CustomForm';
@@ -18,7 +14,12 @@ const Step1RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon field={field} icon={FaEnvelope} autoFocus={true} placeholder='Email Address' />
+              <InputWithIcon
+                field={field}
+                icon={FaEnvelope}
+                autoFocus={true}
+                placeholder='Email Address'
+              />
             </FormControl>
             <StyledFormMessage />
           </FormItem>
@@ -30,7 +31,13 @@ const Step1RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon field={field} icon={FaLock} autoFocus={false} placeholder='Password' type='password' />
+              <InputWithIcon
+                field={field}
+                icon={FaLock}
+                autoFocus={false}
+                placeholder='Password'
+                type='password'
+              />
             </FormControl>
             <StyledFormMessage />
           </FormItem>
@@ -42,7 +49,13 @@ const Step1RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon field={field} icon={FaLock} autoFocus={false} placeholder='Confirm Password' type='password' />
+              <InputWithIcon
+                field={field}
+                icon={FaLock}
+                autoFocus={false}
+                placeholder='Confirm Password'
+                type='password'
+              />
             </FormControl>
             <StyledFormMessage />
           </FormItem>

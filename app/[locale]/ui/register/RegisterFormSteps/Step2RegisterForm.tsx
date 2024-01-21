@@ -1,8 +1,4 @@
-import {
-  FormField,
-  FormItem,
-  FormControl
-} from '@/components/ui/form';
+import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import React from 'react';
 import { InputWithIcon, StyledFormMessage } from './CustomForm';
 import { TFieldValues } from '@/app/[locale]/types/sharedTypes';
@@ -20,7 +16,12 @@ const Step2RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon field={field} icon={FaUser} autoFocus={true} placeholder='Full Name' />
+              <InputWithIcon
+                field={field}
+                icon={FaUser}
+                autoFocus={true}
+                placeholder='Full Name'
+              />
             </FormControl>
             <StyledFormMessage />
           </FormItem>
@@ -32,7 +33,12 @@ const Step2RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon field={field} icon={HiDeviceMobile} autoFocus={false} placeholder='Phone Number'/>
+              <InputWithIcon
+                field={field}
+                icon={HiDeviceMobile}
+                autoFocus={false}
+                placeholder='Phone Number'
+              />
             </FormControl>
             <StyledFormMessage />
           </FormItem>
@@ -44,7 +50,12 @@ const Step2RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon field={field} icon={IoLocation} autoFocus={false} placeholder='Address'/>
+              <InputWithIcon
+                field={field}
+                icon={IoLocation}
+                autoFocus={false}
+                placeholder='Address'
+              />
             </FormControl>
             <StyledFormMessage />
           </FormItem>

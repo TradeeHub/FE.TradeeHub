@@ -1,10 +1,13 @@
 import React from 'react';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
-import { IconType } from 'react-icons'; 
+import { IconType } from 'react-icons';
 import { FormMessage } from '@/components/ui/form';
 
-type InputWithIconProps<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>> = {
+type InputWithIconProps<
+  TFieldValues extends FieldValues,
+  TName extends FieldPath<TFieldValues>,
+> = {
   field: ControllerRenderProps<TFieldValues, TName>;
   icon: IconType;
   autoFocus?: boolean;
@@ -12,7 +15,10 @@ type InputWithIconProps<TFieldValues extends FieldValues, TName extends FieldPat
   type?: string;
 };
 
-const InputWithIcon = <TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>({
+const InputWithIcon = <
+  TFieldValues extends FieldValues,
+  TName extends FieldPath<TFieldValues>,
+>({
   field,
   icon: Icon,
   autoFocus = false, // Default value for autoFocus is false
@@ -34,9 +40,7 @@ const InputWithIcon = <TFieldValues extends FieldValues, TName extends FieldPath
 };
 
 const StyledFormMessage = () => {
-  return (
-    <FormMessage style={{ marginTop: '2px' }} />
-  );
+  return <FormMessage style={{ marginTop: '2px' }} />;
 };
 
 export { InputWithIcon, StyledFormMessage };

@@ -19,11 +19,17 @@ const formSchema = z
     email: z.string().email({ message: 'Invalid email format.' }),
     password: z
       .string()
-          .min(8, { message: 'Password must be at least 8 characters.' })
-          .regex(/[0-9]/, { message: 'Password must contain at least 1 number.' })
-          .regex(/[!@#$%^&*(),.?":{}|<>]/, { message: 'Password must contain at least 1 special character.' })
-          .regex(/[A-Z]/, { message: 'Password must contain at least 1 uppercase letter.' })
-          .regex(/[a-z]/, { message: 'Password must contain at least 1 lowercase letter.' }),
+      .min(8, { message: 'Password must be at least 8 characters.' })
+      .regex(/[0-9]/, { message: 'Password must contain at least 1 number.' })
+      .regex(/[!@#$%^&*(),.?":{}|<>]/, {
+        message: 'Password must contain at least 1 special character.',
+      })
+      .regex(/[A-Z]/, {
+        message: 'Password must contain at least 1 uppercase letter.',
+      })
+      .regex(/[a-z]/, {
+        message: 'Password must contain at least 1 lowercase letter.',
+      }),
     confirmPassword: z.string(),
     name: z.string().min(2, { message: 'Please enter your name.' }),
     phoneNumber: z.string().min(10, { message: 'Invalid phone number.' }),
@@ -42,13 +48,19 @@ const formSchema = z
     path: ['confirmPassword'], // This shows where the error occurred
   });
 
-const ProgressBar = ({ totalSteps, currentStep } : { totalSteps: number, currentStep: number}) => {
+const ProgressBar = ({
+  totalSteps,
+  currentStep,
+}: {
+  totalSteps: number;
+  currentStep: number;
+}) => {
   return (
-    <div className='flex justify-between w-full pb-1'>
+    <div className='flex w-full justify-between pb-1'>
       {[...Array(totalSteps)].map((_, index) => (
         <div
           key={index}
-          className={`h-2 flex-1 mx-1 rounded ${
+          className={`mx-1 h-2 flex-1 rounded ${
             index < currentStep ? 'bg-primary' : 'bg-gray-300'
           }`}
         ></div>
@@ -129,7 +141,7 @@ const RegisterForm = () => {
     }
   };
 
- const handlePlaceSelected = (place: google.maps.places.PlaceResult) => {
+  const handlePlaceSelected = (place: google.maps.places.PlaceResult) => {
     console.log('IVE SELECTED MY PLACE', place); // You can handle the selected place here
   };
 
@@ -141,20 +153,20 @@ const RegisterForm = () => {
     <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
       <div className='w-full max-w-md space-y-4'>
         <Card className='w-full max-w-md space-y-4 bg-white p-6 shadow-md'>
-             <div className='flex items-center justify-between'>
+          <div className='flex items-center justify-between'>
             {/* Render back arrow if currentStep > 1, otherwise render a placeholder to keep the title centered */}
             {currentStep > 1 ? (
               <Button
                 onClick={goBack}
                 variant='ghost'
-                className='text-primary dark:text-accent focus:outline-none'
+                className='text-primary focus:outline-none dark:text-accent'
                 aria-label='Go back'
               >
                 <IoArrowBack size={24} />
               </Button>
             ) : (
               // This empty div acts as a placeholder with the same size as the IoArrowBack icon
-              <div className='w-8 h-8'></div> 
+              <div className='h-8 w-8'></div>
             )}
 
             {/* Title */}
@@ -164,11 +176,11 @@ const RegisterForm = () => {
             </div>
 
             {/* Invisible placeholder to ensure the title remains centered */}
-            <div className='w-8 h-8'></div> 
+            <div className='h-8 w-8'></div>
           </div>
           <ProgressBar totalSteps={totalSteps} currentStep={currentStep} />
 
-                          <AddressAutocomplete onPlaceSelected={handlePlaceSelected} />
+          <AddressAutocomplete onPlaceSelected={handlePlaceSelected} />
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
