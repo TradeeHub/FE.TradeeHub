@@ -12,7 +12,7 @@ import Step3RegisterForm from './RegisterFormSteps/Step3RegisterForm';
 import Step4RegisterForm from './RegisterFormSteps/Step4RegisterForm';
 import { Card } from '@/components/ui/card';
 import { IoArrowBack } from 'react-icons/io5';
-import AddressAutocomplete from '../general/AddressAutocomplete/Experiment';
+import AddressAutocomplete from '../general/AddressAutocomplete/AddressAutocomplete';
 // Define the schema for all steps
 const formSchema = z
   .object({

@@ -27,7 +27,7 @@ const InputWithIcon = <
 }: InputWithIconProps<TFieldValues, TName>) => {
   return (
     <div className='relative'>
-      <Icon className='absolute left-3 top-1/2 -translate-y-1/2 transform text-secondary' />
+      <Icon className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-secondary' />
       <Input
         type={type}
         placeholder={placeholder}
