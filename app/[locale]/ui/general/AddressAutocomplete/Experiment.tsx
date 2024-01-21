@@ -25,9 +25,10 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({ onPlaceSelect
   const [suggestions, setSuggestions] = useState<AutocompletePrediction[]>([]);
   const autocompleteServiceRef = useRef<google.maps.places.AutocompleteService | null>(null);
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY;
-
+  const [isSearching, setIsSearching] = useState(false);
   // Debounced fetch predictions function
   const fetchPredictions = debounce((input) => {
+    console.log('Fetching predictions for:', input);
     if (input && autocompleteServiceRef.current) {
       autocompleteServiceRef.current.getPlacePredictions({ input }, (predictions, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
@@ -36,8 +37,10 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({ onPlaceSelect
           setSuggestions([]);
         }
       });
+    }else{
+        setSuggestions([]);
     }
-  }, 300);
+  }, 700);
 
   useEffect(() => {
     const loader = new Loader({
@@ -107,9 +110,6 @@ const handleSelect = (description: string) => {
       />
     <CommandList>
        <Command>
-          {suggestions.length === 0 ? (
-            <CommandEmpty>No addresses found.</CommandEmpty>
-          ) : (
             <CommandGroup>
               {suggestions.map((suggestion) => (
                 <CommandItem
@@ -120,7 +120,6 @@ const handleSelect = (description: string) => {
                 </CommandItem>
               ))}
             </CommandGroup>
-          )}
         </Command>
       </CommandList>
     </Command>
