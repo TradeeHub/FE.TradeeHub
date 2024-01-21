@@ -12,7 +12,7 @@ import Step3RegisterForm from './RegisterFormSteps/Step3RegisterForm';
 import Step4RegisterForm from './RegisterFormSteps/Step4RegisterForm';
 import { Card } from '@/components/ui/card';
 import { IoArrowBack } from 'react-icons/io5';
-
+import AddressAutocomplete from '../general/AddressAutocomplete/Experiment';
 // Define the schema for all steps
 const formSchema = z
   .object({
@@ -122,11 +122,17 @@ const RegisterForm = () => {
         return <Step4RegisterForm control={form.control} />;
     }
   };
+
   const goBack = () => {
     if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
     }
   };
+
+ const handlePlaceSelected = (place: google.maps.places.PlaceResult) => {
+    console.log('IVE SELECTED MY PLACE', place); // You can handle the selected place here
+  };
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -161,6 +167,9 @@ const RegisterForm = () => {
             <div className='w-8 h-8'></div> 
           </div>
           <ProgressBar totalSteps={totalSteps} currentStep={currentStep} />
+
+                          <AddressAutocomplete onPlaceSelected={handlePlaceSelected} />
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
               {renderStep(currentStep)}
