@@ -82,7 +82,10 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
 
     if (location.place_id) {
       placesService.getDetails(
-        { placeId: location.place_id },
+        {
+          placeId: location.place_id,
+          fields: ['geometry', 'formatted_address', 'place_id'], // Specify the fields here
+        },
         (place, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK && place) {
             onPlaceSelected(place);

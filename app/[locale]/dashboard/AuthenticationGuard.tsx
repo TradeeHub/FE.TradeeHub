@@ -3,7 +3,7 @@ import { resetUser, setUser } from '@/lib/features/user/userSlice';
 import { useReactiveVar, useApolloClient } from '@apollo/client';
 import { useLocale } from 'next-intl';
 import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import authenticatedVar from '../constants/authenticated';
