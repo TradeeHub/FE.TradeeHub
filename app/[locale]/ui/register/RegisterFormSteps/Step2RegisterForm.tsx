@@ -1,13 +1,19 @@
 import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import React from 'react';
 import { InputWithIcon, StyledFormMessage } from './CustomForm';
-import { TFieldValues } from '@/app/[locale]/types/sharedTypes';
+import { TFieldValues, UserPlace } from '@/app/[locale]/types/sharedTypes';
 import { Control } from 'react-hook-form';
 import { HiDeviceMobile } from 'react-icons/hi';
-import { IoLocation } from 'react-icons/io5';
 import { FaUser } from 'react-icons/fa6';
+import AddressAutocomplete from '../../general/AddressAutocomplete/AddressAutocomplete';
 
-const Step2RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
+const Step2RegisterForm = ({
+  control,
+  onPlaceSelected,
+}: {
+  control: Control<TFieldValues>;
+  onPlaceSelected: (userPlace: UserPlace | null) => void;
+}) => {
   return (
     <>
       <FormField
@@ -47,15 +53,10 @@ const Step2RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
       <FormField
         control={control}
         name='address'
-        render={({ field }) => (
+        render={() => (
           <FormItem>
             <FormControl>
-              <InputWithIcon
-                field={field}
-                icon={IoLocation}
-                autoFocus={false}
-                placeholder='Address'
-              />
+              <AddressAutocomplete onPlaceSelected={onPlaceSelected} />
             </FormControl>
             <StyledFormMessage />
           </FormItem>

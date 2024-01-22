@@ -17,7 +17,7 @@ import { PiMapPinLight } from 'react-icons/pi';
 import { UserPlace } from '@/app/[locale]/types/sharedTypes';
 
 type AddressAutocompleteProps = {
-  onPlaceSelected: (userPlace: UserPlace) => void;
+  onPlaceSelected: (place: UserPlace | null) => void;
 };
 
 type AutocompletePrediction = {
@@ -25,7 +25,9 @@ type AutocompletePrediction = {
   place_id: string;
 };
 
-function mapPlaceResultToUserPlace(placeResult: google.maps.places.PlaceResult): UserPlace {
+function mapPlaceResultToUserPlace(
+  placeResult: google.maps.places.PlaceResult,
+): UserPlace {
   return {
     PlaceId: placeResult.place_id || '',
     Address: placeResult.formatted_address || '',
@@ -41,14 +43,12 @@ function mapPlaceResultToUserPlace(placeResult: google.maps.places.PlaceResult):
       southwest: {
         lat: placeResult.geometry?.viewport.getSouthWest().lat() || 0,
         lng: placeResult.geometry?.viewport.getSouthWest().lng() || 0,
-      }
-    }
+      },
+    },
   };
 }
 
-const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
-  onPlaceSelected,
-}) => {
+const AddressAutocomplete = ({ onPlaceSelected }: AddressAutocompleteProps) => {
   const isMountedRef = useRef(false);
   const [userLocation] = useState<{
     latitude: number;
@@ -72,7 +72,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
             userLocation?.latitude || 0,
             userLocation?.longitude || 0,
           ),
-          radius: 50000, // Search within a 50km radius, for example
+          radius: 50000,
         },
         (predictions, status) => {
           if (
@@ -96,8 +96,6 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   }, 700);
 
   const handleSelect = (location: AutocompletePrediction) => {
-    setInputValue(location.description);
-
     const placesService = new google.maps.places.PlacesService(
       document.createElement('div'),
     );
@@ -109,12 +107,12 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
           fields: ['geometry', 'formatted_address', 'place_id'], // Specify the fields here
         },
         (place, status) => {
-          place.formatted_address
+          place.formatted_address;
           if (status === google.maps.places.PlacesServiceStatus.OK && place) {
             const userPlace = mapPlaceResultToUserPlace(place);
-            console.log('userPlace', userPlace);
             onPlaceSelected(userPlace);
             setSuggestions([]);
+            setInputValue(location.description);
           } else {
             console.error('Error getting details:', status);
           }
@@ -128,10 +126,14 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   useEffect(() => {
     if (isMountedRef.current && !hasMadeSelection.current) {
       fetchPredictions(inputValue);
-    } else {
-      hasMadeSelection.current = false;
     }
   }, [inputValue]);
+
+  useEffect(() => {
+    if (isMountedRef.current && !hasMadeSelection.current) {
+      onPlaceSelected(null);
+    }
+  }, [hasMadeSelection.current]);
 
   useEffect(() => {
     const loader = new Loader({
@@ -156,7 +158,10 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
                 ref={inputRef}
                 placeholder='Search for Address'
                 value={inputValue}
-                onValueChange={setInputValue}
+                onValueChange={(v) => {
+                  hasMadeSelection.current = false;
+                  setInputValue(v);
+                }}
                 iconClass='text-secondary opacity-100 h-5 w-5'
               />
             </Command>

@@ -86,7 +86,6 @@ export type TFieldValues = {
   annualRevenue: string;
 };
 
-
 type Location = {
   lat: number;
   lng: number;

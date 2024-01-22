@@ -12,7 +12,7 @@ import Step3RegisterForm from './RegisterFormSteps/Step3RegisterForm';
 import Step4RegisterForm from './RegisterFormSteps/Step4RegisterForm';
 import { Card } from '@/components/ui/card';
 import { IoArrowBack } from 'react-icons/io5';
-import AddressAutocomplete from '../general/AddressAutocomplete/AddressAutocomplete';
+import { UserPlace } from '../../types/sharedTypes';
 // Define the schema for all steps
 const formSchema = z
   .object({
@@ -75,6 +75,7 @@ const RegisterForm = () => {
   const totalSteps = 4;
 
   const form = useForm<z.infer<typeof formSchema>>({
+    mode: 'onSubmit',
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
@@ -99,18 +100,14 @@ const RegisterForm = () => {
   }
 
   const onContinue = async () => {
+    console.log('currentStep');
     if (currentStep < totalSteps) {
       if (currentStep === 1) {
-        const step1IsValid =
-          (await form.trigger('email')) &&
-          (await form.trigger('password')) &&
-          (await form.trigger('confirmPassword'));
+        console.log('step1');
+        const step1IsValid = await form.trigger(['email', 'password', 'confirmPassword']);
         if (step1IsValid) setCurrentStep((prev) => prev + 1);
       } else if (currentStep === 2) {
-        const step2IsValid =
-          (await form.trigger('name')) &&
-          (await form.trigger('phoneNumber')) &&
-          (await form.trigger('address'));
+        const step2IsValid = await form.trigger(['name', 'phoneNumber', 'address']);
         if (step2IsValid) setCurrentStep((prev) => prev + 1);
       }
     }
@@ -120,6 +117,10 @@ const RegisterForm = () => {
     // router.push('/register');
   };
 
+  const handlePlaceSelected = (place: UserPlace | null) => {
+    form.setValue('address', place?.Address || '');
+  };
+
   const renderStep = (step: number) => {
     if (!isClient) return null; // Render nothing on server-side
 
@@ -127,7 +128,12 @@ const RegisterForm = () => {
       case 1:
         return <Step1RegisterForm control={form.control} />;
       case 2:
-        return <Step2RegisterForm control={form.control} />;
+        return (
+          <Step2RegisterForm
+            control={form.control}
+            onPlaceSelected={handlePlaceSelected}
+          />
+        );
       case 3:
         return <Step3RegisterForm control={form.control} />;
       case 4:
@@ -139,10 +145,6 @@ const RegisterForm = () => {
     if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
     }
-  };
-
-  const handlePlaceSelected = (place: google.maps.places.PlaceResult) => {
-    console.log('IVE SELECTED MY PLACE', place); // You can handle the selected place here
   };
 
   useEffect(() => {
@@ -180,12 +182,11 @@ const RegisterForm = () => {
           </div>
           <ProgressBar totalSteps={totalSteps} currentStep={currentStep} />
 
-          <AddressAutocomplete onPlaceSelected={handlePlaceSelected} />
-
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
               {renderStep(currentStep)}
               <Button
+                type='button'
                 variant='default'
                 className='mt-4 w-full'
                 onClick={onContinue}
