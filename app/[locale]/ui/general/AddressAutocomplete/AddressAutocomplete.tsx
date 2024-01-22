@@ -14,7 +14,6 @@ import {
   PopoverTrigger,
 } from '@radix-ui/react-popover';
 import { PiMapPinLight } from 'react-icons/pi';
-import { Label } from '@radix-ui/react-select';
 
 type AddressAutocompleteProps = {
   onPlaceSelected: (place: google.maps.places.PlaceResult) => void;
@@ -43,11 +42,6 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const hasMadeSelection = useRef<boolean>(false);
 
   const fetchPredictions = debounce((input) => {
-    console.log(
-      'Fetching predictions for:',
-      userLocation?.latitude,
-      userLocation?.longitude,
-    );
     if (input && autocompleteServiceRef.current) {
       autocompleteServiceRef.current.getPlacePredictions(
         {
@@ -93,8 +87,6 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
           if (status === google.maps.places.PlacesServiceStatus.OK && place) {
             onPlaceSelected(place);
             setSuggestions([]);
-            console.log('hasMadeSelection 2222:', hasMadeSelection.current);
-            console.log('Place details:', place, suggestions);
           } else {
             console.error('Error getting details:', status);
           }
@@ -106,10 +98,9 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   };
 
   useEffect(() => {
-    console.log('hasMadeSelection:', hasMadeSelection.current);
     if (isMountedRef.current && !hasMadeSelection.current) {
       fetchPredictions(inputValue);
-    }else {
+    } else {
       hasMadeSelection.current = false;
     }
   }, [inputValue]);
@@ -127,25 +118,25 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     isMountedRef.current = true;
   }, []);
 
-return (
-  <>
-    <div className='flex items-center font-roboto'>
-      <Popover>
+  return (
+    <>
+      <div className='flex items-center font-roboto'>
+        <Popover>
           <PopoverTrigger onClick={(e) => e.preventDefault()} asChild>
-          <Command>
-            <CommandInput
-              ref={inputRef}
-              placeholder='Search for Address'
-              value={inputValue}
-              onValueChange={setInputValue}
-              iconClass='text-secondary opacity-100 h-5 w-5'
-            />
-          </Command>
-        </PopoverTrigger>
-        
+            <Command>
+              <CommandInput
+                ref={inputRef}
+                placeholder='Search for Address'
+                value={inputValue}
+                onValueChange={setInputValue}
+                iconClass='text-secondary opacity-100 h-5 w-5'
+              />
+            </Command>
+          </PopoverTrigger>
+
           <PopoverContent
             ref={popoverContentRef}
-            className='flex flex-col mt-1 rounded-lg shadow-md bg-white z-50 max-w-md w-screen overflow-auto'
+            className='z-50 mt-1 flex w-screen max-w-md flex-col overflow-auto rounded-lg bg-white shadow-md'
             side='bottom'
             align='start'
             onOpenAutoFocus={(e) => e.preventDefault()}
@@ -162,19 +153,18 @@ return (
                         hasMadeSelection.current = true;
                       }}
                     >
-                    <PiMapPinLight className='flex-shrink-0 text-secondary opacity-100 h-4 w-4 mr-2' />
-                    {suggestion.description}
+                      <PiMapPinLight className='mr-2 h-4 w-4 flex-shrink-0 text-secondary opacity-100' />
+                      {suggestion.description}
                     </CommandItem>
                   ))}
                 </CommandGroup>
               </CommandList>
             </Command>
           </PopoverContent>
-        
-      </Popover>
-    </div>
-  </>
-);
+        </Popover>
+      </div>
+    </>
+  );
 };
 
 export default AddressAutocomplete;
