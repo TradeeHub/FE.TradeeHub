@@ -14,15 +14,37 @@ import {
   PopoverTrigger,
 } from '@radix-ui/react-popover';
 import { PiMapPinLight } from 'react-icons/pi';
+import { UserPlace } from '@/app/[locale]/types/sharedTypes';
 
 type AddressAutocompleteProps = {
-  onPlaceSelected: (place: google.maps.places.PlaceResult) => void;
+  onPlaceSelected: (userPlace: UserPlace) => void;
 };
 
 type AutocompletePrediction = {
   description: string;
   place_id: string;
 };
+
+function mapPlaceResultToUserPlace(placeResult: google.maps.places.PlaceResult): UserPlace {
+  return {
+    PlaceId: placeResult.place_id || '',
+    Address: placeResult.formatted_address || '',
+    Location: {
+      lat: placeResult.geometry?.location.lat() || 0,
+      lng: placeResult.geometry?.location.lng() || 0,
+    },
+    Viewport: {
+      northeast: {
+        lat: placeResult.geometry?.viewport.getNorthEast().lat() || 0,
+        lng: placeResult.geometry?.viewport.getNorthEast().lng() || 0,
+      },
+      southwest: {
+        lat: placeResult.geometry?.viewport.getSouthWest().lat() || 0,
+        lng: placeResult.geometry?.viewport.getSouthWest().lng() || 0,
+      }
+    }
+  };
+}
 
 const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   onPlaceSelected,
@@ -87,8 +109,11 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
           fields: ['geometry', 'formatted_address', 'place_id'], // Specify the fields here
         },
         (place, status) => {
+          place.formatted_address
           if (status === google.maps.places.PlacesServiceStatus.OK && place) {
-            onPlaceSelected(place);
+            const userPlace = mapPlaceResultToUserPlace(place);
+            console.log('userPlace', userPlace);
+            onPlaceSelected(userPlace);
             setSuggestions([]);
           } else {
             console.error('Error getting details:', status);

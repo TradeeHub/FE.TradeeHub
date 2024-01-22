@@ -85,3 +85,23 @@ export type TFieldValues = {
   marketingPreference: string;
   annualRevenue: string;
 };
+
+
+type Location = {
+  lat: number;
+  lng: number;
+};
+
+// Define the structure for viewport to include northeast and southwest points
+type Viewport = {
+  northeast: Location;
+  southwest: Location;
+};
+
+// Define a new type for UserPlace
+export type UserPlace = {
+  PlaceId: string;
+  Address: string;
+  Location: Location;
+  Viewport: Viewport;
+};
