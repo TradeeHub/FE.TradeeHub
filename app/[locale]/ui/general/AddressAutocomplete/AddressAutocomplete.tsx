@@ -14,12 +14,17 @@ import {
   PopoverTrigger,
 } from '@radix-ui/react-popover';
 import { PiMapPinLight } from 'react-icons/pi';
-import { UserPlace } from '@/app/[locale]/types/sharedTypes';
+import { RegisterRequest, UserPlace } from '@/app/[locale]/types/sharedTypes';
 
-import { ControllerRenderProps, FieldPath, FieldValues, Path } from 'react-hook-form';
+import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 
-type AddressAutocompleteProps<TFieldValues extends FieldValues, TName extends Path<TFieldValues>> = {
+type AddressAutocompleteProps<
+  TFieldValues extends FieldValues,
+  TName extends FieldPath<TFieldValues>,
+> = {
+  // ControllerRenderProps includes everything that comes from `render` prop of Controller
   field: ControllerRenderProps<TFieldValues, TName>;
+  // Include other props that you expect to receive
   onPlaceSelected: (place: UserPlace | null) => void;
 };
 
@@ -51,13 +56,11 @@ function mapPlaceResultToUserPlace(
   };
 }
 
-const AddressAutocomplete = <TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
->({
+const AddressAutocomplete = ({
   field,
-  onPlaceSelected
-}: AddressAutocompleteProps<TFieldValues, TName>) => {  const isMountedRef = useRef(false);
-    console.log('field', field);
+  onPlaceSelected,
+}: AddressAutocompleteProps<RegisterRequest, 'userPlace'>) => {
+  const isMountedRef = useRef(false);
   const [userLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -153,6 +156,12 @@ const AddressAutocomplete = <TFieldValues extends FieldValues,
       autocompleteServiceRef.current =
         new google.maps.places.AutocompleteService();
     });
+
+    if (field.value?.Address) {
+      setInputValue(field.value.Address);
+      hasMadeSelection.current = true;
+    }
+
     isMountedRef.current = true;
   }, []);
 

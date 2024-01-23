@@ -53,10 +53,15 @@ const Step2RegisterForm = ({
       <FormField
         control={control}
         name='userPlace'
-        render={(field) => (
+        render={(
+          { field }, // Destructure to only pass field
+        ) => (
           <FormItem>
             <FormControl>
-              <AddressAutocomplete field={field} onPlaceSelected={onPlaceSelected} />
+              <AddressAutocomplete
+                field={field}
+                onPlaceSelected={onPlaceSelected}
+              />
             </FormControl>
             <StyledFormMessage />
           </FormItem>

@@ -26,15 +26,19 @@ const ViewportSchema = z.object({
 });
 
 // Define the Zod schema for UserPlace
-const UserPlaceSchema = z.object({
-  PlaceId: z.string(),
-  Address: z.string(),
-  Location: LocationSchema,
-  Viewport: ViewportSchema,
-}).nullable().nullable().refine((data) => data !== null, {
-  message: 'Please enter your address.',
-  // You can add custom logic to check the properties of UserPlace if needed
-});
+const UserPlaceSchema = z
+  .object({
+    PlaceId: z.string(),
+    Address: z.string(),
+    Location: LocationSchema,
+    Viewport: ViewportSchema,
+  })
+  .nullable()
+  .nullable()
+  .refine((data) => data !== null, {
+    message: 'Please enter your address.',
+    // You can add custom logic to check the properties of UserPlace if needed
+  });
 
 const formSchema = z
   .object({
@@ -122,14 +126,20 @@ const RegisterForm = () => {
   }
 
   const onContinue = async () => {
-    console.log('currentStep', form.getValues());
     if (currentStep < totalSteps) {
       if (currentStep === 1) {
-        console.log('step1');
-        const step1IsValid = await form.trigger(['email', 'password', 'confirmPassword']);
+        const step1IsValid = await form.trigger([
+          'email',
+          'password',
+          'confirmPassword',
+        ]);
         if (step1IsValid) setCurrentStep((prev) => prev + 1);
       } else if (currentStep === 2) {
-        const step2IsValid = await form.trigger(['name', 'phoneNumber', 'userPlace']);
+        const step2IsValid = await form.trigger([
+          'name',
+          'phoneNumber',
+          'userPlace',
+        ]);
         if (step2IsValid) setCurrentStep((prev) => prev + 1);
       }
     }
@@ -140,9 +150,7 @@ const RegisterForm = () => {
   };
 
   const handlePlaceSelected = (place: UserPlace | null) => {
-     if (place) {
     form.setValue('userPlace', place);
-  }
   };
 
   const renderStep = (step: number) => {
@@ -166,8 +174,6 @@ const RegisterForm = () => {
   };
 
   const goBack = () => {
-        console.log('going back', form.getValues());
-
     if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
     }

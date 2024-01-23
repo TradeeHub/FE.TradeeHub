@@ -5,7 +5,11 @@ import { FaEnvelope, FaLock } from 'react-icons/fa';
 import { RegisterRequest } from '@/app/[locale]/types/sharedTypes';
 import { InputWithIcon, StyledFormMessage } from './CustomForm';
 
-const Step1RegisterForm = ({ control }: { control: Control<RegisterRequest> }) => {
+const Step1RegisterForm = ({
+  control,
+}: {
+  control: Control<RegisterRequest>;
+}) => {
   return (
     <>
       <FormField

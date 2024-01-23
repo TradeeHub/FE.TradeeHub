@@ -27,7 +27,6 @@ const AuthenticationGuard = ({
       router.push(`/${locale}/login`); // Redirect to login if no loggedInUser and user is null
       client.clearStore().then(() => {});
     } else {
-      console.log('loggedInUser', loggedInUser, error, loading);
       if (!loading && !error && loggedInUser) {
         dispatch(setUser(loggedInUser)); // Update Redux user if loggedInUser is available
       }
