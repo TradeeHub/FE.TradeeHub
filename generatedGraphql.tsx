@@ -386,66 +386,6 @@ export type EmailDbObjectFilter = {
   email_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type GeneralCompanyInfoDbObject = {
-  __typename?: 'GeneralCompanyInfoDbObject';
-  annualRevenue: Scalars['String']['output'];
-  companyPriority: Scalars['String']['output'];
-  companySize: Scalars['String']['output'];
-  marketingPreference: Scalars['String']['output'];
-};
-
-export type GeneralCompanyInfoDbObjectFilter = {
-  AND?: InputMaybe<Array<GeneralCompanyInfoDbObjectFilter>>;
-  OR?: InputMaybe<Array<GeneralCompanyInfoDbObjectFilter>>;
-  annualRevenue?: InputMaybe<Scalars['String']['input']>;
-  annualRevenue_contains?: InputMaybe<Scalars['String']['input']>;
-  annualRevenue_ends_with?: InputMaybe<Scalars['String']['input']>;
-  annualRevenue_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  annualRevenue_not?: InputMaybe<Scalars['String']['input']>;
-  annualRevenue_not_contains?: InputMaybe<Scalars['String']['input']>;
-  annualRevenue_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  annualRevenue_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  annualRevenue_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  annualRevenue_starts_with?: InputMaybe<Scalars['String']['input']>;
-  companyPriority?: InputMaybe<Scalars['String']['input']>;
-  companyPriority_contains?: InputMaybe<Scalars['String']['input']>;
-  companyPriority_ends_with?: InputMaybe<Scalars['String']['input']>;
-  companyPriority_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  companyPriority_not?: InputMaybe<Scalars['String']['input']>;
-  companyPriority_not_contains?: InputMaybe<Scalars['String']['input']>;
-  companyPriority_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  companyPriority_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  companyPriority_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  companyPriority_starts_with?: InputMaybe<Scalars['String']['input']>;
-  companySize?: InputMaybe<Scalars['String']['input']>;
-  companySize_contains?: InputMaybe<Scalars['String']['input']>;
-  companySize_ends_with?: InputMaybe<Scalars['String']['input']>;
-  companySize_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  companySize_not?: InputMaybe<Scalars['String']['input']>;
-  companySize_not_contains?: InputMaybe<Scalars['String']['input']>;
-  companySize_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  companySize_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  companySize_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  companySize_starts_with?: InputMaybe<Scalars['String']['input']>;
-  marketingPreference?: InputMaybe<Scalars['String']['input']>;
-  marketingPreference_contains?: InputMaybe<Scalars['String']['input']>;
-  marketingPreference_ends_with?: InputMaybe<Scalars['String']['input']>;
-  marketingPreference_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  marketingPreference_not?: InputMaybe<Scalars['String']['input']>;
-  marketingPreference_not_contains?: InputMaybe<Scalars['String']['input']>;
-  marketingPreference_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  marketingPreference_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  marketingPreference_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  marketingPreference_starts_with?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type GeneralCompanyInfoDbObjectSort = {
-  annualRevenue?: InputMaybe<SortOperationKind>;
-  companyPriority?: InputMaybe<SortOperationKind>;
-  companySize?: InputMaybe<SortOperationKind>;
-  marketingPreference?: InputMaybe<SortOperationKind>;
-};
-
 export enum HttpStatusCode {
   Accepted = 'ACCEPTED',
   AlreadyReported = 'ALREADY_REPORTED',
@@ -546,6 +486,51 @@ export type KeyValuePairOfStringAndString = {
   __typename?: 'KeyValuePairOfStringAndString';
   key: Scalars['String']['output'];
   value: Scalars['String']['output'];
+};
+
+export type LocationDbObject = {
+  __typename?: 'LocationDbObject';
+  lat: Scalars['Decimal']['output'];
+  lng: Scalars['Decimal']['output'];
+};
+
+export type LocationDbObjectFilter = {
+  AND?: InputMaybe<Array<LocationDbObjectFilter>>;
+  OR?: InputMaybe<Array<LocationDbObjectFilter>>;
+  lat?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_in?: InputMaybe<Array<Scalars['Decimal']['input']>>;
+  lat_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_not?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_not_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_not_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_not_in?: InputMaybe<Array<Scalars['Decimal']['input']>>;
+  lat_not_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_not_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  lng?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_in?: InputMaybe<Array<Scalars['Decimal']['input']>>;
+  lng_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_not?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_not_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_not_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_not_in?: InputMaybe<Array<Scalars['Decimal']['input']>>;
+  lng_not_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_not_lte?: InputMaybe<Scalars['Decimal']['input']>;
+};
+
+export type LocationDbObjectSort = {
+  lat?: InputMaybe<SortOperationKind>;
+  lng?: InputMaybe<SortOperationKind>;
+};
+
+export type LocationRequestInput = {
+  lat: Scalars['Decimal']['input'];
+  lng: Scalars['Decimal']['input'];
 };
 
 export type LoginRequestInput = {
@@ -711,6 +696,55 @@ export type PhoneNumberDbObjectFilter = {
   phoneNumber_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type PlaceDbObject = {
+  __typename?: 'PlaceDbObject';
+  address: Scalars['String']['output'];
+  location: LocationDbObject;
+  placeId: Scalars['String']['output'];
+  viewport: ViewPortDbObject;
+};
+
+export type PlaceDbObjectFilter = {
+  AND?: InputMaybe<Array<PlaceDbObjectFilter>>;
+  OR?: InputMaybe<Array<PlaceDbObjectFilter>>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  address_contains?: InputMaybe<Scalars['String']['input']>;
+  address_ends_with?: InputMaybe<Scalars['String']['input']>;
+  address_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  address_not?: InputMaybe<Scalars['String']['input']>;
+  address_not_contains?: InputMaybe<Scalars['String']['input']>;
+  address_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  address_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  address_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  address_starts_with?: InputMaybe<Scalars['String']['input']>;
+  location?: InputMaybe<LocationDbObjectFilter>;
+  placeId?: InputMaybe<Scalars['String']['input']>;
+  placeId_contains?: InputMaybe<Scalars['String']['input']>;
+  placeId_ends_with?: InputMaybe<Scalars['String']['input']>;
+  placeId_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  placeId_not?: InputMaybe<Scalars['String']['input']>;
+  placeId_not_contains?: InputMaybe<Scalars['String']['input']>;
+  placeId_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  placeId_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  placeId_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  placeId_starts_with?: InputMaybe<Scalars['String']['input']>;
+  viewport?: InputMaybe<ViewPortDbObjectFilter>;
+};
+
+export type PlaceDbObjectSort = {
+  address?: InputMaybe<SortOperationKind>;
+  location?: InputMaybe<LocationDbObjectSort>;
+  placeId?: InputMaybe<SortOperationKind>;
+  viewport?: InputMaybe<ViewPortDbObjectSort>;
+};
+
+export type PlaceRequestInput = {
+  address: Scalars['String']['input'];
+  location: LocationRequestInput;
+  placeId: Scalars['String']['input'];
+  viewport: ViewportRequestInput;
+};
+
 export type PropertyDbObject = {
   __typename?: 'PropertyDbObject';
   billing?: Maybe<AddressDbObject>;
@@ -767,17 +801,17 @@ export type QueryUsersArgs = {
 };
 
 export type RegisterRequestInput = {
-  address: Scalars['String']['input'];
-  annualRevenue: Scalars['String']['input'];
   companyName: Scalars['String']['input'];
   companyPriority: Scalars['String']['input'];
   companySize: Scalars['String']['input'];
   companyType: Scalars['String']['input'];
   email: Scalars['String']['input'];
-  marketingPreference: Scalars['String']['input'];
+  marketingPreference: Scalars['Boolean']['input'];
   name: Scalars['String']['input'];
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
+  place: PlaceRequestInput;
+  referralSource: Scalars['String']['input'];
 };
 
 export type ResendConfirmationCodeResponse = {
@@ -813,18 +847,21 @@ export enum SortOperationKind {
 
 export type UserDbObject = {
   __typename?: 'UserDbObject';
-  address: Scalars['String']['output'];
   companiesMemberOf?: Maybe<Array<Maybe<UserDbObject>>>;
   companyName: Scalars['String']['output'];
+  companyPriority: Scalars['String']['output'];
+  companySize: Scalars['String']['output'];
   companyType: Scalars['String']['output'];
   createdDate: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   emailVerified: Scalars['Boolean']['output'];
-  generalInfo: GeneralCompanyInfoDbObject;
   id: Scalars['UUID']['output'];
+  marketingPreference: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
   phoneNumber: Scalars['String']['output'];
   phoneVerified: Scalars['Boolean']['output'];
+  place: PlaceDbObject;
+  referralSource: Scalars['String']['output'];
   staff?: Maybe<Array<Maybe<UserDbObject>>>;
   updatedDate?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -832,16 +869,6 @@ export type UserDbObject = {
 export type UserDbObjectFilter = {
   AND?: InputMaybe<Array<UserDbObjectFilter>>;
   OR?: InputMaybe<Array<UserDbObjectFilter>>;
-  address?: InputMaybe<Scalars['String']['input']>;
-  address_contains?: InputMaybe<Scalars['String']['input']>;
-  address_ends_with?: InputMaybe<Scalars['String']['input']>;
-  address_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  address_not?: InputMaybe<Scalars['String']['input']>;
-  address_not_contains?: InputMaybe<Scalars['String']['input']>;
-  address_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  address_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  address_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  address_starts_with?: InputMaybe<Scalars['String']['input']>;
   companiesMemberOf_all?: InputMaybe<ISingleFilterOfGuidFilter>;
   companiesMemberOf_any?: InputMaybe<Scalars['Boolean']['input']>;
   companiesMemberOf_none?: InputMaybe<ISingleFilterOfGuidFilter>;
@@ -856,6 +883,26 @@ export type UserDbObjectFilter = {
   companyName_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   companyName_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   companyName_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companyPriority?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_contains?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companyPriority_not?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_not_contains?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companyPriority_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companyPriority_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companySize?: InputMaybe<Scalars['String']['input']>;
+  companySize_contains?: InputMaybe<Scalars['String']['input']>;
+  companySize_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companySize_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companySize_not?: InputMaybe<Scalars['String']['input']>;
+  companySize_not_contains?: InputMaybe<Scalars['String']['input']>;
+  companySize_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companySize_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  companySize_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companySize_starts_with?: InputMaybe<Scalars['String']['input']>;
   companyType?: InputMaybe<Scalars['String']['input']>;
   companyType_contains?: InputMaybe<Scalars['String']['input']>;
   companyType_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -890,7 +937,6 @@ export type UserDbObjectFilter = {
   email_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   email_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   email_starts_with?: InputMaybe<Scalars['String']['input']>;
-  generalInfo?: InputMaybe<GeneralCompanyInfoDbObjectFilter>;
   id?: InputMaybe<Scalars['UUID']['input']>;
   id_gt?: InputMaybe<Scalars['UUID']['input']>;
   id_gte?: InputMaybe<Scalars['UUID']['input']>;
@@ -903,6 +949,8 @@ export type UserDbObjectFilter = {
   id_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
   id_not_lt?: InputMaybe<Scalars['UUID']['input']>;
   id_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  marketingPreference?: InputMaybe<Scalars['Boolean']['input']>;
+  marketingPreference_not?: InputMaybe<Scalars['Boolean']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   name_contains?: InputMaybe<Scalars['String']['input']>;
   name_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -925,6 +973,17 @@ export type UserDbObjectFilter = {
   phoneNumber_starts_with?: InputMaybe<Scalars['String']['input']>;
   phoneVerified?: InputMaybe<Scalars['Boolean']['input']>;
   phoneVerified_not?: InputMaybe<Scalars['Boolean']['input']>;
+  place?: InputMaybe<PlaceDbObjectFilter>;
+  referralSource?: InputMaybe<Scalars['String']['input']>;
+  referralSource_contains?: InputMaybe<Scalars['String']['input']>;
+  referralSource_ends_with?: InputMaybe<Scalars['String']['input']>;
+  referralSource_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  referralSource_not?: InputMaybe<Scalars['String']['input']>;
+  referralSource_not_contains?: InputMaybe<Scalars['String']['input']>;
+  referralSource_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  referralSource_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  referralSource_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  referralSource_starts_with?: InputMaybe<Scalars['String']['input']>;
   staff_all?: InputMaybe<ISingleFilterOfGuidFilter>;
   staff_any?: InputMaybe<Scalars['Boolean']['input']>;
   staff_none?: InputMaybe<ISingleFilterOfGuidFilter>;
@@ -944,17 +1003,20 @@ export type UserDbObjectFilter = {
 };
 
 export type UserDbObjectSort = {
-  address?: InputMaybe<SortOperationKind>;
   companyName?: InputMaybe<SortOperationKind>;
+  companyPriority?: InputMaybe<SortOperationKind>;
+  companySize?: InputMaybe<SortOperationKind>;
   companyType?: InputMaybe<SortOperationKind>;
   createdDate?: InputMaybe<SortOperationKind>;
   email?: InputMaybe<SortOperationKind>;
   emailVerified?: InputMaybe<SortOperationKind>;
-  generalInfo?: InputMaybe<GeneralCompanyInfoDbObjectSort>;
   id?: InputMaybe<SortOperationKind>;
+  marketingPreference?: InputMaybe<SortOperationKind>;
   name?: InputMaybe<SortOperationKind>;
   phoneNumber?: InputMaybe<SortOperationKind>;
   phoneVerified?: InputMaybe<SortOperationKind>;
+  place?: InputMaybe<PlaceDbObjectSort>;
+  referralSource?: InputMaybe<SortOperationKind>;
   updatedDate?: InputMaybe<SortOperationKind>;
 };
 
@@ -976,6 +1038,29 @@ export type UsersEdge = {
   cursor: Scalars['String']['output'];
   /** The item at the end of the edge. */
   node: UserDbObject;
+};
+
+export type ViewPortDbObject = {
+  __typename?: 'ViewPortDbObject';
+  northeast: LocationDbObject;
+  southwest: LocationDbObject;
+};
+
+export type ViewPortDbObjectFilter = {
+  AND?: InputMaybe<Array<ViewPortDbObjectFilter>>;
+  OR?: InputMaybe<Array<ViewPortDbObjectFilter>>;
+  northeast?: InputMaybe<LocationDbObjectFilter>;
+  southwest?: InputMaybe<LocationDbObjectFilter>;
+};
+
+export type ViewPortDbObjectSort = {
+  northeast?: InputMaybe<LocationDbObjectSort>;
+  southwest?: InputMaybe<LocationDbObjectSort>;
+};
+
+export type ViewportRequestInput = {
+  northeast: LocationRequestInput;
+  southwest: LocationRequestInput;
 };
 
 export type ConfirmAccountMutationVariables = Exact<{

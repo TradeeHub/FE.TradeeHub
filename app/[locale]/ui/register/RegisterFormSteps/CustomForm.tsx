@@ -27,7 +27,9 @@ const InputWithIcon = <
 }: InputWithIconProps<TFieldValues, TName>) => {
   return (
     <div className='relative'>
-      {Icon && <Icon className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-secondary' />} 
+      {Icon && (
+        <Icon className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-secondary' />
+      )}
       {/* Conditionally render Icon */}
       <Input
         type={type}

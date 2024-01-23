@@ -66,8 +66,10 @@ const formSchema = z
     companyType: z.string().min(1, { message: 'Company Type is required.' }),
     companySize: z.string().min(1, { message: 'Company Size is required.' }),
     referralSource: z.string(),
-    companyPriority: z.string().min(1, { message: 'Please select an option above.' }),
-    marketingPreference: z.boolean()
+    companyPriority: z
+      .string()
+      .min(1, { message: 'Please select an option above.' }),
+    marketingPreference: z.boolean(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match.",
@@ -101,7 +103,7 @@ const RegisterForm = () => {
   const totalSteps = 4;
 
   const form = useForm<z.infer<typeof formSchema>>({
-    mode: 'onSubmit',
+    // mode: 'onSubmit',
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
@@ -120,9 +122,7 @@ const RegisterForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    console.log(values, form.getValues());
   }
 
   const onContinue = async () => {
@@ -222,18 +222,26 @@ const RegisterForm = () => {
           <ProgressBar totalSteps={totalSteps} currentStep={currentStep} />
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
+            <form className='space-y-5'>
               {renderStep(currentStep)}
-              <Button
-                type='button'
-                variant='default'
-                className='mt-4 w-full'
-                onClick={onContinue}
-              >
-                {currentStep < totalSteps ? 'Continue' : 'Register'}
-              </Button>
-
-              {/* <Button type='submit'>Submit</Button> */}
+              {currentStep < totalSteps ? (
+                <Button
+                  type='button'
+                  variant='default'
+                  className='mt-4 w-full'
+                  onClick={onContinue}
+                >
+                  Continue
+                </Button>
+              ) : (
+                <Button
+                  type='button'
+                  onClick={form.handleSubmit(onSubmit)}
+                  className='mt-4 w-full'
+                >
+                  Register
+                </Button>
+              )}
             </form>
           </Form>
           <div className='text-center'>

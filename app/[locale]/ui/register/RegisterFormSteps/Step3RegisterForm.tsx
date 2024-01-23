@@ -3,7 +3,13 @@ import { Control } from 'react-hook-form';
 import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import { RegisterRequest } from '@/app/[locale]/types/sharedTypes';
 import { InputWithIcon, StyledFormMessage } from './CustomForm';
-import { SelectContent, SelectTrigger, SelectValue, Select, SelectItem } from '@/components/ui/select';
+import {
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+  Select,
+  SelectItem,
+} from '@/components/ui/select';
 
 const Step3RegisterForm = ({
   control,
@@ -48,22 +54,22 @@ const Step3RegisterForm = ({
         control={control}
         name='companySize'
         render={({ field }) => (
-           <FormItem>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder='Company Size' />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value='Just Me'>Just Me</SelectItem>
-                  <SelectItem value='2-5'>2-5</SelectItem>
-                  <SelectItem value='6-10'>6-10</SelectItem>
-                  <SelectItem value='10+'>10+</SelectItem>
-                </SelectContent>
-              </Select>
-                  <StyledFormMessage />
-            </FormItem>
+          <FormItem>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder='Company Size' />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value='Just Me'>Just Me</SelectItem>
+                <SelectItem value='2-5'>2-5</SelectItem>
+                <SelectItem value='6-10'>6-10</SelectItem>
+                <SelectItem value='10+'>10+</SelectItem>
+              </SelectContent>
+            </Select>
+            <StyledFormMessage />
+          </FormItem>
         )}
       />
     </>
