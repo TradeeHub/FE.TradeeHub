@@ -1,8 +1,10 @@
 import { LoginState } from '@/app/[locale]/types/sharedTypes';
 import {
+  RegisterRequestInput,
   useConfirmAccountMutation,
   useLoginMutation,
   useLogoutMutation,
+  useRegisterMutation,
   useResendVerificationCodeMutation,
 } from '@/generatedGraphql';
 
@@ -85,4 +87,25 @@ const useResendVerificationCode = () => {
   return { resendConfirmationCode, data, loading, error };
 };
 
-export { useLogin, useLogout, useConfirmAccount, useResendVerificationCode };
+const useRegister = () => {
+  const [registerMutation, { data, loading, error }] = useRegisterMutation();
+
+  const register = async (input : RegisterRequestInput) => {
+    try {
+      console.log('Register input:', input);
+      await registerMutation({
+        variables: {
+          input, // This should be an object matching RegisterRequestInput structure
+        },
+      });
+    } catch (e) {
+      console.error('Register error:', e);
+    }
+  };
+
+  const registerResponse = data?.register;
+
+  return { register, registerResponse, loading, error };
+};
+
+export { useLogin, useLogout, useConfirmAccount, useResendVerificationCode, useRegister };

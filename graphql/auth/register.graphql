@@ -1,0 +1,7 @@
+mutation Register($input: RegisterRequestInput!) {
+  register(request: $input) {
+    httpStatusCode
+    userConfirmed
+    userSub
+  }
+}

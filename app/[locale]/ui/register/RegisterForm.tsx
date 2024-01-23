@@ -12,7 +12,9 @@ import Step3RegisterForm from './RegisterFormSteps/Step3RegisterForm';
 import Step4RegisterForm from './RegisterFormSteps/Step4RegisterForm';
 import { Card } from '@/components/ui/card';
 import { IoArrowBack } from 'react-icons/io5';
-import { UserPlace } from '../../types/sharedTypes';
+import { RegisterRequest, UserPlace } from '../../types/sharedTypes';
+import { useRegister } from '../../hooks/customer/auth/useAuth';
+import { RegisterRequestInput } from '@/generatedGraphql';
 
 const LocationSchema = z.object({
   lat: z.number(),
@@ -76,6 +78,34 @@ const formSchema = z
     path: ['confirmPassword'], // This shows where the error occurred
   });
 
+const transformRegisterRequest = (request: RegisterRequest): RegisterRequestInput => {
+  return {
+    email: request.email,
+    password: request.password,
+    name: request.name,
+    phoneNumber: request.phoneNumber,
+    place: {
+      address: request.userPlace?.Address ?? '',
+      placeId: request.userPlace?.PlaceId ?? '',
+      location: {
+        lat: request.userPlace?.Location.lat,
+        lng: request.userPlace?.Location.lng,
+      },
+      viewport: {
+        northeast: request.userPlace?.Viewport.northeast ?? { lat: 0, lng: 0 },
+        southwest: request.userPlace?.Viewport.southwest ?? { lat: 0, lng: 0 },
+      }
+    },
+    companyName: request.companyName,
+    companyType: request.companyType,
+    companySize: request.companySize,
+    referralSource: request.referralSource,
+    companyPriority: request.companyPriority,
+    marketingPreference: request.marketingPreference
+  };
+};
+
+
 const ProgressBar = ({
   totalSteps,
   currentStep,
@@ -98,6 +128,8 @@ const ProgressBar = ({
 };
 
 const RegisterForm = () => {
+  const { register, registerResponse } = useRegister();
+  const [hasRegisterd, setHasRegistered] = useState(false); // [TODO
   const [isClient, setIsClient] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
@@ -122,7 +154,10 @@ const RegisterForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values, form.getValues());
+      console.log('formData', values);
+      const registerRequest = transformRegisterRequest(values);
+      console.log('registerRequest 222', registerRequest);
+      register(registerRequest);  
   }
 
   const onContinue = async () => {
@@ -153,7 +188,7 @@ const RegisterForm = () => {
   };
 
   const handleLogin = () => {
-    // router.push('/register');
+
   };
 
   const handlePlaceSelected = (place: UserPlace | null) => {
@@ -185,6 +220,14 @@ const RegisterForm = () => {
       setCurrentStep((prev) => prev - 1);
     }
   };
+
+  useEffect(() => {
+    if (registerResponse?.httpStatusCode === 'OK' && !registerResponse?.userConfirmed) {
+      setHasRegistered(true);
+      console.log('registerResponse', registerResponse);
+    }
+  }, [registerResponse]);
+
 
   useEffect(() => {
     setIsClient(true);
