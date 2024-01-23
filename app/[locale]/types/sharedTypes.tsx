@@ -79,11 +79,11 @@ export type RegisterRequest = {
   phoneNumber: string;
   userPlace: UserPlace | null;
   companyName: string;
-  companyPriority: string;
-  companySize: string;
   companyType: string;
-  marketingPreference: string;
-  annualRevenue: string;
+  companySize: string;
+  referralSource: string;
+  companyPriority: string;
+  marketingPreference: boolean;
 };
 
 type Location = {

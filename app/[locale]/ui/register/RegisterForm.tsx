@@ -63,11 +63,11 @@ const formSchema = z
     companyName: z
       .string()
       .min(2, { message: 'Please enter your company name.' }),
-    companyPriority: z.string(),
-    companySize: z.string(),
-    companyType: z.string(),
-    marketingPreference: z.string(),
-    annualRevenue: z.string(),
+    companyType: z.string().min(1, { message: 'Company Type is required.' }),
+    companySize: z.string().min(1, { message: 'Company Size is required.' }),
+    referralSource: z.string(),
+    companyPriority: z.string().min(1, { message: 'Please select an option above.' }),
+    marketingPreference: z.boolean()
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match.",
@@ -111,11 +111,11 @@ const RegisterForm = () => {
       phoneNumber: '',
       userPlace: null,
       companyName: '',
-      companyPriority: '',
-      companySize: '',
       companyType: '',
-      marketingPreference: '',
-      annualRevenue: '',
+      companySize: '',
+      referralSource: '',
+      companyPriority: '',
+      marketingPreference: false,
     },
   });
 
@@ -141,6 +141,13 @@ const RegisterForm = () => {
           'userPlace',
         ]);
         if (step2IsValid) setCurrentStep((prev) => prev + 1);
+      } else if (currentStep === 3) {
+        const step3IsValid = await form.trigger([
+          'companyName',
+          'companyType',
+          'companySize',
+        ]);
+        if (step3IsValid) setCurrentStep((prev) => prev + 1);
       }
     }
   };
