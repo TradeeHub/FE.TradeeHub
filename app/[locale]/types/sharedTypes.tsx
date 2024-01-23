@@ -71,13 +71,13 @@ export type LoginState = {
   user: UserDbObject | null;
 };
 
-export type TFieldValues = {
+export type RegisterRequest = {
   email: string;
   password: string;
   confirmPassword: string;
   name: string;
   phoneNumber: string;
-  address: string;
+  userPlace: UserPlace | null;
   companyName: string;
   companyPriority: string;
   companySize: string;

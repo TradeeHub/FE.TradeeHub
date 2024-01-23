@@ -2,10 +2,10 @@ import React from 'react';
 import { Control } from 'react-hook-form';
 import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
-import { TFieldValues } from '@/app/[locale]/types/sharedTypes';
+import { RegisterRequest } from '@/app/[locale]/types/sharedTypes';
 import { InputWithIcon, StyledFormMessage } from './CustomForm';
 
-const Step1RegisterForm = ({ control }: { control: Control<TFieldValues> }) => {
+const Step1RegisterForm = ({ control }: { control: Control<RegisterRequest> }) => {
   return (
     <>
       <FormField

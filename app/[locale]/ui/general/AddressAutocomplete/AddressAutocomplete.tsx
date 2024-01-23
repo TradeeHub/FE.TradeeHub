@@ -16,7 +16,10 @@ import {
 import { PiMapPinLight } from 'react-icons/pi';
 import { UserPlace } from '@/app/[locale]/types/sharedTypes';
 
-type AddressAutocompleteProps = {
+import { ControllerRenderProps, FieldPath, FieldValues, Path } from 'react-hook-form';
+
+type AddressAutocompleteProps<TFieldValues extends FieldValues, TName extends Path<TFieldValues>> = {
+  field: ControllerRenderProps<TFieldValues, TName>;
   onPlaceSelected: (place: UserPlace | null) => void;
 };
 
@@ -48,8 +51,13 @@ function mapPlaceResultToUserPlace(
   };
 }
 
-const AddressAutocomplete = ({ onPlaceSelected }: AddressAutocompleteProps) => {
-  const isMountedRef = useRef(false);
+const AddressAutocomplete = <TFieldValues extends FieldValues,
+  TName extends FieldPath<TFieldValues>,
+>({
+  field,
+  onPlaceSelected
+}: AddressAutocompleteProps<TFieldValues, TName>) => {  const isMountedRef = useRef(false);
+    console.log('field', field);
   const [userLocation] = useState<{
     latitude: number;
     longitude: number;

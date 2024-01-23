@@ -13,7 +13,29 @@ import Step4RegisterForm from './RegisterFormSteps/Step4RegisterForm';
 import { Card } from '@/components/ui/card';
 import { IoArrowBack } from 'react-icons/io5';
 import { UserPlace } from '../../types/sharedTypes';
-// Define the schema for all steps
+
+const LocationSchema = z.object({
+  lat: z.number(),
+  lng: z.number(),
+});
+
+// Define the Zod schema for Viewport
+const ViewportSchema = z.object({
+  northeast: LocationSchema,
+  southwest: LocationSchema,
+});
+
+// Define the Zod schema for UserPlace
+const UserPlaceSchema = z.object({
+  PlaceId: z.string(),
+  Address: z.string(),
+  Location: LocationSchema,
+  Viewport: ViewportSchema,
+}).nullable().nullable().refine((data) => data !== null, {
+  message: 'Please enter your address.',
+  // You can add custom logic to check the properties of UserPlace if needed
+});
+
 const formSchema = z
   .object({
     email: z.string().email({ message: 'Invalid email format.' }),
@@ -33,7 +55,7 @@ const formSchema = z
     confirmPassword: z.string(),
     name: z.string().min(2, { message: 'Please enter your name.' }),
     phoneNumber: z.string().min(10, { message: 'Invalid phone number.' }),
-    address: z.string().min(5, { message: 'Please enter your address.' }),
+    userPlace: UserPlaceSchema,
     companyName: z
       .string()
       .min(2, { message: 'Please enter your company name.' }),
@@ -83,7 +105,7 @@ const RegisterForm = () => {
       confirmPassword: '',
       name: '',
       phoneNumber: '',
-      address: '',
+      userPlace: null,
       companyName: '',
       companyPriority: '',
       companySize: '',
@@ -100,14 +122,14 @@ const RegisterForm = () => {
   }
 
   const onContinue = async () => {
-    console.log('currentStep');
+    console.log('currentStep', form.getValues());
     if (currentStep < totalSteps) {
       if (currentStep === 1) {
         console.log('step1');
         const step1IsValid = await form.trigger(['email', 'password', 'confirmPassword']);
         if (step1IsValid) setCurrentStep((prev) => prev + 1);
       } else if (currentStep === 2) {
-        const step2IsValid = await form.trigger(['name', 'phoneNumber', 'address']);
+        const step2IsValid = await form.trigger(['name', 'phoneNumber', 'userPlace']);
         if (step2IsValid) setCurrentStep((prev) => prev + 1);
       }
     }
@@ -118,7 +140,9 @@ const RegisterForm = () => {
   };
 
   const handlePlaceSelected = (place: UserPlace | null) => {
-    form.setValue('address', place?.Address || '');
+     if (place) {
+    form.setValue('userPlace', place);
+  }
   };
 
   const renderStep = (step: number) => {
@@ -142,6 +166,8 @@ const RegisterForm = () => {
   };
 
   const goBack = () => {
+        console.log('going back', form.getValues());
+
     if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
     }
