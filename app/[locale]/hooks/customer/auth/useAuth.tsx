@@ -7,6 +7,7 @@ import {
   useRegisterMutation,
   useResendVerificationCodeMutation,
 } from '@/generatedGraphql';
+import { ApolloError, ServerError } from '@apollo/client';
 
 const useLogin = () => {
   const [loginMutation, { data, loading, error }] = useLoginMutation();
@@ -72,7 +73,7 @@ const useResendVerificationCode = () => {
   const [resendVerificationCodeMutation, { data, loading, error }] =
     useResendVerificationCodeMutation();
 
-  const resendConfirmationCode = async (email: string) => {
+  const resendVerificationCode = async (email: string) => {
     try {
       await resendVerificationCodeMutation({
         variables: {
@@ -80,32 +81,44 @@ const useResendVerificationCode = () => {
         },
       });
     } catch (e) {
-      console.error('Account verification error:', e);
+      console.error('Resend verification code error:', e);
     }
   };
 
-  return { resendConfirmationCode, data, loading, error };
+  return {
+    resendVerificationCode,
+    resendVerificationResponse: data,
+    resendVerificationLoading: loading,
+    resendVerificationError: error,
+  };
 };
 
 const useRegister = () => {
   const [registerMutation, { data, loading, error }] = useRegisterMutation();
 
-  const register = async (input : RegisterRequestInput) => {
+  const register = async (input: RegisterRequestInput) => {
     try {
       console.log('Register input:', input);
       await registerMutation({
-        variables: {
-          input, // This should be an object matching RegisterRequestInput structure
-        },
+        variables: { input },
       });
     } catch (e) {
       console.error('Register error:', e);
     }
   };
 
-  const registerResponse = data?.register;
-
-  return { register, registerResponse, loading, error };
+  return {
+    register,
+    registerResponse: data?.register,
+    registerLoading: loading,
+    registerError: error,
+  };
 };
 
-export { useLogin, useLogout, useConfirmAccount, useResendVerificationCode, useRegister };
+export {
+  useLogin,
+  useLogout,
+  useConfirmAccount,
+  useResendVerificationCode,
+  useRegister,
+};

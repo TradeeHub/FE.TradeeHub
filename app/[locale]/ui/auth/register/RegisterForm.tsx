@@ -12,9 +12,14 @@ import Step3RegisterForm from './RegisterFormSteps/Step3RegisterForm';
 import Step4RegisterForm from './RegisterFormSteps/Step4RegisterForm';
 import { Card } from '@/components/ui/card';
 import { IoArrowBack } from 'react-icons/io5';
-import { RegisterRequest, UserPlace } from '../../types/sharedTypes';
-import { useRegister } from '../../hooks/customer/auth/useAuth';
+import { RegisterRequest, UserPlace } from '../../../types/sharedTypes';
+import { useRegister } from '../../../hooks/customer/auth/useAuth';
 import { RegisterRequestInput } from '@/generatedGraphql';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { FaCheck } from 'react-icons/fa6';
+import VerificationCode from '../VerificationCode/VerificationCode';
+import ValidationMessage from '../ValidationMessage/ValidationMessage';
+import { ApolloError, ServerError } from '@apollo/client';
 
 const LocationSchema = z.object({
   lat: z.number(),
@@ -78,7 +83,9 @@ const formSchema = z
     path: ['confirmPassword'], // This shows where the error occurred
   });
 
-const transformRegisterRequest = (request: RegisterRequest): RegisterRequestInput => {
+const transformRegisterRequest = (
+  request: RegisterRequest,
+): RegisterRequestInput => {
   return {
     email: request.email,
     password: request.password,
@@ -94,17 +101,16 @@ const transformRegisterRequest = (request: RegisterRequest): RegisterRequestInpu
       viewport: {
         northeast: request.userPlace?.Viewport.northeast ?? { lat: 0, lng: 0 },
         southwest: request.userPlace?.Viewport.southwest ?? { lat: 0, lng: 0 },
-      }
+      },
     },
     companyName: request.companyName,
     companyType: request.companyType,
     companySize: request.companySize,
     referralSource: request.referralSource,
     companyPriority: request.companyPriority,
-    marketingPreference: request.marketingPreference
+    marketingPreference: request.marketingPreference,
   };
 };
-
 
 const ProgressBar = ({
   totalSteps,
@@ -128,14 +134,15 @@ const ProgressBar = ({
 };
 
 const RegisterForm = () => {
-  const { register, registerResponse } = useRegister();
-  const [hasRegisterd, setHasRegistered] = useState(false); // [TODO
+  const { register, registerResponse, registerError } = useRegister();
+  const [hasRegisteredSuccessfully, setHasRegisteredSuccessfully] =
+    useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>();
   const [isClient, setIsClient] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
 
   const form = useForm<z.infer<typeof formSchema>>({
-    // mode: 'onSubmit',
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
@@ -153,12 +160,10 @@ const RegisterForm = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-      console.log('formData', values);
-      const registerRequest = transformRegisterRequest(values);
-      console.log('registerRequest 222', registerRequest);
-      register(registerRequest);  
-  }
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const registerRequest = transformRegisterRequest(values);
+    register(registerRequest);
+  };
 
   const onContinue = async () => {
     if (currentStep < totalSteps) {
@@ -187,9 +192,7 @@ const RegisterForm = () => {
     }
   };
 
-  const handleLogin = () => {
-
-  };
+  const handleLogin = () => {};
 
   const handlePlaceSelected = (place: UserPlace | null) => {
     form.setValue('userPlace', place);
@@ -222,12 +225,14 @@ const RegisterForm = () => {
   };
 
   useEffect(() => {
-    if (registerResponse?.httpStatusCode === 'OK' && !registerResponse?.userConfirmed) {
-      setHasRegistered(true);
+    if (
+      registerResponse?.httpStatusCode === 'OK' &&
+      !registerResponse?.userConfirmed
+    ) {
+      setHasRegisteredSuccessfully(true);
       console.log('registerResponse', registerResponse);
     }
   }, [registerResponse]);
-
 
   useEffect(() => {
     setIsClient(true);
@@ -262,31 +267,55 @@ const RegisterForm = () => {
             {/* Invisible placeholder to ensure the title remains centered */}
             <div className='h-8 w-8'></div>
           </div>
-          <ProgressBar totalSteps={totalSteps} currentStep={currentStep} />
 
-          <Form {...form}>
-            <form className='space-y-5'>
-              {renderStep(currentStep)}
-              {currentStep < totalSteps ? (
-                <Button
-                  type='button'
-                  variant='default'
-                  className='mt-4 w-full'
-                  onClick={onContinue}
-                >
-                  Continue
-                </Button>
-              ) : (
-                <Button
-                  type='button'
-                  onClick={form.handleSubmit(onSubmit)}
-                  className='mt-4 w-full'
-                >
-                  Register
-                </Button>
-              )}
-            </form>
-          </Form>
+          {!hasRegisteredSuccessfully ? (
+            <>
+              <ProgressBar totalSteps={totalSteps} currentStep={currentStep} />
+
+              <Form {...form}>
+                <form className='space-y-5'>
+                  {renderStep(currentStep)}
+                  {currentStep < totalSteps ? (
+                    <Button
+                      type='button'
+                      variant='default'
+                      className='mt-4 w-full'
+                      onClick={onContinue}
+                    >
+                      Continue
+                    </Button>
+                  ) : (
+                    <>
+                      <Button
+                        type='button'
+                        onClick={form.handleSubmit(onSubmit)}
+                        className='mt-4 w-full'
+                      >
+                        Register
+                      </Button>
+                      <ValidationMessage validationMessage={registerError} />
+                    </>
+                  )}
+                </form>
+              </Form>
+            </>
+          ) : (
+            <>
+              <Alert>
+                <FaCheck className='h-4 w-4 text-secondary' />
+                <AlertTitle>
+                  Congratulation account successfully created!
+                </AlertTitle>
+                <AlertDescription>
+                  Please enter the verification code below.
+                </AlertDescription>
+              </Alert>
+              <VerificationCode
+                email={form.getValues('email')}
+                password={form.getValues('password')}
+              />
+            </>
+          )}
           <div className='text-center'>
             <span>Already have an account? </span>
             <Button variant='link' size='sm' onClick={handleLogin}>
