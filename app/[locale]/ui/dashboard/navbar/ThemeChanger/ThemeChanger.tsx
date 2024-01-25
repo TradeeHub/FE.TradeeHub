@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { MdOutlineWbSunny } from 'react-icons/md';
-import { useTheme } from 'next-themes';
 import { BsMoonStars } from 'react-icons/bs';
 import { Button } from '@/components/ui/button';
+import { useTheme } from 'next-themes';
 
 const ThemeChanger = () => {
   const { theme, setTheme } = useTheme();

@@ -20,7 +20,6 @@ import VerificationCode from '../VerificationCode/VerificationCode';
 import ValidationMessage from '../ValidationMessage/ValidationMessage';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import ProgressBar from '../ProgressBar/ProgressBar';
 
 const LocationSchema = z.object({
   lat: z.number(),
