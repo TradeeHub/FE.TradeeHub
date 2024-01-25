@@ -17,13 +17,10 @@ const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Elemen
   const authenticated = useReactiveVar(authenticatedVar);
   const client = useApolloClient();
   const [isUserLoadingComplete, setIsUserLoadingComplete] = useState(false);
-  useEffect(() => {
-      console.log('authenticated', loading, loggedInUser, error);
 
+  useEffect(() => {
     // If not loading and no error, consider the user loading process complete
     if (!loading && !error) {
-            console.log('aaaaa', loading);
-
       setIsUserLoadingComplete(true);
 
       if (authenticated && loggedInUser) {
@@ -40,9 +37,7 @@ const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Elemen
   }, [authenticated, loading, loggedInUser, error, dispatch]);
 
   useEffect(() => {
-    // If the user is not authenticated, redirect and clear the store
     if (isUserLoadingComplete && !authenticated) {
-      console.log('isUserLoadingComplete', isUserLoadingComplete);
       dispatch(resetUser());
       client.clearStore().then(() => {
         router.push(`/${locale}/login`); // Redirect to login

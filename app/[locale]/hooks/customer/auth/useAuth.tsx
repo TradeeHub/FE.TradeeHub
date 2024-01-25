@@ -98,7 +98,6 @@ const useRegister = () => {
 
   const register = async (input: RegisterRequestInput) => {
     try {
-      console.log('Register input:', input);
       await registerMutation({
         variables: { input },
       });

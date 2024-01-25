@@ -233,7 +233,6 @@ const RegisterForm = () => {
       !registerResponse?.userConfirmed
     ) {
       setHasRegisteredSuccessfully(true);
-      console.log('registerResponse', registerResponse);
     }
   }, [registerResponse]);
 
