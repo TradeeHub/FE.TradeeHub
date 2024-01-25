@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect, RefObject } from 'react';
+import React, { useState, createRef, RefObject } from 'react';
 import { Input } from '@/components/ui/input';
 
 export function VerificationCodeInput({

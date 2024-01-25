@@ -20,6 +20,7 @@ import VerificationCode from '../VerificationCode/VerificationCode';
 import ValidationMessage from '../ValidationMessage/ValidationMessage';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import ProgressBar from '../ProgressBar/ProgressBar';
 
 const LocationSchema = z.object({
   lat: z.number(),
@@ -112,37 +113,16 @@ const transformRegisterRequest = (
   };
 };
 
-const ProgressBar = ({
-  totalSteps,
-  currentStep,
-}: {
-  totalSteps: number;
-  currentStep: number;
-}) => {
-  return (
-    <div className='flex w-full justify-between pb-1'>
-      {[...Array(totalSteps)].map((_, index) => (
-        <div
-          key={index}
-          className={`mx-1 h-2 flex-1 rounded ${
-            index < currentStep ? 'bg-primary' : 'bg-gray-300'
-          }`}
-        ></div>
-      ))}
-    </div>
-  );
-};
-
 const RegisterForm = () => {
   const { register, registerResponse, registerError } = useRegister();
   const [hasRegisteredSuccessfully, setHasRegisteredSuccessfully] =
     useState(false);
   const [isClient, setIsClient] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 4;
+  const TOTAL_STEPS = 4;
   const router = useRouter();
   const locale = useLocale();
-  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -167,7 +147,7 @@ const RegisterForm = () => {
   };
 
   const onContinue = async () => {
-    if (currentStep < totalSteps) {
+    if (currentStep < TOTAL_STEPS) {
       if (currentStep === 1) {
         const step1IsValid = await form.trigger([
           'email',
@@ -259,7 +239,6 @@ const RegisterForm = () => {
               // This empty div acts as a placeholder with the same size as the IoArrowBack icon
               <div className='h-8 w-8'></div>
             )}
-
             {/* Title */}
             <div className='text-3xl font-bold'>
               <span className='text-primary dark:text-accent'>Tradee</span>
@@ -272,12 +251,10 @@ const RegisterForm = () => {
 
           {!hasRegisteredSuccessfully ? (
             <>
-              <ProgressBar totalSteps={totalSteps} currentStep={currentStep} />
-
               <Form {...form}>
                 <form className='space-y-5'>
                   {renderStep(currentStep)}
-                  {currentStep < totalSteps ? (
+                  {currentStep < TOTAL_STEPS ? (
                     <Button
                       type='button'
                       variant='default'

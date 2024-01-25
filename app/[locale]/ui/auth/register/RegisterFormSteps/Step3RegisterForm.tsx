@@ -2,7 +2,11 @@ import React from 'react';
 import { Control } from 'react-hook-form';
 import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import { RegisterRequest } from '@/app/[locale]/types/sharedTypes';
-import { InputWithIcon, StyledFormMessage } from './CustomForm';
+import {
+  AuthInputWithIcon,
+  InputWithIcon,
+  StyledFormMessage,
+} from '../../AuthInputWithIcon/AuthInputWithIcon';
 import {
   SelectContent,
   SelectTrigger,
@@ -24,7 +28,7 @@ const Step3RegisterForm = ({
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon
+              <AuthInputWithIcon
                 field={field}
                 autoFocus={true}
                 placeholder='Company Name'
@@ -40,7 +44,7 @@ const Step3RegisterForm = ({
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon
+              <AuthInputWithIcon
                 field={field}
                 autoFocus={false}
                 placeholder='Company Type'

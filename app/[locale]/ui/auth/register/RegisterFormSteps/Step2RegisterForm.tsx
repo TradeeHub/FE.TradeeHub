@@ -1,11 +1,14 @@
 import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import React from 'react';
-import { InputWithIcon, StyledFormMessage } from './CustomForm';
 import { RegisterRequest, UserPlace } from '@/app/[locale]/types/sharedTypes';
 import { Control } from 'react-hook-form';
 import { HiDeviceMobile } from 'react-icons/hi';
 import { FaUser } from 'react-icons/fa6';
 import AddressAutocomplete from '../../../general/AddressAutocomplete/AddressAutocomplete';
+import {
+  AuthInputWithIcon,
+  StyledFormMessage,
+} from '../../AuthInputWithIcon/AuthInputWithIcon';
 
 const Step2RegisterForm = ({
   control,
@@ -22,7 +25,7 @@ const Step2RegisterForm = ({
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon
+              <AuthInputWithIcon
                 field={field}
                 icon={FaUser}
                 autoFocus={true}
@@ -39,7 +42,7 @@ const Step2RegisterForm = ({
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon
+              <AuthInputWithIcon
                 field={field}
                 icon={HiDeviceMobile}
                 autoFocus={false}

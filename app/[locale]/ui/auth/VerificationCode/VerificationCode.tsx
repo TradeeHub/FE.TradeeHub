@@ -77,11 +77,7 @@ const VerificationCode = (data: VerificationCodeProps) => {
   return (
     <>
       <VerificationCodeInput length={6} onComplete={handleVerificationSubmit} />
-      {showError && (
-        <ValidationMessage
-          validationMessage={verificationError}
-        />
-      )}
+      {showError && <ValidationMessage validationMessage={verificationError} />}
 
       <Button
         disabled={!verificationError}

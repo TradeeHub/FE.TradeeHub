@@ -8,7 +8,10 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { RegisterRequest } from '@/app/[locale]/types/sharedTypes';
-import { InputWithIcon, StyledFormMessage } from './CustomForm';
+import {
+  AuthInputWithIcon,
+  StyledFormMessage,
+} from '../../AuthInputWithIcon/AuthInputWithIcon';
 import {
   SelectContent,
   SelectTrigger,
@@ -31,7 +34,7 @@ const Step4RegisterForm = ({
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon
+              <AuthInputWithIcon
                 field={field}
                 autoFocus={true}
                 placeholder='Where did you hear about us?'

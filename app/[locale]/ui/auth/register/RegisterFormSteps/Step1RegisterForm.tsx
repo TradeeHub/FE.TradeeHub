@@ -3,7 +3,10 @@ import { Control } from 'react-hook-form';
 import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
 import { RegisterRequest } from '@/app/[locale]/types/sharedTypes';
-import { InputWithIcon, StyledFormMessage } from './CustomForm';
+import {
+  AuthInputWithIcon,
+  StyledFormMessage,
+} from '../../AuthInputWithIcon/AuthInputWithIcon';
 
 const Step1RegisterForm = ({
   control,
@@ -18,7 +21,7 @@ const Step1RegisterForm = ({
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon
+              <AuthInputWithIcon
                 field={field}
                 icon={FaEnvelope}
                 autoFocus={true}
@@ -35,7 +38,7 @@ const Step1RegisterForm = ({
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon
+              <AuthInputWithIcon
                 field={field}
                 icon={FaLock}
                 autoFocus={false}
@@ -53,7 +56,7 @@ const Step1RegisterForm = ({
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <InputWithIcon
+              <AuthInputWithIcon
                 field={field}
                 icon={FaLock}
                 autoFocus={false}

@@ -9,7 +9,9 @@ import authenticatedVar from '../constants/authenticated';
 import { useGetLoggedInUser } from '../hooks/customer/auth/useGetLoggedInUser';
 import { AuthenticationGuardProps } from '../types/sharedTypes';
 
-const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Element | null => {
+const AuthenticationGuard = ({
+  children,
+}: AuthenticationGuardProps): JSX.Element | null => {
   const dispatch = useDispatch();
   const router = useRouter();
   const locale = useLocale();

@@ -15,7 +15,7 @@ type InputWithIconProps<
   type?: string;
 };
 
-const InputWithIcon = <
+const AuthInputWithIcon = <
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>,
 >({
@@ -46,4 +46,4 @@ const StyledFormMessage = () => {
   return <FormMessage style={{ marginTop: '2px' }} />;
 };
 
-export { InputWithIcon, StyledFormMessage };
+export { AuthInputWithIcon, StyledFormMessage };

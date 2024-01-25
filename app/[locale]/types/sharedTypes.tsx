@@ -86,6 +86,11 @@ export type RegisterRequest = {
   marketingPreference: boolean;
 };
 
+export type LoginRequest = {
+  email: string;
+  password: string;
+};
+
 type Location = {
   lat: number;
   lng: number;

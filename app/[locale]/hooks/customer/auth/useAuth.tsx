@@ -7,7 +7,6 @@ import {
   useRegisterMutation,
   useResendVerificationCodeMutation,
 } from '@/generatedGraphql';
-import { ApolloError, ServerError } from '@apollo/client';
 
 const useLogin = () => {
   const [loginMutation, { data, loading, error }] = useLoginMutation();
@@ -25,9 +24,12 @@ const useLogin = () => {
     }
   };
 
-  const loginResponse = data?.login as LoginState;
-
-  return { login, loginResponse, loading, error };
+  return {
+    login,
+    loginResponse: data?.login as LoginState,
+    loginLoading: loading,
+    loginError: error,
+  };
 };
 
 const useLogout = () => {
