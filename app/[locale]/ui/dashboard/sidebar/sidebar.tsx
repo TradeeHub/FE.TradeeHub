@@ -26,7 +26,7 @@ import { useLocale } from 'next-intl';
 import { useTranslations } from 'next-intl';
 import ChangeLanguage from '@/app/[locale]/components/ChangeLanguage';
 
-export default function SideBar() {
+const SideBar = () => {
   const t = useTranslations('general');
 
   const locale = useLocale();
@@ -133,3 +133,5 @@ export default function SideBar() {
     </>
   );
 }
+
+export default SideBar;

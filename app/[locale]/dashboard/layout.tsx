@@ -1,19 +1,11 @@
 'use client';
 import React from 'react';
 import { LayoutProps } from '../types/sharedTypes';
+import AuthenticationGuard from './AuthenticationGuard';
 import Sidebar from '../ui/dashboard/sidebar/Sidebar';
 import Navbar from '../ui/dashboard/navbar/Navbar';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
-import AuthenticationGuard from './AuthenticationGuard';
 
 const Layout = ({ children }: LayoutProps) => {
-  const user = useSelector((state: RootState) => state.user.data);
-
-  if (!user) {
-    return <></>;
-  }
-
   return (
     <>
       <AuthenticationGuard>

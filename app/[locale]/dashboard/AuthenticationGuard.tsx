@@ -1,38 +1,61 @@
 'use client';
-import { resetUser, setUser } from '@/lib/features/user/userSlice';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useReactiveVar, useApolloClient } from '@apollo/client';
 import { useLocale } from 'next-intl';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation'; // Note: use 'next/router' instead of 'next/navigation' for useRouter
+import { resetUser, setUser } from '@/lib/features/user/userSlice';
 import authenticatedVar from '../constants/authenticated';
 import { useGetLoggedInUser } from '../hooks/customer/auth/useGetLoggedInUser';
 import { AuthenticationGuardProps } from '../types/sharedTypes';
 
-const AuthenticationGuard = ({
-  children,
-}: AuthenticationGuardProps): JSX.Element => {
+const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Element | null => {
   const dispatch = useDispatch();
   const router = useRouter();
   const locale = useLocale();
   const { user: loggedInUser, loading, error } = useGetLoggedInUser();
   const authenticated = useReactiveVar(authenticatedVar);
   const client = useApolloClient();
-  const pathname = usePathname();
-
+  const [isUserLoadingComplete, setIsUserLoadingComplete] = useState(false);
   useEffect(() => {
-    if (!authenticated) {
-      dispatch(resetUser());
-      router.push(`/${locale}/login`); // Redirect to login if no loggedInUser and user is null
-      client.clearStore().then(() => {});
-    } else {
-      if (!loading && !error && loggedInUser) {
+      console.log('authenticated', loading, loggedInUser, error);
+
+    // If not loading and no error, consider the user loading process complete
+    if (!loading && !error) {
+            console.log('aaaaa', loading);
+
+      setIsUserLoadingComplete(true);
+
+      if (authenticated && loggedInUser) {
         dispatch(setUser(loggedInUser)); // Update Redux user if loggedInUser is available
       }
     }
-  }, [authenticated, pathname, loggedInUser]);
 
+    if (!loading && error) {
+      dispatch(resetUser());
+      client.clearStore().then(() => {
+        router.push(`/${locale}/login`); // Redirect to login
+      });
+    }
+  }, [authenticated, loading, loggedInUser, error, dispatch]);
+
+  useEffect(() => {
+    // If the user is not authenticated, redirect and clear the store
+    if (isUserLoadingComplete && !authenticated) {
+      console.log('isUserLoadingComplete', isUserLoadingComplete);
+      dispatch(resetUser());
+      client.clearStore().then(() => {
+        router.push(`/${locale}/login`); // Redirect to login
+      });
+    }
+  }, [dispatch, client, router, locale, authenticated, isUserLoadingComplete]);
+
+  // Show a loading indicator while waiting for the user loading to complete
+  if (!isUserLoadingComplete) {
+    return <div></div>; // Replace with your loading indicator as needed
+  }
+
+  // Render children if the user loading process has completed
   return <>{children}</>;
 };
 

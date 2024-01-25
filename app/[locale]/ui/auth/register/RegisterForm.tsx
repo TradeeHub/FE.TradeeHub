@@ -1,5 +1,4 @@
 'use client';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -19,7 +18,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { FaCheck } from 'react-icons/fa6';
 import VerificationCode from '../VerificationCode/VerificationCode';
 import ValidationMessage from '../ValidationMessage/ValidationMessage';
-import { ApolloError, ServerError } from '@apollo/client';
+import { useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
 
 const LocationSchema = z.object({
   lat: z.number(),
@@ -137,11 +137,12 @@ const RegisterForm = () => {
   const { register, registerResponse, registerError } = useRegister();
   const [hasRegisteredSuccessfully, setHasRegisteredSuccessfully] =
     useState(false);
-  const [errorMessage, setErrorMessage] = useState<string>();
   const [isClient, setIsClient] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
-
+  const router = useRouter();
+  const locale = useLocale();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -192,7 +193,9 @@ const RegisterForm = () => {
     }
   };
 
-  const handleLogin = () => {};
+  const handleLogin = () => {
+    router.push(`/${locale}/login`);
+  };
 
   const handlePlaceSelected = (place: UserPlace | null) => {
     form.setValue('userPlace', place);
