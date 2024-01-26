@@ -13,7 +13,9 @@ type InputWithIconProps<
   autoFocus?: boolean;
   placeholder?: string;
   type?: string;
+  onEnterPress?: () => void;
 };
+
 
 const AuthInputWithIcon = <
   TFieldValues extends FieldValues,
@@ -24,7 +26,16 @@ const AuthInputWithIcon = <
   autoFocus = false, // Default value for autoFocus is false
   placeholder = '',
   type = 'text',
+  onEnterPress = () => {},
 }: InputWithIconProps<TFieldValues, TName>) => {
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && onEnterPress) {
+      event.preventDefault();
+      onEnterPress();
+    }
+  };
+  
   return (
     <div className='relative'>
       {Icon && (
@@ -37,6 +48,7 @@ const AuthInputWithIcon = <
         {...field}
         autoFocus={autoFocus} // Pass autoFocus to the Input component
         className={`${Icon ? 'pl-10' : ''}`} // Adjust padding based on icon presence
+        onKeyDown={handleKeyDown} // Add the onKeyPress event handler here
       />
     </div>
   );

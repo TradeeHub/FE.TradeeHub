@@ -63,9 +63,9 @@ const Login = () => {
 
     switch (step) {
       case 1:
-        return <Step1LoginForm control={form.control} />;
+        return <Step1LoginForm control={form.control} onEnterPress={onContinue} />;
       case 2:
-        return <Step2LoginForm control={form.control} />;
+        return <Step2LoginForm control={form.control} onEnterPress={handleLogin} />;
       case 3:
         return (
           <VerificationCode

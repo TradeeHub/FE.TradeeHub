@@ -1,4 +1,3 @@
-import authenticatedVar from '@/app/[locale]/constants/authenticated';
 import { LoginState } from '@/app/[locale]/types/sharedTypes';
 import {
   RegisterRequestInput,
