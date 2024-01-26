@@ -9,6 +9,7 @@ const LogoutButton = () => {
   const handleLogout = async () => {
     try {
       logout();
+      console.log('logout');
       authenticatedVar(false);
     } catch (error) {
       console.error('Logout failed', error);

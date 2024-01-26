@@ -113,17 +113,14 @@ const Login = () => {
     }
   }, [loginResponse]);
 
-  useEffect(() => {
-    if (!loginResponse?.user && user) {
-      router.push(`/${locale}/dashboard`);
-    }
-  }, [user]);
+
 
   useEffect(() => {
+
     setIsClient(true);
   }, []);
 
-  if ((!loginResponse?.isSuccess || !loginResponse?.isConfirmed) && !user) {
+  if ( isClient && (!loginResponse?.isSuccess || !loginResponse?.isConfirmed) && !user) {
     return (
       <>
         <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>

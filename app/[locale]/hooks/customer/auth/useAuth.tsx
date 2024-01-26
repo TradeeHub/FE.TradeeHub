@@ -1,7 +1,10 @@
+import authenticatedVar from '@/app/[locale]/constants/authenticated';
 import { LoginState } from '@/app/[locale]/types/sharedTypes';
 import {
   RegisterRequestInput,
+  UserDbObject,
   useConfirmAccountMutation,
+  useLoggedInUserQuery,
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
@@ -116,10 +119,22 @@ const useRegister = () => {
   };
 };
 
+
+const useGetLoggedInUser = () => {
+  const { data, loading, error } = useLoggedInUserQuery();
+  
+  return {
+    loggedInUser: data?.loggedInUser as UserDbObject | undefined,
+    loggedInUserLoading: loading,
+    loggedInUserError: error,
+  };
+};
+
 export {
   useLogin,
   useLogout,
   useConfirmAccount,
   useResendVerificationCode,
   useRegister,
+  useGetLoggedInUser
 };

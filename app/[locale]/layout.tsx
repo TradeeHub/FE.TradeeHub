@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import StoreProvider from './StoreProvider';
 import { RootLayoutProps } from './types/sharedTypes';
+import AuthenticationGuard from './AuthenticationGuard';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,7 +31,7 @@ export default function RootLayout({ children, params }: RootLayoutProps) {
               disableTransitionOnChange
             >
               <NextIntlClientProvider locale={locale} messages={messages}>
-                {children}
+                <AuthenticationGuard>{children}</AuthenticationGuard>
               </NextIntlClientProvider>
             </ThemeProvider>
           </body>
