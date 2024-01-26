@@ -9,11 +9,14 @@ import authenticatedVar from './constants/authenticated';
 import { AuthenticationGuardProps } from './types/sharedTypes';
 import { useGetLoggedInUser } from './hooks/customer/auth/useAuth';
 
-const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Element | null => {
+const AuthenticationGuard = ({
+  children,
+}: AuthenticationGuardProps): JSX.Element | null => {
   const dispatch = useDispatch();
   const router = useRouter();
   const locale = useLocale();
-  const { loggedInUser, loggedInUserLoading: isUserLoading } = useGetLoggedInUser();
+  const { loggedInUser, loggedInUserLoading: isUserLoading } =
+    useGetLoggedInUser();
   const isAuthenticated = useReactiveVar(authenticatedVar);
   const client = useApolloClient();
   const pathname = usePathname();
@@ -30,19 +33,25 @@ const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Elemen
     }
 
     if (isAuthenticated) {
-                console.log('1111111', isUserLoading, isAuthenticated, pathname, loggedInUser);
+      console.log(
+        '1111111',
+        isUserLoading,
+        isAuthenticated,
+        pathname,
+        loggedInUser,
+      );
 
       // User is authenticated
-      if(loggedInUser){
-      dispatch(setUser(loggedInUser));
+      if (loggedInUser) {
+        dispatch(setUser(loggedInUser));
       }
-      
+
       if (isOnAuthPage()) {
         // Redirect from auth pages to dashboard
         router.replace(`/${locale}/dashboard`);
       }
     } else {
-          console.log('2222222222', isUserLoading, isAuthenticated, pathname);
+      console.log('2222222222', isUserLoading, isAuthenticated, pathname);
 
       // Not authenticated or error occurred
       if (!isOnAuthPage()) {
@@ -53,7 +62,7 @@ const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Elemen
 
   const handleUnauthenticated = async () => {
     dispatch(resetUser());
-    console.log('cleaning data')
+    console.log('cleaning data');
     await client.clearStore();
     router.replace(`/${locale}/login`);
   };

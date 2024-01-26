@@ -1,14 +1,19 @@
 import React from 'react';
 import { Control } from 'react-hook-form';
 import { FormField, FormItem, FormControl } from '@/components/ui/form';
-import { FaLock } from 'react-icons/fa';
 import { LoginRequest } from '@/app/[locale]/types/sharedTypes';
 import {
   AuthInputWithIcon,
   StyledFormMessage,
 } from '../../AuthInputWithIcon/AuthInputWithIcon';
 
-const Step1LoginForm = ({ control, onEnterPress }: { control: Control<LoginRequest>, onEnterPress?: () => void}) => {
+const Step1LoginForm = ({
+  control,
+  onEnterPress,
+}: {
+  control: Control<LoginRequest>;
+  onEnterPress?: () => void;
+}) => {
   return (
     <>
       <FormField

@@ -7,9 +7,13 @@ import {
   StyledFormMessage,
 } from '../../AuthInputWithIcon/AuthInputWithIcon';
 
-const Step1LoginForm = ({ control, onEnterPress }: { control: Control<LoginRequest>, onEnterPress?: () => void}) => {
-
-
+const Step1LoginForm = ({
+  control,
+  onEnterPress,
+}: {
+  control: Control<LoginRequest>;
+  onEnterPress?: () => void;
+}) => {
   return (
     <>
       <FormField

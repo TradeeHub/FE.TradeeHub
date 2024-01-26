@@ -223,7 +223,7 @@ const RegisterForm = () => {
     setIsClient(true);
   }, []);
 
-  if(!user){
+  if (!user) {
     return (
       <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
         <div className='w-full max-w-md space-y-4'>
@@ -253,10 +253,7 @@ const RegisterForm = () => {
               <div className='h-8 w-8'></div>
             </div>
 
-        <ProgressBar
-                    totalSteps={TOTAL_STEPS}
-                    currentStep={currentStep}
-                  />
+            <ProgressBar totalSteps={TOTAL_STEPS} currentStep={currentStep} />
             {!hasRegisteredSuccessfully ? (
               <>
                 <Form {...form}>
@@ -313,8 +310,8 @@ const RegisterForm = () => {
         </div>
       </div>
     );
-  }else{
-    return <></>
+  } else {
+    return <></>;
   }
 };
 

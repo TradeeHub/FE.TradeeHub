@@ -1,7 +1,6 @@
 import React from 'react';
 import { Control } from 'react-hook-form';
 import { FormField, FormItem, FormControl } from '@/components/ui/form';
-import { FaEnvelope, FaLock } from 'react-icons/fa';
 import { RegisterRequest } from '@/app/[locale]/types/sharedTypes';
 import {
   AuthInputWithIcon,

@@ -48,16 +48,14 @@ const AuthInputWithIcon = <
   const inputId = `input-${field.name}`; // Create a unique ID for the input based on the field name
 
   return (
-    <div className='relative border-b-2 border-gray-300 focus-within:border-primary font-roboto'>
-      {Icon && (
-        <Icon className='absolute left-3 top-3 h-5 w-5 text-gray-500' />
-      )}
+    <div className='relative border-b-2 border-gray-300 font-roboto focus-within:border-primary'>
+      {Icon && <Icon className='absolute left-3 top-3 h-5 w-5 text-gray-500' />}
       <input
         {...field}
         id={inputId} // Set the ID for the input
         type={isPasswordType && !showPassword ? 'password' : 'text'}
         autoFocus={autoFocus}
-        className={`w-full px-3 py-1 text-sm ${Icon ? 'pl-10' : ''} ${isPasswordType ? 'pr-10' : ''} focus:outline-none bg-transparent`}
+        className={`w-full px-3 py-1 text-sm ${Icon ? 'pl-10' : ''} ${isPasswordType ? 'pr-10' : ''} bg-transparent focus:outline-none`}
         onKeyDown={handleKeyDown}
         onFocus={() => setLabelFloat(true)}
         onBlur={() => setLabelFloat(!!field.value)}
@@ -65,7 +63,9 @@ const AuthInputWithIcon = <
       <label
         htmlFor={inputId} // Set the htmlFor attribute to match the input's ID
         className={`absolute left-3 transition-all duration-200 ease-in-out ${
-          labelFloat || field.value ? 'top-[-0.7rem] text-xs text-primary mb-1' : 'top-1/2 text-sm text-gray-500 transform -translate-y-1/2'
+          labelFloat || field.value
+            ? 'top-[-0.7rem] mb-1 text-xs text-primary'
+            : 'top-1/2 -translate-y-1/2 transform text-sm text-gray-500'
         }`}
       >
         {placeholder}
@@ -84,12 +84,16 @@ const AuthInputWithIcon = <
 
 const StyledFormMessage = () => {
   return (
-    <FormMessage 
-      style={{ marginTop: '0', marginLeft: '0.75rem', fontSize: '0.75rem', color: '#ef4444' }}
+    <FormMessage
+      style={{
+        marginTop: '0',
+        marginLeft: '0.75rem',
+        fontSize: '0.75rem',
+        color: '#ef4444',
+      }}
       className='text-red-500' // You can keep this if you still want to apply Tailwind's red color
     />
   );
 };
-
 
 export { AuthInputWithIcon, StyledFormMessage };

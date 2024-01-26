@@ -2,8 +2,6 @@ import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import React from 'react';
 import { RegisterRequest, UserPlace } from '@/app/[locale]/types/sharedTypes';
 import { Control } from 'react-hook-form';
-import { HiDeviceMobile } from 'react-icons/hi';
-import { FaUser } from 'react-icons/fa6';
 import AddressAutocomplete from '../../../general/AddressAutocomplete/AddressAutocomplete';
 import {
   AuthInputWithIcon,

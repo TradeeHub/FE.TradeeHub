@@ -118,10 +118,9 @@ const useRegister = () => {
   };
 };
 
-
 const useGetLoggedInUser = () => {
   const { data, loading, error } = useLoggedInUserQuery();
-  
+
   return {
     loggedInUser: data?.loggedInUser as UserDbObject | undefined,
     loggedInUserLoading: loading,
@@ -135,5 +134,5 @@ export {
   useConfirmAccount,
   useResendVerificationCode,
   useRegister,
-  useGetLoggedInUser
+  useGetLoggedInUser,
 };

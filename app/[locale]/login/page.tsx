@@ -63,9 +63,13 @@ const Login = () => {
 
     switch (step) {
       case 1:
-        return <Step1LoginForm control={form.control} onEnterPress={onContinue} />;
+        return (
+          <Step1LoginForm control={form.control} onEnterPress={onContinue} />
+        );
       case 2:
-        return <Step2LoginForm control={form.control} onEnterPress={handleLogin} />;
+        return (
+          <Step2LoginForm control={form.control} onEnterPress={handleLogin} />
+        );
       case 3:
         return (
           <VerificationCode
@@ -113,14 +117,15 @@ const Login = () => {
     }
   }, [loginResponse]);
 
-
-
   useEffect(() => {
-
     setIsClient(true);
   }, []);
 
-  if ( isClient && (!loginResponse?.isSuccess || !loginResponse?.isConfirmed) && !user) {
+  if (
+    isClient &&
+    (!loginResponse?.isSuccess || !loginResponse?.isConfirmed) &&
+    !user
+  ) {
     return (
       <>
         <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
