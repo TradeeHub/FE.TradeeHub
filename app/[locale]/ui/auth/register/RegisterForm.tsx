@@ -68,8 +68,10 @@ const formSchema = z
       }),
     confirmPassword: z.string(),
     name: z.string().min(2, { message: 'Please enter your name.' }),
-    phoneNumber: z.string().min(10, { message: 'Invalid phone number.' }),
-    userPlace: UserPlaceSchema,
+    phoneNumber: z
+      .string()
+      .min(9, { message: 'Invalid phone number.' })
+      .regex(/^\+\d{9,14}$/, { message: 'Phone number must include country code.' }),    userPlace: UserPlaceSchema,
     companyName: z
       .string()
       .min(2, { message: 'Please enter your company name.' }),
