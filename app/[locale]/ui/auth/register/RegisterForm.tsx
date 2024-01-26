@@ -173,7 +173,7 @@ const RegisterForm = () => {
   };
 
   const handleLogin = () => {
-    router.push(`/${locale}/login`);
+    router.replace(`/${locale}/login`);
   };
 
   const handlePlaceSelected = (place: UserPlace | null) => {

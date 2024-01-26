@@ -100,7 +100,7 @@ const Login = () => {
     ) {
       authenticatedVar(true);
       dispatch(setUser(loginResponse?.user)); // Dispatch the setUser action
-      router.push(`/${locale}/dashboard`);
+      router.replace(`/${locale}/dashboard`);
     }
 
     if (
