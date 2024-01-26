@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
-import { Input } from '@/components/ui/input';
 import { IconType } from 'react-icons';
 import { FormMessage } from '@/components/ui/form';
 
@@ -16,18 +15,23 @@ type InputWithIconProps<
   onEnterPress?: () => void;
 };
 
-
 const AuthInputWithIcon = <
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>,
 >({
   field,
-  icon: Icon, // Icon can be undefined now
-  autoFocus = false, // Default value for autoFocus is false
+  icon: Icon,
+  autoFocus = false,
   placeholder = '',
   type = 'text',
   onEnterPress = () => {},
 }: InputWithIconProps<TFieldValues, TName>) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [labelFloat, setLabelFloat] = useState(false);
+
+  const handleToggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && onEnterPress) {
@@ -35,27 +39,57 @@ const AuthInputWithIcon = <
       onEnterPress();
     }
   };
-  
+
+  useEffect(() => {
+    setLabelFloat(!!field.value);
+  }, [field.value]);
+
+  const isPasswordType = type === 'password';
+  const inputId = `input-${field.name}`; // Create a unique ID for the input based on the field name
+
   return (
-    <div className='relative'>
+    <div className='relative border-b-2 border-gray-300 focus-within:border-primary font-roboto'>
       {Icon && (
-        <Icon className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-secondary' />
+        <Icon className='absolute left-3 top-3 h-5 w-5 text-gray-500' />
       )}
-      {/* Conditionally render Icon */}
-      <Input
-        type={type}
-        placeholder={placeholder}
+      <input
         {...field}
-        autoFocus={autoFocus} // Pass autoFocus to the Input component
-        className={`${Icon ? 'pl-10' : ''}`} // Adjust padding based on icon presence
-        onKeyDown={handleKeyDown} // Add the onKeyPress event handler here
+        id={inputId} // Set the ID for the input
+        type={isPasswordType && !showPassword ? 'password' : 'text'}
+        autoFocus={autoFocus}
+        className={`w-full px-3 py-1 text-sm ${Icon ? 'pl-10' : ''} ${isPasswordType ? 'pr-10' : ''} focus:outline-none bg-transparent`}
+        onKeyDown={handleKeyDown}
+        onFocus={() => setLabelFloat(true)}
+        onBlur={() => setLabelFloat(!!field.value)}
       />
+      <label
+        htmlFor={inputId} // Set the htmlFor attribute to match the input's ID
+        className={`absolute left-3 transition-all duration-200 ease-in-out ${
+          labelFloat || field.value ? 'top-[-0.7rem] text-xs text-primary mb-1' : 'top-1/2 text-sm text-gray-500 transform -translate-y-1/2'
+        }`}
+      >
+        {placeholder}
+      </label>
+      {isPasswordType && (
+        <span
+          className='absolute right-3 top-2 cursor-pointer text-xs text-gray-500'
+          onClick={handleToggleShowPassword}
+        >
+          {showPassword ? 'Hide' : 'Show'}
+        </span>
+      )}
     </div>
   );
 };
 
 const StyledFormMessage = () => {
-  return <FormMessage style={{ marginTop: '2px' }} />;
+  return (
+    <FormMessage 
+      style={{ marginTop: '0', marginLeft: '0.75rem', fontSize: '0.75rem', color: '#ef4444' }}
+      className='text-red-500' // You can keep this if you still want to apply Tailwind's red color
+    />
+  );
 };
+
 
 export { AuthInputWithIcon, StyledFormMessage };

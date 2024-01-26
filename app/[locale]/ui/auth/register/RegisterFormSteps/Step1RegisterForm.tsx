@@ -23,7 +23,6 @@ const Step1RegisterForm = ({
             <FormControl>
               <AuthInputWithIcon
                 field={field}
-                icon={FaEnvelope}
                 autoFocus={true}
                 placeholder='Email Address'
               />
@@ -40,7 +39,6 @@ const Step1RegisterForm = ({
             <FormControl>
               <AuthInputWithIcon
                 field={field}
-                icon={FaLock}
                 autoFocus={false}
                 placeholder='Password'
                 type='password'
@@ -58,7 +56,6 @@ const Step1RegisterForm = ({
             <FormControl>
               <AuthInputWithIcon
                 field={field}
-                icon={FaLock}
                 autoFocus={false}
                 placeholder='Confirm Password'
                 type='password'

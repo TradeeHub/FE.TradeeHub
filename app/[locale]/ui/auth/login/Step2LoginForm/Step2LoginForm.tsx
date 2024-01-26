@@ -19,7 +19,6 @@ const Step1LoginForm = ({ control, onEnterPress }: { control: Control<LoginReque
             <FormControl>
               <AuthInputWithIcon
                 field={field}
-                icon={FaLock}
                 autoFocus={true}
                 placeholder='Password'
                 type='password'

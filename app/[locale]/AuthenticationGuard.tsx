@@ -13,7 +13,7 @@ const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Elemen
   const dispatch = useDispatch();
   const router = useRouter();
   const locale = useLocale();
-  const { loggedInUser, loggedInUserLoading: isUserLoading, loggedInUserError: userError } = useGetLoggedInUser();
+  const { loggedInUser, loggedInUserLoading: isUserLoading } = useGetLoggedInUser();
   const isAuthenticated = useReactiveVar(authenticatedVar);
   const client = useApolloClient();
   const pathname = usePathname();
@@ -24,27 +24,36 @@ const AuthenticationGuard = ({ children }: AuthenticationGuardProps): JSX.Elemen
   };
 
   useEffect(() => {
+    console.log('isUserLoading', isUserLoading, isAuthenticated, pathname);
     if (isUserLoading) {
       return; // User is still loading, do nothing
     }
 
-    if (isAuthenticated && loggedInUser) {
+    if (isAuthenticated) {
+                console.log('1111111', isUserLoading, isAuthenticated, pathname, loggedInUser);
+
       // User is authenticated
+      if(loggedInUser){
       dispatch(setUser(loggedInUser));
+      }
+      
       if (isOnAuthPage()) {
         // Redirect from auth pages to dashboard
         router.replace(`/${locale}/dashboard`);
       }
     } else {
+          console.log('2222222222', isUserLoading, isAuthenticated, pathname);
+
       // Not authenticated or error occurred
       if (!isOnAuthPage()) {
         handleUnauthenticated();
       }
     }
-  }, [isUserLoading, isAuthenticated, loggedInUser, pathname, userError, locale, router, dispatch]);
+  }, [isUserLoading, isAuthenticated, loggedInUser, pathname]);
 
   const handleUnauthenticated = async () => {
     dispatch(resetUser());
+    console.log('cleaning data')
     await client.clearStore();
     router.replace(`/${locale}/login`);
   };

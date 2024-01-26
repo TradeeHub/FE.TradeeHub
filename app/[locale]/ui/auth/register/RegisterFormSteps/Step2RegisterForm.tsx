@@ -27,7 +27,6 @@ const Step2RegisterForm = ({
             <FormControl>
               <AuthInputWithIcon
                 field={field}
-                icon={FaUser}
                 autoFocus={true}
                 placeholder='Full Name'
               />
@@ -44,7 +43,6 @@ const Step2RegisterForm = ({
             <FormControl>
               <AuthInputWithIcon
                 field={field}
-                icon={HiDeviceMobile}
                 autoFocus={false}
                 placeholder='Phone Number'
               />

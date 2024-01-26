@@ -20,6 +20,9 @@ import VerificationCode from '../VerificationCode/VerificationCode';
 import ValidationMessage from '../ValidationMessage/ValidationMessage';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { RootState } from '@/lib/store';
+import { useSelector } from 'react-redux';
+import ProgressBar from '../ProgressBar/ProgressBar';
 
 const LocationSchema = z.object({
   lat: z.number(),
@@ -121,6 +124,7 @@ const RegisterForm = () => {
   const TOTAL_STEPS = 4;
   const router = useRouter();
   const locale = useLocale();
+  const user = useSelector((state: RootState) => state.user.data);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -219,91 +223,99 @@ const RegisterForm = () => {
     setIsClient(true);
   }, []);
 
-  return (
-    <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
-      <div className='w-full max-w-md space-y-4'>
-        <Card className='w-full max-w-md space-y-4 bg-white p-6 shadow-md'>
-          <div className='flex items-center justify-between'>
-            {/* Render back arrow if currentStep > 1, otherwise render a placeholder to keep the title centered */}
-            {currentStep > 1 ? (
-              <Button
-                onClick={goBack}
-                variant='ghost'
-                className='text-primary focus:outline-none dark:text-accent'
-                aria-label='Go back'
-              >
-                <IoArrowBack size={24} />
-              </Button>
-            ) : (
-              // This empty div acts as a placeholder with the same size as the IoArrowBack icon
+  if(!user){
+    return (
+      <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
+        <div className='w-full max-w-md space-y-4'>
+          <Card className='w-full max-w-md space-y-4 bg-white p-6 shadow-md'>
+            <div className='flex items-center justify-between'>
+              {/* Render back arrow if currentStep > 1, otherwise render a placeholder to keep the title centered */}
+              {currentStep > 1 ? (
+                <Button
+                  onClick={goBack}
+                  variant='ghost'
+                  className='text-primary focus:outline-none dark:text-accent'
+                  aria-label='Go back'
+                >
+                  <IoArrowBack size={24} />
+                </Button>
+              ) : (
+                // This empty div acts as a placeholder with the same size as the IoArrowBack icon
+                <div className='h-8 w-8'></div>
+              )}
+              {/* Title */}
+              <div className='text-3xl font-bold'>
+                <span className='text-primary dark:text-accent'>Tradee</span>
+                <span className='text-secondary'>Hub</span>
+              </div>
+
+              {/* Invisible placeholder to ensure the title remains centered */}
               <div className='h-8 w-8'></div>
-            )}
-            {/* Title */}
-            <div className='text-3xl font-bold'>
-              <span className='text-primary dark:text-accent'>Tradee</span>
-              <span className='text-secondary'>Hub</span>
             </div>
 
-            {/* Invisible placeholder to ensure the title remains centered */}
-            <div className='h-8 w-8'></div>
-          </div>
-
-          {!hasRegisteredSuccessfully ? (
-            <>
-              <Form {...form}>
-                <form className='space-y-5'>
-                  {renderStep(currentStep)}
-                  {currentStep < TOTAL_STEPS ? (
-                    <Button
-                      type='button'
-                      variant='default'
-                      className='mt-4 w-full'
-                      onClick={onContinue}
-                    >
-                      Continue
-                    </Button>
-                  ) : (
-                    <>
+        <ProgressBar
+                    totalSteps={TOTAL_STEPS}
+                    currentStep={currentStep}
+                  />
+            {!hasRegisteredSuccessfully ? (
+              <>
+                <Form {...form}>
+                  <form className='space-y-5'>
+                    {renderStep(currentStep)}
+                    {currentStep < TOTAL_STEPS ? (
                       <Button
                         type='button'
-                        onClick={form.handleSubmit(onSubmit)}
+                        variant='default'
                         className='mt-4 w-full'
+                        onClick={onContinue}
                       >
-                        Register
+                        Continue
                       </Button>
-                      <ValidationMessage validationMessage={registerError} />
-                    </>
-                  )}
-                </form>
-              </Form>
-            </>
-          ) : (
-            <>
-              <Alert>
-                <FaCheck className='h-4 w-4 text-secondary' />
-                <AlertTitle>
-                  Congratulation account successfully created!
-                </AlertTitle>
-                <AlertDescription>
-                  Please enter the verification code below.
-                </AlertDescription>
-              </Alert>
-              <VerificationCode
-                email={form.getValues('email')}
-                password={form.getValues('password')}
-              />
-            </>
-          )}
-          <div className='text-center'>
-            <span>Already have an account? </span>
-            <Button variant='link' size='sm' onClick={handleLogin}>
-              Login
-            </Button>
-          </div>
-        </Card>
+                    ) : (
+                      <>
+                        <Button
+                          type='button'
+                          onClick={form.handleSubmit(onSubmit)}
+                          className='mt-4 w-full'
+                        >
+                          Register
+                        </Button>
+                        <ValidationMessage validationMessage={registerError} />
+                      </>
+                    )}
+                  </form>
+                </Form>
+              </>
+            ) : (
+              <>
+                <Alert>
+                  <FaCheck className='h-4 w-4 text-secondary' />
+                  <AlertTitle>
+                    Congratulation account successfully created!
+                  </AlertTitle>
+                  <AlertDescription>
+                    Please enter the verification code below.
+                  </AlertDescription>
+                </Alert>
+                <VerificationCode
+                  email={form.getValues('email')}
+                  password={form.getValues('password')}
+                />
+              </>
+            )}
+            <div className='text-center'>
+              <span>Already have an account? </span>
+              <Button variant='link' size='sm' onClick={handleLogin}>
+                Login
+              </Button>
+            </div>
+          </Card>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }else{
+    return <></>
+  }
 };
 
 export default RegisterForm;

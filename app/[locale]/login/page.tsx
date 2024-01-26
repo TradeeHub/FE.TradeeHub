@@ -98,9 +98,9 @@ const Login = () => {
       loginResponse?.isSuccess &&
       loginResponse?.user
     ) {
-      authenticatedVar(true);
       dispatch(setUser(loginResponse?.user)); // Dispatch the setUser action
       router.replace(`/${locale}/dashboard`);
+      authenticatedVar(true);
     }
 
     if (
