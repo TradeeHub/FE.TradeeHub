@@ -60,6 +60,8 @@ const AddressAutocomplete = ({
   field,
   onPlaceSelected,
 }: AddressAutocompleteProps<RegisterRequest, 'userPlace'>) => {
+  const [labelFloat, setLabelFloat] = useState(false);
+
   const isMountedRef = useRef(false);
   const [userLocation] = useState<{
     latitude: number;
@@ -150,6 +152,10 @@ const AddressAutocomplete = ({
   }, [hasMadeSelection.current]);
 
   useEffect(() => {
+    setLabelFloat(!!field.value?.Address); // Make sure to safely access Address
+  }, [field.value]);
+
+  useEffect(() => {
     const loader = new Loader({
       apiKey: apiKey ?? '',
       libraries: ['places'],
@@ -168,28 +174,54 @@ const AddressAutocomplete = ({
     isMountedRef.current = true;
   }, []);
 
+  const handleInputFocus = () => {
+    setLabelFloat(true);
+    // You may need additional logic here to handle the popover or other actions on focus
+  };
+  const handleInputBlur = () => {
+    setLabelFloat(!!inputValue);
+    // Add here any additional logic if needed when the input loses focus
+  };
+  const inputId = `input-${field.name}`; // Create a unique ID for the input based on the field name
+
   return (
     <>
-      <div className='flex items-center font-roboto'>
+      <div className='relative border-b-2 border-gray-300 font-roboto focus-within:border-primary'>
+        <PiMapPinLight className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-primary transition-all duration-200 ease-in-out' />
+
         <Popover>
-          <PopoverTrigger onClick={(e) => e.preventDefault()} asChild>
+          <PopoverTrigger onClick={(e) => e.preventDefault()} asChild className='rounded-none'>
             <Command>
-              <CommandInput
+              <input
+                id={inputId} // Set the ID for the input
                 ref={inputRef}
-                placeholder='Search for Address'
+                className={`w-full bg-transparent px-3 py-1 pl-10 text-sm focus:outline-none`}
+                style={{ paddingLeft: '2.5rem' }}
                 value={inputValue}
-                onValueChange={(v) => {
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
+                onChange={(v) => {
                   hasMadeSelection.current = false;
-                  setInputValue(v);
+                  console.log(v.target.value);
+                  setInputValue(v.target.value);
                 }}
-                iconClass='text-secondary opacity-100 h-5 w-5'
+                // iconClass='text-secondary opacity-100 h-5 w-5'
               />
             </Command>
           </PopoverTrigger>
-
+          <label
+            htmlFor={inputId} // Set the htmlFor attribute to match the input's ID
+            className={`absolute transition-all duration-200 ease-in-out ${
+              labelFloat || inputValue
+                ? 'left-3 top-[-0.7rem] text-xs text-primary'
+                : 'left-10 top-1/2 -translate-y-1/2 text-sm text-gray-500'
+            }`}
+          >
+            {labelFloat ? 'Address' : 'Search for Address'}
+          </label>
           <PopoverContent
             ref={popoverContentRef}
-            className='z-50 mt-1 flex w-screen max-w-md flex-col overflow-auto rounded-lg bg-white shadow-md'
+            className='z-50 mt-1 flex w-screen max-w-md flex-col overflow-auto rounded-md bg-white shadow-md'
             side='bottom'
             align='start'
             onOpenAutoFocus={(e) => e.preventDefault()}
