@@ -79,11 +79,14 @@ const AddressAutocomplete = ({
       autocompleteServiceRef.current.getPlacePredictions(
         {
           input,
-          location: new google.maps.LatLng(
-            userLocation?.latitude || 0,
-            userLocation?.longitude || 0,
-          ),
-          radius: 50000,
+          location: userLocation
+            ? new google.maps.LatLng(
+                userLocation.latitude,
+                userLocation.longitude,
+              )
+            : undefined,
+          radius: userLocation ? 50000 : undefined,
+          types: ['address'],
         },
         (predictions, status) => {
           if (
