@@ -16,11 +16,12 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
-import Step1LoginForm from '../ui/auth/login/Step1LoginForm/Step1LoginForm';
-import Step2LoginForm from '../ui/auth/login/Step2LoginForm/Step2LoginForm';
+import Step1LoginForm from '../ui/auth/login/LoginFormSteps/Step1LoginForm';
+import Step2LoginForm from '../ui/auth/login/LoginFormSteps/Step2LoginForm';
 import ValidationMessage from '../ui/auth/ValidationMessage/ValidationMessage';
 import ProgressBar from '../ui/auth/ProgressBar/ProgressBar';
-import { IoArrowBack } from 'react-icons/io5';
+import AuthTitle from '../ui/auth/AuthTitle/AuthTitle';
+import Link from 'next/link';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email format.' }),
@@ -54,9 +55,6 @@ const Login = () => {
     login(emailValue, password);
   };
 
-  const handleSignUp = () => {
-    router.push(`/${locale}/register`);
-  };
 
   const renderStep = (step: number) => {
     if (!isClient) return null; // Render nothing on server-side
@@ -131,30 +129,11 @@ const Login = () => {
         <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
           <div className='w-full max-w-md space-y-4'>
             <Card className='w-full max-w-md space-y-4 bg-white p-6 shadow-md'>
-              <div className='flex items-center justify-between'>
-                {/* Render back arrow if currentStep > 1, otherwise render a placeholder to keep the title centered */}
-                {currentStep > 1 ? (
-                  <Button
-                    onClick={goBack}
-                    variant='ghost'
-                    className='text-primary focus:outline-none dark:text-accent'
-                    aria-label='Go back'
-                  >
-                    <IoArrowBack size={24} />
-                  </Button>
-                ) : (
-                  // This empty div acts as a placeholder with the same size as the IoArrowBack icon
-                  <div className='h-8 w-8'></div>
-                )}
-                {/* Title */}
-                <div className='text-3xl font-bold'>
-                  <span className='text-primary dark:text-accent'>Tradee</span>
-                  <span className='text-secondary'>Hub</span>
-                </div>
-
-                {/* Invisible placeholder to ensure the title remains centered */}
-                <div className='h-8 w-8'></div>
-              </div>
+              <AuthTitle
+                goBack={goBack}
+                currentStep={currentStep}
+                name='Login'
+              />
               {!requiresVerification ? (
                 <>
                   <ProgressBar
@@ -189,12 +168,27 @@ const Login = () => {
                       )}
                     </form>
                   </Form>
-
+                  <div
+                    className='text-right underline hover:text-accent'
+                    style={{ marginTop: 8 }}
+                  >
+                    <Link href={'reset-password'} passHref locale={locale}>
+                      Forgot your password?
+                    </Link>
+                  </div>
                   <div className='text-center'>
                     <span>Don't have an account? </span>
-                    <Button variant='link' size='sm' onClick={handleSignUp}>
+                    <Link
+                      href={'register'}
+                      passHref
+                      locale={locale}
+                      className='ml-4 text-xs underline hover:text-accent'
+                    >
                       Sign Up Here
-                    </Button>
+                    </Link>
+                    {/* <Button variant='link' size='sm' onClick={handleSignUp}>
+                      Sign Up Here
+                    </Button> */}
                   </div>
                 </>
               ) : (

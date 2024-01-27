@@ -22,7 +22,11 @@ const AuthenticationGuard = ({
   const pathname = usePathname();
 
   const isOnAuthPage = () => {
-    const authPages = [`/${locale}/login`, `/${locale}/register`];
+    const authPages = [
+      `/${locale}/login`,
+      `/${locale}/register`,
+      `/${locale}/reset-password`,
+    ];
     return authPages.includes(pathname);
   };
 
@@ -33,14 +37,6 @@ const AuthenticationGuard = ({
     }
 
     if (isAuthenticated) {
-      console.log(
-        '1111111',
-        isUserLoading,
-        isAuthenticated,
-        pathname,
-        loggedInUser,
-      );
-
       // User is authenticated
       if (loggedInUser) {
         dispatch(setUser(loggedInUser));
@@ -51,8 +47,6 @@ const AuthenticationGuard = ({
         router.replace(`/${locale}/dashboard`);
       }
     } else {
-      console.log('2222222222', isUserLoading, isAuthenticated, pathname);
-
       // Not authenticated or error occurred
       if (!isOnAuthPage()) {
         handleUnauthenticated();
@@ -62,7 +56,6 @@ const AuthenticationGuard = ({
 
   const handleUnauthenticated = async () => {
     dispatch(resetUser());
-    console.log('cleaning data');
     await client.clearStore();
     router.replace(`/${locale}/login`);
   };

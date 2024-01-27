@@ -1,8 +1,11 @@
 import { LoginState } from '@/app/[locale]/types/sharedTypes';
 import {
+  ChangedForgottenPasswordRequestInput,
   RegisterRequestInput,
   UserDbObject,
+  useChangePasswordMutation,
   useConfirmAccountMutation,
+  useForgotPasswordMutation,
   useLoggedInUserQuery,
   useLoginMutation,
   useLogoutMutation,
@@ -128,6 +131,54 @@ const useGetLoggedInUser = () => {
   };
 };
 
+const useChangePassword = () => {
+  const [changePasswordMutation, { data, loading, error }] =
+    useChangePasswordMutation();
+
+  const changePassword = async (
+    input: ChangedForgottenPasswordRequestInput,
+  ) => {
+    try {
+      await changePasswordMutation({
+        variables: { input },
+      });
+    } catch (e) {
+      console.error('Change Password error:', e);
+    }
+  };
+
+  return {
+    changePassword,
+    changePasswordResponse: data,
+    changePasswordLoading: loading,
+    changePasswordError: error,
+  };
+};
+
+const useForgotPassword = () => {
+  const [forgotPasswordMutation, { data, loading, error }] =
+    useForgotPasswordMutation();
+
+  const requestChangePasswordResetCode = async (email: string) => {
+    try {
+      await forgotPasswordMutation({
+        variables: {
+          email,
+        },
+      });
+    } catch (e) {
+      console.error('Request reset password change error:', e);
+    }
+  };
+
+  return {
+    requestChangePasswordResetCode,
+    requestChangePasswordResponse: data,
+    requestChangePasswordLoading: loading,
+    requestChangePasswordError: error,
+  };
+};
+
 export {
   useLogin,
   useLogout,
@@ -135,4 +186,6 @@ export {
   useResendVerificationCode,
   useRegister,
   useGetLoggedInUser,
+  useChangePassword,
+  useForgotPassword,
 };

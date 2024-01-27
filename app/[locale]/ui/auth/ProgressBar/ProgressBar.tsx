@@ -6,7 +6,7 @@ const ProgressBar = ({
   currentStep: number;
 }) => {
   return (
-    <div className='flex w-full justify-between pb-1'>
+    <div className='flex w-full justify-between pb-1' style={{ marginTop: 14 }}>
       {[...Array(totalSteps)].map((_, index) => (
         <div
           key={index}

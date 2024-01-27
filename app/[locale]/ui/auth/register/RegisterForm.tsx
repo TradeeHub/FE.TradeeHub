@@ -10,7 +10,6 @@ import Step2RegisterForm from './RegisterFormSteps/Step2RegisterForm';
 import Step3RegisterForm from './RegisterFormSteps/Step3RegisterForm';
 import Step4RegisterForm from './RegisterFormSteps/Step4RegisterForm';
 import { Card } from '@/components/ui/card';
-import { IoArrowBack } from 'react-icons/io5';
 import { RegisterRequest, UserPlace } from '../../../types/sharedTypes';
 import { useRegister } from '../../../hooks/customer/auth/useAuth';
 import { RegisterRequestInput } from '@/generatedGraphql';
@@ -19,10 +18,11 @@ import { FaCheck } from 'react-icons/fa6';
 import VerificationCode from '../VerificationCode/VerificationCode';
 import ValidationMessage from '../ValidationMessage/ValidationMessage';
 import { useLocale } from 'next-intl';
-import { useRouter } from 'next/navigation';
 import { RootState } from '@/lib/store';
 import { useSelector } from 'react-redux';
 import ProgressBar from '../ProgressBar/ProgressBar';
+import AuthTitle from '../AuthTitle/AuthTitle';
+import Link from 'next/link';
 
 const LocationSchema = z.object({
   lat: z.number(),
@@ -35,7 +35,6 @@ const ViewportSchema = z.object({
   southwest: LocationSchema,
 });
 
-// Define the Zod schema for UserPlace
 const UserPlaceSchema = z
   .object({
     PlaceId: z.string(),
@@ -71,7 +70,10 @@ const formSchema = z
     phoneNumber: z
       .string()
       .min(9, { message: 'Invalid phone number.' })
-      .regex(/^\+\d{9,14}$/, { message: 'Phone number must include country code.' }),    userPlace: UserPlaceSchema,
+      .regex(/^\+\d{9,14}$/, {
+        message: 'Phone number must include country code.',
+      }),
+    userPlace: UserPlaceSchema,
     companyName: z
       .string()
       .min(2, { message: 'Please enter your company name.' }),
@@ -124,7 +126,6 @@ const RegisterForm = () => {
   const [isClient, setIsClient] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const TOTAL_STEPS = 4;
-  const router = useRouter();
   const locale = useLocale();
   const user = useSelector((state: RootState) => state.user.data);
 
@@ -178,10 +179,6 @@ const RegisterForm = () => {
     }
   };
 
-  const handleLogin = () => {
-    router.replace(`/${locale}/login`);
-  };
-
   const handlePlaceSelected = (place: UserPlace | null) => {
     form.setValue('userPlace', place);
   };
@@ -230,30 +227,11 @@ const RegisterForm = () => {
       <div className='flex min-h-screen items-center justify-center bg-background p-4 font-roboto'>
         <div className='w-full max-w-md space-y-4'>
           <Card className='w-full max-w-md space-y-4 bg-white p-6 shadow-md'>
-            <div className='flex items-center justify-between'>
-              {/* Render back arrow if currentStep > 1, otherwise render a placeholder to keep the title centered */}
-              {currentStep > 1 ? (
-                <Button
-                  onClick={goBack}
-                  variant='ghost'
-                  className='text-primary focus:outline-none dark:text-accent'
-                  aria-label='Go back'
-                >
-                  <IoArrowBack size={24} />
-                </Button>
-              ) : (
-                // This empty div acts as a placeholder with the same size as the IoArrowBack icon
-                <div className='h-8 w-8'></div>
-              )}
-              {/* Title */}
-              <div className='text-3xl font-bold'>
-                <span className='text-primary dark:text-accent'>Tradee</span>
-                <span className='text-secondary'>Hub</span>
-              </div>
-
-              {/* Invisible placeholder to ensure the title remains centered */}
-              <div className='h-8 w-8'></div>
-            </div>
+            <AuthTitle
+              goBack={goBack}
+              currentStep={currentStep}
+              name='Register'
+            />
 
             <ProgressBar totalSteps={TOTAL_STEPS} currentStep={currentStep} />
             {!hasRegisteredSuccessfully ? (
@@ -304,9 +282,14 @@ const RegisterForm = () => {
             )}
             <div className='text-center'>
               <span>Already have an account? </span>
-              <Button variant='link' size='sm' onClick={handleLogin}>
+              <Link
+                href={'login'}
+                passHref
+                locale={locale}
+                className='ml-4 text-xs underline hover:text-accent'
+              >
                 Login
-              </Button>
+              </Link>
             </div>
           </Card>
         </div>

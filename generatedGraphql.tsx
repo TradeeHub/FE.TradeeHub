@@ -45,8 +45,8 @@ export enum ApplyPolicy {
 
 export type ChangedForgottenPasswordRequestInput = {
   email: Scalars['String']['input'];
-  forgetPasswordToken: Scalars['String']['input'];
   newPassword: Scalars['String']['input'];
+  resetConfirmationCode: Scalars['String']['input'];
 };
 
 export enum ChecksumValidationStatus {
