@@ -55,7 +55,6 @@ const Login = () => {
     login(emailValue, password);
   };
 
-
   const renderStep = (step: number) => {
     if (!isClient) return null; // Render nothing on server-side
 

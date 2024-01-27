@@ -21,6 +21,8 @@ import AuthTitle from '../AuthTitle/AuthTitle';
 import { ChangedForgottenPasswordRequestInput } from '@/generatedGraphql';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { FaCheck } from 'react-icons/fa6';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email format.' }),
@@ -60,7 +62,7 @@ const ResetPassword = () => {
   const TOTAL_STEPS = 2;
   const user = useSelector((state: RootState) => state.user.data);
   const locale = useLocale();
-
+  const [hasChangedPassword, setHasChangedPassword] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -149,7 +151,7 @@ const ResetPassword = () => {
       !changePasswordError &&
       changePasswordResponse.changePassword.httpStatusCode === 'OK'
     ) {
-      console.log('changePasswordResponse', changePasswordResponse);
+      setHasChangedPassword(true);
     }
   }, [changePasswordResponse]);
 
@@ -163,52 +165,69 @@ const ResetPassword = () => {
         <div className='w-full max-w-md space-y-4'>
           <Card className='space-y-4 rounded-lg bg-white p-6 shadow-lg'>
             <AuthTitle currentStep={currentStep} name='Reset Password' />
+            {hasChangedPassword ? (
+              <Alert>
+                <FaCheck className='h-4 w-4 text-secondary' />
+                <AlertTitle>
+                  Your password has been successfully changed.
+                </AlertTitle>
+                <AlertDescription>
+                  Please go back to login and use new password.
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <>
+                <ProgressBar
+                  totalSteps={TOTAL_STEPS}
+                  currentStep={currentStep}
+                />
+                <Form {...form}>
+                  <form className='space-y-6'>
+                    {renderStep(currentStep)}
+                    {requestChangePasswordError && (
+                      <ValidationMessage
+                        validationMessage={requestChangePasswordError}
+                      />
+                    )}
+                    {changePasswordError && (
+                      <ValidationMessage
+                        validationMessage={changePasswordError}
+                      />
+                    )}
 
-            <ProgressBar totalSteps={TOTAL_STEPS} currentStep={currentStep} />
-
-            <Form {...form}>
-              <form className='space-y-6'>
-                {renderStep(currentStep)}
-                {requestChangePasswordError && (
-                  <ValidationMessage
-                    validationMessage={requestChangePasswordError}
-                  />
-                )}
-                {changePasswordError && (
-                  <ValidationMessage validationMessage={changePasswordError} />
-                )}
-
-                <div className='flex flex-col items-center'>
-                  {currentStep < TOTAL_STEPS ? (
-                    <Button
-                      type='button'
-                      variant='default'
-                      className='w-full'
-                      onClick={onContinue}
-                    >
-                      Send Password Reset Code
-                    </Button>
-                  ) : (
-                    <Button
-                      type='button'
-                      variant='default'
-                      className='w-full'
-                      onClick={form.handleSubmit(handleResetPassword)}
-                    >
-                      Set New Password
-                    </Button>
-                  )}
-                </div>
-                <div
-                  className='text-right underline hover:text-accent'
-                  style={{ marginTop: 8 }}
-                >
-                  <Link href={'login'} passHref locale={locale}>
-                    Go back to login
-                  </Link>
-                </div>
-              </form>
-            </Form>
+                    <div className='flex flex-col items-center'>
+                      {currentStep < TOTAL_STEPS ? (
+                        <Button
+                          type='button'
+                          variant='default'
+                          className='w-full'
+                          onClick={onContinue}
+                        >
+                          Send Password Reset Code
+                        </Button>
+                      ) : (
+                        <Button
+                          type='button'
+                          variant='default'
+                          className='w-full'
+                          onClick={form.handleSubmit(handleResetPassword)}
+                        >
+                          Set New Password
+                        </Button>
+                      )}
+                    </div>
+                  </form>
+                </Form>{' '}
+              </>
+            )}
+            <div
+              className='text-right underline hover:text-accent'
+              style={{ marginTop: 8 }}
+            >
+              <Link href={'login'} passHref locale={locale}>
+                Go back to login
+              </Link>
+            </div>
           </Card>
         </div>
       </div>
