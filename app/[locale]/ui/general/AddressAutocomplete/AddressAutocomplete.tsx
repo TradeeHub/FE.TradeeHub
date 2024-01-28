@@ -3,7 +3,6 @@ import { Loader } from '@googlemaps/js-api-loader';
 import {
   Command,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
