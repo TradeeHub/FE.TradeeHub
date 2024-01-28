@@ -1122,7 +1122,7 @@ export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: 
 export type LoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser?: { __typename?: 'UserDbObject', id: any, name: string, companyName: string, email: string } | null };
+export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser?: { __typename?: 'UserDbObject', id: any, name: string, companyName: string, email: string, place: { __typename?: 'PlaceDbObject', location: { __typename?: 'LocationDbObject', lat: any, lng: any } } } | null };
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String']['input'];
@@ -1289,6 +1289,12 @@ export const LoggedInUserDocument = gql`
     name
     companyName
     email
+    place {
+      location {
+        lat
+        lng
+      }
+    }
   }
 }
     `;

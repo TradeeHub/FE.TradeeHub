@@ -4,5 +4,11 @@ query LoggedInUser {
     name
     companyName
     email
+    place {
+      location {
+        lat
+        lng
+      }
+    }
   }
 }
