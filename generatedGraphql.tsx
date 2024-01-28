@@ -43,21 +43,6 @@ export enum ApplyPolicy {
   Validation = 'VALIDATION'
 }
 
-export type AuthenticationResultType = {
-  __typename?: 'AuthenticationResultType';
-  accessToken?: Maybe<Scalars['String']['output']>;
-  expiresIn: Scalars['Int']['output'];
-  idToken?: Maybe<Scalars['String']['output']>;
-  newDeviceMetadata?: Maybe<NewDeviceMetadataType>;
-  refreshToken?: Maybe<Scalars['String']['output']>;
-  tokenType?: Maybe<Scalars['String']['output']>;
-};
-
-export type ChallengeNameType = {
-  __typename?: 'ChallengeNameType';
-  value?: Maybe<Scalars['String']['output']>;
-};
-
 export type ChangedForgottenPasswordRequestInput = {
   email: Scalars['String']['input'];
   newPassword: Scalars['String']['input'];
@@ -518,17 +503,6 @@ export type ISingleFilterOfStringFilter = {
   element_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type InitiateAuthResponse = {
-  __typename?: 'InitiateAuthResponse';
-  authenticationResult?: Maybe<AuthenticationResultType>;
-  challengeName?: Maybe<ChallengeNameType>;
-  challengeParameters?: Maybe<Array<KeyValuePairOfStringAndString>>;
-  contentLength: Scalars['Long']['output'];
-  httpStatusCode: HttpStatusCode;
-  responseMetadata?: Maybe<ResponseMetadata>;
-  session?: Maybe<Scalars['String']['output']>;
-};
-
 export type KeyValuePairOfStringAndString = {
   __typename?: 'KeyValuePairOfStringAndString';
   key: Scalars['String']['output'];
@@ -607,7 +581,6 @@ export type Mutation = {
   generateFakeCustomers: Scalars['String']['output'];
   login: LoginResponse;
   logout: LogoutResponse;
-  refreshJwt: InitiateAuthResponse;
   register: SignUpResponse;
   resendVerificationCode: ResendConfirmationCodeResponse;
 };
@@ -646,12 +619,6 @@ export type MutationRegisterArgs = {
 
 export type MutationResendVerificationCodeArgs = {
   email: Scalars['String']['input'];
-};
-
-export type NewDeviceMetadataType = {
-  __typename?: 'NewDeviceMetadataType';
-  deviceGroupKey?: Maybe<Scalars['String']['output']>;
-  deviceKey?: Maybe<Scalars['String']['output']>;
 };
 
 export type ObjectIdFilter = {
@@ -1171,11 +1138,6 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'LogoutResponse', message: string, success: boolean } };
 
-export type RefreshJwtMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type RefreshJwtMutation = { __typename?: 'Mutation', refreshJwt: { __typename?: 'InitiateAuthResponse', httpStatusCode: HttpStatusCode } };
-
 export type RegisterMutationVariables = Exact<{
   input: RegisterRequestInput;
 }>;
@@ -1439,38 +1401,6 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
-export const RefreshJwtDocument = gql`
-    mutation refreshJwt {
-  refreshJwt {
-    httpStatusCode
-  }
-}
-    `;
-export type RefreshJwtMutationFn = Apollo.MutationFunction<RefreshJwtMutation, RefreshJwtMutationVariables>;
-
-/**
- * __useRefreshJwtMutation__
- *
- * To run a mutation, you first call `useRefreshJwtMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRefreshJwtMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [refreshJwtMutation, { data, loading, error }] = useRefreshJwtMutation({
- *   variables: {
- *   },
- * });
- */
-export function useRefreshJwtMutation(baseOptions?: Apollo.MutationHookOptions<RefreshJwtMutation, RefreshJwtMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RefreshJwtMutation, RefreshJwtMutationVariables>(RefreshJwtDocument, options);
-      }
-export type RefreshJwtMutationHookResult = ReturnType<typeof useRefreshJwtMutation>;
-export type RefreshJwtMutationResult = Apollo.MutationResult<RefreshJwtMutation>;
-export type RefreshJwtMutationOptions = Apollo.BaseMutationOptions<RefreshJwtMutation, RefreshJwtMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($input: RegisterRequestInput!) {
   register(request: $input) {
