@@ -124,7 +124,7 @@ const RegisterForm = () => {
   const [hasRegisteredSuccessfully, setHasRegisteredSuccessfully] =
     useState(false);
   const [isClient, setIsClient] = useState(false);
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(1);
   const TOTAL_STEPS = 4;
   const locale = useLocale();
   const user = useSelector((state: RootState) => state.user.data);
@@ -149,6 +149,8 @@ const RegisterForm = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const registerRequest = transformRegisterRequest(values);
+    console.log(registerRequest);
+
     register(registerRequest);
   };
 
