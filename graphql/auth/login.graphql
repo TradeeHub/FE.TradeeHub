@@ -1,5 +1,11 @@
-mutation Login($username: String!, $password: String!) {
-  login(request: { username: $username, password: $password }) {
+mutation Login($username: String!, $password: String!, $rememberMe: Boolean!) {
+  login(
+    request: {
+      username: $username
+      password: $password
+      rememberMe: $rememberMe
+    }
+  ) {
     user {
       email
       name

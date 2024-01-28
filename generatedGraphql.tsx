@@ -43,6 +43,21 @@ export enum ApplyPolicy {
   Validation = 'VALIDATION'
 }
 
+export type AuthenticationResultType = {
+  __typename?: 'AuthenticationResultType';
+  accessToken?: Maybe<Scalars['String']['output']>;
+  expiresIn: Scalars['Int']['output'];
+  idToken?: Maybe<Scalars['String']['output']>;
+  newDeviceMetadata?: Maybe<NewDeviceMetadataType>;
+  refreshToken?: Maybe<Scalars['String']['output']>;
+  tokenType?: Maybe<Scalars['String']['output']>;
+};
+
+export type ChallengeNameType = {
+  __typename?: 'ChallengeNameType';
+  value?: Maybe<Scalars['String']['output']>;
+};
+
 export type ChangedForgottenPasswordRequestInput = {
   email: Scalars['String']['input'];
   newPassword: Scalars['String']['input'];
@@ -503,6 +518,17 @@ export type ISingleFilterOfStringFilter = {
   element_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type InitiateAuthResponse = {
+  __typename?: 'InitiateAuthResponse';
+  authenticationResult?: Maybe<AuthenticationResultType>;
+  challengeName?: Maybe<ChallengeNameType>;
+  challengeParameters?: Maybe<Array<KeyValuePairOfStringAndString>>;
+  contentLength: Scalars['Long']['output'];
+  httpStatusCode: HttpStatusCode;
+  responseMetadata?: Maybe<ResponseMetadata>;
+  session?: Maybe<Scalars['String']['output']>;
+};
+
 export type KeyValuePairOfStringAndString = {
   __typename?: 'KeyValuePairOfStringAndString';
   key: Scalars['String']['output'];
@@ -556,6 +582,7 @@ export type LocationRequestInput = {
 
 export type LoginRequestInput = {
   password: Scalars['String']['input'];
+  rememberMe: Scalars['Boolean']['input'];
   username: Scalars['String']['input'];
 };
 
@@ -580,6 +607,7 @@ export type Mutation = {
   generateFakeCustomers: Scalars['String']['output'];
   login: LoginResponse;
   logout: LogoutResponse;
+  refreshJwt: InitiateAuthResponse;
   register: SignUpResponse;
   resendVerificationCode: ResendConfirmationCodeResponse;
 };
@@ -611,6 +639,12 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationRefreshJwtArgs = {
+  deviceKey: Scalars['String']['input'];
+  refresh: Scalars['String']['input'];
+};
+
+
 export type MutationRegisterArgs = {
   request: RegisterRequestInput;
 };
@@ -618,6 +652,12 @@ export type MutationRegisterArgs = {
 
 export type MutationResendVerificationCodeArgs = {
   email: Scalars['String']['input'];
+};
+
+export type NewDeviceMetadataType = {
+  __typename?: 'NewDeviceMetadataType';
+  deviceGroupKey?: Maybe<Scalars['String']['output']>;
+  deviceKey?: Maybe<Scalars['String']['output']>;
 };
 
 export type ObjectIdFilter = {
@@ -1126,6 +1166,7 @@ export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser?: { __typen
 export type LoginMutationVariables = Exact<{
   username: Scalars['String']['input'];
   password: Scalars['String']['input'];
+  rememberMe: Scalars['Boolean']['input'];
 }>;
 
 
@@ -1323,8 +1364,10 @@ export type LoggedInUserLazyQueryHookResult = ReturnType<typeof useLoggedInUserL
 export type LoggedInUserSuspenseQueryHookResult = ReturnType<typeof useLoggedInUserSuspenseQuery>;
 export type LoggedInUserQueryResult = Apollo.QueryResult<LoggedInUserQuery, LoggedInUserQueryVariables>;
 export const LoginDocument = gql`
-    mutation Login($username: String!, $password: String!) {
-  login(request: {username: $username, password: $password}) {
+    mutation Login($username: String!, $password: String!, $rememberMe: Boolean!) {
+  login(
+    request: {username: $username, password: $password, rememberMe: $rememberMe}
+  ) {
     user {
       email
       name
@@ -1353,6 +1396,7 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  *   variables: {
  *      username: // value for 'username'
  *      password: // value for 'password'
+ *      rememberMe: // value for 'rememberMe'
  *   },
  * });
  */
