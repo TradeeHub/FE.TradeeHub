@@ -4,7 +4,6 @@ import { AgGridReact } from 'ag-grid-react';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import CustomSidebar from '@/app/[locale]/components/GridSettingManager';
-import { PlusIcon } from '@heroicons/react/20/solid';
 import RoundButton from '@/app/[locale]/components/RoundButton';
 import { CustomGridProps, PageInfoSlim } from '../types/sharedTypes';
 import {
@@ -14,6 +13,8 @@ import {
   IGetRowsParams,
   RowClickedEvent,
 } from 'ag-grid-community';
+import Modal from './Modal/Modal';
+import { HiOutlineUserAdd } from 'react-icons/hi';
 
 const gridOptions = {
   defaultColDef: {
@@ -108,9 +109,11 @@ const CustomGrid = ({
             columnDefs={gridColumnDef}
             onToggleColumnVisibility={onToggleColumnVisibility}
           />
-          <RoundButton
-            icon={<PlusIcon className='h-7 w-7' />}
-            onClick={() => {}}
+          <Modal
+            triggerButton={
+              <RoundButton icon={<HiOutlineUserAdd className='h-7 w-7' />} />
+            }
+            modalName='Add New Customer'
           />
         </div>
         <div className='flex-grow'>

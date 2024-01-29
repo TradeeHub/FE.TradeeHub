@@ -4,7 +4,7 @@ import React from 'react';
 
 type RoundButtonProps = {
   icon: React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 const RoundButton = ({ icon, onClick }: RoundButtonProps) => (

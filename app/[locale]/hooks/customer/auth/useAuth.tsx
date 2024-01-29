@@ -16,13 +16,17 @@ import {
 const useLogin = () => {
   const [loginMutation, { data, loading, error }] = useLoginMutation();
 
-  const login = async (username: string, password: string, rememberMe: boolean = false) => {
+  const login = async (
+    username: string,
+    password: string,
+    rememberMe: boolean = false,
+  ) => {
     try {
       await loginMutation({
         variables: {
           username,
           password,
-          rememberMe
+          rememberMe,
         },
       });
     } catch (e) {

@@ -189,7 +189,11 @@ const AddressAutocomplete = ({
         <PiMapPinLight className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-primary transition-all duration-200 ease-in-out' />
 
         <Popover>
-          <PopoverTrigger onClick={(e) => e.preventDefault()} asChild className='rounded-none'>
+          <PopoverTrigger
+            onClick={(e) => e.preventDefault()}
+            asChild
+            className='rounded-none'
+          >
             <Command>
               <input
                 id={inputId} // Set the ID for the input
