@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import { z } from 'zod';
 import {
   AuthInputWithIcon,
@@ -49,7 +49,6 @@ const formSchema = z.object({
 });
 
 const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
-  const [showCustomTitleInput, setShowCustomTitleInput] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -79,12 +78,6 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
     append({ type: '', number: '' });
   };
 
-const handleTitleChange = (value: string) => {
-    form.setValue('title', value);
-    setShowCustomTitleInput(value === 'Other');
-  };
-
-  
 
   return (
     <>
@@ -99,7 +92,8 @@ const handleTitleChange = (value: string) => {
             <form className='space-y-8'>
 
 
-            <FormField
+            <div className='flex justify-left'>
+   <FormField
               control={form.control}
               name='title'
               render={({ field }) => (
@@ -109,6 +103,8 @@ const handleTitleChange = (value: string) => {
                 </FormItem>
               )}
             />
+            </div>
+         
 
 
 
@@ -223,10 +219,10 @@ export default Modal;
 
 const CustomSelectInput = ({ form, field }) => {
   const [isEditable, setIsEditable] = useState(false);
-  const handleSelectChange = (value) => {
+
+  const handleSelectChange = (value: string) => {
     if (value === 'Other') {
       setIsEditable(true);
-      // Set the value to an empty string to allow input
       form.setValue(field.name, '');
     } else {
       setIsEditable(false);
@@ -235,32 +231,30 @@ const CustomSelectInput = ({ form, field }) => {
   };
 
   return (
-    <div className="relative border-b-2 border-gray-300 focus-within:border-primary">
+    <div className='relative border-gray-300 focus-within:border-primary'>
       {isEditable ? (
-        <input
-          type="text"
-          placeholder="Enter title"
-          className="w-full px-3 py-1 bg-transparent focus:outline-none"
-          autoFocus
-          {...field}
-        />
+   <AuthInputWithIcon
+                        field={field}
+                        autoFocus={true}
+                        placeholder='Other Title'
+                      />
       ) : (
-        <select
-          className="w-full px-3 py-1 bg-transparent focus:outline-none appearance-none"
-          value={field.value}
-          onChange={(e) => handleSelectChange(e.target.value)}
-        >
-          {titleOptions.map((option, index) => (
-            <option key={index} value={option}>
-              {option}
-            </option>
-          ))}
-          <option value="Other">Other</option>
-        </select>
+        <Select onValueChange={handleSelectChange} defaultValue={field.value}>
+          <SelectTrigger>
+            <SelectValue placeholder='Select title' />
+          </SelectTrigger>
+          <SelectContent>
+            {titleOptions.map((option, index) => (
+              <SelectItem key={index} value={option}>
+                {option}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       )}
       {isEditable && (
         <span
-          className="absolute right-3 top-2 cursor-pointer text-xs text-gray-500"
+          className='absolute right-3 top-2 cursor-pointer text-xs text-gray-500'
           onClick={() => setIsEditable(false)}
         >
           Cancel
