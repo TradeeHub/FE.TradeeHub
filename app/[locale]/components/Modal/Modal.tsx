@@ -26,7 +26,6 @@ type ModalProps = {
   modalName: string; // Added prop for the name of the modal
 };
 
-
 const titleOptions = [
   { label: 'No Title', value: 'No Title' },
 
@@ -102,7 +101,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                   name='title'
                   render={({ field }) => (
                     <FormItem>
-                        <SelectWithInputForm<AddCustomerFormRequest, 'title'>
+                      <SelectWithInputForm<AddCustomerFormRequest, 'title'>
                         form={form}
                         field={field}
                         options={titleOptions}

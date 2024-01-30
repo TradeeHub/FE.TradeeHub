@@ -7,14 +7,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ControllerRenderProps, FieldPath, FieldValues, PathValue, UseFormReturn } from 'react-hook-form';
+import {
+  ControllerRenderProps,
+  FieldPath,
+  FieldValues,
+  PathValue,
+  UseFormReturn,
+} from 'react-hook-form';
 
 type Option = {
   label: string;
   value: string;
 };
 
-type SelectWithInputFormProps<TFieldValues extends FieldValues, TFieldName extends FieldPath<TFieldValues>> = {
+type SelectWithInputFormProps<
+  TFieldValues extends FieldValues,
+  TFieldName extends FieldPath<TFieldValues>,
+> = {
   form: UseFormReturn<TFieldValues>;
   field: ControllerRenderProps<TFieldValues, TFieldName>;
   options: Option[];
@@ -22,7 +31,10 @@ type SelectWithInputFormProps<TFieldValues extends FieldValues, TFieldName exten
   inputPlaceHolder: string;
 };
 
-const SelectWithInputForm = <TFieldValues extends FieldValues, TFieldName extends FieldPath<TFieldValues>>({
+const SelectWithInputForm = <
+  TFieldValues extends FieldValues,
+  TFieldName extends FieldPath<TFieldValues>,
+>({
   form,
   field,
   options,
@@ -33,23 +45,26 @@ const SelectWithInputForm = <TFieldValues extends FieldValues, TFieldName extend
 
   useEffect(() => {
     if (field.value === '') {
-    form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>);
+      form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>);
     }
   }, [form, field.name, defaultValue, field.value]);
 
   const handleSelectChange = (value: string) => {
     if (value === 'Other') {
       setIsEditable(true);
-    form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>);
+      form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>);
     } else {
       setIsEditable(false);
-    form.setValue(field.name, value as PathValue<TFieldValues, TFieldName>);
+      form.setValue(field.name, value as PathValue<TFieldValues, TFieldName>);
     }
   };
 
   const handleCancel = () => {
     setIsEditable(false);
-    form.setValue(field.name, defaultValue as PathValue<TFieldValues, TFieldName>);
+    form.setValue(
+      field.name,
+      defaultValue as PathValue<TFieldValues, TFieldName>,
+    );
   };
 
   return (

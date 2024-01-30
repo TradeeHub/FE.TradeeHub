@@ -116,7 +116,7 @@ export type AddCustomerFormRequest = {
   surname: string;
   alias: string;
   emails: string;
-  phoneNumbers: { number: string; type: string; }[];
+  phoneNumbers: { number: string; type: string }[];
   properties: string;
   tags: string;
   reference: string;
