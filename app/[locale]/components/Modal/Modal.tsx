@@ -31,7 +31,6 @@ const phoneNumberTypeOptions = [
   { label: 'Mobile', value: 'Mobile' },
   { label: 'Home', value: 'Home' },
   { label: 'Work', value: 'Work' },
-  { label: 'Fax', value: 'Fax' },
   { label: 'Other', value: 'Other' }, // This could trigger an input for custom type
 ];
 
@@ -98,14 +97,17 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
     <>
       <Dialog>
         <DialogTrigger asChild>{triggerButton}</DialogTrigger>
-        <DialogContent className=''>
-          <DialogHeader>
-            <DialogTitle>{modalName}</DialogTitle>
+        <DialogContent className='font-roboto'>
+          <DialogHeader className='flex items-center justify-center'>
+            {' '}
+            {/* This centers the content horizontally and vertically */}
+            <DialogTitle className='text-center'>{modalName}</DialogTitle>{' '}
+            {/* This centers the text within the title */}
           </DialogHeader>
 
           <Form {...form}>
-            <form className='space-y-5'>
-              <div className='justify-left flex'>
+            <form className='space-y-6'>
+              <div className='justify-left flex w-24'>
                 <FormField
                   control={form.control}
                   name='title'
@@ -125,7 +127,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
               </div>
 
               <div
-                className='flex flex-1 items-center gap-4'
+                className='pd-2 flex flex-1 items-center gap-4 pb-2'
                 style={{ marginTop: 15 }}
               >
                 <div className='flex-1'>
@@ -169,47 +171,53 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                   />
                 </div>
               </div>
+
               {fields.map((field, index) => (
-                <div key={field.id} className='flex items-center gap-4'>
-                  <FormField
-                    control={form.control}
-                    name={`phoneNumbers.${index}.type`}
-                    render={({ field }) => (
-                      <SelectWithInputForm<
-                        AddCustomerFormRequest,
-                        `phoneNumbers.${typeof index}.type`
-                      >
-                        form={form}
-                        field={field}
-                        options={phoneNumberTypeOptions}
-                        inputPlaceHolder='Other Number'
-                        defaultValue='Mobile'
-                      />
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`phoneNumbers.${index}.number`}
-                    render={({ field }) => (
-                      <div className='flex'>
+                <div key={field.id} className='flex items-center'>
+                  {' '}
+                  {/* Bottom margin for spacing between rows */}
+                  <div className='w-1/4 pr-2'>
+                    {' '}
+                    {/* Assign width to 1/4 of container and padding to the right */}
+                    <FormField
+                      control={form.control}
+                      name={`phoneNumbers.${index}.type`}
+                      render={({ field }) => (
+                        <SelectWithInputForm<
+                          AddCustomerFormRequest,
+                          `phoneNumbers.${typeof index}.type`
+                        >
+                          form={form}
+                          field={field}
+                          options={phoneNumberTypeOptions}
+                          inputPlaceHolder='Number Type'
+                          defaultValue='Mobile'
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className='flex-1 px-2'>
+                    {' '}
+                    {/* Flex grow and padding on both sides */}
+                    <FormField
+                      control={form.control}
+                      name={`phoneNumbers.${index}.number`}
+                      render={({ field }) => (
                         <AuthInputWithIcon
                           field={field}
                           placeholder='Phone Number'
                           type='tel'
                         />
-                        {fields.length > 1 && (
-                          <button type='button' onClick={() => remove(index)}>
-                            {/* Style this button to match your UI, perhaps with an icon */}
-                          </button>
-                        )}
-                      </div>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`phoneNumbers.${index}.allowNotifications`}
-                    render={({ field }) => (
-                      <div className='flex items-center'>
+                      )}
+                    />
+                  </div>
+                  <div className='w-20 px-2'>
+                    {' '}
+                    {/* Assign fixed width for the switch container and padding */}
+                    <FormField
+                      control={form.control}
+                      name={`phoneNumbers.${index}.allowNotifications`}
+                      render={({ field }) => (
                         <SwitchWithLabel
                           checked={field.value}
                           onCheckedChange={field.onChange}
@@ -218,35 +226,38 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                           aria-label='Notifications'
                           label='Notifications'
                         />
-                      </div>
+                      )}
+                    />
+                  </div>
+                  <div className='w-12'>
+                    {' '}
+                    {/* Assign fixed width for the button container */}
+                    {index !== 0 ? (
+                      <Button
+                        type='button'
+                        variant={'ghost'}
+                        onClick={() => remove(index)}
+                        className='remove-button'
+                        size='icon'
+                      >
+                        <RxCross2 />
+                      </Button>
+                    ) : (
+                      <CustomButton
+                        type='button'
+                        variant='ghost'
+                        size='sm'
+                        onClick={addPhoneNumber}
+                      >
+                        Add
+                      </CustomButton>
                     )}
-                  />
-                  {index !== 0 && (
-                    <Button
-                      type='button'
-                      variant={'ghost'}
-                      onClick={() => remove(index)}
-                      className='remove-button'
-                      size='icon'
-                    >
-                      <RxCross2 />
-                    </Button>
-                  )}
+                  </div>
                 </div>
               ))}
-              <div className='justify-right flex'>
-                <CustomButton
-                  type='button'
-                  variant='ghost'
-                  size='sm'
-                  onClick={addPhoneNumber}
-                >
-                  Add Phone Number
-                </CustomButton>
-              </div>
 
-              {/* ... other form fields */}
-              <FormField
+              <div className='pt-2'>
+     <FormField
                 control={form.control}
                 name='tags'
                 render={({ field }) => (
@@ -262,6 +273,8 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                   </FormItem>
                 )}
               />
+              </div>
+         
             </form>
           </Form>
           <DialogFooter className='sm:justify-end'>

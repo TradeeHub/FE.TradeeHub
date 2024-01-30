@@ -14,15 +14,15 @@ const SwitchWithLabel = React.forwardRef<
     label?: string;
   }
 >(({ className, checked, onLabel, offLabel, label, ...props }, ref) => (
-  <div className='relative font-roboto'> {/* Added a wrapper div with relative positioning */}
-    <label className={'absolute -top-2 left-0 text-xs text-primary'}> {/* Adjust the positioning as needed */}
+  <div className='no-block relative font-roboto'>
+    <label className={'absolute -top-2 left-0 -ml-1 text-xs text-primary'}>
       {label}
     </label>
     <SwitchPrimitives.Root
       {...props}
       ref={ref}
       className={cn(
-        'mt-2 focus-visible:ring-primary-500 inline-flex h-6 w-14 items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75',
+        'focus-visible:ring-primary-500 mt-2 inline-flex h-6 w-14 items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75',
         checked ? 'bg-primary' : 'bg-input',
         className,
       )}
@@ -30,9 +30,8 @@ const SwitchWithLabel = React.forwardRef<
       <span
         className={cn(
           'absolute',
-          checked ? 'right-1' : 'left-7',
-          'text-accent-playground top-3 text-xs font-bold transition-opacity duration-300',
-          checked ? 'opacity-0' : 'opacity-100',
+          'left-7',
+          'text-accent-playground top-3 text-xs font-bold',
         )}
       >
         {offLabel}
@@ -44,13 +43,9 @@ const SwitchWithLabel = React.forwardRef<
           checked ? 'translate-x-8' : 'translate-x-[0]',
         )}
       />
+
       <span
-        className={cn(
-          'absolute',
-          checked ? 'left-2' : 'right-1',
-          'top-1 text-xs top-3 text-white transition-opacity duration-300',
-          checked ? 'opacity-100' : 'opacity-0',
-        )}
+        className={cn('absolute', 'left-2', 'top-1 top-3 text-xs text-white')}
       >
         {onLabel}
       </span>

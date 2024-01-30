@@ -14,6 +14,7 @@ import {
   PathValue,
   UseFormReturn,
 } from 'react-hook-form';
+import { RxCross2 } from 'react-icons/rx';
 
 type Option = {
   label: string;
@@ -94,10 +95,10 @@ const SelectWithInputForm = <
       )}
       {isEditable && (
         <span
-          className='absolute right-3 top-2 cursor-pointer text-xs text-gray-500'
+          className='absolute right-0 top-2 cursor-pointer text-xs font-bold text-gray-500 text-secondary'
           onClick={handleCancel}
         >
-          Cancel
+          <RxCross2 />
         </span>
       )}
     </div>
