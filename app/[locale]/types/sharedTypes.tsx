@@ -109,3 +109,16 @@ export type UserPlace = {
   Location: Location;
   Viewport: Viewport;
 };
+
+export type AddCustomerFormRequest = {
+  title: string;
+  name: string;
+  surname: string;
+  alias: string;
+  emails: string;
+  phoneNumbers: { number: string; type: string; }[];
+  properties: string;
+  tags: string;
+  reference: string;
+  comments: string;
+};

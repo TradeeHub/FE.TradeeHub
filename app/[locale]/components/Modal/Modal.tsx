@@ -19,11 +19,13 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Select } from '@/components/ui/select';
 import SelectWithInputForm from '../SelectWithInputForm/SelectWithInputForm';
+import { AddCustomerFormRequest } from '../../types/sharedTypes';
 
 type ModalProps = {
   triggerButton: React.ReactElement;
   modalName: string; // Added prop for the name of the modal
 };
+
 
 const titleOptions = [
   { label: 'No Title', value: 'No Title' },
@@ -100,7 +102,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                   name='title'
                   render={({ field }) => (
                     <FormItem>
-                      <SelectWithInputForm
+                        <SelectWithInputForm<AddCustomerFormRequest, 'title'>
                         form={form}
                         field={field}
                         options={titleOptions}

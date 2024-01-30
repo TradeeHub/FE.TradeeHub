@@ -7,49 +7,49 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { UseFormReturn } from 'react-hook-form';
+import { ControllerRenderProps, FieldPath, FieldValues, PathValue, UseFormReturn } from 'react-hook-form';
 
 type Option = {
   label: string;
   value: string;
 };
 
-type CustomSelectInputProps = {
-  form: UseFormReturn; // This should be more specific to your form's shape
-  field: any; // This should be the type returned by `useController` or `useFormContext`
+type SelectWithInputFormProps<TFieldValues extends FieldValues, TFieldName extends FieldPath<TFieldValues>> = {
+  form: UseFormReturn<TFieldValues>;
+  field: ControllerRenderProps<TFieldValues, TFieldName>;
   options: Option[];
   defaultValue: string;
-  inputPlaceHolder: string; // Assuming this is the placeholder for the editable input
+  inputPlaceHolder: string;
 };
 
-const SelectWithInputForm: React.FC<CustomSelectInputProps> = ({
+const SelectWithInputForm = <TFieldValues extends FieldValues, TFieldName extends FieldPath<TFieldValues>>({
   form,
   field,
   options,
   defaultValue,
   inputPlaceHolder,
-}) => {
+}: SelectWithInputFormProps<TFieldValues, TFieldName>) => {
   const [isEditable, setIsEditable] = useState(false);
 
   useEffect(() => {
     if (field.value === '') {
-      form.setValue(field.name, '');
+    form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>);
     }
   }, [form, field.name, defaultValue, field.value]);
 
   const handleSelectChange = (value: string) => {
     if (value === 'Other') {
       setIsEditable(true);
-      form.setValue(field.name, '');
+    form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>);
     } else {
       setIsEditable(false);
-      form.setValue(field.name, value);
+    form.setValue(field.name, value as PathValue<TFieldValues, TFieldName>);
     }
   };
 
   const handleCancel = () => {
     setIsEditable(false);
-    form.setValue(field.name, defaultValue);
+    form.setValue(field.name, defaultValue as PathValue<TFieldValues, TFieldName>);
   };
 
   return (
