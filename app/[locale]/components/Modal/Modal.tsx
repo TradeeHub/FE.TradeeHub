@@ -17,14 +17,23 @@ import {
 } from '../../ui/auth/AuthInputWithIcon/AuthInputWithIcon';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Select } from '@/components/ui/select';
 import SelectWithInputForm from '../SelectWithInputForm/SelectWithInputForm';
 import { AddCustomerFormRequest } from '../../types/sharedTypes';
+import { RxCross2 } from 'react-icons/rx';
+import { SwitchWithLabel } from '../SwitchWithLabel/SwitchWithLabel';
+import { CustomButton } from '../CustomButton/CustomButton';
 
 type ModalProps = {
   triggerButton: React.ReactElement;
   modalName: string; // Added prop for the name of the modal
 };
+const phoneNumberTypeOptions = [
+  { label: 'Mobile', value: 'Mobile' },
+  { label: 'Home', value: 'Home' },
+  { label: 'Work', value: 'Work' },
+  { label: 'Fax', value: 'Fax' },
+  { label: 'Other', value: 'Other' }, // This could trigger an input for custom type
+];
 
 const titleOptions = [
   { label: 'No Title', value: 'No Title' },
@@ -47,6 +56,7 @@ const formSchema = z.object({
     z.object({
       type: z.string(),
       number: z.string(),
+      allowNotifications: z.boolean(),
     }),
   ),
   properties: z.string(),
@@ -64,7 +74,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
       surname: '',
       alias: '',
       emails: '',
-      phoneNumbers: [{ type: '', number: '' }],
+      phoneNumbers: [{ type: '', number: '', allowNotifications: true }],
       tags: '',
       reference: '',
       comments: '',
@@ -81,7 +91,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
   };
 
   const addPhoneNumber = () => {
-    append({ type: '', number: '' });
+    append({ type: '', number: '', allowNotifications: true });
   };
 
   return (
@@ -94,7 +104,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
           </DialogHeader>
 
           <Form {...form}>
-            <form className='space-y-8'>
+            <form className='space-y-5'>
               <div className='justify-left flex'>
                 <FormField
                   control={form.control}
@@ -114,7 +124,10 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                 />
               </div>
 
-              <div className='flex flex-1 items-center gap-4'>
+              <div
+                className='flex flex-1 items-center gap-4'
+                style={{ marginTop: 15 }}
+              >
                 <div className='flex-1'>
                   {' '}
                   {/* This div wraps the FormField for 'name' */}
@@ -162,30 +175,76 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                     control={form.control}
                     name={`phoneNumbers.${index}.type`}
                     render={({ field }) => (
-                      <Select {...field}>
-                        {/* options for phone number type, e.g., mobile, home, etc. */}
-                      </Select>
+                      <SelectWithInputForm<
+                        AddCustomerFormRequest,
+                        `phoneNumbers.${typeof index}.type`
+                      >
+                        form={form}
+                        field={field}
+                        options={phoneNumberTypeOptions}
+                        inputPlaceHolder='Other Number'
+                        defaultValue='Mobile'
+                      />
                     )}
                   />
                   <FormField
                     control={form.control}
                     name={`phoneNumbers.${index}.number`}
                     render={({ field }) => (
-                      <AuthInputWithIcon
-                        field={field}
-                        placeholder='Phone Number'
-                        type='tel' // Setting the type to 'tel' for telephone input
-                      />
+                      <div className='flex'>
+                        <AuthInputWithIcon
+                          field={field}
+                          placeholder='Phone Number'
+                          type='tel'
+                        />
+                        {fields.length > 1 && (
+                          <button type='button' onClick={() => remove(index)}>
+                            {/* Style this button to match your UI, perhaps with an icon */}
+                          </button>
+                        )}
+                      </div>
                     )}
                   />
-                  <button type='button' onClick={() => remove(index)}>
-                    Remove
-                  </button>
+                  <FormField
+                    control={form.control}
+                    name={`phoneNumbers.${index}.allowNotifications`}
+                    render={({ field }) => (
+                      <div className='flex items-center'>
+                        <SwitchWithLabel
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          onLabel='ON'
+                          offLabel='OFF'
+                          aria-label='Notifications'
+                          label='Notifications'
+                        />
+                      </div>
+                    )}
+                  />
+                  {index !== 0 && (
+                    <Button
+                      type='button'
+                      variant={'ghost'}
+                      onClick={() => remove(index)}
+                      className='remove-button'
+                      size='icon'
+                    >
+                      <RxCross2 />
+                    </Button>
+                  )}
                 </div>
               ))}
-              <button type='button' onClick={addPhoneNumber}>
-                Add Phone Number
-              </button>
+              <div className='justify-right flex'>
+                <CustomButton
+                  type='button'
+                  variant='ghost'
+                  size='sm'
+                  onClick={addPhoneNumber}
+                >
+                  Add Phone Number
+                </CustomButton>
+              </div>
+
               {/* ... other form fields */}
               <FormField
                 control={form.control}
