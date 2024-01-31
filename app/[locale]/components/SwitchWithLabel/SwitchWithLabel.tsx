@@ -15,7 +15,7 @@ const SwitchWithLabel = React.forwardRef<
   }
 >(({ className, checked, onLabel, offLabel, label, ...props }, ref) => (
   <div className='no-block relative font-roboto'>
-    <label className={'absolute -top-2 left-0 -ml-1 text-xs text-primary'}>
+    <label className={'absolute -top-2 left-0 -ml-1 text-xs text-primary font-semibold'}>
       {label}
     </label>
     <SwitchPrimitives.Root

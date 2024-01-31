@@ -22,6 +22,7 @@ import { AddCustomerFormRequest } from '../../types/sharedTypes';
 import { RxCross2 } from 'react-icons/rx';
 import { SwitchWithLabel } from '../SwitchWithLabel/SwitchWithLabel';
 import { CustomButton } from '../CustomButton/CustomButton';
+import TagsInput from '../TagsInput/TagsInput';
 
 type ModalProps = {
   triggerButton: React.ReactElement;
@@ -59,7 +60,7 @@ const formSchema = z.object({
     }),
   ),
   properties: z.string(),
-  tags: z.string(),
+  tags: z.array(z.string()),
   reference: z.string(),
   comments: z.string(),
 });
@@ -74,7 +75,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
       alias: '',
       emails: '',
       phoneNumbers: [{ type: '', number: '', allowNotifications: true }],
-      tags: '',
+      tags: [],
       reference: '',
       comments: '',
     },
@@ -257,22 +258,21 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
               ))}
 
               <div className='pt-2'>
-     <FormField
-                control={form.control}
-                name='tags'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <AuthInputWithIcon
-                        field={field}
-                        autoFocus={false}
-                        placeholder='Tags'
-                      />
-                    </FormControl>
-                    <StyledFormMessage />
-                  </FormItem>
-                )}
-              />
+
+              {/* ... other form fields */}
+              
+           <FormField
+  control={form.control}
+  name='tags'
+  render={({ field }) => (
+    <TagsInput
+      field={field}
+      placeholder='Tags' // Optional: customize the placeholder text
+    />
+  )}
+/>
+
+
               </div>
          
             </form>

@@ -118,7 +118,7 @@ export type AddCustomerFormRequest = {
   emails: string;
   phoneNumbers: { number: string; type: string; allowNotifications: boolean }[];
   properties: string;
-  tags: string;
+  tags: string[]; // Now 'tags' is an array of strings
   reference: string;
   comments: string;
 };
