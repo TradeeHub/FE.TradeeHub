@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
 import {
   CustomerByIdQuery,
   CustomerDbObject,
@@ -96,13 +95,11 @@ type Location = {
   lng: number;
 };
 
-// Define the structure for viewport to include northeast and southwest points
 type Viewport = {
   northeast: Location;
   southwest: Location;
 };
 
-// Define a new type for UserPlace
 export type UserPlace = {
   PlaceId: string;
   Address: string;
@@ -115,10 +112,10 @@ export type AddCustomerFormRequest = {
   name: string;
   surname: string;
   alias: string;
-  emails: string;
-  phoneNumbers: { number: string; type: string; allowNotifications: boolean }[];
-  properties: string;
-  tags: string[]; // Now 'tags' is an array of strings
+  emails: { email: string; emailType: string; receiveNotifications: boolean }[];
+  phoneNumbers: { phoneNumber: string; phoneNumberType: string; receiveNotifications: boolean }[];
+  properties: UserPlace[];
+  tags: string[];
   reference: string;
   comments: string;
 };

@@ -59,8 +59,8 @@ const AddressAutocomplete = ({
   field,
   onPlaceSelected,
 }: AddressAutocompleteProps<RegisterRequest, 'userPlace'>) => {
+  
   const [labelFloat, setLabelFloat] = useState(false);
-
   const isMountedRef = useRef(false);
   const [userLocation] = useState<{
     latitude: number;
@@ -216,7 +216,7 @@ const AddressAutocomplete = ({
             htmlFor={inputId} // Set the htmlFor attribute to match the input's ID
             className={`absolute transition-all duration-200 ease-in-out ${
               labelFloat || inputValue
-                ? 'left-3 top-[-0.7rem] text-xs text-primary'
+                ? 'left-3 top-[-0.7rem] text-xs text-primary font-semibold'
                 : 'left-10 top-1/2 -translate-y-1/2 text-sm text-gray-500'
             }`}
           >

@@ -23,6 +23,7 @@ import { RxCross2 } from 'react-icons/rx';
 import { SwitchWithLabel } from '../SwitchWithLabel/SwitchWithLabel';
 import { CustomButton } from '../CustomButton/CustomButton';
 import TagsInput from '../TagsInput/TagsInput';
+import AddressAutocomplete from '../../ui/general/AddressAutocomplete/AddressAutocomplete';
 
 type ModalProps = {
   triggerButton: React.ReactElement;
@@ -35,9 +36,14 @@ const phoneNumberTypeOptions = [
   { label: 'Other', value: 'Other' }, // This could trigger an input for custom type
 ];
 
+const emailTypeOptions = [
+  { label: 'Personal', value: 'Personal' },
+  { label: 'Work', value: 'Work' },
+  { label: 'Other', value: 'Other' }, // This could trigger an input for custom type
+];
+
 const titleOptions = [
   { label: 'No Title', value: 'No Title' },
-
   { label: 'Mr.', value: 'Mr.' },
   { label: 'Mrs.', value: 'Mrs.' },
   { label: 'Ms.', value: 'Ms.' },
@@ -46,20 +52,43 @@ const titleOptions = [
   { label: 'Other', value: 'Other' },
 ];
 
+const LocationSchema = z.object({
+  lat: z.number(),
+  lng: z.number(),
+});
+
+const ViewportSchema = z.object({
+  northeast: LocationSchema,
+  southwest: LocationSchema,
+});
+
+const UserPlaceSchema = z.object({
+  PlaceId: z.string(),
+  Address: z.string(),
+  Location: LocationSchema,
+  Viewport: ViewportSchema,
+});
+
 const formSchema = z.object({
   title: z.string(),
   name: z.string(),
   surname: z.string(),
   alias: z.string(),
-  emails: z.string(),
+  emails: z.array(
+    z.object({
+      emailType: z.string(),
+      email: z.string(),
+      receiveNotifications: z.boolean(),
+    })
+  ),  
   phoneNumbers: z.array(
     z.object({
-      type: z.string(),
-      number: z.string(),
-      allowNotifications: z.boolean(),
-    }),
+      phoneNumberType: z.string(),
+      phoneNumber: z.string(),
+      receiveNotifications: z.boolean(),
+    })
   ),
-  properties: z.string(),
+  properties: z.array(UserPlaceSchema), // Now an array of UserPlace
   tags: z.array(z.string()),
   reference: z.string(),
   comments: z.string(),
@@ -73,32 +102,70 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
       name: '',
       surname: '',
       alias: '',
-      emails: '',
-      phoneNumbers: [{ type: '', number: '', allowNotifications: true }],
+      emails: [{ emailType: '', email: '', receiveNotifications: true }],
+      phoneNumbers: [{ phoneNumberType: '', phoneNumber: '', receiveNotifications: true }],
       tags: [],
       reference: '',
       comments: '',
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+const {
+    fields: phoneFields,
+    append: appendPhone,
+    remove: removePhone
+  } = useFieldArray({
     control: form.control,
     name: 'phoneNumbers',
   });
+
+  // Field array for emails
+  const {
+    fields: emailFields,
+    append: appendEmail,
+    remove: removeEmail
+  } = useFieldArray({
+    control: form.control,
+    name: 'emails',
+  });
+
+  const {
+  fields: propertiesFields,
+  append: appendProperty,
+  remove: removeProperty
+} = useFieldArray({
+  control: form.control,
+  name: 'properties',
+});
+
+  const handleAddProperty = () => {
+    appendProperty({
+      PlaceId: '',
+      Address: '',
+      Location: { lat: 0, lng: 0 },
+      Viewport: { northeast: { lat: 0, lng: 0 }, southwest: { lat: 0, lng: 0 } }
+    });
+  };
+
 
   const handleAddCustomer = () => {
     console.log('FORM VALUES ', form.getValues());
   };
 
   const addPhoneNumber = () => {
-    append({ type: '', number: '', allowNotifications: true });
+    appendPhone({ phoneNumber: '', phoneNumberType: '', receiveNotifications: true });
   };
+
+    const addEmail = () => {
+    appendEmail({ email: '', emailType: '', receiveNotifications: true });
+  };
+
 
   return (
     <>
       <Dialog>
         <DialogTrigger asChild>{triggerButton}</DialogTrigger>
-        <DialogContent className='font-roboto'>
+        <DialogContent className='font-roboto font-roboto w-full max-w-xl'>
           <DialogHeader className='flex items-center justify-center'>
             {' '}
             {/* This centers the content horizontally and vertically */}
@@ -128,7 +195,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
               </div>
 
               <div
-                className='pd-2 flex flex-1 items-center gap-4 pb-2'
+                className='pd-2 flex flex-1 items-center gap-4'
                 style={{ marginTop: 15 }}
               >
                 <div className='flex-1'>
@@ -171,9 +238,30 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                     )}
                   />
                 </div>
+                  <div className='flex-1'>
+                  {' '}
+                  {/* This div wraps the FormField for 'name' */}
+                  <FormField
+                    control={form.control}
+                    name='alias'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <AuthInputWithIcon
+                            field={field}
+                            autoFocus={false}
+                            placeholder='Alias'
+                          />
+                        </FormControl>
+                        <StyledFormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
 
-              {fields.map((field, index) => (
+              {/* Phone Numbers */}
+              {phoneFields.map((field, index) => (
                 <div key={field.id} className='flex items-center'>
                   {' '}
                   {/* Bottom margin for spacing between rows */}
@@ -182,11 +270,11 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                     {/* Assign width to 1/4 of container and padding to the right */}
                     <FormField
                       control={form.control}
-                      name={`phoneNumbers.${index}.type`}
+                      name={`phoneNumbers.${index}.phoneNumberType`}
                       render={({ field }) => (
                         <SelectWithInputForm<
                           AddCustomerFormRequest,
-                          `phoneNumbers.${typeof index}.type`
+                          `phoneNumbers.${typeof index}.phoneNumberType`
                         >
                           form={form}
                           field={field}
@@ -202,7 +290,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                     {/* Flex grow and padding on both sides */}
                     <FormField
                       control={form.control}
-                      name={`phoneNumbers.${index}.number`}
+                      name={`phoneNumbers.${index}.phoneNumber`}
                       render={({ field }) => (
                         <AuthInputWithIcon
                           field={field}
@@ -217,7 +305,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                     {/* Assign fixed width for the switch container and padding */}
                     <FormField
                       control={form.control}
-                      name={`phoneNumbers.${index}.allowNotifications`}
+                      name={`phoneNumbers.${index}.receiveNotifications`}
                       render={({ field }) => (
                         <SwitchWithLabel
                           checked={field.value}
@@ -237,7 +325,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                       <Button
                         type='button'
                         variant={'ghost'}
-                        onClick={() => remove(index)}
+                        onClick={() => removePhone(index)}
                         className='remove-button'
                         size='icon'
                       >
@@ -257,9 +345,148 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                 </div>
               ))}
 
+              {/* Email Addresses */} 
+              {emailFields.map((field, index) => (
+                <div key={field.id} className='flex items-center'>
+                  {' '}
+                  {/* Bottom margin for spacing between rows */}
+                  <div className='w-1/4 pr-2'>
+                    {' '}
+                    {/* Assign width to 1/4 of container and padding to the right */}
+                    <FormField
+                      control={form.control}
+                      name={`emails.${index}.emailType`}
+                      render={({ field }) => (
+                        <SelectWithInputForm<
+                          AddCustomerFormRequest,
+                          `emails.${typeof index}.emailType`
+                        >
+                          form={form}
+                          field={field}
+                          options={emailTypeOptions}
+                          inputPlaceHolder='Email Type'
+                          defaultValue='Personal'
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className='flex-1 px-2'>
+                    {' '}
+                    {/* Flex grow and padding on both sides */}
+                    <FormField
+                      control={form.control}
+                      name={`emails.${index}.email`}
+                      render={({ field }) => (
+                        <AuthInputWithIcon
+                          field={field}
+                          placeholder='Email Address'
+                          type='email'
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className='w-20 px-2'>
+                    {' '}
+                    {/* Assign fixed width for the switch container and padding */}
+                    <FormField
+                      control={form.control}
+                      name={`emails.${index}.receiveNotifications`}
+                      render={({ field }) => (
+                        <SwitchWithLabel
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          onLabel='ON'
+                          offLabel='OFF'
+                          aria-label='Notifications'
+                          label='Notifications'
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className='w-12'>
+                    {' '}
+                    {/* Assign fixed width for the button container */}
+                    {index !== 0 ? (
+                      <Button
+                        type='button'
+                        variant={'ghost'}
+                        onClick={() => removeEmail(index)}
+                        className='remove-button'
+                        size='icon'
+                      >
+                        <RxCross2 />
+                      </Button>
+                    ) : (
+                      <CustomButton
+                        type='button'
+                        variant='ghost'
+                        size='sm'
+                        onClick={addEmail}
+                      >
+                        Add
+                      </CustomButton>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+
+
+        <div className='pt-2'>
+            {propertiesFields.map((field, index) => (
+              <div key={field.id} className='flex items-center space-x-2'>
+                                  <div className='flex-1 px-2'>
+
+                <FormField
+                  control={form.control}
+                  name={`properties.${index}.Address`} // Example for Address, adjust based on your actual needs
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <AddressAutocomplete
+                          field={field}
+                          onPlaceSelected={(place) => {
+                            // You'll need to implement this to update the form based on selected place
+                          }}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className='w-12'>
+                    {' '}
+                    {/* Assign fixed width for the button container */}
+                    {index !== 0 ? (
+                      <Button
+                        type='button'
+                        variant={'ghost'}
+                        onClick={() => removeProperty(index)}
+                        className='remove-button'
+                        size='icon'
+                      >
+                        <RxCross2 />
+                      </Button>
+                    ) : (
+                      <CustomButton
+                        type='button'
+                        variant='ghost'
+                        size='sm'
+                        onClick={handleAddProperty}
+                      >
+                        Add
+                      </CustomButton>
+                    )}
+                  </div>
+                            </div>
+                            
+
+            ))}
+          </div>
+
+
               <div className='pt-2'>
 
-              {/* ... other form fields */}
               
            <FormField
   control={form.control}
@@ -272,7 +499,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
   )}
 />
 
-
+              
               </div>
          
             </form>
