@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 import { IconType } from 'react-icons';
 import { FormMessage } from '@/components/ui/form';
+import { RootState } from '@/lib/store';
+import { useSelector } from 'react-redux';
 
 type InputWithIconProps<
   TFieldValues extends FieldValues,
@@ -28,6 +30,7 @@ const AuthInputWithIcon = <
 }: InputWithIconProps<TFieldValues, TName>) => {
   const [showPassword, setShowPassword] = useState(false);
   const [labelFloat, setLabelFloat] = useState(false);
+  const user = useSelector((state: RootState) => state.user.data);
 
   const handleToggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -39,6 +42,21 @@ const AuthInputWithIcon = <
       onEnterPress();
     }
   };
+
+  const handleInputFocus = () => {
+    setLabelFloat(true);
+    // If it's a telephone input and the field is empty and user has a calling code,
+    // set the input value to the calling code when the user focuses on the input field.
+    if (type === 'tel' && user?.place?.callingCode && !field.value) {
+      field.onChange(`+${user.place.callingCode}`);
+    }
+  };
+
+//  useEffect(() => {
+//     if (user && type === 'tel' && user.place?.callingCode && !field.value) {
+//       field.onChange(`+${user.place.callingCode}`);
+//     }
+//   }, [user, field, type]);
 
   useEffect(() => {
     setLabelFloat(!!field.value);
@@ -55,9 +73,10 @@ const AuthInputWithIcon = <
         id={inputId} // Set the ID for the input
         type={isPasswordType && !showPassword ? 'password' : 'text'}
         autoFocus={autoFocus}
+        
         className={`text-md w-full px-3 py-1 ${Icon ? 'pl-10' : ''} ${isPasswordType ? 'pr-10' : ''} bg-transparent focus:outline-none`}
         onKeyDown={handleKeyDown}
-        onFocus={() => setLabelFloat(true)}
+        onFocus={handleInputFocus}
         onBlur={() => setLabelFloat(!!field.value)}
       />
       <label

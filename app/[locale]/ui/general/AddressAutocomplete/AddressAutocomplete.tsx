@@ -53,7 +53,6 @@ function getCountryAndCode(addressComponents: google.maps.GeocoderAddressCompone
 function mapPlaceResultToUserPlace(
   placeResult: google.maps.places.PlaceResult,
 ): UserPlace {
-
   const { country, countryCode } = getCountryAndCode(placeResult.address_components);
 
   return {

@@ -65,6 +65,9 @@ const ViewportSchema = z.object({
 const UserPlaceSchema = z.object({
   PlaceId: z.string(),
   Address: z.string(),
+  Country: z.string(),
+  CountryCode: z.string(),
+  CallingCode: z.string(),
   Location: LocationSchema,
   Viewport: ViewportSchema,
 });
@@ -150,15 +153,9 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
     appendEmail({ email: '', emailType: '', receiveNotifications: true });
   };
 
-    const onPlaceSelectForProperty = (place: UserPlace) => {
+    const onPlaceSelectForProperty = (place: UserPlace | null) => {
     if (place) {
-      // Assuming 'place' matches the UserPlaceSchema structure
-      form.setValue('property', {
-        PlaceId: place.PlaceId,
-        Address: place.Address,
-        Location: place.Location,
-        Viewport: place.Viewport,
-      });
+      form.setValue('property', place);
     } else {
       form.resetField('property'); // Or set to an initial empty state as per your schema
     }
