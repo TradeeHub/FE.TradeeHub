@@ -733,6 +733,9 @@ export type PhoneNumberDbObjectFilter = {
 export type PlaceDbObject = {
   __typename?: 'PlaceDbObject';
   address: Scalars['String']['output'];
+  callingCode: Scalars['String']['output'];
+  country: Scalars['String']['output'];
+  countryCode: Scalars['String']['output'];
   location: LocationDbObject;
   placeId: Scalars['String']['output'];
   viewport: ViewPortDbObject;
@@ -751,6 +754,36 @@ export type PlaceDbObjectFilter = {
   address_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   address_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   address_starts_with?: InputMaybe<Scalars['String']['input']>;
+  callingCode?: InputMaybe<Scalars['String']['input']>;
+  callingCode_contains?: InputMaybe<Scalars['String']['input']>;
+  callingCode_ends_with?: InputMaybe<Scalars['String']['input']>;
+  callingCode_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  callingCode_not?: InputMaybe<Scalars['String']['input']>;
+  callingCode_not_contains?: InputMaybe<Scalars['String']['input']>;
+  callingCode_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  callingCode_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  callingCode_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  callingCode_starts_with?: InputMaybe<Scalars['String']['input']>;
+  country?: InputMaybe<Scalars['String']['input']>;
+  countryCode?: InputMaybe<Scalars['String']['input']>;
+  countryCode_contains?: InputMaybe<Scalars['String']['input']>;
+  countryCode_ends_with?: InputMaybe<Scalars['String']['input']>;
+  countryCode_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  countryCode_not?: InputMaybe<Scalars['String']['input']>;
+  countryCode_not_contains?: InputMaybe<Scalars['String']['input']>;
+  countryCode_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  countryCode_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  countryCode_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  countryCode_starts_with?: InputMaybe<Scalars['String']['input']>;
+  country_contains?: InputMaybe<Scalars['String']['input']>;
+  country_ends_with?: InputMaybe<Scalars['String']['input']>;
+  country_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  country_not?: InputMaybe<Scalars['String']['input']>;
+  country_not_contains?: InputMaybe<Scalars['String']['input']>;
+  country_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  country_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  country_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  country_starts_with?: InputMaybe<Scalars['String']['input']>;
   location?: InputMaybe<LocationDbObjectFilter>;
   placeId?: InputMaybe<Scalars['String']['input']>;
   placeId_contains?: InputMaybe<Scalars['String']['input']>;
@@ -767,6 +800,9 @@ export type PlaceDbObjectFilter = {
 
 export type PlaceDbObjectSort = {
   address?: InputMaybe<SortOperationKind>;
+  callingCode?: InputMaybe<SortOperationKind>;
+  country?: InputMaybe<SortOperationKind>;
+  countryCode?: InputMaybe<SortOperationKind>;
   location?: InputMaybe<LocationDbObjectSort>;
   placeId?: InputMaybe<SortOperationKind>;
   viewport?: InputMaybe<ViewPortDbObjectSort>;
@@ -774,6 +810,9 @@ export type PlaceDbObjectSort = {
 
 export type PlaceRequestInput = {
   address: Scalars['String']['input'];
+  callingCode: Scalars['String']['input'];
+  country: Scalars['String']['input'];
+  countryCode: Scalars['String']['input'];
   location: LocationRequestInput;
   placeId: Scalars['String']['input'];
   viewport: ViewportRequestInput;
@@ -1122,7 +1161,7 @@ export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: 
 export type LoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser?: { __typename?: 'UserDbObject', id: any, name: string, companyName: string, email: string, place: { __typename?: 'PlaceDbObject', location: { __typename?: 'LocationDbObject', lat: any, lng: any } } } | null };
+export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser?: { __typename?: 'UserDbObject', id: any, name: string, companyName: string, email: string, place: { __typename?: 'PlaceDbObject', country: string, countryCode: string, callingCode: string, location: { __typename?: 'LocationDbObject', lat: any, lng: any } } } | null };
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String']['input'];
@@ -1290,6 +1329,9 @@ export const LoggedInUserDocument = gql`
     companyName
     email
     place {
+      country
+      countryCode
+      callingCode
       location {
         lat
         lng

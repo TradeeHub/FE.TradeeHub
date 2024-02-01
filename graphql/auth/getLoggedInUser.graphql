@@ -5,6 +5,9 @@ query LoggedInUser {
     companyName
     email
     place {
+      country
+      countryCode
+      callingCode
       location {
         lat
         lng

@@ -18,7 +18,7 @@ import {
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SelectWithInputForm from '../SelectWithInputForm/SelectWithInputForm';
-import { AddCustomerFormRequest } from '../../types/sharedTypes';
+import { AddCustomerFormRequest, UserPlace } from '../../types/sharedTypes';
 import { RxCross2 } from 'react-icons/rx';
 import { SwitchWithLabel } from '../SwitchWithLabel/SwitchWithLabel';
 import { CustomButton } from '../CustomButton/CustomButton';
@@ -79,16 +79,17 @@ const formSchema = z.object({
       emailType: z.string(),
       email: z.string(),
       receiveNotifications: z.boolean(),
-    })
-  ),  
+    }),
+  ),
   phoneNumbers: z.array(
     z.object({
       phoneNumberType: z.string(),
       phoneNumber: z.string(),
       receiveNotifications: z.boolean(),
-    })
+    }),
   ),
-  properties: z.array(UserPlaceSchema), // Now an array of UserPlace
+  property: UserPlaceSchema,
+  billingAddress: UserPlaceSchema,
   tags: z.array(z.string()),
   reference: z.string(),
   comments: z.string(),
@@ -103,17 +104,21 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
       surname: '',
       alias: '',
       emails: [{ emailType: '', email: '', receiveNotifications: true }],
-      phoneNumbers: [{ phoneNumberType: '', phoneNumber: '', receiveNotifications: true }],
+      phoneNumbers: [
+        { phoneNumberType: '', phoneNumber: '', receiveNotifications: true },
+      ],
+      property: {},
+      billingAddress: {},
       tags: [],
       reference: '',
       comments: '',
     },
   });
 
-const {
+  const {
     fields: phoneFields,
     append: appendPhone,
-    remove: removePhone
+    remove: removePhone,
   } = useFieldArray({
     control: form.control,
     name: 'phoneNumbers',
@@ -123,41 +128,40 @@ const {
   const {
     fields: emailFields,
     append: appendEmail,
-    remove: removeEmail
+    remove: removeEmail,
   } = useFieldArray({
     control: form.control,
     name: 'emails',
   });
-
-  const {
-  fields: propertiesFields,
-  append: appendProperty,
-  remove: removeProperty
-} = useFieldArray({
-  control: form.control,
-  name: 'properties',
-});
-
-  const handleAddProperty = () => {
-    appendProperty({
-      PlaceId: '',
-      Address: '',
-      Location: { lat: 0, lng: 0 },
-      Viewport: { northeast: { lat: 0, lng: 0 }, southwest: { lat: 0, lng: 0 } }
-    });
-  };
-
 
   const handleAddCustomer = () => {
     console.log('FORM VALUES ', form.getValues());
   };
 
   const addPhoneNumber = () => {
-    appendPhone({ phoneNumber: '', phoneNumberType: '', receiveNotifications: true });
+    appendPhone({
+      phoneNumber: '',
+      phoneNumberType: '',
+      receiveNotifications: true,
+    });
   };
 
-    const addEmail = () => {
+  const addEmail = () => {
     appendEmail({ email: '', emailType: '', receiveNotifications: true });
+  };
+
+    const onPlaceSelectForProperty = (place: UserPlace) => {
+    if (place) {
+      // Assuming 'place' matches the UserPlaceSchema structure
+      form.setValue('property', {
+        PlaceId: place.PlaceId,
+        Address: place.Address,
+        Location: place.Location,
+        Viewport: place.Viewport,
+      });
+    } else {
+      form.resetField('property'); // Or set to an initial empty state as per your schema
+    }
   };
 
 
@@ -165,7 +169,7 @@ const {
     <>
       <Dialog>
         <DialogTrigger asChild>{triggerButton}</DialogTrigger>
-        <DialogContent className='font-roboto font-roboto w-full max-w-xl'>
+        <DialogContent className='w-full max-w-xl font-roboto font-roboto'>
           <DialogHeader className='flex items-center justify-center'>
             {' '}
             {/* This centers the content horizontally and vertically */}
@@ -238,7 +242,7 @@ const {
                     )}
                   />
                 </div>
-                  <div className='flex-1'>
+                <div className='flex-1'>
                   {' '}
                   {/* This div wraps the FormField for 'name' */}
                   <FormField
@@ -345,7 +349,7 @@ const {
                 </div>
               ))}
 
-              {/* Email Addresses */} 
+              {/* Email Addresses */}
               {emailFields.map((field, index) => (
                 <div key={field.id} className='flex items-center'>
                   {' '}
@@ -430,78 +434,37 @@ const {
                 </div>
               ))}
 
-
-
-        <div className='pt-2'>
-            {propertiesFields.map((field, index) => (
-              <div key={field.id} className='flex items-center space-x-2'>
-                                  <div className='flex-1 px-2'>
-
+              {/* Property*/}
+              <div className='pt-2'>
+              <FormField
+                control={form.control}
+                name={`property`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <AddressAutocomplete
+                        field={field}
+                        onPlaceSelected={onPlaceSelectForProperty}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              </div>
+              
+              {/* Tags */}
+              <div className='pt-2'>
                 <FormField
                   control={form.control}
-                  name={`properties.${index}.Address`} // Example for Address, adjust based on your actual needs
+                  name='tags'
                   render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <AddressAutocomplete
-                          field={field}
-                          onPlaceSelected={(place) => {
-                            // You'll need to implement this to update the form based on selected place
-                          }}
-                        />
-                      </FormControl>
-                    </FormItem>
+                    <TagsInput
+                      field={field}
+                      placeholder='Tags' // Optional: customize the placeholder text
+                    />
                   )}
                 />
               </div>
-              <div className='w-12'>
-                    {' '}
-                    {/* Assign fixed width for the button container */}
-                    {index !== 0 ? (
-                      <Button
-                        type='button'
-                        variant={'ghost'}
-                        onClick={() => removeProperty(index)}
-                        className='remove-button'
-                        size='icon'
-                      >
-                        <RxCross2 />
-                      </Button>
-                    ) : (
-                      <CustomButton
-                        type='button'
-                        variant='ghost'
-                        size='sm'
-                        onClick={handleAddProperty}
-                      >
-                        Add
-                      </CustomButton>
-                    )}
-                  </div>
-                            </div>
-                            
-
-            ))}
-          </div>
-
-
-              <div className='pt-2'>
-
-              
-           <FormField
-  control={form.control}
-  name='tags'
-  render={({ field }) => (
-    <TagsInput
-      field={field}
-      placeholder='Tags' // Optional: customize the placeholder text
-    />
-  )}
-/>
-
-              
-              </div>
-         
             </form>
           </Form>
           <DialogFooter className='sm:justify-end'>

@@ -55,7 +55,7 @@ const AuthInputWithIcon = <
         id={inputId} // Set the ID for the input
         type={isPasswordType && !showPassword ? 'password' : 'text'}
         autoFocus={autoFocus}
-        className={`w-full px-3 py-1 text-md ${Icon ? 'pl-10' : ''} ${isPasswordType ? 'pr-10' : ''} bg-transparent focus:outline-none`}
+        className={`text-md w-full px-3 py-1 ${Icon ? 'pl-10' : ''} ${isPasswordType ? 'pr-10' : ''} bg-transparent focus:outline-none`}
         onKeyDown={handleKeyDown}
         onFocus={() => setLabelFloat(true)}
         onBlur={() => setLabelFloat(!!field.value)}
@@ -64,7 +64,7 @@ const AuthInputWithIcon = <
         htmlFor={inputId} // Set the htmlFor attribute to match the input's ID
         className={`absolute left-3 transition-all duration-200 ease-in-out ${
           labelFloat || field.value
-            ? 'top-[-0.7rem] mb-1 text-xs text-primary font-semibold'
+            ? 'top-[-0.7rem] mb-1 text-xs font-semibold text-primary'
             : 'top-1/2 -translate-y-1/2 transform text-sm text-gray-500'
         }`}
       >

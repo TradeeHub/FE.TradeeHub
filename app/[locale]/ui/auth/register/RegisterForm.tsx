@@ -39,6 +39,9 @@ const UserPlaceSchema = z
   .object({
     PlaceId: z.string(),
     Address: z.string(),
+    Country: z.string(),
+    CountryCode: z.string(),
+    CallingCode: z.string(),
     Location: LocationSchema,
     Viewport: ViewportSchema,
   })
@@ -99,6 +102,9 @@ const transformRegisterRequest = (
     name: request.name,
     phoneNumber: request.phoneNumber,
     place: {
+      callingCode: request.userPlace?.CallingCode ?? '',
+      country: request.userPlace?.Country ?? '',
+      countryCode: request.userPlace?.CountryCode ?? '',
       address: request.userPlace?.Address ?? '',
       placeId: request.userPlace?.PlaceId ?? '',
       location: {
@@ -108,7 +114,7 @@ const transformRegisterRequest = (
       viewport: {
         northeast: request.userPlace?.Viewport.northeast ?? { lat: 0, lng: 0 },
         southwest: request.userPlace?.Viewport.southwest ?? { lat: 0, lng: 0 },
-      },
+      }
     },
     companyName: request.companyName,
     companyType: request.companyType,

@@ -13,9 +13,9 @@ import {
   PopoverTrigger,
 } from '@radix-ui/react-popover';
 import { PiMapPinLight } from 'react-icons/pi';
-import { RegisterRequest, UserPlace } from '@/app/[locale]/types/sharedTypes';
-
+import { UserPlace } from '@/app/[locale]/types/sharedTypes';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
+import { CountryCode, getCountryCallingCode } from 'libphonenumber-js';
 
 type AddressAutocompleteProps<
   TFieldValues extends FieldValues,
@@ -32,9 +32,30 @@ type AutocompletePrediction = {
   place_id: string;
 };
 
+function getCountryAndCode(addressComponents: google.maps.GeocoderAddressComponent[] | undefined) {
+  let country: string | null = null;
+  let countryCode: string | null = null;
+
+  if (addressComponents) {
+    // Iterate over all the address components
+    for (const component of addressComponents) {
+      if (component.types.includes('country')) {
+        country = component.long_name;
+        countryCode = component.short_name;
+        break; // Stop the loop once the country is found
+      }
+    }
+  }
+
+  return { country, countryCode };
+}
+
 function mapPlaceResultToUserPlace(
   placeResult: google.maps.places.PlaceResult,
 ): UserPlace {
+
+  const { country, countryCode } = getCountryAndCode(placeResult.address_components);
+
   return {
     PlaceId: placeResult.place_id || '',
     Address: placeResult.formatted_address || '',
@@ -52,14 +73,19 @@ function mapPlaceResultToUserPlace(
         lng: placeResult.geometry?.viewport.getSouthWest().lng() || 0,
       },
     },
+    Country: country || '',
+    CountryCode: countryCode || '',
+    CallingCode: getCountryCallingCode(countryCode as CountryCode) || ''
   };
 }
 
-const AddressAutocomplete = ({
+const AddressAutocomplete = <
+  TFieldValues extends FieldValues,
+  TName extends FieldPath<TFieldValues>,
+>({
   field,
   onPlaceSelected,
-}: AddressAutocompleteProps<RegisterRequest, 'userPlace'>) => {
-  
+}: AddressAutocompleteProps<TFieldValues, TName>) => {
   const [labelFloat, setLabelFloat] = useState(false);
   const isMountedRef = useRef(false);
   const [userLocation] = useState<{
@@ -119,10 +145,9 @@ const AddressAutocomplete = ({
       placesService.getDetails(
         {
           placeId: location.place_id,
-          fields: ['geometry', 'formatted_address', 'place_id'], // Specify the fields here
+          fields: ['geometry', 'formatted_address', 'place_id', 'address_components'], // Specify the fields here
         },
         (place, status) => {
-          place.formatted_address;
           if (status === google.maps.places.PlacesServiceStatus.OK && place) {
             const userPlace = mapPlaceResultToUserPlace(place);
             onPlaceSelected(userPlace);
@@ -205,7 +230,6 @@ const AddressAutocomplete = ({
                 onBlur={handleInputBlur}
                 onChange={(v) => {
                   hasMadeSelection.current = false;
-                  console.log(v.target.value);
                   setInputValue(v.target.value);
                 }}
                 // iconClass='text-secondary opacity-100 h-5 w-5'
@@ -216,7 +240,7 @@ const AddressAutocomplete = ({
             htmlFor={inputId} // Set the htmlFor attribute to match the input's ID
             className={`absolute transition-all duration-200 ease-in-out ${
               labelFloat || inputValue
-                ? 'left-3 top-[-0.7rem] text-xs text-primary font-semibold'
+                ? 'left-3 top-[-0.7rem] text-xs font-semibold text-primary'
                 : 'left-10 top-1/2 -translate-y-1/2 text-sm text-gray-500'
             }`}
           >

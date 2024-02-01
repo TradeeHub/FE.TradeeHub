@@ -105,6 +105,9 @@ export type UserPlace = {
   Address: string;
   Location: Location;
   Viewport: Viewport;
+  Country: string;
+  CountryCode: string;
+  CallingCode: string;
 };
 
 export type AddCustomerFormRequest = {
@@ -113,7 +116,11 @@ export type AddCustomerFormRequest = {
   surname: string;
   alias: string;
   emails: { email: string; emailType: string; receiveNotifications: boolean }[];
-  phoneNumbers: { phoneNumber: string; phoneNumberType: string; receiveNotifications: boolean }[];
+  phoneNumbers: {
+    phoneNumber: string;
+    phoneNumberType: string;
+    receiveNotifications: boolean;
+  }[];
   properties: UserPlace[];
   tags: string[];
   reference: string;

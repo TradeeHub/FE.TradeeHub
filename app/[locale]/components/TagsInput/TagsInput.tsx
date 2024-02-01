@@ -3,7 +3,7 @@ import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 
 type TagsInputProps<
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
+  TName extends FieldPath<TFieldValues>,
 > = {
   field: ControllerRenderProps<TFieldValues, TName>;
   placeholder?: string;
@@ -11,17 +11,19 @@ type TagsInputProps<
 
 const TagsInput = <
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
+  TName extends FieldPath<TFieldValues>,
 >({
   field,
-  placeholder = 'Add tags'
+  placeholder = 'Add tags',
 }: TagsInputProps<TFieldValues, TName>) => {
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  
+
   const hasValue = field.value.length > 0;
   const labelClass = `absolute left-3 top-0 transition-all duration-200 ease-in-out transform ${
-    hasValue || isFocused ? '-translate-y-4 text-xs text-primary font-semibold' : 'translate-y-1 text-sm text-gray-500'
+    hasValue || isFocused
+      ? '-translate-y-4 text-xs text-primary font-semibold'
+      : 'translate-y-1 text-sm text-gray-500'
   }`;
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -35,7 +37,7 @@ const TagsInput = <
     }
   };
 
-const removeTag = (index: number, event: React.MouseEvent) => {
+  const removeTag = (index: number, event: React.MouseEvent) => {
     event!.stopPropagation(); // Prevents the focus style from being triggered
     const newTags = [...field.value];
     newTags.splice(index, 1);
@@ -49,16 +51,19 @@ const removeTag = (index: number, event: React.MouseEvent) => {
       <label htmlFor={inputId} className={labelClass}>
         {placeholder}
       </label>
-      <div className='flex flex-wrap gap-2 items-center py-1 pl-3' onClick={() => setIsFocused(true)}>
+      <div
+        className='flex flex-wrap items-center gap-2 py-1 pl-3'
+        onClick={() => setIsFocused(true)}
+      >
         {field.value.map((tag: string, index: number) => (
-          <div key={index} className='flex items-center bg-border rounded px-2'>
+          <div key={index} className='flex items-center rounded bg-border px-2'>
             <span className='text-sm'>{tag}</span>
             <button
               type='button'
               onClick={(e) => removeTag(index, e)}
               className='ml-2 text-gray-500'
             >
-              <span className='text-primary font-bold'>×</span>
+              <span className='font-bold text-primary'>×</span>
             </button>
           </div>
         ))}
@@ -71,7 +76,7 @@ const removeTag = (index: number, event: React.MouseEvent) => {
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className='flex-1 bg-transparent focus:outline-none w-full text-sm'
+          className='w-full flex-1 bg-transparent text-sm focus:outline-none'
         />
       </div>
     </div>
