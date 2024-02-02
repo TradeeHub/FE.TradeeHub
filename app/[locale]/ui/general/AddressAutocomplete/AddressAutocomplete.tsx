@@ -16,6 +16,8 @@ import { PiMapPinLight } from 'react-icons/pi';
 import { UserPlace } from '@/app/[locale]/types/sharedTypes';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 import { CountryCode, getCountryCallingCode } from 'libphonenumber-js';
+import { RootState } from '@/lib/store';
+import { useSelector } from 'react-redux';
 
 type AddressAutocompleteProps<
   TFieldValues extends FieldValues,
@@ -24,15 +26,19 @@ type AddressAutocompleteProps<
   // ControllerRenderProps includes everything that comes from `render` prop of Controller
   field: ControllerRenderProps<TFieldValues, TName>;
   // Include other props that you expect to receive
+  placeholder?: string;
   onPlaceSelected: (place: UserPlace | null) => void;
 };
+const user = useSelector((state: RootState) => state.user.data);
 
 type AutocompletePrediction = {
   description: string;
   place_id: string;
 };
 
-function getCountryAndCode(addressComponents: google.maps.GeocoderAddressComponent[] | undefined) {
+function getCountryAndCode(
+  addressComponents: google.maps.GeocoderAddressComponent[] | undefined,
+) {
   let country: string | null = null;
   let countryCode: string | null = null;
 
@@ -53,7 +59,9 @@ function getCountryAndCode(addressComponents: google.maps.GeocoderAddressCompone
 function mapPlaceResultToUserPlace(
   placeResult: google.maps.places.PlaceResult,
 ): UserPlace {
-  const { country, countryCode } = getCountryAndCode(placeResult.address_components);
+  const { country, countryCode } = getCountryAndCode(
+    placeResult.address_components,
+  );
 
   return {
     PlaceId: placeResult.place_id || '',
@@ -74,7 +82,7 @@ function mapPlaceResultToUserPlace(
     },
     Country: country || '',
     CountryCode: countryCode || '',
-    CallingCode: getCountryCallingCode(countryCode as CountryCode) || ''
+    CallingCode: getCountryCallingCode(countryCode as CountryCode) || '',
   };
 }
 
@@ -83,6 +91,7 @@ const AddressAutocomplete = <
   TName extends FieldPath<TFieldValues>,
 >({
   field,
+  placeholder = 'Address',
   onPlaceSelected,
 }: AddressAutocompleteProps<TFieldValues, TName>) => {
   const [labelFloat, setLabelFloat] = useState(false);
@@ -144,7 +153,12 @@ const AddressAutocomplete = <
       placesService.getDetails(
         {
           placeId: location.place_id,
-          fields: ['geometry', 'formatted_address', 'place_id', 'address_components'], // Specify the fields here
+          fields: [
+            'geometry',
+            'formatted_address',
+            'place_id',
+            'address_components',
+          ], // Specify the fields here
         },
         (place, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK && place) {
@@ -222,7 +236,7 @@ const AddressAutocomplete = <
               <input
                 id={inputId} // Set the ID for the input
                 ref={inputRef}
-                className={`w-full bg-transparent px-3 py-1 pl-10 text-sm focus:outline-none`}
+                className={`text-md w-full bg-transparent px-3 py-1 pl-10 focus:outline-none`}
                 style={{ paddingLeft: '2.5rem' }}
                 value={inputValue}
                 onFocus={handleInputFocus}
@@ -243,7 +257,7 @@ const AddressAutocomplete = <
                 : 'left-10 top-1/2 -translate-y-1/2 text-sm text-gray-500'
             }`}
           >
-            {labelFloat ? 'Address' : 'Search for Address'}
+            {labelFloat ? placeholder : 'Search for ' + placeholder}
           </label>
           <PopoverContent
             ref={popoverContentRef}

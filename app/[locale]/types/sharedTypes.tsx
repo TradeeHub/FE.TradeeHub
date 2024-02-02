@@ -121,8 +121,10 @@ export type AddCustomerFormRequest = {
     phoneNumberType: string;
     receiveNotifications: boolean;
   }[];
-  properties: UserPlace[];
+  property: UserPlace;
+  isBillingAddress: boolean;
+  billingAddress: UserPlace;
   tags: string[];
   reference: string;
-  comments: string;
+  comment: string;
 };

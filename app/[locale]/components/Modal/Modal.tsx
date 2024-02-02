@@ -8,7 +8,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
 import React from 'react';
 import { z } from 'zod';
 import {
@@ -24,6 +30,7 @@ import { SwitchWithLabel } from '../SwitchWithLabel/SwitchWithLabel';
 import { CustomButton } from '../CustomButton/CustomButton';
 import TagsInput from '../TagsInput/TagsInput';
 import AddressAutocomplete from '../../ui/general/AddressAutocomplete/AddressAutocomplete';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type ModalProps = {
   triggerButton: React.ReactElement;
@@ -92,10 +99,11 @@ const formSchema = z.object({
     }),
   ),
   property: UserPlaceSchema,
+  isBillingAddress: z.boolean(),
   billingAddress: UserPlaceSchema,
   tags: z.array(z.string()),
   reference: z.string(),
-  comments: z.string(),
+  comment: z.string(),
 });
 
 const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
@@ -111,12 +119,17 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
         { phoneNumberType: '', phoneNumber: '', receiveNotifications: true },
       ],
       property: {},
+      isBillingAddress: true,
       billingAddress: {},
       tags: [],
       reference: '',
-      comments: '',
+      comment: '',
     },
   });
+
+  const { watch, setValue, resetField } = form;
+  const property = watch('property');
+  const isBillingAddress = watch('isBillingAddress');
 
   const {
     fields: phoneFields,
@@ -153,14 +166,24 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
     appendEmail({ email: '', emailType: '', receiveNotifications: true });
   };
 
-    const onPlaceSelectForProperty = (place: UserPlace | null) => {
+  const onPlaceSelectForProperty = (place: UserPlace | null) => {
     if (place) {
-      form.setValue('property', place);
+      setValue('property', place);
+      // If a property is selected, by default, billing address is same as property
+      setValue('isBillingAddress', true);
     } else {
-      form.resetField('property'); // Or set to an initial empty state as per your schema
+      resetField('property');
+      setValue('isBillingAddress', false); // Reset or adjust based on your logic
     }
   };
 
+  const onPlaceSelectForBilling = (place: UserPlace | null) => {
+    if (place) {
+      setValue('billingAddress', place);
+    } else {
+      resetField('billingAddress'); // Or set to an initial empty state as per your schema
+    }
+  };
 
   return (
     <>
@@ -169,9 +192,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
         <DialogContent className='w-full max-w-xl font-roboto font-roboto'>
           <DialogHeader className='flex items-center justify-center'>
             {' '}
-            {/* This centers the content horizontally and vertically */}
             <DialogTitle className='text-center'>{modalName}</DialogTitle>{' '}
-            {/* This centers the text within the title */}
           </DialogHeader>
 
           <Form {...form}>
@@ -196,7 +217,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
               </div>
 
               <div
-                className='pd-2 flex flex-1 items-center gap-4'
+                className='pd-2 flex flex-1 items-center gap-4 '
                 style={{ marginTop: 15 }}
               >
                 <div className='flex-1'>
@@ -433,22 +454,70 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
 
               {/* Property*/}
               <div className='pt-2'>
-              <FormField
-                control={form.control}
-                name={`property`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <AddressAutocomplete
-                        field={field}
-                        onPlaceSelected={onPlaceSelectForProperty}
-                      />
-                    </FormControl>
-                  </FormItem>
+                <FormField
+                  control={form.control}
+                  name={`property`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <AddressAutocomplete
+                          field={field}
+                          onPlaceSelected={onPlaceSelectForProperty}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                {property?.PlaceId && (
+                  <div className='mt-1 pl-4'>
+                    <FormField
+                      control={form.control}
+                      name='isBillingAddress'
+                      render={({ field }) => (
+                        <FormItem className='flex flex-row items-start space-x-2 space-y-0'>
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={(checked) => {
+                                field.onChange(checked);
+                                if (checked) {
+                                  // Optionally reset billingAddress when isBillingAddress is true
+                                  resetField('billingAddress');
+                                }
+                              }}
+                            />
+                          </FormControl>
+                          <FormLabel className='text-sm'>
+                            Same address for billing and property.
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 )}
-              />
+
+                {/* Conditionally render billing address field */}
+                {!isBillingAddress && property?.PlaceId && (
+                  <div className='pt-2'>
+                    <FormField
+                      control={form.control}
+                      name='billingAddress'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <AddressAutocomplete
+                              field={field}
+                              onPlaceSelected={onPlaceSelectForBilling}
+                              placeholder='Billing Address'
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
               </div>
-              
+
               {/* Tags */}
               <div className='pt-2'>
                 <FormField

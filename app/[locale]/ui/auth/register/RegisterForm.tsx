@@ -114,7 +114,7 @@ const transformRegisterRequest = (
       viewport: {
         northeast: request.userPlace?.Viewport.northeast ?? { lat: 0, lng: 0 },
         southwest: request.userPlace?.Viewport.southwest ?? { lat: 0, lng: 0 },
-      }
+      },
     },
     companyName: request.companyName,
     companyType: request.companyType,
