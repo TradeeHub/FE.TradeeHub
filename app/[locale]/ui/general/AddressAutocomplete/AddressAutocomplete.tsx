@@ -165,7 +165,6 @@ const AddressAutocomplete = <
             const userPlace = mapPlaceResultToUserPlace(place);
             onPlaceSelected(userPlace);
             setSuggestions([]);
-            console.log('Place details:', place);
             setInputValue(place.formatted_address || '');
           } else {
             console.error('Error getting details:', status);
