@@ -29,7 +29,6 @@ type AddressAutocompleteProps<
   placeholder?: string;
   onPlaceSelected: (place: UserPlace | null) => void;
 };
-const user = useSelector((state: RootState) => state.user.data);
 
 type AutocompletePrediction = {
   description: string;
@@ -94,12 +93,14 @@ const AddressAutocomplete = <
   placeholder = 'Address',
   onPlaceSelected,
 }: AddressAutocompleteProps<TFieldValues, TName>) => {
+
+  const user = useSelector((state: RootState) => state.user.data);
   const [labelFloat, setLabelFloat] = useState(false);
   const isMountedRef = useRef(false);
-  const [userLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
+  // const [userLocation] = useState<{
+  //   latitude: number;
+  //   longitude: number;
+  // } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState<string>('');
   const [suggestions, setSuggestions] = useState<AutocompletePrediction[]>([]);
@@ -111,16 +112,15 @@ const AddressAutocomplete = <
 
   const fetchPredictions = debounce((input) => {
     if (input && autocompleteServiceRef.current) {
+      const location = new google.maps.LatLng(
+        user?.place.location.lat,
+        user?.place.location.lng,
+      );
       autocompleteServiceRef.current.getPlacePredictions(
         {
           input,
-          location: userLocation
-            ? new google.maps.LatLng(
-                userLocation.latitude,
-                userLocation.longitude,
-              )
-            : undefined,
-          radius: userLocation ? 50000 : undefined,
+          location: user ? location : undefined,
+          radius: user ? 48280 : undefined,
           types: ['address'],
         },
         (predictions, status) => {
@@ -245,6 +245,7 @@ const AddressAutocomplete = <
                   hasMadeSelection.current = false;
                   setInputValue(v.target.value);
                 }}
+                autoComplete='nope'
                 // iconClass='text-secondary opacity-100 h-5 w-5'
               />
             </Command>
