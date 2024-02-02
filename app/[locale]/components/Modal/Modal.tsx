@@ -498,7 +498,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
 
                 {/* Conditionally render billing address field */}
                 {!isBillingAddress && property?.PlaceId && (
-                  <div className='pt-2'>
+                  <div className='pt-6'>
                     <FormField
                       control={form.control}
                       name='billingAddress'
