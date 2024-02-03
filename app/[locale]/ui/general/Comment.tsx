@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 import { IconType } from 'react-icons';
 
@@ -24,6 +24,11 @@ const CommentInput = <
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
   const inputId = `input-${field.name}`;
+
+  useEffect(() => {
+    // Check if the textarea has a value on component mount
+    setIsFilled(!!field.value);
+  }, [field.value]); // Dependency array ensures this runs only when field.value changes
 
   const handleFocus = () => {
     setIsFocused(true);
