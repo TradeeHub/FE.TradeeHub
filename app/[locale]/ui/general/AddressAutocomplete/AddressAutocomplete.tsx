@@ -93,7 +93,6 @@ const AddressAutocomplete = <
   placeholder = 'Address',
   onPlaceSelected,
 }: AddressAutocompleteProps<TFieldValues, TName>) => {
-
   const user = useSelector((state: RootState) => state.user.data);
   const [labelFloat, setLabelFloat] = useState(false);
   const isMountedRef = useRef(false);

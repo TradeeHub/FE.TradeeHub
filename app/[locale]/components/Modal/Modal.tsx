@@ -31,6 +31,7 @@ import { CustomButton } from '../CustomButton/CustomButton';
 import TagsInput from '../TagsInput/TagsInput';
 import AddressAutocomplete from '../../ui/general/AddressAutocomplete/AddressAutocomplete';
 import { Checkbox } from '@/components/ui/checkbox';
+import CommentSection from '../../ui/general/Comment';
 
 type ModalProps = {
   triggerButton: React.ReactElement;
@@ -189,7 +190,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
     <>
       <Dialog>
         <DialogTrigger asChild>{triggerButton}</DialogTrigger>
-        <DialogContent className='w-full max-w-xl font-roboto font-roboto'>
+        <DialogContent className='w-full max-w-2xl font-roboto font-roboto'>
           <DialogHeader className='flex items-center justify-center'>
             {' '}
             <DialogTitle className='text-center'>{modalName}</DialogTitle>{' '}
@@ -530,6 +531,19 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                     />
                   )}
                 />
+              </div>
+
+              <div className='pt-2'>
+                <FormField
+                  control={form.control}
+                  name='comment'
+                  render={({ field }) => (
+                    <CommentSection
+                      field={field}
+                      placeholder='Add an internal comment' // Optional: customize the placeholder text
+                    />
+                  )}
+                />{' '}
               </div>
             </form>
           </Form>
