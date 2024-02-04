@@ -32,6 +32,7 @@ import TagsInput from '../TagsInput/TagsInput';
 import AddressAutocomplete from '../../ui/general/AddressAutocomplete/AddressAutocomplete';
 import { Checkbox } from '@/components/ui/checkbox';
 import CommentSection from '../../ui/general/Comment';
+import { AddNewCustomerRequestInput } from '@/generatedGraphql';
 
 type ModalProps = {
   triggerButton: React.ReactElement;
@@ -101,7 +102,7 @@ const formSchema = z.object({
   ),
   property: UserPlaceSchema,
   isBillingAddress: z.boolean(),
-  billingAddress: UserPlaceSchema,
+  billing: UserPlaceSchema,
   tags: z.array(z.string()),
   reference: z.string(),
   comment: z.string(),
@@ -121,7 +122,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
       ],
       property: {},
       isBillingAddress: true,
-      billingAddress: {},
+      billing: {},
       tags: [],
       reference: '',
       comment: '',
@@ -151,9 +152,14 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
     name: 'emails',
   });
 
-  const handleAddCustomer = () => {
-    console.log('FORM VALUES ', form.getValues());
-  };
+const handleAddCustomer = () => {
+  const formValues = form.getValues();
+
+  const customerData = formValues as unknown as AddNewCustomerRequestInput;
+
+  console.log('CUSTOMER DATA ', customerData);
+};
+
 
   const addPhoneNumber = () => {
     appendPhone({
@@ -180,9 +186,9 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
 
   const onPlaceSelectForBilling = (place: UserPlace | null) => {
     if (place) {
-      setValue('billingAddress', place);
+      setValue('billing', place);
     } else {
-      resetField('billingAddress'); // Or set to an initial empty state as per your schema
+      resetField('billing'); // Or set to an initial empty state as per your schema
     }
   };
 
@@ -483,7 +489,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                                 field.onChange(checked);
                                 if (checked) {
                                   // Optionally reset billingAddress when isBillingAddress is true
-                                  resetField('billingAddress');
+                                  resetField('billing');
                                 }
                               }}
                             />
@@ -502,7 +508,7 @@ const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
                   <div className='pt-6'>
                     <FormField
                       control={form.control}
-                      name='billingAddress'
+                      name='billing'
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>

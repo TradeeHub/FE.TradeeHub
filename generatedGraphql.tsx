@@ -29,6 +29,21 @@ export type AccountConfirmationResponse = {
   message?: Maybe<Scalars['String']['output']>;
 };
 
+export type AddNewCustomerRequestInput = {
+  alias?: InputMaybe<Scalars['String']['input']>;
+  billing?: InputMaybe<PlaceRequestInput>;
+  comment?: InputMaybe<Scalars['String']['input']>;
+  emails?: InputMaybe<Array<EmailRequestInput>>;
+  isBillingAddress: Scalars['Boolean']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  phoneNumbers?: InputMaybe<Array<PhoneNumberRequestInput>>;
+  property?: InputMaybe<PlaceRequestInput>;
+  reference?: InputMaybe<Scalars['ID']['input']>;
+  surname?: InputMaybe<Scalars['String']['input']>;
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
 export enum ApplyPolicy {
   AfterResolver = 'AFTER_RESOLVER',
   BeforeResolver = 'BEFORE_RESOLVER',
@@ -421,6 +436,12 @@ export type EmailDbObjectFilter = {
   receiveNotifications_not?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type EmailRequestInput = {
+  email: Scalars['String']['input'];
+  emailType: Scalars['String']['input'];
+  receiveNotifications: Scalars['Boolean']['input'];
+};
+
 export type ForgotPasswordResponse = {
   __typename?: 'ForgotPasswordResponse';
   codeDeliveryDetails?: Maybe<CodeDeliveryDetailsType>;
@@ -597,6 +618,7 @@ export type LogoutResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addNewCustomer: Scalars['String']['output'];
   changePassword: ConfirmForgotPasswordResponse;
   confirmAccount: AccountConfirmationResponse;
   forgotPassword: ForgotPasswordResponse;
@@ -605,6 +627,11 @@ export type Mutation = {
   logout: LogoutResponse;
   register: SignUpResponse;
   resendVerificationCode: ResendConfirmationCodeResponse;
+};
+
+
+export type MutationAddNewCustomerArgs = {
+  request: AddNewCustomerRequestInput;
 };
 
 
@@ -753,6 +780,12 @@ export type PhoneNumberDbObjectFilter = {
   phoneNumber_starts_with?: InputMaybe<Scalars['String']['input']>;
   receiveNotifications?: InputMaybe<Scalars['Boolean']['input']>;
   receiveNotifications_not?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type PhoneNumberRequestInput = {
+  phoneNumber: Scalars['String']['input'];
+  phoneNumberType: Scalars['String']['input'];
+  receiveNotifications: Scalars['Boolean']['input'];
 };
 
 export type PlaceDbObject = {
@@ -1216,6 +1249,13 @@ export type ResendVerificationCodeMutationVariables = Exact<{
 
 export type ResendVerificationCodeMutation = { __typename?: 'Mutation', resendVerificationCode: { __typename?: 'ResendConfirmationCodeResponse', contentLength: any, httpStatusCode: HttpStatusCode, responseMetadata?: { __typename?: 'ResponseMetadata', checksumAlgorithm: CoreChecksumAlgorithm, checksumValidationStatus: ChecksumValidationStatus, requestId?: string | null, metadata?: Array<{ __typename?: 'KeyValuePairOfStringAndString', key: string, value: string }> | null } | null } };
 
+export type AddNewCustomerMutationVariables = Exact<{
+  input: AddNewCustomerRequestInput;
+}>;
+
+
+export type AddNewCustomerMutation = { __typename?: 'Mutation', addNewCustomer: string };
+
 export type CustomerByIdQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -1552,6 +1592,37 @@ export function useResendVerificationCodeMutation(baseOptions?: Apollo.MutationH
 export type ResendVerificationCodeMutationHookResult = ReturnType<typeof useResendVerificationCodeMutation>;
 export type ResendVerificationCodeMutationResult = Apollo.MutationResult<ResendVerificationCodeMutation>;
 export type ResendVerificationCodeMutationOptions = Apollo.BaseMutationOptions<ResendVerificationCodeMutation, ResendVerificationCodeMutationVariables>;
+export const AddNewCustomerDocument = gql`
+    mutation AddNewCustomer($input: AddNewCustomerRequestInput!) {
+  addNewCustomer(request: $input)
+}
+    `;
+export type AddNewCustomerMutationFn = Apollo.MutationFunction<AddNewCustomerMutation, AddNewCustomerMutationVariables>;
+
+/**
+ * __useAddNewCustomerMutation__
+ *
+ * To run a mutation, you first call `useAddNewCustomerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddNewCustomerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addNewCustomerMutation, { data, loading, error }] = useAddNewCustomerMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddNewCustomerMutation(baseOptions?: Apollo.MutationHookOptions<AddNewCustomerMutation, AddNewCustomerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddNewCustomerMutation, AddNewCustomerMutationVariables>(AddNewCustomerDocument, options);
+      }
+export type AddNewCustomerMutationHookResult = ReturnType<typeof useAddNewCustomerMutation>;
+export type AddNewCustomerMutationResult = Apollo.MutationResult<AddNewCustomerMutation>;
+export type AddNewCustomerMutationOptions = Apollo.BaseMutationOptions<AddNewCustomerMutation, AddNewCustomerMutationVariables>;
 export const CustomerByIdDocument = gql`
     query CustomerById($id: ID!) {
   customerById(id: $id) {

@@ -123,7 +123,7 @@ export type AddCustomerFormRequest = {
   }[];
   property: UserPlace;
   isBillingAddress: boolean;
-  billingAddress: UserPlace;
+  billing: UserPlace;
   tags: string[];
   reference: string;
   comment: string;
