@@ -1,9 +1,11 @@
 import { useQuery } from '@apollo/client';
 import {
+  AddNewCustomerRequestInput,
   CustomerByIdDocument,
   CustomerByIdQuery,
   CustomerByIdQueryVariables,
   CustomerDbObject,
+  useAddNewCustomerMutation,
 } from '@/generatedGraphql';
 import { UseCustomerReturnType } from '@/app/[locale]/types/sharedTypes';
 
@@ -25,4 +27,28 @@ const useCustomer = (customerId: string): UseCustomerReturnType => {
   return { customer, loading, error };
 };
 
-export default useCustomer;
+const useAddNewCustomer = () => {
+  const [addNewCustomerMutation, { data, loading, error }] = useAddNewCustomerMutation();
+
+  const addNewCustomer = async (input: AddNewCustomerRequestInput) => {
+    try {
+      await addNewCustomerMutation({
+        variables: { input },
+      });
+    } catch (e) {
+      console.error('Register error:', e);
+    }
+  };
+
+  return {
+    addNewCustomer,
+    addNewCustomerResponse: data,
+    addNewCustomerLoading: loading,
+    addNewCustomerError: error,
+  };
+};
+
+export {
+  useCustomer,
+  useAddNewCustomer
+};

@@ -31,13 +31,13 @@ export type AccountConfirmationResponse = {
 
 export type AddNewCustomerRequestInput = {
   alias?: InputMaybe<Scalars['String']['input']>;
-  billing?: InputMaybe<PlaceRequestInput>;
+  billing?: InputMaybe<CustomerPlaceRequestInput>;
   comment?: InputMaybe<Scalars['String']['input']>;
   emails?: InputMaybe<Array<EmailRequestInput>>;
   isBillingAddress: Scalars['Boolean']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   phoneNumbers?: InputMaybe<Array<PhoneNumberRequestInput>>;
-  property?: InputMaybe<PlaceRequestInput>;
+  property?: InputMaybe<CustomerPlaceRequestInput>;
   reference?: InputMaybe<Scalars['ID']['input']>;
   surname?: InputMaybe<Scalars['String']['input']>;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -360,6 +360,16 @@ export type CustomerDbObjectSort = {
   surname?: InputMaybe<SortOperationKind>;
   title?: InputMaybe<SortOperationKind>;
   userOwnerId?: InputMaybe<SortOperationKind>;
+};
+
+export type CustomerPlaceRequestInput = {
+  address: Scalars['String']['input'];
+  callingCode: Scalars['String']['input'];
+  country: Scalars['String']['input'];
+  countryCode: Scalars['String']['input'];
+  location: LocationRequestInput;
+  placeId: Scalars['String']['input'];
+  viewport: ViewportRequestInput;
 };
 
 export enum CustomerStatus {

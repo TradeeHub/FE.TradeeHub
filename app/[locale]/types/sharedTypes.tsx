@@ -123,8 +123,8 @@ export type AddCustomerFormRequest = {
   }[];
   property: UserPlace;
   isBillingAddress: boolean;
-  billing: UserPlace;
+  billing?: UserPlace | null;
   tags: string[];
-  reference: string;
-  comment: string;
+  reference?: string | null;
+  comment?: string | null;
 };

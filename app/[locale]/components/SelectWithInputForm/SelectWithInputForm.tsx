@@ -45,20 +45,28 @@ const SelectWithInputForm = <
   const [isEditable, setIsEditable] = useState(false);
 
   useEffect(() => {
-    if (field.value === '') {
-      form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>);
+    const currentValue = form.getValues(field.name);
+    // Set form value to an empty string if defaultValue is 'Empty'
+    const effectiveValue = defaultValue === 'Empty' ? '' : defaultValue;
+    if (currentValue === undefined || currentValue === '') {
+      form.setValue(field.name, effectiveValue as PathValue<TFieldValues, TFieldName>, { shouldValidate: true });
     }
-  }, [form, field.name, defaultValue, field.value]);
+  }, [form, field.name, defaultValue]);
 
-  const handleSelectChange = (value: string) => {
-    if (value === 'Other') {
-      setIsEditable(true);
-      form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>);
-    } else {
-      setIsEditable(false);
-      form.setValue(field.name, value as PathValue<TFieldValues, TFieldName>);
-    }
-  };
+const handleSelectChange = (value: string) => {
+  if (value.toLowerCase() === 'other') {
+    setIsEditable(true);
+    form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>);
+  } 
+  else if (value.toLowerCase() === 'empty') {
+    setIsEditable(false);
+    form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>, { shouldDirty: true });
+  } 
+  else {
+    setIsEditable(false);
+    form.setValue(field.name, value as PathValue<TFieldValues, TFieldName>);
+  }
+};
 
   const handleCancel = () => {
     setIsEditable(false);
