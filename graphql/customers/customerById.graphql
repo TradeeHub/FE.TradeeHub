@@ -20,6 +20,7 @@ query CustomerById($id: ID!) {
     comments {
       comment
       uploadUrls
+      commentType
     }
     emails {
       email
@@ -33,7 +34,6 @@ query CustomerById($id: ID!) {
       id
       property {
         address
-        fullAddress
       }
     }
     tags

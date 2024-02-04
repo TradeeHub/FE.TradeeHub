@@ -16,7 +16,6 @@ query CustomersPaged($pageSize: Int!, $cursor: String) {
         properties {
           property {
             address
-            fullAddress
           }
         }
       }

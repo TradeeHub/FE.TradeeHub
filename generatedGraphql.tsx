@@ -29,14 +29,6 @@ export type AccountConfirmationResponse = {
   message?: Maybe<Scalars['String']['output']>;
 };
 
-export type AddressDbObject = {
-  __typename?: 'AddressDbObject';
-  address?: Maybe<Scalars['String']['output']>;
-  city?: Maybe<Scalars['String']['output']>;
-  fullAddress?: Maybe<Scalars['String']['output']>;
-  postcode?: Maybe<Scalars['String']['output']>;
-};
-
 export enum ApplyPolicy {
   AfterResolver = 'AFTER_RESOLVER',
   BeforeResolver = 'BEFORE_RESOLVER',
@@ -65,28 +57,24 @@ export type CodeDeliveryDetailsType = {
 
 export type CommentDbObject = {
   __typename?: 'CommentDbObject';
+  archived: Scalars['Boolean']['output'];
   comment?: Maybe<Scalars['String']['output']>;
-  uploadUrls: Array<Scalars['String']['output']>;
+  commentType: CommentType;
+  createdAt: Scalars['DateTime']['output'];
+  createdById: Scalars['UUID']['output'];
+  customerId: Scalars['ID']['output'];
+  id: Scalars['ID']['output'];
+  uploadUrls?: Maybe<Array<Scalars['String']['output']>>;
+  userOwnerId: Scalars['UUID']['output'];
 };
 
-export type CommentDbObjectFilter = {
-  AND?: InputMaybe<Array<CommentDbObjectFilter>>;
-  OR?: InputMaybe<Array<CommentDbObjectFilter>>;
-  comment?: InputMaybe<Scalars['String']['input']>;
-  comment_contains?: InputMaybe<Scalars['String']['input']>;
-  comment_ends_with?: InputMaybe<Scalars['String']['input']>;
-  comment_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  comment_not?: InputMaybe<Scalars['String']['input']>;
-  comment_not_contains?: InputMaybe<Scalars['String']['input']>;
-  comment_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  comment_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  comment_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  comment_starts_with?: InputMaybe<Scalars['String']['input']>;
-  uploadUrls_all?: InputMaybe<ISingleFilterOfStringFilter>;
-  uploadUrls_any?: InputMaybe<Scalars['Boolean']['input']>;
-  uploadUrls_none?: InputMaybe<ISingleFilterOfStringFilter>;
-  uploadUrls_some?: InputMaybe<ISingleFilterOfStringFilter>;
-};
+export enum CommentType {
+  Appointment = 'APPOINTMENT',
+  General = 'GENERAL',
+  Invoice = 'INVOICE',
+  Job = 'JOB',
+  Quote = 'QUOTE'
+}
 
 export type ConfirmForgotPasswordResponse = {
   __typename?: 'ConfirmForgotPasswordResponse';
@@ -113,7 +101,7 @@ export enum CoreChecksumAlgorithm {
 export type CustomerDbObject = {
   __typename?: 'CustomerDbObject';
   alias?: Maybe<Scalars['String']['output']>;
-  comments?: Maybe<Array<CommentDbObject>>;
+  comments?: Maybe<Array<Maybe<CommentDbObject>>>;
   createdAt: Scalars['DateTime']['output'];
   createdBy: Scalars['UUID']['output'];
   customerRating?: Maybe<Scalars['Decimal']['output']>;
@@ -130,10 +118,11 @@ export type CustomerDbObject = {
   referralFeePercentage?: Maybe<Scalars['Decimal']['output']>;
   referredByCustomer?: Maybe<Scalars['ID']['output']>;
   referredByOther?: Maybe<Scalars['String']['output']>;
-  status: Scalars['String']['output'];
+  status: CustomerStatus;
   surname?: Maybe<Scalars['String']['output']>;
   tags?: Maybe<Array<Scalars['String']['output']>>;
   title?: Maybe<Scalars['String']['output']>;
+  userOwnerId: Scalars['UUID']['output'];
 };
 
 export type CustomerDbObjectFilter = {
@@ -149,10 +138,10 @@ export type CustomerDbObjectFilter = {
   alias_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   alias_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   alias_starts_with?: InputMaybe<Scalars['String']['input']>;
-  comments_all?: InputMaybe<CommentDbObjectFilter>;
+  comments_all?: InputMaybe<ObjectIdFilter>;
   comments_any?: InputMaybe<Scalars['Boolean']['input']>;
-  comments_none?: InputMaybe<CommentDbObjectFilter>;
-  comments_some?: InputMaybe<CommentDbObjectFilter>;
+  comments_none?: InputMaybe<ObjectIdFilter>;
+  comments_some?: InputMaybe<ObjectIdFilter>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   createdAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
   createdAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
@@ -289,16 +278,18 @@ export type CustomerDbObjectFilter = {
   referredByOther_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   referredByOther_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   referredByOther_starts_with?: InputMaybe<Scalars['String']['input']>;
-  status?: InputMaybe<Scalars['String']['input']>;
-  status_contains?: InputMaybe<Scalars['String']['input']>;
-  status_ends_with?: InputMaybe<Scalars['String']['input']>;
-  status_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  status_not?: InputMaybe<Scalars['String']['input']>;
-  status_not_contains?: InputMaybe<Scalars['String']['input']>;
-  status_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  status_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  status_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  status_starts_with?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<CustomerStatus>;
+  status_gt?: InputMaybe<CustomerStatus>;
+  status_gte?: InputMaybe<CustomerStatus>;
+  status_in?: InputMaybe<Array<CustomerStatus>>;
+  status_lt?: InputMaybe<CustomerStatus>;
+  status_lte?: InputMaybe<CustomerStatus>;
+  status_not?: InputMaybe<CustomerStatus>;
+  status_not_gt?: InputMaybe<CustomerStatus>;
+  status_not_gte?: InputMaybe<CustomerStatus>;
+  status_not_in?: InputMaybe<Array<CustomerStatus>>;
+  status_not_lt?: InputMaybe<CustomerStatus>;
+  status_not_lte?: InputMaybe<CustomerStatus>;
   surname?: InputMaybe<Scalars['String']['input']>;
   surname_contains?: InputMaybe<Scalars['String']['input']>;
   surname_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -323,6 +314,18 @@ export type CustomerDbObjectFilter = {
   title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   title_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   title_starts_with?: InputMaybe<Scalars['String']['input']>;
+  userOwnerId?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_gt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_gte?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  userOwnerId_lt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_lte?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  userOwnerId_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_lte?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CustomerDbObjectSort = {
@@ -341,7 +344,23 @@ export type CustomerDbObjectSort = {
   status?: InputMaybe<SortOperationKind>;
   surname?: InputMaybe<SortOperationKind>;
   title?: InputMaybe<SortOperationKind>;
+  userOwnerId?: InputMaybe<SortOperationKind>;
 };
+
+export enum CustomerStatus {
+  AppointmentSet = 'APPOINTMENT_SET',
+  ClosedLost = 'CLOSED_LOST',
+  Completed = 'COMPLETED',
+  FollowUpRequired = 'FOLLOW_UP_REQUIRED',
+  InvoiceSent = 'INVOICE_SENT',
+  Lead = 'LEAD',
+  PaymentReceived = 'PAYMENT_RECEIVED',
+  QuoteAccepted = 'QUOTE_ACCEPTED',
+  QuoteProvided = 'QUOTE_PROVIDED',
+  WorkCompleted = 'WORK_COMPLETED',
+  WorkInProgress = 'WORK_IN_PROGRESS',
+  WorkScheduled = 'WORK_SCHEDULED'
+}
 
 /** A connection to a list of items. */
 export type CustomersConnection = {
@@ -372,6 +391,7 @@ export type EmailDbObject = {
   __typename?: 'EmailDbObject';
   email: Scalars['String']['output'];
   emailType: Scalars['String']['output'];
+  receiveNotifications: Scalars['Boolean']['output'];
 };
 
 export type EmailDbObjectFilter = {
@@ -397,6 +417,8 @@ export type EmailDbObjectFilter = {
   email_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   email_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   email_starts_with?: InputMaybe<Scalars['String']['input']>;
+  receiveNotifications?: InputMaybe<Scalars['Boolean']['input']>;
+  receiveNotifications_not?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type ForgotPasswordResponse = {
@@ -703,6 +725,7 @@ export type PhoneNumberDbObject = {
   __typename?: 'PhoneNumberDbObject';
   phoneNumber: Scalars['String']['output'];
   phoneNumberType: Scalars['String']['output'];
+  receiveNotifications: Scalars['Boolean']['output'];
 };
 
 export type PhoneNumberDbObjectFilter = {
@@ -728,6 +751,8 @@ export type PhoneNumberDbObjectFilter = {
   phoneNumber_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   phoneNumber_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   phoneNumber_starts_with?: InputMaybe<Scalars['String']['input']>;
+  receiveNotifications?: InputMaybe<Scalars['Boolean']['input']>;
+  receiveNotifications_not?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type PlaceDbObject = {
@@ -820,18 +845,18 @@ export type PlaceRequestInput = {
 
 export type PropertyDbObject = {
   __typename?: 'PropertyDbObject';
-  billing?: Maybe<AddressDbObject>;
+  billing?: Maybe<PlaceDbObject>;
   createdAt: Scalars['DateTime']['output'];
   createdBy: Scalars['UUID']['output'];
   /** The customers associated with this property. */
   customers?: Maybe<Array<Maybe<CustomerDbObject>>>;
   id: Scalars['ID']['output'];
   jobs?: Maybe<Array<Scalars['ID']['output']>>;
-  location?: Maybe<Scalars['String']['output']>;
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
   modifiedBy?: Maybe<Scalars['UUID']['output']>;
-  property: AddressDbObject;
+  property: PlaceDbObject;
   quotes?: Maybe<Array<Scalars['ID']['output']>>;
+  userOwnerId: Scalars['UUID']['output'];
 };
 
 export type Query = {
@@ -925,7 +950,7 @@ export type UserDbObject = {
   companyPriority: Scalars['String']['output'];
   companySize: Scalars['String']['output'];
   companyType: Scalars['String']['output'];
-  createdDate: Scalars['DateTime']['output'];
+  createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   emailVerified: Scalars['Boolean']['output'];
   id: Scalars['UUID']['output'];
@@ -936,7 +961,7 @@ export type UserDbObject = {
   place: PlaceDbObject;
   referralSource: Scalars['String']['output'];
   staff?: Maybe<Array<Maybe<UserDbObject>>>;
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type UserDbObjectFilter = {
@@ -986,18 +1011,18 @@ export type UserDbObjectFilter = {
   companyType_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   companyType_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   companyType_starts_with?: InputMaybe<Scalars['String']['input']>;
-  createdDate?: InputMaybe<Scalars['DateTime']['input']>;
-  createdDate_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdDate_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdDate_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  createdDate_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdDate_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdDate_not?: InputMaybe<Scalars['DateTime']['input']>;
-  createdDate_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdDate_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdDate_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  createdDate_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdDate_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   emailVerified?: InputMaybe<Scalars['Boolean']['input']>;
   emailVerified_not?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1061,18 +1086,18 @@ export type UserDbObjectFilter = {
   staff_any?: InputMaybe<Scalars['Boolean']['input']>;
   staff_none?: InputMaybe<ISingleFilterOfGuidFilter>;
   staff_some?: InputMaybe<ISingleFilterOfGuidFilter>;
-  updatedDate?: InputMaybe<Scalars['DateTime']['input']>;
-  updatedDate_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  updatedDate_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  updatedDate_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  updatedDate_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  updatedDate_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  updatedDate_not?: InputMaybe<Scalars['DateTime']['input']>;
-  updatedDate_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  updatedDate_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  updatedDate_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  updatedDate_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  updatedDate_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  updatedAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  updatedAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type UserDbObjectSort = {
@@ -1080,7 +1105,7 @@ export type UserDbObjectSort = {
   companyPriority?: InputMaybe<SortOperationKind>;
   companySize?: InputMaybe<SortOperationKind>;
   companyType?: InputMaybe<SortOperationKind>;
-  createdDate?: InputMaybe<SortOperationKind>;
+  createdAt?: InputMaybe<SortOperationKind>;
   email?: InputMaybe<SortOperationKind>;
   emailVerified?: InputMaybe<SortOperationKind>;
   id?: InputMaybe<SortOperationKind>;
@@ -1090,7 +1115,7 @@ export type UserDbObjectSort = {
   phoneVerified?: InputMaybe<SortOperationKind>;
   place?: InputMaybe<PlaceDbObjectSort>;
   referralSource?: InputMaybe<SortOperationKind>;
-  updatedDate?: InputMaybe<SortOperationKind>;
+  updatedAt?: InputMaybe<SortOperationKind>;
 };
 
 /** A connection to a list of items. */
@@ -1196,7 +1221,7 @@ export type CustomerByIdQueryVariables = Exact<{
 }>;
 
 
-export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerDbObject', id: string, customerReferenceNumber: string, title?: string | null, name?: string | null, surname?: string | null, fullName: string, alias?: string | null, status: string, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, referredByCustomer?: string | null, referredByOther?: string | null, referralFeeFixed?: any | null, referralFeePercentage?: any | null, customerRating?: any | null, tags?: Array<string> | null, comments?: Array<{ __typename?: 'CommentDbObject', comment?: string | null, uploadUrls: Array<string> }> | null, emails?: Array<{ __typename?: 'EmailDbObject', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', id: string, property: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } | null };
+export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerDbObject', id: string, customerReferenceNumber: string, title?: string | null, name?: string | null, surname?: string | null, fullName: string, alias?: string | null, status: CustomerStatus, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, referredByCustomer?: string | null, referredByOther?: string | null, referralFeeFixed?: any | null, referralFeePercentage?: any | null, customerRating?: any | null, tags?: Array<string> | null, comments?: Array<{ __typename?: 'CommentDbObject', comment?: string | null, uploadUrls?: Array<string> | null, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailDbObject', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', id: string, property: { __typename?: 'PlaceDbObject', address: string } } | null> | null } | null };
 
 export type CustomersPagedQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -1204,7 +1229,7 @@ export type CustomersPagedQueryVariables = Exact<{
 }>;
 
 
-export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, title?: string | null, status: string, fullName: string, tags?: Array<string> | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', property: { __typename?: 'AddressDbObject', address?: string | null, fullAddress?: string | null } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerDbObject', id: string, title?: string | null, status: CustomerStatus, fullName: string, tags?: Array<string> | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberDbObject', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyDbObject', property: { __typename?: 'PlaceDbObject', address: string } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 
 export const ChangePasswordDocument = gql`
@@ -1550,6 +1575,7 @@ export const CustomerByIdDocument = gql`
     comments {
       comment
       uploadUrls
+      commentType
     }
     emails {
       email
@@ -1563,7 +1589,6 @@ export const CustomerByIdDocument = gql`
       id
       property {
         address
-        fullAddress
       }
     }
     tags
@@ -1622,7 +1647,6 @@ export const CustomersPagedDocument = gql`
         properties {
           property {
             address
-            fullAddress
           }
         }
       }
