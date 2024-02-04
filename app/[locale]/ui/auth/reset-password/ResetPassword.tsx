@@ -12,7 +12,7 @@ import { Card } from '@/components/ui/card';
 import {
   useChangePassword,
   useForgotPassword,
-} from '@/app/[locale]/hooks/customer/auth/useAuth';
+} from '@/app/[locale]/hooks/auth/useAuth';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import Step2ResetPasswordForm from './ResetFormSteps/Step2ResetPasswordForm';

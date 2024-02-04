@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'; // Keep these imports 
 import { resetUser, setUser } from '@/lib/features/user/userSlice';
 import authenticatedVar from './constants/authenticated';
 import { AuthenticationGuardProps } from './types/sharedTypes';
-import { useGetLoggedInUser } from './hooks/customer/auth/useAuth';
+import { useGetLoggedInUser } from './hooks/auth/useAuth';
 
 const AuthenticationGuard = ({
   children,

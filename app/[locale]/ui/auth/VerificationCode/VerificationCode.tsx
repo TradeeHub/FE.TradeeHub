@@ -4,7 +4,7 @@ import {
   useConfirmAccount,
   useLogin,
   useResendVerificationCode,
-} from '@/app/[locale]/hooks/customer/auth/useAuth';
+} from '@/app/[locale]/hooks/auth/useAuth';
 import { useEffect, useState } from 'react';
 import ValidationMessage from '../ValidationMessage/ValidationMessage';
 import { ConfirmAccountMutation } from '@/generatedGraphql';

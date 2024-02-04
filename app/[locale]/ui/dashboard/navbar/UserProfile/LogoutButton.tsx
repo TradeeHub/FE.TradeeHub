@@ -1,5 +1,5 @@
 import authenticatedVar from '@/app/[locale]/constants/authenticated';
-import { useLogout } from '@/app/[locale]/hooks/customer/auth/useAuth';
+import { useLogout } from '@/app/[locale]/hooks/auth/useAuth';
 import { FiLogOut } from 'react-icons/fi';
 import MenuItemButton from './MenuItemButton';
 

@@ -11,7 +11,7 @@ import Step3RegisterForm from './RegisterFormSteps/Step3RegisterForm';
 import Step4RegisterForm from './RegisterFormSteps/Step4RegisterForm';
 import { Card } from '@/components/ui/card';
 import { RegisterRequest, UserPlace } from '../../../types/sharedTypes';
-import { useRegister } from '../../../hooks/customer/auth/useAuth';
+import { useRegister } from '../../../hooks/auth/useAuth';
 import { RegisterRequestInput } from '@/generatedGraphql';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { FaCheck } from 'react-icons/fa6';

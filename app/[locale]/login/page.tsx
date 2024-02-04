@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
 import { FaGoogle, FaApple, FaWindows } from 'react-icons/fa';
-import { useLogin } from '../hooks/customer/auth/useAuth';
+import { useLogin } from '../hooks/auth/useAuth';
 import { useLocale } from 'next-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '@/lib/features/user/userSlice';
