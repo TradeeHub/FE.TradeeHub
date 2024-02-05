@@ -110,10 +110,16 @@ const CustomGrid = ({
           <CustomSidebar
             columnDefs={gridColumnDef}
             onToggleColumnVisibility={onToggleColumnVisibility}
-          /> 
-          <RoundButton icon={<HiOutlineUserAdd className='h-7 w-7' />} onClick={toggleModal} />
-          <AddCustomerModal isOpen={isModalOpen} onClose={toggleModal} modalName='Add New Customer' />
-
+          />
+          <RoundButton
+            icon={<HiOutlineUserAdd className='h-7 w-7' />}
+            onClick={toggleModal}
+          />
+          <AddCustomerModal
+            isOpen={isModalOpen}
+            onClose={toggleModal}
+            modalName='Add New Customer'
+          />
         </div>
         <div className='flex-grow'>
           <div className='ag-theme-material h-[calc(100vh-11rem)] w-full md:h-[calc(100vh-7.5rem)]'>

@@ -44,8 +44,8 @@ export type AddNewCustomerRequestInput = {
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type AddNewUserResponse = {
-  __typename?: 'AddNewUserResponse';
+export type AddNewCustomerResponse = {
+  __typename?: 'AddNewCustomerResponse';
   customerReferenceNumber: Scalars['String']['output'];
   id: Scalars['ID']['output'];
 };
@@ -640,7 +640,7 @@ export type LogoutResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addNewCustomer: AddNewUserResponse;
+  addNewCustomer: AddNewCustomerResponse;
   changePassword: ConfirmForgotPasswordResponse;
   confirmAccount: AccountConfirmationResponse;
   forgotPassword: ForgotPasswordResponse;
@@ -1287,7 +1287,7 @@ export type AddNewCustomerMutationVariables = Exact<{
 }>;
 
 
-export type AddNewCustomerMutation = { __typename?: 'Mutation', addNewCustomer: { __typename?: 'AddNewUserResponse', id: string, customerReferenceNumber: string } };
+export type AddNewCustomerMutation = { __typename?: 'Mutation', addNewCustomer: { __typename?: 'AddNewCustomerResponse', id: string, customerReferenceNumber: string } };
 
 export type CustomerByIdQueryVariables = Exact<{
   id: Scalars['ID']['input'];

@@ -14,13 +14,18 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { z } from 'zod';
 import {
   AuthInputWithIcon,
   StyledFormMessage,
 } from '../../ui/auth/AuthInputWithIcon/AuthInputWithIcon';
-import { ControllerRenderProps, UseFormReturn, useFieldArray, useForm } from 'react-hook-form';
+import {
+  ControllerRenderProps,
+  UseFormReturn,
+  useFieldArray,
+  useForm,
+} from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SelectWithInputForm from '../SelectWithInputForm/SelectWithInputForm';
 import { AddCustomerFormRequest, UserPlace } from '../../types/sharedTypes';
@@ -31,8 +36,10 @@ import TagsInput from '../TagsInput/TagsInput';
 import AddressAutocomplete from '../../ui/general/AddressAutocomplete/AddressAutocomplete';
 import { Checkbox } from '@/components/ui/checkbox';
 import CommentSection from '../../ui/general/Comment';
-import { AddNewCustomerRequestInput } from '@/generatedGraphql';
+import { AddNewCustomerRequestInput, AddNewCustomerResponse } from '@/generatedGraphql';
 import { useAddNewCustomer } from '../../hooks/customer/useCustomer';
+import { useToast } from '@/components/ui/use-toast';
+import { ToastAction } from '@/components/ui/toast';
 
 type ModalProps = {
   isOpen: boolean;
@@ -106,12 +113,21 @@ const formSchema = z.object({
   billing: UserPlaceSchema.nullable(),
   tags: z.array(z.string()),
   reference: z.string().nullable(),
-  comment: z.string().nullable()
+  comment: z.string().nullable(),
 });
 
-const AddCustomerModal: React.FC<ModalProps> = ({ isOpen, onClose, modalName }) => {
+const AddCustomerModal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  modalName,
+}) => {
+  const { toast } = useToast();
 
-  const { addNewCustomer, addNewCustomerResponse, addNewCustomerLoading, addNewCustomerError } = useAddNewCustomer();
+  const {
+    addNewCustomer,
+    addNewCustomerResponse,
+    addNewCustomerLoading
+  } = useAddNewCustomer();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -156,62 +172,67 @@ const AddCustomerModal: React.FC<ModalProps> = ({ isOpen, onClose, modalName }) 
     name: 'emails',
   });
 
-const handleAddCustomer = () => {
-  const formValues = form.getValues();
-console.log('FORM VALUES ', formValues);
-const customerData: AddNewCustomerRequestInput = {
-  title: formValues.title,
-  name: formValues.name,
-  surname: formValues.surname,
-  alias: formValues.alias,
-  emails: formValues.emails.map(email => ({
-    emailType: email.emailType,
-    email: email.email,
-    receiveNotifications: email.receiveNotifications,
-  })),
-  phoneNumbers: formValues.phoneNumbers.map(phone => ({
-    phoneNumberType: phone.phoneNumberType,
-    phoneNumber: phone.phoneNumber,
-    receiveNotifications: phone.receiveNotifications,
-  })),
-  property: formValues.property ? {
-    placeId: formValues.property.PlaceId,
-    address: formValues.property.Address,
-    country: formValues.property.Country,
-    countryCode: formValues.property.CountryCode,
-    callingCode: formValues.property.CallingCode,
-    location: {
-      lat: formValues.property.Location.lat,
-      lng: formValues.property.Location.lng,
-    },
-    viewport: {
-      northeast: formValues.property.Viewport.northeast,
-      southwest: formValues.property.Viewport.southwest,
-    },
-  } : null,
-  isBillingAddress: formValues.isBillingAddress,
-  billing: formValues.isBillingAddress && formValues.billing ? {
-    placeId: formValues.billing.PlaceId,
-    address: formValues.billing.Address,
-    country: formValues.billing.Country,
-    countryCode: formValues.billing.CountryCode,
-    callingCode: formValues.billing.CallingCode,
-    location: {
-      lat: formValues.billing.Location.lat,
-      lng: formValues.billing.Location.lng,
-    },
-    viewport: {
-      northeast: formValues.billing.Viewport.northeast,
-      southwest: formValues.billing.Viewport.southwest,
-    },
-  } : null,
-  tags: formValues.tags,
-  reference: formValues.reference,
-  comment: formValues.comment,
-};
-  addNewCustomer(customerData);
-  console.log('CUSTOMER DATA ', customerData);
-};
+  const handleAddCustomer = () => {
+    const formValues = form.getValues();
+    console.log('FORM VALUES ', formValues);
+    const customerData: AddNewCustomerRequestInput = {
+      title: formValues.title,
+      name: formValues.name,
+      surname: formValues.surname,
+      alias: formValues.alias,
+      emails: formValues.emails.map((email) => ({
+        emailType: email.emailType,
+        email: email.email,
+        receiveNotifications: email.receiveNotifications,
+      })),
+      phoneNumbers: formValues.phoneNumbers.map((phone) => ({
+        phoneNumberType: phone.phoneNumberType,
+        phoneNumber: phone.phoneNumber,
+        receiveNotifications: phone.receiveNotifications,
+      })),
+      property: formValues.property
+        ? {
+            placeId: formValues.property.PlaceId,
+            address: formValues.property.Address,
+            country: formValues.property.Country,
+            countryCode: formValues.property.CountryCode,
+            callingCode: formValues.property.CallingCode,
+            location: {
+              lat: formValues.property.Location.lat,
+              lng: formValues.property.Location.lng,
+            },
+            viewport: {
+              northeast: formValues.property.Viewport.northeast,
+              southwest: formValues.property.Viewport.southwest,
+            },
+          }
+        : null,
+      isBillingAddress: formValues.isBillingAddress,
+      billing:
+        formValues.isBillingAddress && formValues.billing
+          ? {
+              placeId: formValues.billing.PlaceId,
+              address: formValues.billing.Address,
+              country: formValues.billing.Country,
+              countryCode: formValues.billing.CountryCode,
+              callingCode: formValues.billing.CallingCode,
+              location: {
+                lat: formValues.billing.Location.lat,
+                lng: formValues.billing.Location.lng,
+              },
+              viewport: {
+                northeast: formValues.billing.Viewport.northeast,
+                southwest: formValues.billing.Viewport.southwest,
+              },
+            }
+          : null,
+      tags: formValues.tags,
+      reference: formValues.reference,
+      comment: formValues.comment,
+    };
+    addNewCustomer(customerData);
+    console.log('CUSTOMER DATA ', customerData);
+  };
 
   const addPhoneNumber = () => {
     appendPhone({
@@ -244,10 +265,26 @@ const customerData: AddNewCustomerRequestInput = {
     }
   };
 
-  const handleClose = () =>{
+  const handleClose = () => {
     form.reset();
     onClose();
-  }
+  };
+
+ 
+  useEffect(() => {
+    const customer = addNewCustomerResponse?.addNewCustomer as AddNewCustomerResponse;
+    if (customer) {
+      handleClose();
+       toast({
+          title: 'Successfully Added New Customer',
+          description: `You have successfully added a new customer with the following ${customer.customerReferenceNumber}`,
+          action: <ToastAction altText='View Customer'>View</ToastAction>,
+        })
+     console.log('ADD CUSTOMER RESPONSE ', customer.customerReferenceNumber, customer.id);
+    }
+    
+  }, [addNewCustomerResponse]);
+
 
   return (
     <>
@@ -259,27 +296,31 @@ const customerData: AddNewCustomerRequestInput = {
           </DialogHeader>
           <Form {...form}>
             <form className='space-y-6'>
-
               <div className='flex items-center'>
-                  {' '}
-                  {/* Bottom margin for spacing between rows */}
-                  <div className='w-1/4 pr-2'>
-                <FormField
-                  control={form.control}
-                  name='title'
-                  render={({ field }) => (
-                    <FormItem>
-                      <SelectWithInputForm<AddCustomerFormRequest, 'title'>
-                        form={form as UseFormReturn<AddCustomerFormRequest>} // Cast the form prop to the correct type
-                        field={field as ControllerRenderProps<AddCustomerFormRequest, 'title'>} // Cast the field prop to the correct type
-                        options={titleOptions}
-                        inputPlaceHolder='Other Title'
-                        defaultValue='Empty'
-                      />
-                      <StyledFormMessage />
-                    </FormItem>
-                  )}
-                />
+                {' '}
+                {/* Bottom margin for spacing between rows */}
+                <div className='w-1/4 pr-2'>
+                  <FormField
+                    control={form.control}
+                    name='title'
+                    render={({ field }) => (
+                      <FormItem>
+                        <SelectWithInputForm<AddCustomerFormRequest, 'title'>
+                          form={form as UseFormReturn<AddCustomerFormRequest>} // Cast the form prop to the correct type
+                          field={
+                            field as ControllerRenderProps<
+                              AddCustomerFormRequest,
+                              'title'
+                            >
+                          } // Cast the field prop to the correct type
+                          options={titleOptions}
+                          inputPlaceHolder='Other Title'
+                          defaultValue='Empty'
+                        />
+                        <StyledFormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </div>
 
@@ -360,9 +401,18 @@ const customerData: AddNewCustomerRequestInput = {
                     <FormField
                       control={form.control}
                       name={`phoneNumbers.${index}.phoneNumberType`}
-                      render={({ field }) => (<SelectWithInputForm<AddCustomerFormRequest,`phoneNumbers.${typeof index}.phoneNumberType`>
+                      render={({ field }) => (
+                        <SelectWithInputForm<
+                          AddCustomerFormRequest,
+                          `phoneNumbers.${typeof index}.phoneNumberType`
+                        >
                           form={form as UseFormReturn<AddCustomerFormRequest>}
-                          field={field as ControllerRenderProps<AddCustomerFormRequest, `phoneNumbers.${number}.phoneNumberType`>}
+                          field={
+                            field as ControllerRenderProps<
+                              AddCustomerFormRequest,
+                              `phoneNumbers.${number}.phoneNumberType`
+                            >
+                          }
                           options={phoneNumberTypeOptions}
                           inputPlaceHolder='Number Type'
                           defaultValue='Mobile'
@@ -447,7 +497,12 @@ const customerData: AddNewCustomerRequestInput = {
                           `emails.${typeof index}.emailType`
                         >
                           form={form as UseFormReturn<AddCustomerFormRequest>}
-                          field={field as ControllerRenderProps<AddCustomerFormRequest, `emails.${typeof index}.emailType`>}
+                          field={
+                            field as ControllerRenderProps<
+                              AddCustomerFormRequest,
+                              `emails.${typeof index}.emailType`
+                            >
+                          }
                           options={emailTypeOptions}
                           inputPlaceHolder='Email Type'
                           defaultValue='Personal'

@@ -28,7 +28,8 @@ const useCustomer = (customerId: string): UseCustomerReturnType => {
 };
 
 const useAddNewCustomer = () => {
-  const [addNewCustomerMutation, { data, loading, error }] = useAddNewCustomerMutation();
+  const [addNewCustomerMutation, { data, loading, error }] =
+    useAddNewCustomerMutation();
 
   const addNewCustomer = async (input: AddNewCustomerRequestInput) => {
     try {
@@ -48,7 +49,4 @@ const useAddNewCustomer = () => {
   };
 };
 
-export {
-  useCustomer,
-  useAddNewCustomer
-};
+export { useCustomer, useAddNewCustomer };

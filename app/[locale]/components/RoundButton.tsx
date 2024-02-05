@@ -17,7 +17,7 @@ const RoundButton = React.forwardRef<HTMLButtonElement, RoundButtonProps>(
     >
       {icon}
     </Button>
-  )
+  ),
 );
 
 RoundButton.displayName = 'RoundButton';

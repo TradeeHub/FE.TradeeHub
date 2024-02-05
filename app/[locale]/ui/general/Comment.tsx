@@ -40,7 +40,7 @@ const CommentInput = <
   };
 
   return (
-    <div className='relative rounded-md border border-gray-300 shadow-sm focus-within:border-primary font-roboto'>
+    <div className='relative rounded-md border border-gray-300 font-roboto shadow-sm focus-within:border-primary'>
       {Icon && (
         <Icon className='absolute left-3 top-2.5 h-5 w-5 text-gray-400' />
       )}
@@ -54,9 +54,11 @@ const CommentInput = <
       />
       <label
         htmlFor={inputId}
-        className={`absolute left-3 top-4 text-md text-gray-500 transition-all duration-200 ease-in-out transform ${isFocused || isFilled ?
-             '-translate-y-8 text-primary text-xs font-semibold text-primary' :
-              'top-1/2 -translate-y-1/2 transform text-sm text-gray-500 mt-1'}`}
+        className={`text-md absolute left-3 top-4 transform text-gray-500 transition-all duration-200 ease-in-out ${
+          isFocused || isFilled
+            ? '-translate-y-8 text-xs font-semibold text-primary text-primary'
+            : 'top-1/2 mt-1 -translate-y-1/2 transform text-sm text-gray-500'
+        }`}
       >
         {isFocused || isFilled ? title : placeholder}
       </label>

@@ -7,6 +7,7 @@ import { NextIntlClientProvider, useMessages } from 'next-intl';
 import StoreProvider from './StoreProvider';
 import { RootLayoutProps } from './types/sharedTypes';
 import AuthenticationGuard from './AuthenticationGuard';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -31,7 +32,9 @@ export default function RootLayout({ children, params }: RootLayoutProps) {
               disableTransitionOnChange
             >
               <NextIntlClientProvider locale={locale} messages={messages}>
-                <AuthenticationGuard>{children}</AuthenticationGuard>
+                <AuthenticationGuard>
+                  {children} <Toaster />
+                </AuthenticationGuard>
               </NextIntlClientProvider>
             </ThemeProvider>
           </body>
