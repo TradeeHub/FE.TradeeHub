@@ -44,6 +44,7 @@ import { useAddNewCustomer } from '../../hooks/customer/useCustomer';
 import { useToast } from '@/components/ui/use-toast';
 import { ToastAction } from '@/components/ui/toast';
 import { usePathname, useRouter } from 'next/navigation';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 type ModalProps = {
   isOpen: boolean;
@@ -685,12 +686,29 @@ const AddCustomerModal: React.FC<ModalProps> = ({
           </Form>
           <DialogFooter className='sm:justify-end'>
             <DialogClose asChild>
-              <Button type='button' variant='outline' onClick={handleClose}>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={handleClose}
+                disabled={addNewCustomerLoading}
+              >
                 Close
               </Button>
             </DialogClose>
-            <Button type='button' variant='default' onClick={handleAddCustomer}>
-              Add
+            <Button
+              type='button'
+              variant='default'
+              onClick={handleAddCustomer}
+              disabled={addNewCustomerLoading}
+            >
+              {addNewCustomerLoading ? (
+                <>
+                  <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+                  Adding...
+                </>
+              ) : (
+                'Add'
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

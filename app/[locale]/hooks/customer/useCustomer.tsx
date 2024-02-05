@@ -4,7 +4,7 @@ import {
   CustomerByIdDocument,
   CustomerByIdQuery,
   CustomerByIdQueryVariables,
-  CustomerDbObject,
+  CustomerEntity,
   useAddNewCustomerMutation,
 } from '@/generatedGraphql';
 import { UseCustomerReturnType } from '@/app/[locale]/types/sharedTypes';
@@ -22,7 +22,7 @@ const useCustomer = (customerId: string): UseCustomerReturnType => {
     console.error('Error fetching more data:', error);
   }
 
-  const customer = data?.customerById as CustomerDbObject | null;
+  const customer = data?.customerById as CustomerEntity | null;
 
   return { customer, loading, error };
 };

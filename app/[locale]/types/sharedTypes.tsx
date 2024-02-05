@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   CustomerByIdQuery,
-  CustomerDbObject,
+  CustomerEntity,
   UserDbObject,
 } from '@/generatedGraphql';
 import { ApolloError } from '@apollo/client';
@@ -33,7 +33,7 @@ export type LanguageOption = {
 };
 
 export type UseCustomerReturnType = {
-  customer: CustomerDbObject | null;
+  customer: CustomerEntity | null;
   loading: boolean;
   error: ApolloError | undefined;
 };

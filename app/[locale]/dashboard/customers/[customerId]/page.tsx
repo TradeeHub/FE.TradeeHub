@@ -22,6 +22,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { PropertyEntity } from '@/generatedGraphql';
 
 const Customer = ({ params }: { params: { customerId: string } }) => {
   const [showProperties, setShowProperties] = useState(false);
@@ -33,7 +34,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
     .local()
     .format('Do MMM YYYY HH:mm');
   const mainPhone = customer?.phoneNumbers?.[0]?.phoneNumber || '';
-  const recentProperty = customer?.properties?.[0]?.property.fullAddress || '';
+  const recentProperty = customer?.properties?.[0]?.property.address || '';
   const mainEmail = customer?.emails?.[0].email || '';
   const hasMultipleProperties = (customer?.properties?.length ?? 0) > 1;
   const iconClass = 'h-6 w-5 text-foreground';
@@ -128,8 +129,9 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                 {showProperties && (
                   <div className=''>
                     {customer?.properties?.map(
-                      (property, index) =>
-                        index !== 0 && (
+                      (property: PropertyEntity | null, index: number) =>
+                        index !== 0 &&
+                        property && (
                           <div
                             key={index}
                             className='flex items-center gap-x-2 pl-8'
@@ -139,7 +141,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                               aria-hidden='true'
                             />
                             <span className='text-brand-secondary1d text-sm leading-6'>
-                              {property?.property?.fullAddress}
+                              {property?.property?.address}
                             </span>
                           </div>
                         ),
@@ -264,7 +266,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                   {showProperties && (
                     <div className=''>
                       {customer?.properties?.map(
-                        (property, index) =>
+                        (property: PropertyEntity | null, index: number) =>
                           index !== 0 && (
                             <div
                               key={index}
@@ -275,7 +277,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                                 aria-hidden='true'
                               />
                               <span className='text-brand-secondary1d text-sm leading-6'>
-                                {property?.property?.fullAddress}
+                                {property?.property?.address}
                               </span>
                             </div>
                           ),
@@ -337,22 +339,24 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                     </h3>
                   </dd>
                 </div>
-                {customer?.properties?.map((property) => (
-                  <div
-                    key={property?.id}
-                    className='mt-2 flex w-full flex-wrap gap-x-4 px-6'
-                  >
-                    <dt>
-                      <PiHouseLineLight
-                        className={iconClass}
-                        aria-hidden='true'
-                      />
-                    </dt>
-                    <dd className={textClass}>
-                      <span>{property?.property?.fullAddress}</span>
-                    </dd>
-                  </div>
-                ))}
+                {customer?.properties?.map(
+                  (property: PropertyEntity | null) => (
+                    <div
+                      key={property?.id}
+                      className='mt-2 flex w-full flex-wrap gap-x-4 px-6'
+                    >
+                      <dt>
+                        <PiHouseLineLight
+                          className={iconClass}
+                          aria-hidden='true'
+                        />
+                      </dt>
+                      <dd className={textClass}>
+                        <span>{property?.property?.address}</span>
+                      </dd>
+                    </div>
+                  ),
+                )}
               </dl>
             </div>
           </div>
