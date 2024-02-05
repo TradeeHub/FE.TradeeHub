@@ -1,5 +1,5 @@
 'use client';
-import { ColDef, ValueGetterParams } from 'ag-grid-community';;
+import { ColDef, ValueGetterParams } from 'ag-grid-community';
 import moment from 'moment';
 import CustomGrid from '@/app/[locale]/components/Grid';
 import useCustomers from '@/app/[locale]/hooks/customer/useCustomers';
@@ -7,7 +7,11 @@ import ArrayDataPopover from '@/app/[locale]/components/ArrayDataPopover';
 import { PageInfoSlim } from '@/app/[locale]/types/sharedTypes';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Label } from '@/components/ui/label';
-import { CustomerEntity, PhoneNumberEntity, PropertyEntity } from '@/generatedGraphql';
+import {
+  CustomerEntity,
+  PhoneNumberEntity,
+  PropertyEntity,
+} from '@/generatedGraphql';
 
 const getInitials = (fullName: string) => {
   const nameParts = fullName.split(' ');
@@ -26,7 +30,7 @@ const getInitials = (fullName: string) => {
 };
 
 const gridColumnDef: ColDef[] = [
-    {
+  {
     headerName: 'CRN',
     field: 'customerReferenceNumber',
     sortable: true,
@@ -132,7 +136,9 @@ const gridColumnDef: ColDef[] = [
     headerName: 'Last Activity',
     field: 'modifiedAt',
     valueGetter: (params: ValueGetterParams) => {
-      return params.data?.modifiedAt ? moment(params.data?.modifiedAt).format('Do MMM YYYY h:mma') : '';
+      return params.data?.modifiedAt
+        ? moment(params.data?.modifiedAt).format('Do MMM YYYY h:mma')
+        : '';
     },
     sortable: true,
     headerClass: 'text-base',

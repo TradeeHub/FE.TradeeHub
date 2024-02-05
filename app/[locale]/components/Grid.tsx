@@ -103,6 +103,17 @@ const CustomGrid = ({
     );
   };
 
+  const refreshGridData = () => {
+    if (gridApiRef.current) {
+      // Resets the infinite row model cache
+      gridApiRef.current.purgeInfiniteCache();
+      // If you need to reset the first load state as well
+      isFirstLoad.current = true;
+      // Optionally reset your pageInfoTrack if necessary
+      pageInfoTrack.current = initialPageInfo; // reset to initial state if needed
+    }
+  };
+
   return (
     <>
       <div className='mt-2 flex flex-col gap-4 rounded-lg md:mr-12  md:flex-row md:gap-4'>
@@ -118,6 +129,7 @@ const CustomGrid = ({
           <AddCustomerModal
             isOpen={isModalOpen}
             onClose={toggleModal}
+            onCustomerAdded={refreshGridData} // Assuming you have such a prop
             modalName='Add New Customer'
           />
         </div>

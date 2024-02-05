@@ -36,15 +36,20 @@ import TagsInput from '../TagsInput/TagsInput';
 import AddressAutocomplete from '../../ui/general/AddressAutocomplete/AddressAutocomplete';
 import { Checkbox } from '@/components/ui/checkbox';
 import CommentSection from '../../ui/general/Comment';
-import { AddNewCustomerRequestInput, AddNewCustomerResponse } from '@/generatedGraphql';
+import {
+  AddNewCustomerRequestInput,
+  AddNewCustomerResponse,
+} from '@/generatedGraphql';
 import { useAddNewCustomer } from '../../hooks/customer/useCustomer';
 import { useToast } from '@/components/ui/use-toast';
 import { ToastAction } from '@/components/ui/toast';
+import { usePathname, useRouter } from 'next/navigation';
 
 type ModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  modalName: string; // Added prop for the name of the modal
+  onCustomerAdded: () => void;
+  modalName: string;
 };
 const phoneNumberTypeOptions = [
   { label: 'Mobile', value: 'Mobile' },
@@ -119,15 +124,15 @@ const formSchema = z.object({
 const AddCustomerModal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
+  onCustomerAdded,
   modalName,
 }) => {
   const { toast } = useToast();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const {
-    addNewCustomer,
-    addNewCustomerResponse,
-    addNewCustomerLoading
-  } = useAddNewCustomer();
+  const { addNewCustomer, addNewCustomerResponse, addNewCustomerLoading } =
+    useAddNewCustomer();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -270,21 +275,36 @@ const AddCustomerModal: React.FC<ModalProps> = ({
     onClose();
   };
 
- 
+  const navigateToCustomerDetails = (customerId: string) => {
+    router.push(`${pathname}/${customerId}`);
+  };
+
   useEffect(() => {
-    const customer = addNewCustomerResponse?.addNewCustomer as AddNewCustomerResponse;
+    const customer =
+      addNewCustomerResponse?.addNewCustomer as AddNewCustomerResponse;
     if (customer) {
       handleClose();
-       toast({
-          title: 'Successfully Added New Customer',
-          description: `You have successfully added a new customer with the following ${customer.customerReferenceNumber}`,
-          action: <ToastAction altText='View Customer'>View</ToastAction>,
-        })
-     console.log('ADD CUSTOMER RESPONSE ', customer.customerReferenceNumber, customer.id);
+      toast({
+        title: 'Successfully Added New Customer',
+        description: `You have successfully added a new customer with the following ${customer.customerReferenceNumber}`,
+        action: (
+          <ToastAction
+            className='bg-primary text-white' // Assuming 'bg-primary' is your primary color class
+            altText='View Customer'
+            onClick={() => navigateToCustomerDetails(customer.id)}
+          >
+            View
+          </ToastAction>
+        ),
+      });
+      onCustomerAdded();
+      console.log(
+        'ADD CUSTOMER RESPONSE ',
+        customer.customerReferenceNumber,
+        customer.id,
+      );
     }
-    
   }, [addNewCustomerResponse]);
-
 
   return (
     <>
