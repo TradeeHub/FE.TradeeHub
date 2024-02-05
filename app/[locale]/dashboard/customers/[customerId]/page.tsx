@@ -1,5 +1,5 @@
 'use client';
-import useCustomer from '@/app/[locale]/hooks/customer/useCustomer';
+import { useCustomer } from '@/app/[locale]/hooks/customer/useCustomer';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
