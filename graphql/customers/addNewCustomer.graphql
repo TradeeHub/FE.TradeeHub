@@ -1,3 +1,6 @@
 mutation AddNewCustomer($input: AddNewCustomerRequestInput!) {
-  addNewCustomer(request: $input)
+  addNewCustomer(request: $input) {
+    id
+    customerReferenceNumber
+  }
 }

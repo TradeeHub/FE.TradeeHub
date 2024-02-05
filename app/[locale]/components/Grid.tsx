@@ -13,8 +13,8 @@ import {
   IGetRowsParams,
   RowClickedEvent,
 } from 'ag-grid-community';
-import Modal from './Modal/Modal';
 import { HiOutlineUserAdd } from 'react-icons/hi';
+import AddCustomerModal from './AddCustomerModal/AddCustomerModal';
 
 const gridOptions = {
   defaultColDef: {
@@ -110,9 +110,9 @@ const CustomGrid = ({
           <CustomSidebar
             columnDefs={gridColumnDef}
             onToggleColumnVisibility={onToggleColumnVisibility}
-          />
+          /> 
           <RoundButton icon={<HiOutlineUserAdd className='h-7 w-7' />} onClick={toggleModal} />
-          <Modal isOpen={isModalOpen} onClose={toggleModal} modalName='Add New Customer' />
+          <AddCustomerModal isOpen={isModalOpen} onClose={toggleModal} modalName='Add New Customer' />
 
         </div>
         <div className='flex-grow'>

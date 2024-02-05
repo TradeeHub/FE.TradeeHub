@@ -1,10 +1,5 @@
 'use client';
-import { ColDef, ValueGetterParams } from 'ag-grid-community';
-import {
-  CustomerDbObject,
-  PhoneNumberDbObject,
-  PropertyDbObject,
-} from '@/generatedGraphql';
+import { ColDef, ValueGetterParams } from 'ag-grid-community';;
 import moment from 'moment';
 import CustomGrid from '@/app/[locale]/components/Grid';
 import useCustomers from '@/app/[locale]/hooks/customer/useCustomers';
@@ -12,6 +7,7 @@ import ArrayDataPopover from '@/app/[locale]/components/ArrayDataPopover';
 import { PageInfoSlim } from '@/app/[locale]/types/sharedTypes';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Label } from '@/components/ui/label';
+import { CustomerEntity, PhoneNumberEntity, PropertyEntity } from '@/generatedGraphql';
 
 const getInitials = (fullName: string) => {
   const nameParts = fullName.split(' ');
@@ -30,12 +26,22 @@ const getInitials = (fullName: string) => {
 };
 
 const gridColumnDef: ColDef[] = [
+    {
+    headerName: 'CRN',
+    field: 'customerReferenceNumber',
+    sortable: true,
+    headerClass: 'text-base',
+    cellClass: 'text-center font-bold text-primary',
+    filter: true,
+    hide: false,
+    flex: 1,
+  },
   {
     headerName: 'Name',
     field: 'name',
     valueGetter: (params: ValueGetterParams) => {
       // You may need to assert the type of params.data if TypeScript complains about it
-      const data = params.data as CustomerDbObject;
+      const data = params.data as CustomerEntity;
       return data?.fullName || '';
     },
     cellRenderer: (params: { value: string }) => {
@@ -64,7 +70,7 @@ const gridColumnDef: ColDef[] = [
   {
     headerName: 'Phone',
     field: 'phoneNumbers',
-    cellRenderer: (params: { value: PhoneNumberDbObject[] }) => {
+    cellRenderer: (params: { value: PhoneNumberEntity[] }) => {
       const phoneNumbers = params?.value?.map((x) => x?.phoneNumber);
       return <ArrayDataPopover items={phoneNumbers} />;
     },
@@ -74,15 +80,17 @@ const gridColumnDef: ColDef[] = [
     sortable: true,
     headerClass: 'text-base',
     filter: true,
+    cellClass: 'text-center',
     hide: false,
     flex: 1,
   },
   {
     headerName: 'Properties',
     field: 'properties',
-    cellRenderer: (params: { value: PropertyDbObject[] }) => {
+    cellRenderer: (params: { value: PropertyEntity[] }) => {
+      console.log(params?.value);
       const propertyAddresses = params?.value?.map(
-        (x) => x.property?.fullAddress as string,
+        (x) => x.property?.address as string,
       );
       return <ArrayDataPopover items={propertyAddresses || []} />;
     },
@@ -124,7 +132,7 @@ const gridColumnDef: ColDef[] = [
     headerName: 'Last Activity',
     field: 'modifiedAt',
     valueGetter: (params: ValueGetterParams) => {
-      return moment(params.data?.modifiedAt).format('Do MMM YYYY h:mma');
+      return params.data?.modifiedAt ? moment(params.data?.modifiedAt).format('Do MMM YYYY h:mma') : '';
     },
     sortable: true,
     headerClass: 'text-base',
@@ -147,6 +155,7 @@ const gridColumnDef: ColDef[] = [
     headerName: 'Created Date',
     field: 'createdAt',
     valueGetter: (params: ValueGetterParams) => {
+      console.log(params?.data);
       return moment(params?.data?.createdAt).format('Do MMM YYYY h:mma');
     },
     cellClass: 'text-center',

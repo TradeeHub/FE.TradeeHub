@@ -44,6 +44,12 @@ export type AddNewCustomerRequestInput = {
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type AddNewUserResponse = {
+  __typename?: 'AddNewUserResponse';
+  customerReferenceNumber: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+};
+
 export enum ApplyPolicy {
   AfterResolver = 'AFTER_RESOLVER',
   BeforeResolver = 'BEFORE_RESOLVER',
@@ -120,7 +126,7 @@ export type CustomerEntity = {
   createdAt: Scalars['DateTime']['output'];
   createdBy: Scalars['UUID']['output'];
   customerRating?: Maybe<Scalars['Decimal']['output']>;
-  customerReferenceNumber: Scalars['String']['output'];
+  customerReferenceNumber?: Maybe<Scalars['String']['output']>;
   emails?: Maybe<Array<EmailEntity>>;
   fullName: Scalars['String']['output'];
   id: Scalars['ID']['output'];
@@ -196,11 +202,11 @@ export type CustomerEntityFilter = {
   customerReferenceNumber?: InputMaybe<Scalars['String']['input']>;
   customerReferenceNumber_contains?: InputMaybe<Scalars['String']['input']>;
   customerReferenceNumber_ends_with?: InputMaybe<Scalars['String']['input']>;
-  customerReferenceNumber_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  customerReferenceNumber_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   customerReferenceNumber_not?: InputMaybe<Scalars['String']['input']>;
   customerReferenceNumber_not_contains?: InputMaybe<Scalars['String']['input']>;
   customerReferenceNumber_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  customerReferenceNumber_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  customerReferenceNumber_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   customerReferenceNumber_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   customerReferenceNumber_starts_with?: InputMaybe<Scalars['String']['input']>;
   emails_all?: InputMaybe<EmailEntityFilter>;
@@ -634,7 +640,7 @@ export type LogoutResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addNewCustomer: Scalars['String']['output'];
+  addNewCustomer: AddNewUserResponse;
   changePassword: ConfirmForgotPasswordResponse;
   confirmAccount: AccountConfirmationResponse;
   forgotPassword: ForgotPasswordResponse;
@@ -884,7 +890,7 @@ export type PlaceEntity = {
   countryCode: Scalars['String']['output'];
   location: LocationEntity;
   placeId: Scalars['String']['output'];
-  viewport: ViewPortEntity;
+  viewport: ViewportEntity;
 };
 
 export type PlaceRequestInput = {
@@ -1210,8 +1216,8 @@ export type ViewPortDbObjectSort = {
   southwest?: InputMaybe<LocationDbObjectSort>;
 };
 
-export type ViewPortEntity = {
-  __typename?: 'ViewPortEntity';
+export type ViewportEntity = {
+  __typename?: 'ViewportEntity';
   northeast: LocationEntity;
   southwest: LocationEntity;
 };
@@ -1281,14 +1287,14 @@ export type AddNewCustomerMutationVariables = Exact<{
 }>;
 
 
-export type AddNewCustomerMutation = { __typename?: 'Mutation', addNewCustomer: string };
+export type AddNewCustomerMutation = { __typename?: 'Mutation', addNewCustomer: { __typename?: 'AddNewUserResponse', id: string, customerReferenceNumber: string } };
 
 export type CustomerByIdQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber: string, title?: string | null, name?: string | null, surname?: string | null, fullName: string, alias?: string | null, status: CustomerStatus, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, referredByCustomer?: string | null, referredByOther?: string | null, referralFeeFixed?: any | null, referralFeePercentage?: any | null, customerRating?: any | null, tags?: Array<string> | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, property: { __typename?: 'PlaceEntity', address: string } } | null> | null } | null };
+export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName: string, alias?: string | null, status: CustomerStatus, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, referredByCustomer?: string | null, referredByOther?: string | null, referralFeeFixed?: any | null, referralFeePercentage?: any | null, customerRating?: any | null, tags?: Array<string> | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, property: { __typename?: 'PlaceEntity', address: string } } | null> | null } | null };
 
 export type CustomersPagedQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -1296,7 +1302,7 @@ export type CustomersPagedQueryVariables = Exact<{
 }>;
 
 
-export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerEntity', id: string, title?: string | null, status: CustomerStatus, fullName: string, tags?: Array<string> | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', property: { __typename?: 'PlaceEntity', address: string } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, status: CustomerStatus, fullName: string, tags?: Array<string> | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', property: { __typename?: 'PlaceEntity', address: string } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 
 export const ChangePasswordDocument = gql`
@@ -1621,7 +1627,10 @@ export type ResendVerificationCodeMutationResult = Apollo.MutationResult<ResendV
 export type ResendVerificationCodeMutationOptions = Apollo.BaseMutationOptions<ResendVerificationCodeMutation, ResendVerificationCodeMutationVariables>;
 export const AddNewCustomerDocument = gql`
     mutation AddNewCustomer($input: AddNewCustomerRequestInput!) {
-  addNewCustomer(request: $input)
+  addNewCustomer(request: $input) {
+    id
+    customerReferenceNumber
+  }
 }
     `;
 export type AddNewCustomerMutationFn = Apollo.MutationFunction<AddNewCustomerMutation, AddNewCustomerMutationVariables>;
@@ -1732,6 +1741,7 @@ export const CustomersPagedDocument = gql`
     edges {
       node {
         id
+        customerReferenceNumber
         title
         status
         fullName

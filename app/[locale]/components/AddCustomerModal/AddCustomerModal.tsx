@@ -6,7 +6,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -15,7 +14,7 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
-import React, { useState } from 'react';
+import React from 'react';
 import { z } from 'zod';
 import {
   AuthInputWithIcon,
@@ -110,7 +109,7 @@ const formSchema = z.object({
   comment: z.string().nullable()
 });
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, modalName }) => {
+const AddCustomerModal: React.FC<ModalProps> = ({ isOpen, onClose, modalName }) => {
 
   const { addNewCustomer, addNewCustomerResponse, addNewCustomerLoading, addNewCustomerError } = useAddNewCustomer();
 
@@ -545,7 +544,6 @@ const customerData: AddNewCustomerRequestInput = {
                               onCheckedChange={(checked) => {
                                 field.onChange(checked);
                                 if (checked) {
-                                  // Optionally reset billingAddress when isBillingAddress is true
                                   resetField('billing');
                                 }
                               }}
@@ -626,4 +624,4 @@ const customerData: AddNewCustomerRequestInput = {
   );
 };
 
-export default Modal;
+export default AddCustomerModal;

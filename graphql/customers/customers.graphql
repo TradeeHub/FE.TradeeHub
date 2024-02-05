@@ -3,6 +3,7 @@ query CustomersPaged($pageSize: Int!, $cursor: String) {
     edges {
       node {
         id
+        customerReferenceNumber
         title
         status
         fullName
