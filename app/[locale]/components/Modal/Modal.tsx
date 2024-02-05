@@ -15,7 +15,7 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
-import React from 'react';
+import React, { useState } from 'react';
 import { z } from 'zod';
 import {
   AuthInputWithIcon,
@@ -36,7 +36,8 @@ import { AddNewCustomerRequestInput } from '@/generatedGraphql';
 import { useAddNewCustomer } from '../../hooks/customer/useCustomer';
 
 type ModalProps = {
-  triggerButton: React.ReactElement;
+  isOpen: boolean;
+  onClose: () => void;
   modalName: string; // Added prop for the name of the modal
 };
 const phoneNumberTypeOptions = [
@@ -109,7 +110,7 @@ const formSchema = z.object({
   comment: z.string().nullable()
 });
 
-const Modal: React.FC<ModalProps> = ({ triggerButton, modalName }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, modalName }) => {
 
   const { addNewCustomer, addNewCustomerResponse, addNewCustomerLoading, addNewCustomerError } = useAddNewCustomer();
 
@@ -213,7 +214,6 @@ const customerData: AddNewCustomerRequestInput = {
   console.log('CUSTOMER DATA ', customerData);
 };
 
-
   const addPhoneNumber = () => {
     appendPhone({
       phoneNumber: '',
@@ -245,16 +245,19 @@ const customerData: AddNewCustomerRequestInput = {
     }
   };
 
+  const handleClose = () =>{
+    form.reset();
+    onClose();
+  }
+
   return (
     <>
-      <Dialog>
-        <DialogTrigger asChild>{triggerButton}</DialogTrigger>
+      <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className='w-full max-w-2xl font-roboto font-roboto'>
           <DialogHeader className='flex items-center justify-center'>
             {' '}
             <DialogTitle className='text-center'>{modalName}</DialogTitle>{' '}
           </DialogHeader>
-
           <Form {...form}>
             <form className='space-y-6'>
 
@@ -609,7 +612,7 @@ const customerData: AddNewCustomerRequestInput = {
           </Form>
           <DialogFooter className='sm:justify-end'>
             <DialogClose asChild>
-              <Button type='button' variant='outline'>
+              <Button type='button' variant='outline' onClick={handleClose}>
                 Close
               </Button>
             </DialogClose>

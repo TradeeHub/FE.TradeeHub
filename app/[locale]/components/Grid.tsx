@@ -45,7 +45,9 @@ const CustomGrid = ({
   const gridRowCount = useRef<number>(0);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gridApiRef = useRef<GridApi<any> | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -109,12 +111,9 @@ const CustomGrid = ({
             columnDefs={gridColumnDef}
             onToggleColumnVisibility={onToggleColumnVisibility}
           />
-          <Modal
-            triggerButton={
-              <RoundButton icon={<HiOutlineUserAdd className='h-7 w-7' />} />
-            }
-            modalName='Add New Customer'
-          />
+          <RoundButton icon={<HiOutlineUserAdd className='h-7 w-7' />} onClick={toggleModal} />
+          <Modal isOpen={isModalOpen} onClose={toggleModal} modalName='Add New Customer' />
+
         </div>
         <div className='flex-grow'>
           <div className='ag-theme-material h-[calc(100vh-11rem)] w-full md:h-[calc(100vh-7.5rem)]'>
