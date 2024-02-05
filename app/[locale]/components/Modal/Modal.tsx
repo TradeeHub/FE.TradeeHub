@@ -252,7 +252,7 @@ const customerData: AddNewCustomerRequestInput = {
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
+      <Dialog open={isOpen} onOpenChange={handleClose}>
         <DialogContent className='w-full max-w-2xl font-roboto font-roboto'>
           <DialogHeader className='flex items-center justify-center'>
             {' '}
