@@ -31,7 +31,6 @@ const AuthenticationGuard = ({
   };
 
   useEffect(() => {
-    console.log('isUserLoading', isUserLoading, isAuthenticated, pathname);
     if (isUserLoading) {
       return; // User is still loading, do nothing
     }

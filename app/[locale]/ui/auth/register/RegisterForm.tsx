@@ -155,8 +155,6 @@ const RegisterForm = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const registerRequest = transformRegisterRequest(values);
-    console.log(registerRequest);
-
     register(registerRequest);
   };
 

@@ -136,10 +136,6 @@ const ResetPassword = () => {
       !requestChangePasswordError &&
       requestChangePasswordResponse.forgotPassword.httpStatusCode === 'OK'
     ) {
-      console.log(
-        'requestChangePasswordResponse',
-        requestChangePasswordResponse,
-      );
       setCurrentStep((prev) => prev + 1);
     }
   }, [requestChangePasswordResponse]);

@@ -18,7 +18,6 @@ const useCustomers = () => {
   const fetchMoreData = useCallback(
     async (endCursor: string | null, pageSize: number) => {
       try {
-        console.log('fetchMoreData', endCursor, pageSize);
         const fetchResult = await fetchMore({
           variables: { cursor: endCursor, pageSize: pageSize },
         });

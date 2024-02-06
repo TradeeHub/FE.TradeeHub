@@ -182,7 +182,6 @@ const Customers = () => {
     ? data?.customers?.pageInfo
     : null;
 
-  console.log('pageInfo', pageInfo);
   const initialData = data?.customers?.edges?.map((edge) => edge.node);
   return (
     <>

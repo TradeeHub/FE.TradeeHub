@@ -184,7 +184,6 @@ const AddCustomerModal: React.FC<ModalProps> = ({
 
   const handleAddCustomer = () => {
     const formValues = form.getValues();
-    console.log('FORM VALUES  ', formValues);
 
     const customerData: AddNewCustomerRequestInput = {
       title: formValues.title,
@@ -240,7 +239,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       reference: formValues.reference,
       comment: formValues.comment,
     };
-    console.log('CUSTOMER DATA ', customerData);
+
     addNewCustomer(customerData);
   };
 
@@ -303,11 +302,6 @@ const AddCustomerModal: React.FC<ModalProps> = ({
         ),
       });
       onCustomerAdded();
-      console.log(
-        'ADD CUSTOMER RESPONSE ',
-        customer.customerReferenceNumber,
-        customer.id,
-      );
     }
   }, [addNewCustomerResponse]);
 
