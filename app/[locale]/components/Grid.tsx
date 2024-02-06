@@ -36,6 +36,7 @@ const gridOptions = {
 const CustomGrid = ({
   columnDefs,
   fetchMoreData,
+  refetch,
   initialData,
   initialPageInfo,
 }: CustomGridProps) => {
@@ -46,6 +47,7 @@ const CustomGrid = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gridApiRef = useRef<GridApi<any> | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const newDataRef = useRef<object[] | undefined>(undefined);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const router = useRouter();
@@ -54,14 +56,27 @@ const CustomGrid = ({
   const dataSource = (): IDatasource => ({
     getRows: async (params: IGetRowsParams) => {
       try {
+      console.log('my NEW DATA ', newDataRef.current);
         if (isFirstLoad.current === true) {
+          console.log('initialData', initialData, pageInfoTrack.current);
           params.successCallback(
             initialData as [],
             pageInfoTrack.current.hasNextPage ? -1 : initialData.length,
           );
           gridRowCount.current = initialData.length;
           isFirstLoad.current = false;
-        } else {
+        } 
+        else if(newDataRef.current) {
+          console.log('elseeeeeeeeeeeeeeeeeeeeeeeee')
+          params.successCallback(
+            newDataRef.current as [],
+            pageInfoTrack.current.hasNextPage ? -1 : initialData.length,
+          );
+          gridRowCount.current = initialData.length;
+        }
+        else {
+          console.log('ELSEE', gridOptions.cacheBlockSize, pageInfoTrack.current);
+
           const { rows, pageInfo } = await fetchMoreData(
             pageInfoTrack.current.endCursor,
             gridOptions.cacheBlockSize,
@@ -103,16 +118,16 @@ const CustomGrid = ({
     );
   };
 
-  const refreshGridData = () => {
-    if (gridApiRef.current) {
-      // Resets the infinite row model cache
-      gridApiRef.current.purgeInfiniteCache();
-      // If you need to reset the first load state as well
-      isFirstLoad.current = true;
-      // Optionally reset your pageInfoTrack if necessary
-      pageInfoTrack.current = initialPageInfo; // reset to initial state if needed
-    }
+const refreshGridData = async () => {
+      const {data} = await refetch(); 
+      const newData = data?.customers?.edges?.map((edge) => edge.node);
+      newDataRef.current = newData; // Update the ref instead of state
+      if (gridApiRef.current) {
+    gridApiRef.current.purgeInfiniteCache(); // Tell AG Grid to re-fetch data
+  }
+      console.log('refreshGridData', data);
   };
+
 
   return (
     <>

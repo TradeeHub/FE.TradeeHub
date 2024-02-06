@@ -2,9 +2,12 @@
 import {
   CustomerByIdQuery,
   CustomerEntity,
+  CustomersPagedQuery,
+  Exact,
+  InputMaybe,
   UserDbObject,
 } from '@/generatedGraphql';
-import { ApolloError } from '@apollo/client';
+import { ApolloError, ApolloQueryResult } from '@apollo/client';
 import { ColDef } from 'ag-grid-community';
 import { ReactNode } from 'react';
 
@@ -24,6 +27,12 @@ export type CustomGridProps = {
     endCursor: string | null,
     pageSize: number,
   ) => Promise<FetchMoreDataResult>;
+   refetch: (
+    variables?: Partial<Exact<{
+      pageSize: number;
+      cursor?: InputMaybe<string> | undefined;
+    }>>
+  ) => Promise<ApolloQueryResult<CustomersPagedQuery>>;
   initialData: object[];
   initialPageInfo: PageInfoSlim;
 };

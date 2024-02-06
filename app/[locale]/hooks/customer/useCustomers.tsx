@@ -7,7 +7,7 @@ import {
 } from '@/generatedGraphql';
 
 const useCustomers = () => {
-  const { data, error, loading, fetchMore } = useQuery<
+  const { data, error, loading, fetchMore, refetch } = useQuery<
     CustomersPagedQuery,
     CustomersPagedQueryVariables
   >(CustomersPagedDocument, {
@@ -18,6 +18,7 @@ const useCustomers = () => {
   const fetchMoreData = useCallback(
     async (endCursor: string | null, pageSize: number) => {
       try {
+        console.log('fetchMoreData', endCursor, pageSize);
         const fetchResult = await fetchMore({
           variables: { cursor: endCursor, pageSize: pageSize },
         });
@@ -40,7 +41,7 @@ const useCustomers = () => {
     [fetchMore],
   );
 
-  return { data, loading, error, fetchMoreData };
+  return { data, loading, error, fetchMoreData, refetch };
 };
 
 export default useCustomers;

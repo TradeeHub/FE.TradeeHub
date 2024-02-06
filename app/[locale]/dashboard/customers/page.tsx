@@ -50,20 +50,21 @@ const gridColumnDef: ColDef[] = [
     },
     cellRenderer: (params: { value: string }) => {
       const initials = getInitials(params.value);
-      return (
-        <div className='flex h-full'>
-          <div className='flex items-center gap-2'>
-            <Avatar className='h-9 w-9'>
-              <AvatarFallback className='dark:bg-primary dark:text-border'>
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <Label>{params.value}</Label>
+      if(initials) {
+        return (
+          <div className='flex h-full'>
+            <div className='flex items-center gap-2'>
+              <Avatar className='h-9 w-9'>
+                <AvatarFallback className='dark:bg-primary dark:text-border'>
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <Label>{params.value}</Label>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     },
-
     sortable: true,
     headerClass: 'text-base',
     filter: true,
@@ -76,7 +77,7 @@ const gridColumnDef: ColDef[] = [
     field: 'phoneNumbers',
     cellRenderer: (params: { value: PhoneNumberEntity[] }) => {
       const phoneNumbers = params?.value?.map((x) => x?.phoneNumber);
-      return <ArrayDataPopover items={phoneNumbers} />;
+      return phoneNumbers && phoneNumbers[0].length > 0 ? <ArrayDataPopover items={phoneNumbers} /> : '';
     },
     valueGetter: (params) => {
       return params.data?.phoneNumbers;
@@ -172,7 +173,7 @@ const gridColumnDef: ColDef[] = [
 ];
 
 const Customers = () => {
-  const { data, fetchMoreData } = useCustomers();
+  const { data, fetchMoreData, refetch } = useCustomers();
   const pageInfo = data?.customers?.pageInfo?.endCursor
     ? data?.customers?.pageInfo
     : null;
@@ -183,6 +184,7 @@ const Customers = () => {
         <CustomGrid
           columnDefs={gridColumnDef}
           fetchMoreData={fetchMoreData}
+          refetch={refetch}
           initialData={initialData as object[]}
           initialPageInfo={pageInfo as PageInfoSlim}
         />
