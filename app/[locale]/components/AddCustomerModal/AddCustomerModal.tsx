@@ -96,28 +96,28 @@ const UserPlaceSchema = z.object({
 });
 
 const formSchema = z.object({
-  title: z.string(),
-  name: z.string(),
-  surname: z.string(),
-  alias: z.string(),
+  title: z.string().nullable(),
+  name: z.string().nullable(),
+  surname: z.string().nullable(),
+  alias: z.string().nullable(),
   emails: z.array(
     z.object({
       emailType: z.string(),
       email: z.string(),
       receiveNotifications: z.boolean(),
     }),
-  ),
+  ).nullable(),
   phoneNumbers: z.array(
     z.object({
       phoneNumberType: z.string(),
       phoneNumber: z.string(),
       receiveNotifications: z.boolean(),
     }),
-  ),
-  property: UserPlaceSchema,
+  ).nullable(),
+  property: UserPlaceSchema.nullable(),
   isBillingAddress: z.boolean(),
   billing: UserPlaceSchema.nullable(),
-  tags: z.array(z.string()),
+  tags: z.array(z.string()).nullable(),
   reference: z.string().nullable(),
   comment: z.string().nullable(),
 });
@@ -146,7 +146,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       phoneNumbers: [
         { phoneNumberType: '', phoneNumber: '', receiveNotifications: true },
       ],
-      property: {},
+      property: null,
       isBillingAddress: true,
       billing: null,
       tags: [],
@@ -180,7 +180,8 @@ const AddCustomerModal: React.FC<ModalProps> = ({
 
   const handleAddCustomer = () => {
     const formValues = form.getValues();
-    console.log('FORM VALUES ', formValues);
+    console.log('FORM VALUES  ', formValues);
+
     const customerData: AddNewCustomerRequestInput = {
       title: formValues.title,
       name: formValues.name,
@@ -214,9 +215,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
           }
         : null,
       isBillingAddress: formValues.isBillingAddress,
-      billing:
-        formValues.isBillingAddress && formValues.billing
-          ? {
+      billing: formValues.billing ? {
               placeId: formValues.billing.PlaceId,
               address: formValues.billing.Address,
               country: formValues.billing.Country,
@@ -236,8 +235,8 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       reference: formValues.reference,
       comment: formValues.comment,
     };
-    addNewCustomer(customerData);
     console.log('CUSTOMER DATA ', customerData);
+    addNewCustomer(customerData);
   };
 
   const addPhoneNumber = () => {

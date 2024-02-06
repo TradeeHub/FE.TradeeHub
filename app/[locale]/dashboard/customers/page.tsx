@@ -92,7 +92,6 @@ const gridColumnDef: ColDef[] = [
     headerName: 'Properties',
     field: 'properties',
     cellRenderer: (params: { value: PropertyEntity[] }) => {
-      console.log(params?.value);
       const propertyAddresses = params?.value?.map(
         (x) => x.property?.address as string,
       );
@@ -161,7 +160,6 @@ const gridColumnDef: ColDef[] = [
     headerName: 'Created Date',
     field: 'createdAt',
     valueGetter: (params: ValueGetterParams) => {
-      console.log(params?.data);
       return moment(params?.data?.createdAt).format('Do MMM YYYY h:mma');
     },
     cellClass: 'text-center',
