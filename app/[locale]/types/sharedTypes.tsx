@@ -27,11 +27,13 @@ export type CustomGridProps = {
     endCursor: string | null,
     pageSize: number,
   ) => Promise<FetchMoreDataResult>;
-   refetch: (
-    variables?: Partial<Exact<{
-      pageSize: number;
-      cursor?: InputMaybe<string> | undefined;
-    }>>
+  refetch: (
+    variables?: Partial<
+      Exact<{
+        pageSize: number;
+        cursor?: InputMaybe<string> | undefined;
+      }>
+    >,
   ) => Promise<ApolloQueryResult<CustomersPagedQuery>>;
   initialData: object[];
   initialPageInfo: PageInfoSlim;

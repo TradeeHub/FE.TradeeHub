@@ -50,7 +50,7 @@ const gridColumnDef: ColDef[] = [
     },
     cellRenderer: (params: { value: string }) => {
       const initials = getInitials(params.value);
-      if(initials) {
+      if (initials) {
         return (
           <div className='flex h-full'>
             <div className='flex items-center gap-2'>
@@ -77,7 +77,11 @@ const gridColumnDef: ColDef[] = [
     field: 'phoneNumbers',
     cellRenderer: (params: { value: PhoneNumberEntity[] }) => {
       const phoneNumbers = params?.value?.map((x) => x?.phoneNumber);
-      return phoneNumbers && phoneNumbers[0].length > 0 ? <ArrayDataPopover items={phoneNumbers} /> : '';
+      return phoneNumbers && phoneNumbers[0].length > 0 ? (
+        <ArrayDataPopover items={phoneNumbers} />
+      ) : (
+        ''
+      );
     },
     valueGetter: (params) => {
       return params.data?.phoneNumbers;
@@ -177,6 +181,8 @@ const Customers = () => {
   const pageInfo = data?.customers?.pageInfo?.endCursor
     ? data?.customers?.pageInfo
     : null;
+
+  console.log('pageInfo', pageInfo);
   const initialData = data?.customers?.edges?.map((edge) => edge.node);
   return (
     <>

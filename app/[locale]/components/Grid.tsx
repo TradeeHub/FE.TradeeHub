@@ -47,7 +47,7 @@ const CustomGrid = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gridApiRef = useRef<GridApi<any> | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const newDataRef = useRef<object[] | undefined>(undefined);
+  const newDataRef = useRef<object[]>([]);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const router = useRouter();
@@ -56,27 +56,22 @@ const CustomGrid = ({
   const dataSource = (): IDatasource => ({
     getRows: async (params: IGetRowsParams) => {
       try {
-      console.log('my NEW DATA ', newDataRef.current);
-        if (isFirstLoad.current === true) {
-          console.log('initialData', initialData, pageInfoTrack.current);
+        if (isFirstLoad.current || newDataRef.current.length > 0) {
+          const dataToUse = isFirstLoad.current
+            ? initialData
+            : newDataRef.current;
           params.successCallback(
-            initialData as [],
-            pageInfoTrack.current.hasNextPage ? -1 : initialData.length,
+            dataToUse as [],
+            pageInfoTrack.current.hasNextPage ? -1 : dataToUse?.length,
           );
-          gridRowCount.current = initialData.length;
-          isFirstLoad.current = false;
-        } 
-        else if(newDataRef.current) {
-          console.log('elseeeeeeeeeeeeeeeeeeeeeeeee')
-          params.successCallback(
-            newDataRef.current as [],
-            pageInfoTrack.current.hasNextPage ? -1 : initialData.length,
-          );
-          gridRowCount.current = initialData.length;
-        }
-        else {
-          console.log('ELSEE', gridOptions.cacheBlockSize, pageInfoTrack.current);
-
+          if (isFirstLoad.current) {
+            gridRowCount.current = initialData.length;
+            isFirstLoad.current = false;
+          } else {
+            gridRowCount.current = newDataRef.current.length;
+            newDataRef.current = [];
+          }
+        } else {
           const { rows, pageInfo } = await fetchMoreData(
             pageInfoTrack.current.endCursor,
             gridOptions.cacheBlockSize,
@@ -118,16 +113,21 @@ const CustomGrid = ({
     );
   };
 
-const refreshGridData = async () => {
-      const {data} = await refetch(); 
-      const newData = data?.customers?.edges?.map((edge) => edge.node);
-      newDataRef.current = newData; // Update the ref instead of state
-      if (gridApiRef.current) {
-    gridApiRef.current.purgeInfiniteCache(); // Tell AG Grid to re-fetch data
-  }
-      console.log('refreshGridData', data);
-  };
+  const refreshGridData = async () => {
+    const { data } = await refetch();
+    const newData = data?.customers?.edges?.map((edge) => edge.node);
+    newDataRef.current = newData as [];
+    const newDataPageInfo = data?.customers?.pageInfo;
 
+    pageInfoTrack.current = (
+      newDataPageInfo ? newDataPageInfo : pageInfoTrack.current
+    ) as PageInfoSlim;
+
+    if (gridApiRef.current) {
+      gridRowCount.current = newDataRef.current.length; // Reset gridRowCount to reflect the new total
+      gridApiRef.current.setGridOption('datasource', dataSource()); // Refresh the datasource to reflect new data
+    }
+  };
 
   return (
     <>

@@ -100,20 +100,24 @@ const formSchema = z.object({
   name: z.string().nullable(),
   surname: z.string().nullable(),
   alias: z.string().nullable(),
-  emails: z.array(
-    z.object({
-      emailType: z.string(),
-      email: z.string(),
-      receiveNotifications: z.boolean(),
-    }),
-  ).nullable(),
-  phoneNumbers: z.array(
-    z.object({
-      phoneNumberType: z.string(),
-      phoneNumber: z.string(),
-      receiveNotifications: z.boolean(),
-    }),
-  ).nullable(),
+  emails: z
+    .array(
+      z.object({
+        emailType: z.string(),
+        email: z.string(),
+        receiveNotifications: z.boolean(),
+      }),
+    )
+    .nullable(),
+  phoneNumbers: z
+    .array(
+      z.object({
+        phoneNumberType: z.string(),
+        phoneNumber: z.string(),
+        receiveNotifications: z.boolean(),
+      }),
+    )
+    .nullable(),
   property: UserPlaceSchema.nullable(),
   isBillingAddress: z.boolean(),
   billing: UserPlaceSchema.nullable(),
@@ -187,12 +191,12 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       name: formValues.name,
       surname: formValues.surname,
       alias: formValues.alias,
-      emails: formValues.emails.map((email) => ({
+      emails: formValues.emails?.map((email) => ({
         emailType: email.emailType,
         email: email.email,
         receiveNotifications: email.receiveNotifications,
       })),
-      phoneNumbers: formValues.phoneNumbers.map((phone) => ({
+      phoneNumbers: formValues.phoneNumbers?.map((phone) => ({
         phoneNumberType: phone.phoneNumberType,
         phoneNumber: phone.phoneNumber,
         receiveNotifications: phone.receiveNotifications,
@@ -215,22 +219,23 @@ const AddCustomerModal: React.FC<ModalProps> = ({
           }
         : null,
       isBillingAddress: formValues.isBillingAddress,
-      billing: formValues.billing ? {
-              placeId: formValues.billing.PlaceId,
-              address: formValues.billing.Address,
-              country: formValues.billing.Country,
-              countryCode: formValues.billing.CountryCode,
-              callingCode: formValues.billing.CallingCode,
-              location: {
-                lat: formValues.billing.Location.lat,
-                lng: formValues.billing.Location.lng,
-              },
-              viewport: {
-                northeast: formValues.billing.Viewport.northeast,
-                southwest: formValues.billing.Viewport.southwest,
-              },
-            }
-          : null,
+      billing: formValues.billing
+        ? {
+            placeId: formValues.billing.PlaceId,
+            address: formValues.billing.Address,
+            country: formValues.billing.Country,
+            countryCode: formValues.billing.CountryCode,
+            callingCode: formValues.billing.CallingCode,
+            location: {
+              lat: formValues.billing.Location.lat,
+              lng: formValues.billing.Location.lng,
+            },
+            viewport: {
+              northeast: formValues.billing.Viewport.northeast,
+              southwest: formValues.billing.Viewport.southwest,
+            },
+          }
+        : null,
       tags: formValues.tags,
       reference: formValues.reference,
       comment: formValues.comment,
