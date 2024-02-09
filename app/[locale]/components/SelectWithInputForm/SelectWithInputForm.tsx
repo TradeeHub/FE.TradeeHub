@@ -27,7 +27,7 @@ type SelectWithInputFormProps<
 > = {
   form: UseFormReturn<TFieldValues>;
   field: ControllerRenderProps<TFieldValues, TFieldName>;
-  options: Option[];
+  options: Option[]; // Replace 'const' with the correct type
   defaultValue: string;
   inputPlaceHolder: string;
 };

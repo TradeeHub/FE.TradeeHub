@@ -4,6 +4,8 @@ import {
   CustomersPagedDocument,
   CustomersPagedQuery,
   CustomersPagedQueryVariables,
+  SearchReferenceRequestInput,
+  useSearchCustomerReferencesQuery,
 } from '@/generatedGraphql';
 
 const useCustomers = () => {
@@ -43,4 +45,35 @@ const useCustomers = () => {
   return { data, loading, error, fetchMoreData, refetch };
 };
 
-export default useCustomers;
+const useSearchCustomerReferences = () => {
+  // Use the generated query hook for searching customer references
+  const {
+    data,
+    error,
+    loading,
+    refetch, // Use refetch to perform the search with new searchTerm
+  } = useSearchCustomerReferencesQuery({
+    skip: true,
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const searchCustomerReferences = useCallback(
+    async (request: SearchReferenceRequestInput) => {
+      const reference = await refetch({
+        request,
+      });
+
+      return reference?.data?.searchCustomerReferences;
+    },
+    [refetch],
+  );
+
+  return {
+    searchCustomerReferences,
+    searchResults: data?.searchCustomerReferences,
+    loading,
+    error,
+  };
+};
+
+export { useCustomers, useSearchCustomerReferences };

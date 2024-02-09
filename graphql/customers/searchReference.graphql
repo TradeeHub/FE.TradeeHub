@@ -1,0 +1,14 @@
+query SearchCustomerReferences($request: SearchReferenceRequestInput!) {
+  searchCustomerReferences(request: $request) {
+    references {
+      id
+      displayName
+      phoneNumber
+      referenceType
+    }
+    customerNextCursor
+    customerHasNextPage
+    externalNextCursor
+    externalHasNextPage
+  }
+}

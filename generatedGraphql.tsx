@@ -33,21 +33,43 @@ export type AddNewCustomerRequestInput = {
   alias?: InputMaybe<Scalars['String']['input']>;
   billing?: InputMaybe<CustomerPlaceRequestInput>;
   comment?: InputMaybe<Scalars['String']['input']>;
+  companyName?: InputMaybe<Scalars['String']['input']>;
+  customerType?: InputMaybe<Scalars['String']['input']>;
   emails?: InputMaybe<Array<EmailRequestInput>>;
   isBillingAddress: Scalars['Boolean']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   phoneNumbers?: InputMaybe<Array<PhoneNumberRequestInput>>;
   property?: InputMaybe<CustomerPlaceRequestInput>;
-  reference?: InputMaybe<Scalars['ID']['input']>;
+  reference?: InputMaybe<LinkReferenceRequestInput>;
   surname?: InputMaybe<Scalars['String']['input']>;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
   title?: InputMaybe<Scalars['String']['input']>;
+  useCompanyName: Scalars['Boolean']['input'];
 };
 
 export type AddNewCustomerResponse = {
   __typename?: 'AddNewCustomerResponse';
   customerReferenceNumber: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+};
+
+export type AddNewExternalReferenceRequestInput = {
+  companyName?: InputMaybe<Scalars['String']['input']>;
+  compensation?: InputMaybe<CompensationDetailsRequestInput>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<EmailRequestInput>;
+  name: Scalars['String']['input'];
+  phoneNumber?: InputMaybe<PhoneNumberRequestInput>;
+  place?: InputMaybe<CustomerPlaceRequestInput>;
+  referenceType: Scalars['String']['input'];
+  url?: InputMaybe<Scalars['String']['input']>;
+  useCompanyName: Scalars['Boolean']['input'];
+};
+
+export type AddNewExternalReferenceResponse = {
+  __typename?: 'AddNewExternalReferenceResponse';
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
 };
 
 export enum ApplyPolicy {
@@ -97,6 +119,22 @@ export enum CommentType {
   Quote = 'QUOTE'
 }
 
+export type CompensationDetailsRequestInput = {
+  amount: Scalars['Decimal']['input'];
+  currency?: InputMaybe<Scalars['String']['input']>;
+  type: CompensationType;
+};
+
+export enum CompensationType {
+  Monthly = 'MONTHLY',
+  OneTimeFixed = 'ONE_TIME_FIXED',
+  OneTimePercentage = 'ONE_TIME_PERCENTAGE',
+  RecurringFixed = 'RECURRING_FIXED',
+  RecurringPercentage = 'RECURRING_PERCENTAGE',
+  Weekly = 'WEEKLY',
+  Yearly = 'YEARLY'
+}
+
 export type ConfirmForgotPasswordResponse = {
   __typename?: 'ConfirmForgotPasswordResponse';
   contentLength: Scalars['Long']['output'];
@@ -122,27 +160,28 @@ export enum CoreChecksumAlgorithm {
 export type CustomerEntity = {
   __typename?: 'CustomerEntity';
   alias?: Maybe<Scalars['String']['output']>;
+  archived: Scalars['Boolean']['output'];
   comments?: Maybe<Array<Maybe<CommentEntity>>>;
+  companyName?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
   createdBy: Scalars['UUID']['output'];
   customerRating?: Maybe<Scalars['Decimal']['output']>;
+  customerReferenceEntityId?: Maybe<Scalars['ID']['output']>;
   customerReferenceNumber?: Maybe<Scalars['String']['output']>;
+  customerType: Scalars['String']['output'];
   emails?: Maybe<Array<EmailEntity>>;
-  fullName: Scalars['String']['output'];
+  fullName?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
   modifiedBy?: Maybe<Scalars['UUID']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   phoneNumbers?: Maybe<Array<PhoneNumberEntity>>;
   properties?: Maybe<Array<Maybe<PropertyEntity>>>;
-  referralFeeFixed?: Maybe<Scalars['Decimal']['output']>;
-  referralFeePercentage?: Maybe<Scalars['Decimal']['output']>;
-  referredByCustomer?: Maybe<Scalars['ID']['output']>;
-  referredByOther?: Maybe<Scalars['String']['output']>;
   status: CustomerStatus;
   surname?: Maybe<Scalars['String']['output']>;
   tags?: Maybe<Array<Scalars['String']['output']>>;
   title?: Maybe<Scalars['String']['output']>;
+  useCompanyName: Scalars['Boolean']['output'];
   userOwnerId: Scalars['UUID']['output'];
 };
 
@@ -159,10 +198,22 @@ export type CustomerEntityFilter = {
   alias_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   alias_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   alias_starts_with?: InputMaybe<Scalars['String']['input']>;
+  archived?: InputMaybe<Scalars['Boolean']['input']>;
+  archived_not?: InputMaybe<Scalars['Boolean']['input']>;
   comments_all?: InputMaybe<ObjectIdFilter>;
   comments_any?: InputMaybe<Scalars['Boolean']['input']>;
   comments_none?: InputMaybe<ObjectIdFilter>;
   comments_some?: InputMaybe<ObjectIdFilter>;
+  companyName?: InputMaybe<Scalars['String']['input']>;
+  companyName_contains?: InputMaybe<Scalars['String']['input']>;
+  companyName_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companyName_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  companyName_not?: InputMaybe<Scalars['String']['input']>;
+  companyName_not_contains?: InputMaybe<Scalars['String']['input']>;
+  companyName_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  companyName_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  companyName_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  companyName_starts_with?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   createdAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
   createdAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
@@ -209,6 +260,16 @@ export type CustomerEntityFilter = {
   customerReferenceNumber_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   customerReferenceNumber_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   customerReferenceNumber_starts_with?: InputMaybe<Scalars['String']['input']>;
+  customerType?: InputMaybe<Scalars['String']['input']>;
+  customerType_contains?: InputMaybe<Scalars['String']['input']>;
+  customerType_ends_with?: InputMaybe<Scalars['String']['input']>;
+  customerType_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  customerType_not?: InputMaybe<Scalars['String']['input']>;
+  customerType_not_contains?: InputMaybe<Scalars['String']['input']>;
+  customerType_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  customerType_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  customerType_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  customerType_starts_with?: InputMaybe<Scalars['String']['input']>;
   emails_all?: InputMaybe<EmailEntityFilter>;
   emails_any?: InputMaybe<Scalars['Boolean']['input']>;
   emails_none?: InputMaybe<EmailEntityFilter>;
@@ -216,11 +277,11 @@ export type CustomerEntityFilter = {
   fullName?: InputMaybe<Scalars['String']['input']>;
   fullName_contains?: InputMaybe<Scalars['String']['input']>;
   fullName_ends_with?: InputMaybe<Scalars['String']['input']>;
-  fullName_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  fullName_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   fullName_not?: InputMaybe<Scalars['String']['input']>;
   fullName_not_contains?: InputMaybe<Scalars['String']['input']>;
   fullName_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  fullName_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  fullName_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   fullName_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   fullName_starts_with?: InputMaybe<Scalars['String']['input']>;
   modifiedAt?: InputMaybe<Scalars['DateTime']['input']>;
@@ -265,40 +326,6 @@ export type CustomerEntityFilter = {
   properties_any?: InputMaybe<Scalars['Boolean']['input']>;
   properties_none?: InputMaybe<ObjectIdFilter>;
   properties_some?: InputMaybe<ObjectIdFilter>;
-  referralFeeFixed?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeeFixed_gt?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeeFixed_gte?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeeFixed_in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
-  referralFeeFixed_lt?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeeFixed_lte?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeeFixed_not?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeeFixed_not_gt?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeeFixed_not_gte?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeeFixed_not_in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
-  referralFeeFixed_not_lt?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeeFixed_not_lte?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeePercentage?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeePercentage_gt?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeePercentage_gte?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeePercentage_in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
-  referralFeePercentage_lt?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeePercentage_lte?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeePercentage_not?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeePercentage_not_gt?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeePercentage_not_gte?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeePercentage_not_in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
-  referralFeePercentage_not_lt?: InputMaybe<Scalars['Decimal']['input']>;
-  referralFeePercentage_not_lte?: InputMaybe<Scalars['Decimal']['input']>;
-  referredByOther?: InputMaybe<Scalars['String']['input']>;
-  referredByOther_contains?: InputMaybe<Scalars['String']['input']>;
-  referredByOther_ends_with?: InputMaybe<Scalars['String']['input']>;
-  referredByOther_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  referredByOther_not?: InputMaybe<Scalars['String']['input']>;
-  referredByOther_not_contains?: InputMaybe<Scalars['String']['input']>;
-  referredByOther_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  referredByOther_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  referredByOther_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  referredByOther_starts_with?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<CustomerStatus>;
   status_gt?: InputMaybe<CustomerStatus>;
   status_gte?: InputMaybe<CustomerStatus>;
@@ -335,6 +362,8 @@ export type CustomerEntityFilter = {
   title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   title_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   title_starts_with?: InputMaybe<Scalars['String']['input']>;
+  useCompanyName?: InputMaybe<Scalars['Boolean']['input']>;
+  useCompanyName_not?: InputMaybe<Scalars['Boolean']['input']>;
   userOwnerId?: InputMaybe<Scalars['UUID']['input']>;
   userOwnerId_gt?: InputMaybe<Scalars['UUID']['input']>;
   userOwnerId_gte?: InputMaybe<Scalars['UUID']['input']>;
@@ -351,20 +380,21 @@ export type CustomerEntityFilter = {
 
 export type CustomerEntitySort = {
   alias?: InputMaybe<SortOperationKind>;
+  archived?: InputMaybe<SortOperationKind>;
+  companyName?: InputMaybe<SortOperationKind>;
   createdAt?: InputMaybe<SortOperationKind>;
   createdBy?: InputMaybe<SortOperationKind>;
   customerRating?: InputMaybe<SortOperationKind>;
   customerReferenceNumber?: InputMaybe<SortOperationKind>;
+  customerType?: InputMaybe<SortOperationKind>;
   fullName?: InputMaybe<SortOperationKind>;
   modifiedAt?: InputMaybe<SortOperationKind>;
   modifiedBy?: InputMaybe<SortOperationKind>;
   name?: InputMaybe<SortOperationKind>;
-  referralFeeFixed?: InputMaybe<SortOperationKind>;
-  referralFeePercentage?: InputMaybe<SortOperationKind>;
-  referredByOther?: InputMaybe<SortOperationKind>;
   status?: InputMaybe<SortOperationKind>;
   surname?: InputMaybe<SortOperationKind>;
   title?: InputMaybe<SortOperationKind>;
+  useCompanyName?: InputMaybe<SortOperationKind>;
   userOwnerId?: InputMaybe<SortOperationKind>;
 };
 
@@ -568,6 +598,11 @@ export type KeyValuePairOfStringAndString = {
   value: Scalars['String']['output'];
 };
 
+export type LinkReferenceRequestInput = {
+  id: Scalars['ID']['input'];
+  referenceType: ReferenceType;
+};
+
 export type LocationDbObject = {
   __typename?: 'LocationDbObject';
   lat: Scalars['Decimal']['output'];
@@ -641,6 +676,7 @@ export type LogoutResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   addNewCustomer: AddNewCustomerResponse;
+  addNewExternalReference: AddNewExternalReferenceResponse;
   changePassword: ConfirmForgotPasswordResponse;
   confirmAccount: AccountConfirmationResponse;
   forgotPassword: ForgotPasswordResponse;
@@ -653,6 +689,11 @@ export type Mutation = {
 
 export type MutationAddNewCustomerArgs = {
   request: AddNewCustomerRequestInput;
+};
+
+
+export type MutationAddNewExternalReferenceArgs = {
+  request: AddNewExternalReferenceRequestInput;
 };
 
 
@@ -924,6 +965,7 @@ export type Query = {
   customerById?: Maybe<CustomerEntity>;
   customers?: Maybe<CustomersConnection>;
   loggedInUser?: Maybe<UserDbObject>;
+  searchCustomerReferences: ReferenceTrackingResponse;
   userByAwsCognitoId: Array<UserDbObject>;
   users?: Maybe<UsersConnection>;
 };
@@ -944,6 +986,11 @@ export type QueryCustomersArgs = {
 };
 
 
+export type QuerySearchCustomerReferencesArgs = {
+  request: SearchReferenceRequestInput;
+};
+
+
 export type QueryUserByAwsCognitoIdArgs = {
   id: Scalars['UUID']['input'];
 };
@@ -957,6 +1004,28 @@ export type QueryUsersArgs = {
   order_by?: InputMaybe<UserDbObjectSort>;
   where?: InputMaybe<UserDbObjectFilter>;
 };
+
+export type ReferenceResponse = {
+  __typename?: 'ReferenceResponse';
+  displayName: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  phoneNumber?: Maybe<Scalars['String']['output']>;
+  referenceType: ReferenceType;
+};
+
+export type ReferenceTrackingResponse = {
+  __typename?: 'ReferenceTrackingResponse';
+  customerHasNextPage: Scalars['Boolean']['output'];
+  customerNextCursor?: Maybe<Scalars['String']['output']>;
+  externalHasNextPage: Scalars['Boolean']['output'];
+  externalNextCursor?: Maybe<Scalars['String']['output']>;
+  references: Array<ReferenceResponse>;
+};
+
+export enum ReferenceType {
+  Customer = 'CUSTOMER',
+  External = 'EXTERNAL'
+}
 
 export type RegisterRequestInput = {
   companyName: Scalars['String']['input'];
@@ -986,6 +1055,15 @@ export type ResponseMetadata = {
   checksumValidationStatus: ChecksumValidationStatus;
   metadata?: Maybe<Array<KeyValuePairOfStringAndString>>;
   requestId?: Maybe<Scalars['String']['output']>;
+};
+
+export type SearchReferenceRequestInput = {
+  customerHasNextPage?: InputMaybe<Scalars['Boolean']['input']>;
+  customerNextCursor?: InputMaybe<Scalars['String']['input']>;
+  externalHasNextPage?: InputMaybe<Scalars['Boolean']['input']>;
+  externalNextCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize: Scalars['Int']['input'];
+  searchTerm: Scalars['String']['input'];
 };
 
 export type SignUpResponse = {
@@ -1294,7 +1372,7 @@ export type CustomerByIdQueryVariables = Exact<{
 }>;
 
 
-export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName: string, alias?: string | null, status: CustomerStatus, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, referredByCustomer?: string | null, referredByOther?: string | null, referralFeeFixed?: any | null, referralFeePercentage?: any | null, customerRating?: any | null, tags?: Array<string> | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, property: { __typename?: 'PlaceEntity', address: string } } | null> | null } | null };
+export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName?: string | null, alias?: string | null, status: CustomerStatus, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, customerReferenceEntityId?: string | null, archived: boolean, customerRating?: any | null, tags?: Array<string> | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, property: { __typename?: 'PlaceEntity', address: string } } | null> | null } | null };
 
 export type CustomersPagedQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -1302,7 +1380,14 @@ export type CustomersPagedQueryVariables = Exact<{
 }>;
 
 
-export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, status: CustomerStatus, fullName: string, tags?: Array<string> | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', property: { __typename?: 'PlaceEntity', address: string } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, status: CustomerStatus, fullName?: string | null, tags?: Array<string> | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', property: { __typename?: 'PlaceEntity', address: string } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+
+export type SearchCustomerReferencesQueryVariables = Exact<{
+  request: SearchReferenceRequestInput;
+}>;
+
+
+export type SearchCustomerReferencesQuery = { __typename?: 'Query', searchCustomerReferences: { __typename?: 'ReferenceTrackingResponse', customerNextCursor?: string | null, customerHasNextPage: boolean, externalNextCursor?: string | null, externalHasNextPage: boolean, references: Array<{ __typename?: 'ReferenceResponse', id: string, displayName: string, phoneNumber?: string | null, referenceType: ReferenceType }> } };
 
 
 export const ChangePasswordDocument = gql`
@@ -1674,10 +1759,8 @@ export const CustomerByIdDocument = gql`
     createdBy
     modifiedAt
     modifiedBy
-    referredByCustomer
-    referredByOther
-    referralFeeFixed
-    referralFeePercentage
+    customerReferenceEntityId
+    archived
     customerRating
     comments {
       comment
@@ -1800,3 +1883,52 @@ export type CustomersPagedQueryHookResult = ReturnType<typeof useCustomersPagedQ
 export type CustomersPagedLazyQueryHookResult = ReturnType<typeof useCustomersPagedLazyQuery>;
 export type CustomersPagedSuspenseQueryHookResult = ReturnType<typeof useCustomersPagedSuspenseQuery>;
 export type CustomersPagedQueryResult = Apollo.QueryResult<CustomersPagedQuery, CustomersPagedQueryVariables>;
+export const SearchCustomerReferencesDocument = gql`
+    query SearchCustomerReferences($request: SearchReferenceRequestInput!) {
+  searchCustomerReferences(request: $request) {
+    references {
+      id
+      displayName
+      phoneNumber
+      referenceType
+    }
+    customerNextCursor
+    customerHasNextPage
+    externalNextCursor
+    externalHasNextPage
+  }
+}
+    `;
+
+/**
+ * __useSearchCustomerReferencesQuery__
+ *
+ * To run a query within a React component, call `useSearchCustomerReferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchCustomerReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchCustomerReferencesQuery({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useSearchCustomerReferencesQuery(baseOptions: Apollo.QueryHookOptions<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>(SearchCustomerReferencesDocument, options);
+      }
+export function useSearchCustomerReferencesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>(SearchCustomerReferencesDocument, options);
+        }
+export function useSearchCustomerReferencesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>(SearchCustomerReferencesDocument, options);
+        }
+export type SearchCustomerReferencesQueryHookResult = ReturnType<typeof useSearchCustomerReferencesQuery>;
+export type SearchCustomerReferencesLazyQueryHookResult = ReturnType<typeof useSearchCustomerReferencesLazyQuery>;
+export type SearchCustomerReferencesSuspenseQueryHookResult = ReturnType<typeof useSearchCustomerReferencesSuspenseQuery>;
+export type SearchCustomerReferencesQueryResult = Apollo.QueryResult<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>;

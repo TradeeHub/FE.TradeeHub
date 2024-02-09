@@ -39,12 +39,14 @@ import CommentSection from '../../ui/general/Comment';
 import {
   AddNewCustomerRequestInput,
   AddNewCustomerResponse,
+  CustomerEntity,
 } from '@/generatedGraphql';
 import { useAddNewCustomer } from '../../hooks/customer/useCustomer';
 import { useToast } from '@/components/ui/use-toast';
 import { ToastAction } from '@/components/ui/toast';
 import { usePathname, useRouter } from 'next/navigation';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import CustomerReferenceSearch from '../../ui/general/CustomerReferenceSearch/CustomerReferenceSearch';
 
 type ModalProps = {
   isOpen: boolean;
@@ -100,6 +102,9 @@ const formSchema = z.object({
   name: z.string().nullable(),
   surname: z.string().nullable(),
   alias: z.string().nullable(),
+  customerType: z.string().nullable(),
+  companyName: z.string().nullable(),
+  useCompanyName: z.boolean(),
   emails: z
     .array(
       z.object({
@@ -122,7 +127,12 @@ const formSchema = z.object({
   isBillingAddress: z.boolean(),
   billing: UserPlaceSchema.nullable(),
   tags: z.array(z.string()).nullable(),
-  reference: z.string().nullable(),
+  reference: z
+    .object({
+      id: z.string(),
+      referenceType: z.string(),
+    })
+    .nullable(),
   comment: z.string().nullable(),
 });
 
@@ -146,6 +156,9 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       name: '',
       surname: '',
       alias: '',
+      customerType: '',
+      companyName: '',
+      useCompanyName: false,
       emails: [{ emailType: '', email: '', receiveNotifications: true }],
       phoneNumbers: [
         { phoneNumberType: '', phoneNumber: '', receiveNotifications: true },
@@ -272,6 +285,10 @@ const AddCustomerModal: React.FC<ModalProps> = ({
     } else {
       resetField('billing'); // Or set to an initial empty state as per your schema
     }
+  };
+
+  const onReferenceSelected = (reference: CustomerEntity | null) => {
+    console.log('reference', reference);
   };
 
   const handleClose = () => {
@@ -679,6 +696,23 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                     />
                   )}
                 />{' '}
+              </div>
+
+              <div className='pt-2'>
+                <FormField
+                  control={form.control}
+                  name='reference'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <CustomerReferenceSearch
+                          field={field}
+                          placeholder='Reference'
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               </div>
             </form>
           </Form>

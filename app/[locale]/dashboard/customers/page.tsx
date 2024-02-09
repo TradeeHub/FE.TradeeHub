@@ -2,7 +2,7 @@
 import { ColDef, ValueGetterParams } from 'ag-grid-community';
 import moment from 'moment';
 import CustomGrid from '@/app/[locale]/components/Grid';
-import useCustomers from '@/app/[locale]/hooks/customer/useCustomers';
+import { useCustomers } from '@/app/[locale]/hooks/customer/useCustomers';
 import ArrayDataPopover from '@/app/[locale]/components/ArrayDataPopover';
 import { PageInfoSlim } from '@/app/[locale]/types/sharedTypes';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';

@@ -12,10 +12,8 @@ query CustomerById($id: ID!) {
     createdBy
     modifiedAt
     modifiedBy
-    referredByCustomer
-    referredByOther
-    referralFeeFixed
-    referralFeePercentage
+    customerReferenceEntityId
+    archived
     customerRating
     comments {
       comment
