@@ -40,6 +40,7 @@ import {
   AddNewCustomerRequestInput,
   AddNewCustomerResponse,
   CustomerEntity,
+  ReferenceType,
 } from '@/generatedGraphql';
 import { useAddNewCustomer } from '../../hooks/customer/useCustomer';
 import { useToast } from '@/components/ui/use-toast';
@@ -203,6 +204,9 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       name: formValues.name,
       surname: formValues.surname,
       alias: formValues.alias,
+      customerType: formValues.customerType,
+      companyName: formValues.companyName,
+      useCompanyName: formValues.useCompanyName,
       emails: formValues.emails?.map((email) => ({
         emailType: email.emailType,
         email: email.email,
@@ -249,7 +253,12 @@ const AddCustomerModal: React.FC<ModalProps> = ({
           }
         : null,
       tags: formValues.tags,
-      reference: formValues.reference,
+      reference: formValues.reference
+        ? {
+            id: formValues.reference.id,
+            referenceType: formValues.reference.referenceType as ReferenceType,
+          }
+        : null,
       comment: formValues.comment,
     };
 
