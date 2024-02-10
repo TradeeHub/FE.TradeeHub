@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent } from 'react';
+import React, { useState, KeyboardEvent, FocusEvent } from 'react';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 
 type TagsInputProps<
@@ -18,6 +18,7 @@ const TagsInput = <
 }: TagsInputProps<TFieldValues, TName>) => {
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [lastKeyPressed, setLastKeyPressed] = useState('');
 
   const hasValue = field.value.length > 0;
   const labelClass = `absolute left-3 top-0 transition-all duration-200 ease-in-out transform ${
@@ -27,7 +28,7 @@ const TagsInput = <
   }`;
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === ' ') {
+    if (event.key === ' ' && lastKeyPressed === ' ') {
       event.preventDefault();
       const newTag = inputValue.trim();
       if (newTag) {
@@ -35,10 +36,19 @@ const TagsInput = <
         setInputValue('');
       }
     }
+    setLastKeyPressed(event.key);
   };
 
-  const removeTag = (index: number, event: React.MouseEvent) => {
-    event!.stopPropagation(); // Prevents the focus style from being triggered
+  const handleBlur = (event: FocusEvent<HTMLInputElement>) => {
+    const newTag = event.target.value.trim();
+    if (newTag) {
+      field.onChange([...field.value, newTag]);
+      setInputValue('');
+    }
+    setIsFocused(false);
+  };
+
+  const removeTag = (index: number) => {
     const newTags = [...field.value];
     newTags.splice(index, 1);
     field.onChange(newTags);
@@ -60,7 +70,7 @@ const TagsInput = <
             <span className='text-sm'>{tag}</span>
             <button
               type='button'
-              onClick={(e) => removeTag(index, e)}
+              onClick={() => removeTag(index)}
               className='ml-2 text-gray-500'
             >
               <span className='font-bold text-primary'>×</span>
@@ -75,7 +85,7 @@ const TagsInput = <
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          onBlur={handleBlur}
           className='w-full flex-1 bg-transparent text-sm focus:outline-none'
         />
       </div>
