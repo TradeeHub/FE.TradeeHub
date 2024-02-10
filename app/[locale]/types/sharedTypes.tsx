@@ -126,6 +126,9 @@ export type AddCustomerFormRequest = {
   name: string;
   surname: string;
   alias: string;
+  customerType: string;
+  companyName: string;
+  useCompanyName: boolean;
   emails: { email: string; emailType: string; receiveNotifications: boolean }[];
   phoneNumbers: {
     phoneNumber: string;
@@ -136,6 +139,11 @@ export type AddCustomerFormRequest = {
   isBillingAddress: boolean;
   billing?: UserPlace | null;
   tags: string[];
-  reference?: string | null;
+  reference?: Reference | null;
   comment?: string | null;
+};
+
+type Reference = {
+  id: string;
+  referenceType: string;
 };

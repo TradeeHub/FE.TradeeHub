@@ -96,7 +96,7 @@ const AddressAutocomplete = <
   const user = useSelector((state: RootState) => state.user.data);
   const [labelFloat, setLabelFloat] = useState(false);
   const isMountedRef = useRef(false);
-const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState<string>('');
@@ -125,7 +125,7 @@ const [highlightedIndex, setHighlightedIndex] = useState(0);
             status === google.maps.places.PlacesServiceStatus.OK &&
             predictions
           ) {
-            if(predictions.length !== suggestions.length){
+            if (predictions.length !== suggestions.length) {
               setHighlightedIndex(0);
             }
             setSuggestions(
@@ -145,37 +145,38 @@ const [highlightedIndex, setHighlightedIndex] = useState(0);
   }, 700);
 
   const handleSelect = (location: AutocompletePrediction) => {
-    if(location){
-    const placesService = new google.maps.places.PlacesService(
-      document.createElement('div'),
-    );
-
-    if (location.place_id) {
-      placesService.getDetails(
-        {
-          placeId: location.place_id,
-          fields: [
-            'geometry',
-            'formatted_address',
-            'place_id',
-            'address_components',
-          ], // Specify the fields here
-        },
-        (place, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK && place) {
-            const userPlace = mapPlaceResultToUserPlace(place);
-            onPlaceSelected(userPlace);
-            setSuggestions([]);
-            setInputValue(place.formatted_address || '');
-            setHighlightedIndex(0);
-          } else {
-            console.error('Error getting details:', status);
-          }
-        },
+    if (location) {
+      const placesService = new google.maps.places.PlacesService(
+        document.createElement('div'),
       );
-    } else {
-      console.error('Invalid place_id:', location.place_id);
-    }}
+
+      if (location.place_id) {
+        placesService.getDetails(
+          {
+            placeId: location.place_id,
+            fields: [
+              'geometry',
+              'formatted_address',
+              'place_id',
+              'address_components',
+            ], // Specify the fields here
+          },
+          (place, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+              const userPlace = mapPlaceResultToUserPlace(place);
+              onPlaceSelected(userPlace);
+              setSuggestions([]);
+              setInputValue(place.formatted_address || '');
+              setHighlightedIndex(0);
+            } else {
+              console.error('Error getting details:', status);
+            }
+          },
+        );
+      } else {
+        console.error('Invalid place_id:', location.place_id);
+      }
+    }
   };
 
   useEffect(() => {
@@ -223,24 +224,26 @@ const [highlightedIndex, setHighlightedIndex] = useState(0);
   };
   const inputId = `input-${field.name}`; // Create a unique ID for the input based on the field name
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-  // Arrow down
-  if (e.key === 'ArrowDown') {
-    e.preventDefault(); // Prevent the cursor from moving
-    setHighlightedIndex((prevIndex) => Math.min(prevIndex + 1, suggestions.length - 1));
-  }
-  // Arrow up
-  else if (e.key === 'ArrowUp') {
-    e.preventDefault(); // Prevent the cursor from moving
-    setHighlightedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-  }
-  // Enter
-  else if (e.key === 'Enter' && highlightedIndex >= 0) {
-    e.preventDefault(); // Prevent form submission
-    handleSelect(suggestions[highlightedIndex]);
-    hasMadeSelection.current = true;
-  }
-};
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Arrow down
+    if (e.key === 'ArrowDown') {
+      e.preventDefault(); // Prevent the cursor from moving
+      setHighlightedIndex((prevIndex) =>
+        Math.min(prevIndex + 1, suggestions.length - 1),
+      );
+    }
+    // Arrow up
+    else if (e.key === 'ArrowUp') {
+      e.preventDefault(); // Prevent the cursor from moving
+      setHighlightedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+    }
+    // Enter
+    else if (e.key === 'Enter' && highlightedIndex >= 0) {
+      e.preventDefault(); // Prevent form submission
+      handleSelect(suggestions[highlightedIndex]);
+      hasMadeSelection.current = true;
+    }
+  };
   return (
     <>
       <div className='relative border-b-2 border-gray-300 font-roboto focus-within:border-primary'>
@@ -259,8 +262,7 @@ const [highlightedIndex, setHighlightedIndex] = useState(0);
                 className={`text-md w-full bg-transparent px-3 py-1 pl-10 focus:outline-none`}
                 style={{ paddingLeft: '2.5rem' }}
                 value={inputValue}
-                                onKeyDown={handleKeyDown}
-
+                onKeyDown={handleKeyDown}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
                 onChange={(v) => {

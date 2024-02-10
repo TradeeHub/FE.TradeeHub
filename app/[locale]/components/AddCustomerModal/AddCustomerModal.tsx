@@ -39,7 +39,6 @@ import CommentSection from '../../ui/general/Comment';
 import {
   AddNewCustomerRequestInput,
   AddNewCustomerResponse,
-  CustomerEntity,
   ReferenceType,
 } from '@/generatedGraphql';
 import { useAddNewCustomer } from '../../hooks/customer/useCustomer';
@@ -75,6 +74,21 @@ const titleOptions = [
   { label: 'Ms.', value: 'Ms.' },
   { label: 'Miss.', value: 'Miss.' },
   { label: 'Dr.', value: 'Dr.' },
+  { label: 'Other', value: 'Other' },
+];
+
+const customerTypeOptions = [
+  { label: 'Customer Type', value: 'Empty' },
+  { label: 'Home Owner', value: 'Home Owner' },
+  { label: 'Tenant', value: 'Tenant' },
+  { label: 'Landlord', value: 'Landlord' },
+  { label: 'Small Business', value: 'Small Business' },
+  { label: 'Agency', value: 'Agency' },
+  { label: 'Real Estate', value: 'Real Estate' },
+  { label: 'City Council', value: 'City Council' },
+  { label: 'Property Management Company', value: 'Property Management' },
+  { label: 'Construction Firm', value: 'Construction Firm' },
+  { label: 'Educational Institution', value: 'Educational Institution' },
   { label: 'Other', value: 'Other' },
 ];
 
@@ -176,6 +190,8 @@ const AddCustomerModal: React.FC<ModalProps> = ({
   const { watch, setValue, resetField } = form;
   const property = watch('property');
   const isBillingAddress = watch('isBillingAddress');
+  const customerType = watch('customerType');
+  const hiddenCompanyTypes = ['', 'Home Owner', 'Tenant', 'Landlord'];
 
   const {
     fields: phoneFields,
@@ -295,7 +311,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       resetField('billing'); // Or set to an initial empty state as per your schema
     }
   };
-  
+
   const handleClose = () => {
     form.reset();
     onClose();
@@ -431,6 +447,76 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                 </div>
               </div>
 
+              <div className=''>
+                <FormField
+                  control={form.control}
+                  name='customerType'
+                  render={({ field }) => (
+                    <FormItem>
+                      <SelectWithInputForm<
+                        AddCustomerFormRequest,
+                        'customerType'
+                      >
+                        form={form as UseFormReturn<AddCustomerFormRequest>} // Cast the form prop to the correct type
+                        field={
+                          field as ControllerRenderProps<
+                            AddCustomerFormRequest,
+                            'customerType'
+                          >
+                        } // Cast the field prop to the correct type
+                        options={customerTypeOptions}
+                        inputPlaceHolder='Other Customer Type'
+                        defaultValue='Empty'
+                      />
+                      <StyledFormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {!hiddenCompanyTypes.includes(customerType as string) && (
+                <>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name='companyName'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <AuthInputWithIcon
+                              field={field}
+                              autoFocus={false}
+                              placeholder='Company Name'
+                            />
+                          </FormControl>
+                          <StyledFormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className='mt-1 pl-4'>
+                      <FormField
+                        control={form.control}
+                        name='useCompanyName'
+                        render={({ field }) => (
+                          <FormItem className='flex flex-row items-start space-x-2 space-y-0'>
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={(checked: boolean) => {
+                                  field.onChange(checked);
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className='text-sm'>
+                              Use company name as main display instead of name.
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
               {/* Phone Numbers */}
               {phoneFields.map((field, index) => (
                 <div key={field.id} className='flex items-center'>
@@ -693,19 +779,6 @@ const AddCustomerModal: React.FC<ModalProps> = ({
               <div className='pt-2'>
                 <FormField
                   control={form.control}
-                  name='comment'
-                  render={({ field }) => (
-                    <CommentSection
-                      field={field}
-                      placeholder='Add an internal comment' // Optional: customize the placeholder text
-                    />
-                  )}
-                />{' '}
-              </div>
-
-              <div className='pt-2'>
-                <FormField
-                  control={form.control}
                   name='reference'
                   render={({ field }) => (
                     <FormItem>
@@ -718,6 +791,19 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                     </FormItem>
                   )}
                 />
+              </div>
+
+              <div className='pt-2'>
+                <FormField
+                  control={form.control}
+                  name='comment'
+                  render={({ field }) => (
+                    <CommentSection
+                      field={field}
+                      placeholder='Add an internal comment' // Optional: customize the placeholder text
+                    />
+                  )}
+                />{' '}
               </div>
             </form>
           </Form>
