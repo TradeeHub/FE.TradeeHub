@@ -32,7 +32,6 @@ const useAddNewCustomer = () => {
     useAddNewCustomerMutation();
 
   const addNewCustomer = async (input: AddNewCustomerRequestInput) => {
-    console.log('input', input);
     try {
       await addNewCustomerMutation({
         variables: { input },

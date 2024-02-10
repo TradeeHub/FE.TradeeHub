@@ -295,11 +295,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       resetField('billing'); // Or set to an initial empty state as per your schema
     }
   };
-
-  const onReferenceSelected = (reference: CustomerEntity | null) => {
-    console.log('reference', reference);
-  };
-
+  
   const handleClose = () => {
     form.reset();
     onClose();
