@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Command,
   CommandItem,
@@ -39,11 +39,6 @@ const CustomerReferenceSearch = <
   const popoverContentRef = useRef<HTMLInputElement>(null);
   const selectedDisplayNameRef = useRef<string | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState(0); // -1 means no item is highlighted
-
-  // useEffect(() => {
-  //   setLabelFloat(!!field.value?.Address);
-
-  // }, [field.value]);
 
   const { searchCustomerReferences } = useSearchCustomerReferences();
 
@@ -104,7 +99,10 @@ const CustomerReferenceSearch = <
   const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (!popoverContentRef.current?.contains(e.relatedTarget)) {
       setIsPopoverOpen(false);
-      setInputValue('');
+
+      if (field.value === null) {
+        setInputValue('');
+      }
       setLabelFloat(false);
     }
   };

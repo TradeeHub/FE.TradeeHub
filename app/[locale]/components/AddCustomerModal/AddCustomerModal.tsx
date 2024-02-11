@@ -47,6 +47,8 @@ import { ToastAction } from '@/components/ui/toast';
 import { usePathname, useRouter } from 'next/navigation';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import CustomerReferenceSearch from '../../ui/general/CustomerReferenceSearch/CustomerReferenceSearch';
+import { RootState } from '@/lib/store';
+import { useSelector } from 'react-redux';
 
 type ModalProps = {
   isOpen: boolean;
@@ -112,45 +114,6 @@ const UserPlaceSchema = z.object({
   Viewport: ViewportSchema,
 });
 
-const formSchema = z.object({
-  title: z.string().nullable(),
-  name: z.string().nullable(),
-  surname: z.string().nullable(),
-  alias: z.string().nullable(),
-  customerType: z.string().nullable(),
-  companyName: z.string().nullable(),
-  useCompanyName: z.boolean(),
-  emails: z
-    .array(
-      z.object({
-        emailType: z.string(),
-        email: z.string(),
-        receiveNotifications: z.boolean(),
-      }),
-    )
-    .nullable(),
-  phoneNumbers: z
-    .array(
-      z.object({
-        phoneNumberType: z.string(),
-        phoneNumber: z.string(),
-        receiveNotifications: z.boolean(),
-      }),
-    )
-    .nullable(),
-  property: UserPlaceSchema.nullable(),
-  isBillingAddress: z.boolean(),
-  billing: UserPlaceSchema.nullable(),
-  tags: z.array(z.string()).nullable(),
-  reference: z
-    .object({
-      id: z.string(),
-      referenceType: z.string(),
-    })
-    .nullable(),
-  comment: z.string().nullable(),
-});
-
 const AddCustomerModal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
@@ -163,6 +126,94 @@ const AddCustomerModal: React.FC<ModalProps> = ({
 
   const { addNewCustomer, addNewCustomerResponse, addNewCustomerLoading } =
     useAddNewCustomer();
+  const user = useSelector((state: RootState) => state.user.data);
+
+  const formSchema = z
+    .object({
+      title: z.string().nullable(),
+      name: z.string().nullable(),
+      surname: z.string().nullable(),
+      alias: z.string().nullable(),
+      customerType: z.string().nullable(),
+      companyName: z.string().nullable(),
+      useCompanyName: z.boolean(),
+      emails: z
+        .array(
+          z.object({
+            emailType: z.string(),
+            email: z
+              .string()
+              .refine(
+                (email) =>
+                  !email ||
+                  email === '' ||
+                  z.string().email().safeParse(email).success,
+                {
+                  message: 'Invalid email format.',
+                },
+              ),
+            receiveNotifications: z.boolean(),
+          }),
+        )
+        .nullable(),
+      phoneNumbers: z
+        .array(
+          z.object({
+            phoneNumberType: z.string(),
+            phoneNumber: z
+              .string()
+              .refine(
+                (phoneNumber) => {
+                  const callingCode = '+' + user?.place.callingCode; // Example, replace with dynamic code
+                  if (!phoneNumber || phoneNumber === callingCode) return true; // If phoneNumber is undefined or null, it passes
+                  return (
+                    phoneNumber.startsWith(callingCode) &&
+                    /^\+\d{9,14}$/.test(phoneNumber)
+                  );
+                },
+                {
+                  message:
+                    'Phone number must include correct country code and be 9 to 14 digits long.',
+                },
+              ),
+            receiveNotifications: z.boolean(),
+          }),
+        )
+        .nullable(),
+      property: UserPlaceSchema.nullable(),
+      isBillingAddress: z.boolean(),
+      billing: UserPlaceSchema.nullable(),
+      tags: z.array(z.string()).nullable(),
+      reference: z
+        .object({
+          id: z.string(),
+          referenceType: z.string(),
+        })
+        .nullable(),
+      comment: z.string().nullable(),
+      multiValidation: z.string().nullable().optional(),
+    }) // First refine for companyName
+    .refine(
+      (data) =>
+        !data.useCompanyName ||
+        (data.useCompanyName && Boolean(data.companyName)),
+      {
+        message: "Company name is required when 'useCompanyName' is true.",
+        path: ['companyName'],
+      },
+    )
+    // Second refine for name, surname, or alias
+    .refine(
+      (data) =>
+        data.useCompanyName ||
+        (!data.useCompanyName &&
+          Boolean(data.name || data.surname || data.alias)),
+      {
+        message:
+          'At least of the three Name, Surname or Alias must be provided.',
+        path: ['multiValidation'], // Adjust path as necessary
+      },
+    );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -212,8 +263,9 @@ const AddCustomerModal: React.FC<ModalProps> = ({
     name: 'emails',
   });
 
-  const handleAddCustomer = () => {
+  const handleAddCustomer = async (formData: z.infer<typeof formSchema>) => {
     const formValues = form.getValues();
+    console.log('formData', formData, 'formValues', formValues);
 
     const customerData: AddNewCustomerRequestInput = {
       title: formValues.title,
@@ -374,7 +426,6 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                           inputPlaceHolder='Other Title'
                           defaultValue='Empty'
                         />
-                        <StyledFormMessage />
                       </FormItem>
                     )}
                   />
@@ -382,7 +433,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
               </div>
 
               <div
-                className='pd-2 flex flex-1 items-center gap-4 '
+                className='pd-2 flex flex-wrap items-center gap-4 '
                 style={{ marginTop: 15 }}
               >
                 <div className='flex-1'>
@@ -400,7 +451,6 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                             placeholder='Name'
                           />
                         </FormControl>
-                        <StyledFormMessage />
                       </FormItem>
                     )}
                   />
@@ -420,7 +470,6 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                             placeholder='Surname'
                           />
                         </FormControl>
-                        <StyledFormMessage />
                       </FormItem>
                     )}
                   />
@@ -440,13 +489,18 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                             placeholder='Alias'
                           />
                         </FormControl>
-                        <StyledFormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
               </div>
-
+              <div style={{ marginTop: 0 }}>
+                <FormField
+                  control={form.control}
+                  name='multiValidation'
+                  render={() => <StyledFormMessage />}
+                />
+              </div>
               <div className=''>
                 <FormField
                   control={form.control}
@@ -468,7 +522,6 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                         inputPlaceHolder='Other Customer Type'
                         defaultValue='Empty'
                       />
-                      <StyledFormMessage />
                     </FormItem>
                   )}
                 />
@@ -529,21 +582,24 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                       control={form.control}
                       name={`phoneNumbers.${index}.phoneNumberType`}
                       render={({ field }) => (
-                        <SelectWithInputForm<
-                          AddCustomerFormRequest,
-                          `phoneNumbers.${typeof index}.phoneNumberType`
-                        >
-                          form={form as UseFormReturn<AddCustomerFormRequest>}
-                          field={
-                            field as ControllerRenderProps<
-                              AddCustomerFormRequest,
-                              `phoneNumbers.${number}.phoneNumberType`
-                            >
-                          }
-                          options={phoneNumberTypeOptions}
-                          inputPlaceHolder='Number Type'
-                          defaultValue='Mobile'
-                        />
+                        <>
+                          <SelectWithInputForm<
+                            AddCustomerFormRequest,
+                            `phoneNumbers.${typeof index}.phoneNumberType`
+                          >
+                            form={form as UseFormReturn<AddCustomerFormRequest>}
+                            field={
+                              field as ControllerRenderProps<
+                                AddCustomerFormRequest,
+                                `phoneNumbers.${number}.phoneNumberType`
+                              >
+                            }
+                            options={phoneNumberTypeOptions}
+                            inputPlaceHolder='Number Type'
+                            defaultValue='Mobile'
+                          />
+                          <StyledFormMessage />
+                        </>
                       )}
                     />
                   </div>
@@ -821,7 +877,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
             <Button
               type='button'
               variant='default'
-              onClick={handleAddCustomer}
+              onClick={form.handleSubmit(handleAddCustomer)}
               disabled={addNewCustomerLoading}
             >
               {addNewCustomerLoading ? (

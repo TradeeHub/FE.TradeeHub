@@ -12,7 +12,6 @@ query CustomerById($id: ID!) {
     createdBy
     modifiedAt
     modifiedBy
-    customerReferenceEntityId
     archived
     customerRating
     comments {

@@ -34,7 +34,7 @@ export type AddNewCustomerRequestInput = {
   billing?: InputMaybe<CustomerPlaceRequestInput>;
   comment?: InputMaybe<Scalars['String']['input']>;
   companyName?: InputMaybe<Scalars['String']['input']>;
-  customerType?: InputMaybe<Scalars['String']['input']>;
+  customerType: Scalars['String']['input'];
   emails?: InputMaybe<Array<EmailRequestInput>>;
   isBillingAddress: Scalars['Boolean']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
@@ -166,7 +166,6 @@ export type CustomerEntity = {
   createdAt: Scalars['DateTime']['output'];
   createdBy: Scalars['UUID']['output'];
   customerRating?: Maybe<Scalars['Decimal']['output']>;
-  customerReferenceEntityId?: Maybe<Scalars['ID']['output']>;
   customerReferenceNumber?: Maybe<Scalars['String']['output']>;
   customerType: Scalars['String']['output'];
   emails?: Maybe<Array<EmailEntity>>;
@@ -177,6 +176,7 @@ export type CustomerEntity = {
   name?: Maybe<Scalars['String']['output']>;
   phoneNumbers?: Maybe<Array<PhoneNumberEntity>>;
   properties?: Maybe<Array<Maybe<PropertyEntity>>>;
+  reference?: Maybe<ReferenceInfo>;
   status: CustomerStatus;
   surname?: Maybe<Scalars['String']['output']>;
   tags?: Maybe<Array<Scalars['String']['output']>>;
@@ -326,6 +326,7 @@ export type CustomerEntityFilter = {
   properties_any?: InputMaybe<Scalars['Boolean']['input']>;
   properties_none?: InputMaybe<ObjectIdFilter>;
   properties_some?: InputMaybe<ObjectIdFilter>;
+  reference?: InputMaybe<ReferenceInfoFilter>;
   status?: InputMaybe<CustomerStatus>;
   status_gt?: InputMaybe<CustomerStatus>;
   status_gte?: InputMaybe<CustomerStatus>;
@@ -391,6 +392,7 @@ export type CustomerEntitySort = {
   modifiedAt?: InputMaybe<SortOperationKind>;
   modifiedBy?: InputMaybe<SortOperationKind>;
   name?: InputMaybe<SortOperationKind>;
+  reference?: InputMaybe<ReferenceInfoSort>;
   status?: InputMaybe<SortOperationKind>;
   surname?: InputMaybe<SortOperationKind>;
   title?: InputMaybe<SortOperationKind>;
@@ -1005,6 +1007,34 @@ export type QueryUsersArgs = {
   where?: InputMaybe<UserDbObjectFilter>;
 };
 
+export type ReferenceInfo = {
+  __typename?: 'ReferenceInfo';
+  customerId?: Maybe<Scalars['ID']['output']>;
+  externalReferenceId?: Maybe<Scalars['ID']['output']>;
+  referenceType: ReferenceType;
+};
+
+export type ReferenceInfoFilter = {
+  AND?: InputMaybe<Array<ReferenceInfoFilter>>;
+  OR?: InputMaybe<Array<ReferenceInfoFilter>>;
+  referenceType?: InputMaybe<ReferenceType>;
+  referenceType_gt?: InputMaybe<ReferenceType>;
+  referenceType_gte?: InputMaybe<ReferenceType>;
+  referenceType_in?: InputMaybe<Array<ReferenceType>>;
+  referenceType_lt?: InputMaybe<ReferenceType>;
+  referenceType_lte?: InputMaybe<ReferenceType>;
+  referenceType_not?: InputMaybe<ReferenceType>;
+  referenceType_not_gt?: InputMaybe<ReferenceType>;
+  referenceType_not_gte?: InputMaybe<ReferenceType>;
+  referenceType_not_in?: InputMaybe<Array<ReferenceType>>;
+  referenceType_not_lt?: InputMaybe<ReferenceType>;
+  referenceType_not_lte?: InputMaybe<ReferenceType>;
+};
+
+export type ReferenceInfoSort = {
+  referenceType?: InputMaybe<SortOperationKind>;
+};
+
 export type ReferenceResponse = {
   __typename?: 'ReferenceResponse';
   displayName: Scalars['String']['output'];
@@ -1372,7 +1402,7 @@ export type CustomerByIdQueryVariables = Exact<{
 }>;
 
 
-export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName?: string | null, alias?: string | null, status: CustomerStatus, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, customerReferenceEntityId?: string | null, archived: boolean, customerRating?: any | null, tags?: Array<string> | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, property: { __typename?: 'PlaceEntity', address: string } } | null> | null } | null };
+export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName?: string | null, alias?: string | null, status: CustomerStatus, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, archived: boolean, customerRating?: any | null, tags?: Array<string> | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, property: { __typename?: 'PlaceEntity', address: string } } | null> | null } | null };
 
 export type CustomersPagedQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -1759,7 +1789,6 @@ export const CustomerByIdDocument = gql`
     createdBy
     modifiedAt
     modifiedBy
-    customerReferenceEntityId
     archived
     customerRating
     comments {
