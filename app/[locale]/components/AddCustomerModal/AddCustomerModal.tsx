@@ -198,7 +198,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
         !data.useCompanyName ||
         (data.useCompanyName && Boolean(data.companyName)),
       {
-        message: "Company name is required when 'useCompanyName' is true.",
+        message: 'Company Name is required when use company name as main checkbox is checked.',
         path: ['companyName'],
       },
     )
@@ -542,7 +542,6 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                               placeholder='Company Name'
                             />
                           </FormControl>
-                          <StyledFormMessage />
                         </FormItem>
                       )}
                     />
@@ -598,7 +597,6 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                             inputPlaceHolder='Number Type'
                             defaultValue='Mobile'
                           />
-                          <StyledFormMessage />
                         </>
                       )}
                     />
