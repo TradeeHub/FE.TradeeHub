@@ -27,6 +27,8 @@ import { PropertyEntity } from '@/generatedGraphql';
 const Customer = ({ params }: { params: { customerId: string } }) => {
   const [showProperties, setShowProperties] = useState(false);
   const { customer, loading } = useCustomer(params.customerId);
+
+  console.log('customer', customer);
   const createdAtFormatted = moment(customer?.createdAt)
     .local()
     .format('Do MMM YYYY HH:mm');
