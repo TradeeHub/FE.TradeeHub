@@ -7,6 +7,9 @@ query CustomerById($id: ID!) {
     surname
     fullName
     alias
+    customerType
+    companyName
+    useCompanyName
     status
     createdAt
     createdBy
@@ -14,6 +17,22 @@ query CustomerById($id: ID!) {
     modifiedBy
     archived
     customerRating
+    reference {
+      referenceType
+      customer {
+        id
+        fullName
+        customerReferenceNumber
+        companyName
+        useCompanyName
+      }
+      externalReference {
+        id
+        useCompanyName
+        companyName
+        name
+      }
+    }
     comments {
       comment
       uploadUrls

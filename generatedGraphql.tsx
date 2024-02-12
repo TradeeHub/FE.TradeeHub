@@ -119,6 +119,13 @@ export enum CommentType {
   Quote = 'QUOTE'
 }
 
+export type CompensationDetailsEntity = {
+  __typename?: 'CompensationDetailsEntity';
+  amount: Scalars['Decimal']['output'];
+  compensationType: CompensationType;
+  currency?: Maybe<Scalars['String']['output']>;
+};
+
 export type CompensationDetailsRequestInput = {
   amount: Scalars['Decimal']['input'];
   currency?: InputMaybe<Scalars['String']['input']>;
@@ -488,6 +495,22 @@ export type EmailRequestInput = {
   email: Scalars['String']['input'];
   emailType: Scalars['String']['input'];
   receiveNotifications: Scalars['Boolean']['input'];
+};
+
+export type ExternalReferenceEntity = {
+  __typename?: 'ExternalReferenceEntity';
+  companyName?: Maybe<Scalars['String']['output']>;
+  compensation?: Maybe<CompensationDetailsEntity>;
+  description?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<EmailEntity>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  phoneNumber?: Maybe<PhoneNumberEntity>;
+  place?: Maybe<PlaceEntity>;
+  referenceType: Scalars['String']['output'];
+  url?: Maybe<Scalars['String']['output']>;
+  useCompanyName: Scalars['Boolean']['output'];
+  userOwnerId: Scalars['UUID']['output'];
 };
 
 export type ForgotPasswordResponse = {
@@ -1009,8 +1032,8 @@ export type QueryUsersArgs = {
 
 export type ReferenceInfo = {
   __typename?: 'ReferenceInfo';
-  customerId?: Maybe<Scalars['ID']['output']>;
-  externalReferenceId?: Maybe<Scalars['ID']['output']>;
+  customer?: Maybe<CustomerEntity>;
+  externalReference?: Maybe<ExternalReferenceEntity>;
   referenceType: ReferenceType;
 };
 
@@ -1402,7 +1425,7 @@ export type CustomerByIdQueryVariables = Exact<{
 }>;
 
 
-export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName?: string | null, alias?: string | null, status: CustomerStatus, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, archived: boolean, customerRating?: any | null, tags?: Array<string> | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, property: { __typename?: 'PlaceEntity', address: string } } | null> | null } | null };
+export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName?: string | null, alias?: string | null, customerType: string, companyName?: string | null, useCompanyName: boolean, status: CustomerStatus, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, archived: boolean, customerRating?: any | null, tags?: Array<string> | null, reference?: { __typename?: 'ReferenceInfo', referenceType: ReferenceType, customer?: { __typename?: 'CustomerEntity', id: string, fullName?: string | null, customerReferenceNumber?: string | null, companyName?: string | null, useCompanyName: boolean } | null, externalReference?: { __typename?: 'ExternalReferenceEntity', id: string, useCompanyName: boolean, companyName?: string | null, name: string } | null } | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, property: { __typename?: 'PlaceEntity', address: string } } | null> | null } | null };
 
 export type CustomersPagedQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -1784,6 +1807,9 @@ export const CustomerByIdDocument = gql`
     surname
     fullName
     alias
+    customerType
+    companyName
+    useCompanyName
     status
     createdAt
     createdBy
@@ -1791,6 +1817,22 @@ export const CustomerByIdDocument = gql`
     modifiedBy
     archived
     customerRating
+    reference {
+      referenceType
+      customer {
+        id
+        fullName
+        customerReferenceNumber
+        companyName
+        useCompanyName
+      }
+      externalReference {
+        id
+        useCompanyName
+        companyName
+        name
+      }
+    }
     comments {
       comment
       uploadUrls

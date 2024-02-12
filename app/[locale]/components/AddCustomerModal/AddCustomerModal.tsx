@@ -160,22 +160,20 @@ const AddCustomerModal: React.FC<ModalProps> = ({
         .array(
           z.object({
             phoneNumberType: z.string(),
-            phoneNumber: z
-              .string()
-              .refine(
-                (phoneNumber) => {
-                  const callingCode = '+' + user?.place.callingCode; // Example, replace with dynamic code
-                  if (!phoneNumber || phoneNumber === callingCode) return true; // If phoneNumber is undefined or null, it passes
-                  return (
-                    phoneNumber.startsWith(callingCode) &&
-                    /^\+\d{9,14}$/.test(phoneNumber)
-                  );
-                },
-                {
-                  message:
-                    'Phone number must include correct country code and be 9 to 14 digits long.',
-                },
-              ),
+            phoneNumber: z.string().refine(
+              (phoneNumber) => {
+                const callingCode = '+' + user?.place.callingCode; // Example, replace with dynamic code
+                if (!phoneNumber || phoneNumber === callingCode) return true; // If phoneNumber is undefined or null, it passes
+                return (
+                  phoneNumber.startsWith(callingCode) &&
+                  /^\+\d{9,14}$/.test(phoneNumber)
+                );
+              },
+              {
+                message:
+                  'Phone number must include correct country code and be 9 to 14 digits long.',
+              },
+            ),
             receiveNotifications: z.boolean(),
           }),
         )
@@ -198,7 +196,8 @@ const AddCustomerModal: React.FC<ModalProps> = ({
         !data.useCompanyName ||
         (data.useCompanyName && Boolean(data.companyName)),
       {
-        message: 'Company Name is required when use company name as main checkbox is checked.',
+        message:
+          'Company Name is required when use company name as main checkbox is checked.',
         path: ['companyName'],
       },
     )
