@@ -271,7 +271,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       name: formValues.name,
       surname: formValues.surname,
       alias: formValues.alias,
-      customerType: formValues.customerType,
+      customerType: formValues.customerType ?? '',
       companyName: formValues.companyName,
       useCompanyName: formValues.useCompanyName,
       emails: formValues.emails?.map((email) => ({

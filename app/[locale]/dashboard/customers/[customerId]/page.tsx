@@ -1,38 +1,10 @@
 'use client';
 import { useCustomer } from '@/app/[locale]/hooks/customer/useCustomer';
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  UserCircleIcon,
-} from '@heroicons/react/20/solid';
 import { Suspense } from 'react';
-import moment from 'moment';
-import { HiOutlinePhone } from 'react-icons/hi2';
-import { AiOutlineMail } from 'react-icons/ai';
-import { HiOutlineCalendarDays } from 'react-icons/hi2';
-import { CiTimer } from 'react-icons/ci';
-import { FaBatteryEmpty } from 'react-icons/fa6';
-import { PiHouseLineLight } from 'react-icons/pi';
-import { BsHouses } from 'react-icons/bs';
-import { PropertyEntity } from '@/generatedGraphql';
 import CustomerDetailsCard from '@/app/[locale]/ui/dashboard/customers/customer/CustomerDetailsCard';
 
 const Customer = ({ params }: { params: { customerId: string } }) => {
   const { customer, loading } = useCustomer(params.customerId);
-
-  console.log('customer', customer);
-  const createdAtFormatted = moment(customer?.createdAt)
-    .local()
-    .format('Do MMM YYYY HH:mm');
-  const modifiedAtFormatted = moment(customer?.modifiedAt)
-    .local()
-    .format('Do MMM YYYY HH:mm');
-  const mainPhone = customer?.phoneNumbers?.[0]?.phoneNumber || '';
-  const recentProperty = customer?.properties?.[0]?.property.address || '';
-  const mainEmail = customer?.emails?.[0].email || '';
-  const hasMultipleProperties = (customer?.properties?.length ?? 0) > 1;
-  const iconClass = 'h-6 w-5 text-foreground';
-  const textClass = 'text-sm text-destructive-foreground';
   const tabs = [
     { name: 'Quotes', href: '#', current: true },
     { name: 'Jobs', href: '#', current: false },
