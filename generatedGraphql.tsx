@@ -961,16 +961,16 @@ export type PropertyEntity = {
   __typename?: 'PropertyEntity';
   billing?: Maybe<PlaceEntity>;
   createdAt: Scalars['DateTime']['output'];
-  createdBy: Scalars['UUID']['output'];
+  creator: UserEntity;
   /** The customers associated with this property. */
   customers?: Maybe<Array<Maybe<CustomerEntity>>>;
   id: Scalars['ID']['output'];
   jobs?: Maybe<Array<Scalars['ID']['output']>>;
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
-  modifiedBy?: Maybe<Scalars['UUID']['output']>;
+  modifier?: Maybe<UserEntity>;
+  owner: UserEntity;
   property: PlaceEntity;
   quotes?: Maybe<Array<Scalars['ID']['output']>>;
-  userOwnerId: Scalars['UUID']['output'];
 };
 
 export type Query = {
@@ -979,6 +979,7 @@ export type Query = {
   customerById?: Maybe<CustomerEntity>;
   customers?: Maybe<CustomersConnection>;
   loggedInUser?: Maybe<UserEntity>;
+  propertyById?: Maybe<PropertyEntity>;
   searchCustomerReferences: ReferenceTrackingResponse;
   user?: Maybe<UserEntity>;
   userByAwsCognitoId: Array<UserEntity>;
@@ -1003,6 +1004,11 @@ export type QueryCustomersArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<CustomerEntitySort>;
   where?: InputMaybe<CustomerEntityFilter>;
+};
+
+
+export type QueryPropertyByIdArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1419,7 +1425,7 @@ export type CustomerQueryVariables = Exact<{
 }>;
 
 
-export type CustomerQuery = { __typename?: 'Query', customer?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName?: string | null, alias?: string | null, customerType: string, companyName?: string | null, useCompanyName: boolean, status: CustomerStatus, createdAt: any, modifiedAt?: any | null, archived: boolean, customerRating?: any | null, tags?: Array<string> | null, creator: { __typename?: 'UserEntity', id: string, name: string }, modifier?: { __typename?: 'UserEntity', id: string, name: string } | null, reference?: { __typename?: 'ReferenceInfoEntity', referenceType: ReferenceType, customer?: { __typename?: 'CustomerEntity', id: string, fullName?: string | null, customerReferenceNumber?: string | null, companyName?: string | null, useCompanyName: boolean } | null, externalReference?: { __typename?: 'ExternalReferenceEntity', id: string, useCompanyName: boolean, companyName?: string | null, name: string } | null } | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, property: { __typename?: 'PlaceEntity', address: string } } | null> | null } | null };
+export type CustomerQuery = { __typename?: 'Query', customer?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName?: string | null, alias?: string | null, customerType: string, companyName?: string | null, useCompanyName: boolean, status: CustomerStatus, createdAt: any, modifiedAt?: any | null, archived: boolean, customerRating?: any | null, tags?: Array<string> | null, creator: { __typename?: 'UserEntity', id: string, name: string }, modifier?: { __typename?: 'UserEntity', id: string, name: string } | null, reference?: { __typename?: 'ReferenceInfoEntity', referenceType: ReferenceType, customer?: { __typename?: 'CustomerEntity', id: string, fullName?: string | null, customerReferenceNumber?: string | null, companyName?: string | null, useCompanyName: boolean } | null, externalReference?: { __typename?: 'ExternalReferenceEntity', id: string, useCompanyName: boolean, companyName?: string | null, name: string } | null } | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, createdAt: any, modifiedAt?: any | null, property: { __typename?: 'PlaceEntity', placeId: string, address: string }, billing?: { __typename?: 'PlaceEntity', placeId: string, address: string } | null, creator: { __typename?: 'UserEntity', name: string }, modifier?: { __typename?: 'UserEntity', name: string } | null } | null> | null } | null };
 
 export type CustomersPagedQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -1849,7 +1855,20 @@ export const CustomerDocument = gql`
     properties {
       id
       property {
+        placeId
         address
+      }
+      billing {
+        placeId
+        address
+      }
+      createdAt
+      modifiedAt
+      creator {
+        name
+      }
+      modifier {
+        name
       }
     }
     tags

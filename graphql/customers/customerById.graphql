@@ -55,7 +55,20 @@ query customer($id: ID!) {
     properties {
       id
       property {
+        placeId
         address
+      }
+      billing {
+        placeId
+        address
+      }
+      createdAt
+      modifiedAt
+      creator {
+        name
+      }
+      modifier {
+        name
       }
     }
     tags

@@ -6,7 +6,11 @@ import { AiOutlineMail } from 'react-icons/ai';
 import { FaBatteryEmpty } from 'react-icons/fa6';
 import { PiHouseLineLight } from 'react-icons/pi';
 import moment from 'moment';
-import { CustomerEntity, ReferenceInfoEntity } from '@/generatedGraphql';
+import {
+  CustomerEntity,
+  PropertyEntity,
+  ReferenceInfoEntity,
+} from '@/generatedGraphql';
 import {
   Tabs,
   TabsContent,
@@ -17,11 +21,38 @@ import Link from 'next/link';
 import { CiTimer } from 'react-icons/ci';
 import { FaPeoplePulling } from 'react-icons/fa6';
 import { usePathname } from 'next/navigation';
+import { Popover, PopoverContent } from '@/components/ui/popover';
+import { PopoverTrigger } from '@radix-ui/react-popover';
+import { CustomButton } from '@/app/[locale]/components/CustomButton/CustomButton';
+
+function sortProperties(properties: (PropertyEntity | null)[]) {
+  return properties
+    .filter((property): property is PropertyEntity => property !== null)
+    .sort((a, b) => {
+      const dateA = a.modifiedAt
+        ? new Date(a.modifiedAt).getTime()
+        : new Date(a.createdAt).getTime();
+      const dateB = b.modifiedAt
+        ? new Date(b.modifiedAt).getTime()
+        : new Date(b.createdAt).getTime();
+      return dateB - dateA; // Sort in descending order, newest first
+    });
+}
 
 const CustomerDetailsCard = ({ customer }: { customer: CustomerEntity }) => {
+  // Type assertion to ensure we have a non-null array for properties
+  const sortedProperties = customer.properties
+    ? sortProperties(customer.properties as (PropertyEntity | null)[])
+    : [];
+
+  const customerWithSortedProperties = {
+    ...customer,
+    properties: sortedProperties,
+  };
+
   return (
     <>
-      <Card className='h-[350px] w-[480px]'>
+      <Card className='h-[370px] w-[480px]'>
         <CardHeader className='pb-0'>
           <CardTitle className='border-b border-gray-800/10 pb-2'>
             {' '}
@@ -52,13 +83,13 @@ const CustomerDetailsCard = ({ customer }: { customer: CustomerEntity }) => {
               <TabsTrigger value='additionalInfo'>Additional Info</TabsTrigger>
             </TabsList>
             <TabsContent value='details'>
-              <DetailsTab customer={customer} />
+              <DetailsTab customer={customerWithSortedProperties} />
             </TabsContent>
             <TabsContent value='properties'>
-              <PropertiesTab customer={customer} />
+              <PropertiesTab customer={customerWithSortedProperties} />
             </TabsContent>
             <TabsContent value='additionalInfo'>
-              <AdditionalInfoTab customer={customer} />
+              <AdditionalInfoTab customer={customerWithSortedProperties} />
             </TabsContent>
           </Tabs>
         </CardContent>
@@ -110,7 +141,7 @@ const ReferenceDetails = ({
 
 const DetailsTab = ({ customer }: { customer: CustomerEntity }) => {
   const mainPhone = customer?.phoneNumbers?.[0]?.phoneNumber || '';
-  const recentProperty = customer?.properties?.[0]?.property.address || '';
+  const recentProperty = customer?.properties?.[0] || null;
   const mainEmail = customer?.emails?.[0].email || '';
 
   const modifiedAtFormatted = customer?.modifiedAt
@@ -161,7 +192,12 @@ const DetailsTab = ({ customer }: { customer: CustomerEntity }) => {
       </div>
       <h4 className='mb-2 mt-4 text-base font-medium'>Most Recent Property</h4>
       <div className='flex items-center gap-x-2'>
-        <PropertyAddress address={recentProperty} />
+        {recentProperty && (
+          <div className='flex items-center justify-between'>
+            <PropertyAddress address={recentProperty.property.address} />
+            <AdditionalPropertyInfo property={recentProperty} />
+          </div>
+        )}
       </div>
     </>
   );
@@ -190,6 +226,12 @@ const AdditionalInfoTab = ({ customer }: { customer: CustomerEntity }) => {
 
       <dt className='text-sm font-medium'>Created Date:</dt>
       <dd className='text-sm'>{createdAtFormatted}</dd>
+
+      <dt className='text-sm font-medium'>Created By:</dt>
+      <dd className='text-sm'>{customer?.creator.name}</dd>
+
+      <dt className='text-sm font-medium'>Updated By:</dt>
+      <dd className='text-sm'>{customer?.modifier?.name}</dd>
     </div>
   );
 };
@@ -199,12 +241,21 @@ const PropertiesTab = ({ customer }: { customer: CustomerEntity }) => {
     <div className='space-y-2'>
       {customer?.properties?.length ?? 0 > 0 ? (
         customer?.properties?.map((property, index) => (
-          <div key={index} className='flex items-center gap-x-2'>
-            <PropertyAddress address={property?.property.address} />
+          <div key={index} className='flex flex-col gap-y-2'>
+            {property?.property && (
+              <div className='flex items-center justify-between'>
+                <PropertyAddress address={property.property.address} />
+                <AdditionalPropertyInfo property={property} />
+              </div>
+            )}
+            {property?.billing &&
+              property.property.placeId !== property.billing.placeId && (
+                <div className='text-sm'>{`Billing Address: ${property.billing.address}`}</div>
+              )}
           </div>
         ))
       ) : (
-        <p>No properties listed.</p>
+        <p className='text-sm'>No properties listed.</p>
       )}
     </div>
   );
@@ -230,8 +281,58 @@ const PropertyAddress = ({ address }: { address: string | undefined }) => {
           aria-hidden='true'
         />
       </Link>
-      <span className='text-sm'>{address}</span>
+      <span className='px-2 text-sm'>{address}</span>
     </>
+  );
+};
+
+const AdditionalPropertyInfo = ({ property }: { property: PropertyEntity }) => {
+  // Format dates using moment.js
+  const createdAtFormatted = moment(property.createdAt)
+    .local()
+    .format('Do MMM YYYY HH:mm');
+  const modifiedAtFormatted = property.modifiedAt
+    ? moment(property.modifiedAt).local().format('Do MMM YYYY HH:mm')
+    : '';
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <CustomButton variant='outline' size='sm'>
+          More Info
+        </CustomButton>
+      </PopoverTrigger>
+      <PopoverContent className='w-80 p-4'>
+        <div className='space-y-4'>
+          <div>
+            <h3 className='text-lg font-semibold'>Billing Address</h3>
+            <p className='text-sm'>{property.property.address}</p>
+            {property.billing &&
+              property.property.placeId !== property.billing.placeId && (
+                <p className='text-sm'>{`Billing Address: ${property.billing.address}`}</p>
+              )}
+          </div>
+          <h3 className='text-lg font-semibold'>Property Info</h3>
+
+          <div
+            className='grid grid-cols-[auto,1fr] gap-x-4 gap-y-2'
+            style={{ marginTop: 0 }}
+          >
+            <dt className='text-sm font-medium'>Created:</dt>
+            <dd className='text-sm'>{createdAtFormatted}</dd>
+
+            <dt className='text-sm font-medium'>Created By:</dt>
+            <dd className='text-sm'>{property.creator.name}</dd>
+
+            <dt className='text-sm font-medium'>Modified:</dt>
+            <dd className='text-sm'>{modifiedAtFormatted}</dd>
+
+            <dt className='text-sm font-medium'>Modified By:</dt>
+            <dd className='text-sm'>{property.modifier?.name}</dd>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 
