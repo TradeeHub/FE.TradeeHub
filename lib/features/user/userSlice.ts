@@ -1,5 +1,5 @@
 import { UserState } from '@/app/[locale]/types/sharedTypes';
-import { UserDbObject } from '@/generatedGraphql';
+import { UserEntity } from '@/generatedGraphql';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: UserState = {
@@ -10,7 +10,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<UserDbObject>) => {
+    setUser: (state, action: PayloadAction<UserEntity>) => {
       state.data = action.payload;
     },
     resetUser: (state) => {

@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client';
 import {
   AddNewCustomerRequestInput,
-  CustomerByIdDocument,
-  CustomerByIdQuery,
-  CustomerByIdQueryVariables,
+  CustomerDocument,
+  CustomerQuery,
+  CustomerQueryVariables,
   CustomerEntity,
   useAddNewCustomerMutation,
 } from '@/generatedGraphql';
@@ -11,10 +11,10 @@ import { UseCustomerReturnType } from '@/app/[locale]/types/sharedTypes';
 
 const useCustomer = (customerId: string): UseCustomerReturnType => {
   const { data, error, loading } = useQuery<
-    CustomerByIdQuery,
-    CustomerByIdQueryVariables
-  >(CustomerByIdDocument, {
-    variables: { id: customerId },
+    CustomerQuery,
+    CustomerQueryVariables
+  >(CustomerDocument, {
+    variables: { id: decodeURIComponent(customerId) },
     notifyOnNetworkStatusChange: true,
   });
 
@@ -22,7 +22,7 @@ const useCustomer = (customerId: string): UseCustomerReturnType => {
     console.error('Error fetching more data:', error);
   }
 
-  const customer = data?.customerById as CustomerEntity | null;
+  const customer = data?.customer as CustomerEntity | null;
 
   return { customer, loading, error };
 };

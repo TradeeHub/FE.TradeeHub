@@ -1,5 +1,5 @@
-query CustomerById($id: ID!) {
-  customerById(id: $id) {
+query customer($id: ID!) {
+  customer(id: $id) {
     id
     customerReferenceNumber
     title
@@ -12,11 +12,17 @@ query CustomerById($id: ID!) {
     useCompanyName
     status
     createdAt
-    createdBy
     modifiedAt
-    modifiedBy
     archived
     customerRating
+    creator {
+      id
+      name
+    }
+    modifier {
+      id
+      name
+    }
     reference {
       referenceType
       customer {

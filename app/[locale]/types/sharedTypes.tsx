@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  CustomerByIdQuery,
   CustomerEntity,
   CustomersPagedQuery,
   Exact,
   InputMaybe,
-  UserDbObject,
+  UserEntity,
 } from '@/generatedGraphql';
 import { ApolloError, ApolloQueryResult } from '@apollo/client';
 import { ColDef } from 'ag-grid-community';
@@ -54,8 +53,8 @@ export type LayoutProps = {
 };
 
 export type AuthContextType = {
-  user: UserDbObject | null;
-  setUser: React.Dispatch<React.SetStateAction<UserDbObject | null>>;
+  user: UserEntity | null;
+  setUser: React.Dispatch<React.SetStateAction<UserEntity | null>>;
   loading: boolean;
   error: ApolloError | undefined;
 };
@@ -72,13 +71,13 @@ export type AuthenticationGuardProps = {
 };
 
 export type UserState = {
-  data: UserDbObject | null;
+  data: UserEntity | null;
 };
 
 export type LoginState = {
   isConfirmed: boolean;
   isSuccess: boolean;
-  user: UserDbObject | null;
+  user: UserEntity | null;
 };
 
 export type RegisterRequest = {

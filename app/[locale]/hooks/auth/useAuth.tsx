@@ -2,7 +2,7 @@ import { LoginState } from '@/app/[locale]/types/sharedTypes';
 import {
   ChangedForgottenPasswordRequestInput,
   RegisterRequestInput,
-  UserDbObject,
+  UserEntity,
   useChangePasswordMutation,
   useConfirmAccountMutation,
   useForgotPasswordMutation,
@@ -130,7 +130,7 @@ const useGetLoggedInUser = () => {
   const { data, loading, error } = useLoggedInUserQuery();
 
   return {
-    loggedInUser: data?.loggedInUser as UserDbObject | undefined,
+    loggedInUser: data?.loggedInUser as UserEntity | undefined,
     loggedInUserLoading: loading,
     loggedInUserError: error,
   };

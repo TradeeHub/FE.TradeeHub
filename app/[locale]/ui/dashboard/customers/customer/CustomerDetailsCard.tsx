@@ -6,7 +6,7 @@ import { AiOutlineMail } from 'react-icons/ai';
 import { FaBatteryEmpty } from 'react-icons/fa6';
 import { PiHouseLineLight } from 'react-icons/pi';
 import moment from 'moment';
-import { CustomerEntity, ReferenceInfo } from '@/generatedGraphql';
+import { CustomerEntity, ReferenceInfoEntity } from '@/generatedGraphql';
 import {
   Tabs,
   TabsContent,
@@ -71,7 +71,7 @@ const ReferenceDetails = ({
   reference,
   plForDd,
 }: {
-  reference: ReferenceInfo | undefined;
+  reference: ReferenceInfoEntity | undefined;
   plForDd: string;
 }) => {
   const pathname = usePathname();

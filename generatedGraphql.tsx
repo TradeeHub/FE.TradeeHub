@@ -164,14 +164,14 @@ export enum CoreChecksumAlgorithm {
   Sha256 = 'SHA256'
 }
 
-export type CustomerEntity = {
+export type CustomerEntity = Node & {
   __typename?: 'CustomerEntity';
   alias?: Maybe<Scalars['String']['output']>;
   archived: Scalars['Boolean']['output'];
   comments?: Maybe<Array<Maybe<CommentEntity>>>;
   companyName?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
-  createdBy: Scalars['UUID']['output'];
+  creator: UserEntity;
   customerRating?: Maybe<Scalars['Decimal']['output']>;
   customerReferenceNumber?: Maybe<Scalars['String']['output']>;
   customerType: Scalars['String']['output'];
@@ -179,17 +179,17 @@ export type CustomerEntity = {
   fullName?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
-  modifiedBy?: Maybe<Scalars['UUID']['output']>;
+  modifier?: Maybe<UserEntity>;
   name?: Maybe<Scalars['String']['output']>;
+  owner: UserEntity;
   phoneNumbers?: Maybe<Array<PhoneNumberEntity>>;
   properties?: Maybe<Array<Maybe<PropertyEntity>>>;
-  reference?: Maybe<ReferenceInfo>;
+  reference?: Maybe<ReferenceInfoEntity>;
   status: CustomerStatus;
   surname?: Maybe<Scalars['String']['output']>;
   tags?: Maybe<Array<Scalars['String']['output']>>;
   title?: Maybe<Scalars['String']['output']>;
   useCompanyName: Scalars['Boolean']['output'];
-  userOwnerId: Scalars['UUID']['output'];
 };
 
 export type CustomerEntityFilter = {
@@ -333,7 +333,7 @@ export type CustomerEntityFilter = {
   properties_any?: InputMaybe<Scalars['Boolean']['input']>;
   properties_none?: InputMaybe<ObjectIdFilter>;
   properties_some?: InputMaybe<ObjectIdFilter>;
-  reference?: InputMaybe<ReferenceInfoFilter>;
+  reference?: InputMaybe<ReferenceInfoEntityFilter>;
   status?: InputMaybe<CustomerStatus>;
   status_gt?: InputMaybe<CustomerStatus>;
   status_gte?: InputMaybe<CustomerStatus>;
@@ -399,7 +399,7 @@ export type CustomerEntitySort = {
   modifiedAt?: InputMaybe<SortOperationKind>;
   modifiedBy?: InputMaybe<SortOperationKind>;
   name?: InputMaybe<SortOperationKind>;
-  reference?: InputMaybe<ReferenceInfoSort>;
+  reference?: InputMaybe<ReferenceInfoEntitySort>;
   status?: InputMaybe<SortOperationKind>;
   surname?: InputMaybe<SortOperationKind>;
   title?: InputMaybe<SortOperationKind>;
@@ -628,15 +628,15 @@ export type LinkReferenceRequestInput = {
   referenceType: ReferenceType;
 };
 
-export type LocationDbObject = {
-  __typename?: 'LocationDbObject';
+export type LocationEntity = {
+  __typename?: 'LocationEntity';
   lat: Scalars['Decimal']['output'];
   lng: Scalars['Decimal']['output'];
 };
 
-export type LocationDbObjectFilter = {
-  AND?: InputMaybe<Array<LocationDbObjectFilter>>;
-  OR?: InputMaybe<Array<LocationDbObjectFilter>>;
+export type LocationEntityFilter = {
+  AND?: InputMaybe<Array<LocationEntityFilter>>;
+  OR?: InputMaybe<Array<LocationEntityFilter>>;
   lat?: InputMaybe<Scalars['Decimal']['input']>;
   lat_gt?: InputMaybe<Scalars['Decimal']['input']>;
   lat_gte?: InputMaybe<Scalars['Decimal']['input']>;
@@ -663,15 +663,9 @@ export type LocationDbObjectFilter = {
   lng_not_lte?: InputMaybe<Scalars['Decimal']['input']>;
 };
 
-export type LocationDbObjectSort = {
+export type LocationEntitySort = {
   lat?: InputMaybe<SortOperationKind>;
   lng?: InputMaybe<SortOperationKind>;
-};
-
-export type LocationEntity = {
-  __typename?: 'LocationEntity';
-  lat: Scalars['Decimal']['output'];
-  lng: Scalars['Decimal']['output'];
 };
 
 export type LocationRequestInput = {
@@ -689,7 +683,7 @@ export type LoginResponse = {
   __typename?: 'LoginResponse';
   isConfirmed: Scalars['Boolean']['output'];
   isSuccess: Scalars['Boolean']['output'];
-  user?: Maybe<UserDbObject>;
+  user?: Maybe<UserEntity>;
 };
 
 export type LogoutResponse = {
@@ -750,6 +744,11 @@ export type MutationRegisterArgs = {
 
 export type MutationResendVerificationCodeArgs = {
   email: Scalars['String']['input'];
+};
+
+/** The node interface is implemented by entities that have a global unique identifier. */
+export type Node = {
+  id: Scalars['ID']['output'];
 };
 
 export type ObjectIdFilter = {
@@ -870,20 +869,20 @@ export type PhoneNumberRequestInput = {
   receiveNotifications: Scalars['Boolean']['input'];
 };
 
-export type PlaceDbObject = {
-  __typename?: 'PlaceDbObject';
+export type PlaceEntity = {
+  __typename?: 'PlaceEntity';
   address: Scalars['String']['output'];
   callingCode: Scalars['String']['output'];
   country: Scalars['String']['output'];
   countryCode: Scalars['String']['output'];
-  location: LocationDbObject;
+  location: LocationEntity;
   placeId: Scalars['String']['output'];
-  viewport: ViewPortDbObject;
+  viewport: ViewportEntity;
 };
 
-export type PlaceDbObjectFilter = {
-  AND?: InputMaybe<Array<PlaceDbObjectFilter>>;
-  OR?: InputMaybe<Array<PlaceDbObjectFilter>>;
+export type PlaceEntityFilter = {
+  AND?: InputMaybe<Array<PlaceEntityFilter>>;
+  OR?: InputMaybe<Array<PlaceEntityFilter>>;
   address?: InputMaybe<Scalars['String']['input']>;
   address_contains?: InputMaybe<Scalars['String']['input']>;
   address_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -924,7 +923,7 @@ export type PlaceDbObjectFilter = {
   country_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   country_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   country_starts_with?: InputMaybe<Scalars['String']['input']>;
-  location?: InputMaybe<LocationDbObjectFilter>;
+  location?: InputMaybe<LocationEntityFilter>;
   placeId?: InputMaybe<Scalars['String']['input']>;
   placeId_contains?: InputMaybe<Scalars['String']['input']>;
   placeId_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -935,28 +934,17 @@ export type PlaceDbObjectFilter = {
   placeId_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   placeId_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   placeId_starts_with?: InputMaybe<Scalars['String']['input']>;
-  viewport?: InputMaybe<ViewPortDbObjectFilter>;
+  viewport?: InputMaybe<ViewportEntityFilter>;
 };
 
-export type PlaceDbObjectSort = {
+export type PlaceEntitySort = {
   address?: InputMaybe<SortOperationKind>;
   callingCode?: InputMaybe<SortOperationKind>;
   country?: InputMaybe<SortOperationKind>;
   countryCode?: InputMaybe<SortOperationKind>;
-  location?: InputMaybe<LocationDbObjectSort>;
+  location?: InputMaybe<LocationEntitySort>;
   placeId?: InputMaybe<SortOperationKind>;
-  viewport?: InputMaybe<ViewPortDbObjectSort>;
-};
-
-export type PlaceEntity = {
-  __typename?: 'PlaceEntity';
-  address: Scalars['String']['output'];
-  callingCode: Scalars['String']['output'];
-  country: Scalars['String']['output'];
-  countryCode: Scalars['String']['output'];
-  location: LocationEntity;
-  placeId: Scalars['String']['output'];
-  viewport: ViewportEntity;
+  viewport?: InputMaybe<ViewportEntitySort>;
 };
 
 export type PlaceRequestInput = {
@@ -987,12 +975,19 @@ export type PropertyEntity = {
 
 export type Query = {
   __typename?: 'Query';
+  customer?: Maybe<CustomerEntity>;
   customerById?: Maybe<CustomerEntity>;
   customers?: Maybe<CustomersConnection>;
-  loggedInUser?: Maybe<UserDbObject>;
+  loggedInUser?: Maybe<UserEntity>;
   searchCustomerReferences: ReferenceTrackingResponse;
-  userByAwsCognitoId: Array<UserDbObject>;
+  user?: Maybe<UserEntity>;
+  userByAwsCognitoId: Array<UserEntity>;
   users?: Maybe<UsersConnection>;
+};
+
+
+export type QueryCustomerArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1016,6 +1011,11 @@ export type QuerySearchCustomerReferencesArgs = {
 };
 
 
+export type QueryUserArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type QueryUserByAwsCognitoIdArgs = {
   id: Scalars['UUID']['input'];
 };
@@ -1026,20 +1026,20 @@ export type QueryUsersArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<UserDbObjectSort>;
-  where?: InputMaybe<UserDbObjectFilter>;
+  order_by?: InputMaybe<UserEntitySort>;
+  where?: InputMaybe<UserEntityFilter>;
 };
 
-export type ReferenceInfo = {
-  __typename?: 'ReferenceInfo';
+export type ReferenceInfoEntity = {
+  __typename?: 'ReferenceInfoEntity';
   customer?: Maybe<CustomerEntity>;
   externalReference?: Maybe<ExternalReferenceEntity>;
   referenceType: ReferenceType;
 };
 
-export type ReferenceInfoFilter = {
-  AND?: InputMaybe<Array<ReferenceInfoFilter>>;
-  OR?: InputMaybe<Array<ReferenceInfoFilter>>;
+export type ReferenceInfoEntityFilter = {
+  AND?: InputMaybe<Array<ReferenceInfoEntityFilter>>;
+  OR?: InputMaybe<Array<ReferenceInfoEntityFilter>>;
   referenceType?: InputMaybe<ReferenceType>;
   referenceType_gt?: InputMaybe<ReferenceType>;
   referenceType_gte?: InputMaybe<ReferenceType>;
@@ -1054,7 +1054,7 @@ export type ReferenceInfoFilter = {
   referenceType_not_lte?: InputMaybe<ReferenceType>;
 };
 
-export type ReferenceInfoSort = {
+export type ReferenceInfoEntitySort = {
   referenceType?: InputMaybe<SortOperationKind>;
 };
 
@@ -1134,9 +1134,9 @@ export enum SortOperationKind {
   Desc = 'DESC'
 }
 
-export type UserDbObject = {
-  __typename?: 'UserDbObject';
-  companiesMemberOf?: Maybe<Array<Maybe<UserDbObject>>>;
+export type UserEntity = Node & {
+  __typename?: 'UserEntity';
+  companiesMemberOf?: Maybe<Array<Maybe<UserEntity>>>;
   companyName: Scalars['String']['output'];
   companyPriority: Scalars['String']['output'];
   companySize: Scalars['String']['output'];
@@ -1144,20 +1144,20 @@ export type UserDbObject = {
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   emailVerified: Scalars['Boolean']['output'];
-  id: Scalars['UUID']['output'];
+  id: Scalars['ID']['output'];
   marketingPreference: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
   phoneNumber: Scalars['String']['output'];
   phoneVerified: Scalars['Boolean']['output'];
-  place: PlaceDbObject;
+  place: PlaceEntity;
   referralSource: Scalars['String']['output'];
-  staff?: Maybe<Array<Maybe<UserDbObject>>>;
+  staff?: Maybe<Array<Maybe<UserEntity>>>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
-export type UserDbObjectFilter = {
-  AND?: InputMaybe<Array<UserDbObjectFilter>>;
-  OR?: InputMaybe<Array<UserDbObjectFilter>>;
+export type UserEntityFilter = {
+  AND?: InputMaybe<Array<UserEntityFilter>>;
+  OR?: InputMaybe<Array<UserEntityFilter>>;
   companiesMemberOf_all?: InputMaybe<ISingleFilterOfGuidFilter>;
   companiesMemberOf_any?: InputMaybe<Scalars['Boolean']['input']>;
   companiesMemberOf_none?: InputMaybe<ISingleFilterOfGuidFilter>;
@@ -1262,7 +1262,7 @@ export type UserDbObjectFilter = {
   phoneNumber_starts_with?: InputMaybe<Scalars['String']['input']>;
   phoneVerified?: InputMaybe<Scalars['Boolean']['input']>;
   phoneVerified_not?: InputMaybe<Scalars['Boolean']['input']>;
-  place?: InputMaybe<PlaceDbObjectFilter>;
+  place?: InputMaybe<PlaceEntityFilter>;
   referralSource?: InputMaybe<Scalars['String']['input']>;
   referralSource_contains?: InputMaybe<Scalars['String']['input']>;
   referralSource_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -1291,7 +1291,7 @@ export type UserDbObjectFilter = {
   updatedAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type UserDbObjectSort = {
+export type UserEntitySort = {
   companyName?: InputMaybe<SortOperationKind>;
   companyPriority?: InputMaybe<SortOperationKind>;
   companySize?: InputMaybe<SortOperationKind>;
@@ -1304,7 +1304,7 @@ export type UserDbObjectSort = {
   name?: InputMaybe<SortOperationKind>;
   phoneNumber?: InputMaybe<SortOperationKind>;
   phoneVerified?: InputMaybe<SortOperationKind>;
-  place?: InputMaybe<PlaceDbObjectSort>;
+  place?: InputMaybe<PlaceEntitySort>;
   referralSource?: InputMaybe<SortOperationKind>;
   updatedAt?: InputMaybe<SortOperationKind>;
 };
@@ -1315,7 +1315,7 @@ export type UsersConnection = {
   /** A list of edges. */
   edges?: Maybe<Array<UsersEdge>>;
   /** A flattened list of the nodes. */
-  nodes?: Maybe<Array<UserDbObject>>;
+  nodes?: Maybe<Array<UserEntity>>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
 };
@@ -1326,31 +1326,25 @@ export type UsersEdge = {
   /** A cursor for use in pagination. */
   cursor: Scalars['String']['output'];
   /** The item at the end of the edge. */
-  node: UserDbObject;
-};
-
-export type ViewPortDbObject = {
-  __typename?: 'ViewPortDbObject';
-  northeast: LocationDbObject;
-  southwest: LocationDbObject;
-};
-
-export type ViewPortDbObjectFilter = {
-  AND?: InputMaybe<Array<ViewPortDbObjectFilter>>;
-  OR?: InputMaybe<Array<ViewPortDbObjectFilter>>;
-  northeast?: InputMaybe<LocationDbObjectFilter>;
-  southwest?: InputMaybe<LocationDbObjectFilter>;
-};
-
-export type ViewPortDbObjectSort = {
-  northeast?: InputMaybe<LocationDbObjectSort>;
-  southwest?: InputMaybe<LocationDbObjectSort>;
+  node: UserEntity;
 };
 
 export type ViewportEntity = {
   __typename?: 'ViewportEntity';
   northeast: LocationEntity;
   southwest: LocationEntity;
+};
+
+export type ViewportEntityFilter = {
+  AND?: InputMaybe<Array<ViewportEntityFilter>>;
+  OR?: InputMaybe<Array<ViewportEntityFilter>>;
+  northeast?: InputMaybe<LocationEntityFilter>;
+  southwest?: InputMaybe<LocationEntityFilter>;
+};
+
+export type ViewportEntitySort = {
+  northeast?: InputMaybe<LocationEntitySort>;
+  southwest?: InputMaybe<LocationEntitySort>;
 };
 
 export type ViewportRequestInput = {
@@ -1383,7 +1377,7 @@ export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: 
 export type LoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser?: { __typename?: 'UserDbObject', id: any, name: string, companyName: string, email: string, place: { __typename?: 'PlaceDbObject', country: string, countryCode: string, callingCode: string, location: { __typename?: 'LocationDbObject', lat: any, lng: any } } } | null };
+export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser?: { __typename?: 'UserEntity', id: string, name: string, companyName: string, email: string, place: { __typename?: 'PlaceEntity', country: string, countryCode: string, callingCode: string, location: { __typename?: 'LocationEntity', lat: any, lng: any } } } | null };
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String']['input'];
@@ -1392,7 +1386,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', isSuccess: boolean, isConfirmed: boolean, user?: { __typename?: 'UserDbObject', email: string, name: string, companyName: string, emailVerified: boolean } | null } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', isSuccess: boolean, isConfirmed: boolean, user?: { __typename?: 'UserEntity', email: string, name: string, companyName: string, emailVerified: boolean } | null } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -1420,12 +1414,12 @@ export type AddNewCustomerMutationVariables = Exact<{
 
 export type AddNewCustomerMutation = { __typename?: 'Mutation', addNewCustomer: { __typename?: 'AddNewCustomerResponse', id: string, customerReferenceNumber: string } };
 
-export type CustomerByIdQueryVariables = Exact<{
+export type CustomerQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type CustomerByIdQuery = { __typename?: 'Query', customerById?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName?: string | null, alias?: string | null, customerType: string, companyName?: string | null, useCompanyName: boolean, status: CustomerStatus, createdAt: any, createdBy: any, modifiedAt?: any | null, modifiedBy?: any | null, archived: boolean, customerRating?: any | null, tags?: Array<string> | null, reference?: { __typename?: 'ReferenceInfo', referenceType: ReferenceType, customer?: { __typename?: 'CustomerEntity', id: string, fullName?: string | null, customerReferenceNumber?: string | null, companyName?: string | null, useCompanyName: boolean } | null, externalReference?: { __typename?: 'ExternalReferenceEntity', id: string, useCompanyName: boolean, companyName?: string | null, name: string } | null } | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, property: { __typename?: 'PlaceEntity', address: string } } | null> | null } | null };
+export type CustomerQuery = { __typename?: 'Query', customer?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName?: string | null, alias?: string | null, customerType: string, companyName?: string | null, useCompanyName: boolean, status: CustomerStatus, createdAt: any, modifiedAt?: any | null, archived: boolean, customerRating?: any | null, tags?: Array<string> | null, creator: { __typename?: 'UserEntity', id: string, name: string }, modifier?: { __typename?: 'UserEntity', id: string, name: string } | null, reference?: { __typename?: 'ReferenceInfoEntity', referenceType: ReferenceType, customer?: { __typename?: 'CustomerEntity', id: string, fullName?: string | null, customerReferenceNumber?: string | null, companyName?: string | null, useCompanyName: boolean } | null, externalReference?: { __typename?: 'ExternalReferenceEntity', id: string, useCompanyName: boolean, companyName?: string | null, name: string } | null } | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, property: { __typename?: 'PlaceEntity', address: string } } | null> | null } | null };
 
 export type CustomersPagedQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -1797,9 +1791,9 @@ export function useAddNewCustomerMutation(baseOptions?: Apollo.MutationHookOptio
 export type AddNewCustomerMutationHookResult = ReturnType<typeof useAddNewCustomerMutation>;
 export type AddNewCustomerMutationResult = Apollo.MutationResult<AddNewCustomerMutation>;
 export type AddNewCustomerMutationOptions = Apollo.BaseMutationOptions<AddNewCustomerMutation, AddNewCustomerMutationVariables>;
-export const CustomerByIdDocument = gql`
-    query CustomerById($id: ID!) {
-  customerById(id: $id) {
+export const CustomerDocument = gql`
+    query customer($id: ID!) {
+  customer(id: $id) {
     id
     customerReferenceNumber
     title
@@ -1812,11 +1806,17 @@ export const CustomerByIdDocument = gql`
     useCompanyName
     status
     createdAt
-    createdBy
     modifiedAt
-    modifiedBy
     archived
     customerRating
+    creator {
+      id
+      name
+    }
+    modifier {
+      id
+      name
+    }
     reference {
       referenceType
       customer {
@@ -1858,37 +1858,37 @@ export const CustomerByIdDocument = gql`
     `;
 
 /**
- * __useCustomerByIdQuery__
+ * __useCustomerQuery__
  *
- * To run a query within a React component, call `useCustomerByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useCustomerByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCustomerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCustomerQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCustomerByIdQuery({
+ * const { data, loading, error } = useCustomerQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useCustomerByIdQuery(baseOptions: Apollo.QueryHookOptions<CustomerByIdQuery, CustomerByIdQueryVariables>) {
+export function useCustomerQuery(baseOptions: Apollo.QueryHookOptions<CustomerQuery, CustomerQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CustomerByIdQuery, CustomerByIdQueryVariables>(CustomerByIdDocument, options);
+        return Apollo.useQuery<CustomerQuery, CustomerQueryVariables>(CustomerDocument, options);
       }
-export function useCustomerByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CustomerByIdQuery, CustomerByIdQueryVariables>) {
+export function useCustomerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CustomerQuery, CustomerQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CustomerByIdQuery, CustomerByIdQueryVariables>(CustomerByIdDocument, options);
+          return Apollo.useLazyQuery<CustomerQuery, CustomerQueryVariables>(CustomerDocument, options);
         }
-export function useCustomerByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CustomerByIdQuery, CustomerByIdQueryVariables>) {
+export function useCustomerSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CustomerQuery, CustomerQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<CustomerByIdQuery, CustomerByIdQueryVariables>(CustomerByIdDocument, options);
+          return Apollo.useSuspenseQuery<CustomerQuery, CustomerQueryVariables>(CustomerDocument, options);
         }
-export type CustomerByIdQueryHookResult = ReturnType<typeof useCustomerByIdQuery>;
-export type CustomerByIdLazyQueryHookResult = ReturnType<typeof useCustomerByIdLazyQuery>;
-export type CustomerByIdSuspenseQueryHookResult = ReturnType<typeof useCustomerByIdSuspenseQuery>;
-export type CustomerByIdQueryResult = Apollo.QueryResult<CustomerByIdQuery, CustomerByIdQueryVariables>;
+export type CustomerQueryHookResult = ReturnType<typeof useCustomerQuery>;
+export type CustomerLazyQueryHookResult = ReturnType<typeof useCustomerLazyQuery>;
+export type CustomerSuspenseQueryHookResult = ReturnType<typeof useCustomerSuspenseQuery>;
+export type CustomerQueryResult = Apollo.QueryResult<CustomerQuery, CustomerQueryVariables>;
 export const CustomersPagedDocument = gql`
     query CustomersPaged($pageSize: Int!, $cursor: String) {
   customers(first: $pageSize, after: $cursor) {
