@@ -30,7 +30,6 @@ const Step1LoginForm = ({
                 onEnterPress={onEnterPress} // Add the onKeyPress event handler here
               />
             </FormControl>
-            <StyledFormMessage />
           </FormItem>
         )}
       />

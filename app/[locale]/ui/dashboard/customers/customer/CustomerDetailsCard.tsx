@@ -190,15 +190,13 @@ const DetailsTab = ({ customer }: { customer: CustomerEntity }) => {
         <dt className='text-sm font-medium'>Activity:</dt>
         <dd className={`text-sm ${plForDd}`}>{modifiedAtFormatted}</dd>
       </div>
-      <h4 className='mb-2 mt-4 text-base font-medium'>Most Recent Property</h4>
-      <div className='flex items-center gap-x-2'>
-        {recentProperty && (
-          <div className='flex items-center justify-between'>
-            <PropertyAddress address={recentProperty.property.address} />
-            <AdditionalPropertyInfo property={recentProperty} />
-          </div>
-        )}
-      </div>
+      <h4 className='mb-2 mt-4 text-base font-medium'>Recent Property</h4>
+      {recentProperty && (
+        <div className='flex items-center justify-between'>
+          <PropertyAddress address={recentProperty.property.address} />
+          <AdditionalPropertyInfo property={recentProperty} />
+        </div>
+      )}
     </>
   );
 };

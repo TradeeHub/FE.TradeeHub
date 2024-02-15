@@ -26,7 +26,6 @@ const Step1RegisterForm = ({
                 placeholder='Email Address'
               />
             </FormControl>
-            <StyledFormMessage />
           </FormItem>
         )}
       />
@@ -43,7 +42,6 @@ const Step1RegisterForm = ({
                 type='password'
               />
             </FormControl>
-            <StyledFormMessage />
           </FormItem>
         )}
       />
@@ -60,7 +58,6 @@ const Step1RegisterForm = ({
                 type='password'
               />
             </FormControl>
-            <StyledFormMessage />
           </FormItem>
         )}
       />

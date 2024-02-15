@@ -14,7 +14,7 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { z } from 'zod';
 import {
   AuthInputWithIcon,
@@ -49,6 +49,8 @@ import { ReloadIcon } from '@radix-ui/react-icons';
 import CustomerReferenceSearch from '../../ui/general/CustomerReferenceSearch/CustomerReferenceSearch';
 import { RootState } from '@/lib/store';
 import { useSelector } from 'react-redux';
+import ProgressBar from '../../ui/auth/ProgressBar/ProgressBar';
+import MultiPhoneNumber from './AddPhoneNumber/AddPhoneNumber';
 
 type ModalProps = {
   isOpen: boolean;
@@ -123,6 +125,8 @@ const AddCustomerModal: React.FC<ModalProps> = ({
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
+  const TOTAL_STEPS = 2;
+  const [currentStep, setCurrentStep] = useState(2);
 
   const { addNewCustomer, addNewCustomerResponse, addNewCustomerLoading } =
     useAddNewCustomer();
@@ -397,11 +401,17 @@ const AddCustomerModal: React.FC<ModalProps> = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className='w-full max-w-2xl font-roboto font-roboto'>
+        <DialogContent className='w-full max-w-2xl font-roboto'>
           <DialogHeader className='flex items-center justify-center'>
             {' '}
             <DialogTitle className='text-center'>{modalName}</DialogTitle>{' '}
           </DialogHeader>
+          <ProgressBar
+            totalSteps={TOTAL_STEPS}
+            currentStep={currentStep}
+            labels={['Details', ' Additional Info']}
+          />
+
           <Form {...form}>
             <form className='space-y-6'>
               <div className='flex items-center'>
@@ -569,96 +579,10 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                 </>
               )}
               {/* Phone Numbers */}
-              {phoneFields.map((field, index) => (
-                <div key={field.id} className='flex items-center'>
-                  {' '}
-                  {/* Bottom margin for spacing between rows */}
-                  <div className='w-1/4 pr-2'>
-                    {' '}
-                    {/* Assign width to 1/4 of container and padding to the right */}
-                    <FormField
-                      control={form.control}
-                      name={`phoneNumbers.${index}.phoneNumberType`}
-                      render={({ field }) => (
-                        <>
-                          <SelectWithInputForm<
-                            AddCustomerFormRequest,
-                            `phoneNumbers.${typeof index}.phoneNumberType`
-                          >
-                            form={form as UseFormReturn<AddCustomerFormRequest>}
-                            field={
-                              field as ControllerRenderProps<
-                                AddCustomerFormRequest,
-                                `phoneNumbers.${number}.phoneNumberType`
-                              >
-                            }
-                            options={phoneNumberTypeOptions}
-                            inputPlaceHolder='Number Type'
-                            defaultValue='Mobile'
-                          />
-                        </>
-                      )}
-                    />
-                  </div>
-                  <div className='flex-1 px-2'>
-                    {' '}
-                    {/* Flex grow and padding on both sides */}
-                    <FormField
-                      control={form.control}
-                      name={`phoneNumbers.${index}.phoneNumber`}
-                      render={({ field }) => (
-                        <AuthInputWithIcon
-                          field={field}
-                          placeholder='Phone Number'
-                          type='tel'
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className='w-20 px-2'>
-                    {' '}
-                    {/* Assign fixed width for the switch container and padding */}
-                    <FormField
-                      control={form.control}
-                      name={`phoneNumbers.${index}.receiveNotifications`}
-                      render={({ field }) => (
-                        <SwitchWithLabel
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                          onLabel='ON'
-                          offLabel='OFF'
-                          aria-label='Notifications'
-                          label='Notifications'
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className='w-12'>
-                    {' '}
-                    {/* Assign fixed width for the button container */}
-                    {index !== 0 ? (
-                      <Button
-                        type='button'
-                        variant={'ghost'}
-                        onClick={() => removePhone(index)}
-                        className='remove-button'
-                        size='icon'
-                      >
-                        <RxCross2 />
-                      </Button>
-                    ) : (
-                      <CustomButton
-                        type='button'
-                        variant='ghost'
-                        size='sm'
-                        onClick={addPhoneNumber}
-                      >
-                        Add
-                      </CustomButton>
-                    )}
-                  </div>
-                </div>
-              ))}
+
+              <MultiPhoneNumber
+                form={form as UseFormReturn<AddCustomerFormRequest>}
+              />
 
               {/* Email Addresses */}
               {emailFields.map((field, index) => (

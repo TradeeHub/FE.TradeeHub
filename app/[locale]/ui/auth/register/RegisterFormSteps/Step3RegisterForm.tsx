@@ -33,7 +33,6 @@ const Step3RegisterForm = ({
                 placeholder='Company Name'
               />
             </FormControl>
-            <StyledFormMessage />
           </FormItem>
         )}
       />
@@ -49,7 +48,6 @@ const Step3RegisterForm = ({
                 placeholder='Company Type'
               />
             </FormControl>
-            <StyledFormMessage />
           </FormItem>
         )}
       />
@@ -71,7 +69,6 @@ const Step3RegisterForm = ({
                 <SelectItem value='10+'>10+</SelectItem>
               </SelectContent>
             </Select>
-            <StyledFormMessage />
           </FormItem>
         )}
       />

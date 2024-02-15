@@ -29,7 +29,6 @@ const Step2RegisterForm = ({
                 placeholder='Full Name'
               />
             </FormControl>
-            <StyledFormMessage />
           </FormItem>
         )}
       />
@@ -45,7 +44,6 @@ const Step2RegisterForm = ({
                 placeholder='Phone Number'
               />
             </FormControl>
-            <StyledFormMessage />
           </FormItem>
         )}
       />
@@ -62,7 +60,6 @@ const Step2RegisterForm = ({
                 onPlaceSelected={onPlaceSelected}
               />
             </FormControl>
-            <StyledFormMessage />
           </FormItem>
         )}
       />
