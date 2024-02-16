@@ -52,6 +52,7 @@ import { useSelector } from 'react-redux';
 import ProgressBar from '../../ui/auth/ProgressBar/ProgressBar';
 import MultiPhoneNumber from './AddPhoneNumber/AddPhoneNumber';
 import MultiEmail from './MultiEmail/MultiEmail';
+import MultiProperty from './MultiProperty/MultiProperty';
 
 type ModalProps = {
   isOpen: boolean;
@@ -59,18 +60,6 @@ type ModalProps = {
   onCustomerAdded: () => void;
   modalName: string;
 };
-const phoneNumberTypeOptions = [
-  { label: 'Mobile', value: 'Mobile' },
-  { label: 'Home', value: 'Home' },
-  { label: 'Work', value: 'Work' },
-  { label: 'Other', value: 'Other' }, // This could trigger an input for custom type
-];
-
-const emailTypeOptions = [
-  { label: 'Personal', value: 'Personal' },
-  { label: 'Work', value: 'Work' },
-  { label: 'Other', value: 'Other' }, // This could trigger an input for custom type
-];
 
 const titleOptions = [
   { label: 'No Title', value: 'Empty' },
@@ -146,17 +135,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
         .array(
           z.object({
             emailType: z.string(),
-            email: z
-              .string()
-              .refine(
-                (email) =>
-                  !email ||
-                  email === '' ||
-                  z.string().email().safeParse(email).success,
-                {
-                  message: 'Invalid email format.',
-                },
-              ),
+            email: z.string().email().optional().nullable(), // Simplified email validation
             receiveNotifications: z.boolean(),
           }),
         )
@@ -167,11 +146,13 @@ const AddCustomerModal: React.FC<ModalProps> = ({
             phoneNumberType: z.string(),
             phoneNumber: z.string().refine(
               (phoneNumber) => {
-                const callingCode = '+' + user?.place.callingCode; // Example, replace with dynamic code
-                if (!phoneNumber || phoneNumber === callingCode) return true; // If phoneNumber is undefined or null, it passes
+                // Assuming you have a way to access the user's calling code dynamically
+                const callingCode = '+'; // Placeholder, replace with dynamic code
                 return (
-                  phoneNumber.startsWith(callingCode) &&
-                  /^\+\d{9,14}$/.test(phoneNumber)
+                  !phoneNumber ||
+                  phoneNumber === callingCode ||
+                  (phoneNumber.startsWith(callingCode) &&
+                    /^\+\d{9,14}$/.test(phoneNumber))
                 );
               },
               {
@@ -183,9 +164,16 @@ const AddCustomerModal: React.FC<ModalProps> = ({
           }),
         )
         .nullable(),
-      property: UserPlaceSchema.nullable(),
-      isBillingAddress: z.boolean(),
-      billing: UserPlaceSchema.nullable(),
+      properties: z
+        .array(
+          z.object({
+            isBillingAddress: z.boolean(),
+            billing: UserPlaceSchema.optional().nullable(), // Assuming UserPlaceSchema is already defined and suitable
+            property: UserPlaceSchema.optional().nullable(),
+          }),
+        )
+        .optional()
+        .nullable(),
       tags: z.array(z.string()).nullable(),
       reference: z
         .object({
@@ -195,18 +183,17 @@ const AddCustomerModal: React.FC<ModalProps> = ({
         .nullable(),
       comment: z.string().nullable(),
       multiValidation: z.string().nullable().optional(),
-    }) // First refine for companyName
+    })
     .refine(
       (data) =>
         !data.useCompanyName ||
         (data.useCompanyName && Boolean(data.companyName)),
       {
         message:
-          'Company Name is required when use company name as main checkbox is checked.',
+          'Company Name is required when "Use company name as main" checkbox is checked.',
         path: ['companyName'],
       },
     )
-    // Second refine for name, surname, or alias
     .refine(
       (data) =>
         data.useCompanyName ||
@@ -214,7 +201,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
           Boolean(data.name || data.surname || data.alias)),
       {
         message:
-          'At least of the three Name, Surname or Alias must be provided.',
+          'At least one of the Name, Surname, or Alias must be provided.',
         path: ['multiValidation'], // Adjust path as necessary
       },
     );
@@ -233,9 +220,13 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       phoneNumbers: [
         { phoneNumberType: '', phoneNumber: '', receiveNotifications: true },
       ],
-      property: null,
-      isBillingAddress: true,
-      billing: null,
+      properties: [
+        {
+          isBillingAddress: true, // Assuming this is a mandatory field in your schema
+          billing: null, // Initialize as null or provide a default structure
+          property: null, // Initialize as null or provide a default structure
+        },
+      ],
       tags: [],
       reference: null,
       comment: '',
@@ -243,29 +234,10 @@ const AddCustomerModal: React.FC<ModalProps> = ({
   });
 
   const { watch, setValue, resetField } = form;
-  const property = watch('property');
-  const isBillingAddress = watch('isBillingAddress');
+  // const property = watch('property');
+  // const isBillingAddress = watch('isBillingAddress');
   const customerType = watch('customerType');
   const hiddenCompanyTypes = ['', 'Home Owner', 'Tenant', 'Landlord'];
-
-  const {
-    fields: phoneFields,
-    append: appendPhone,
-    remove: removePhone,
-  } = useFieldArray({
-    control: form.control,
-    name: 'phoneNumbers',
-  });
-
-  // Field array for emails
-  const {
-    fields: emailFields,
-    append: appendEmail,
-    remove: removeEmail,
-  } = useFieldArray({
-    control: form.control,
-    name: 'emails',
-  });
 
   const handleAddCustomer = async (formData: z.infer<typeof formSchema>) => {
     const formValues = form.getValues();
@@ -577,7 +549,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
               />
 
               {/* Property*/}
-              <div className='pt-2'>
+              {/* <div className='pt-2'>
                 <FormField
                   control={form.control}
                   name={`property`}
@@ -620,7 +592,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                 )}
 
                 {/* Conditionally render billing address field */}
-                {!isBillingAddress && property?.PlaceId && (
+              {/* {!isBillingAddress && property?.PlaceId && (
                   <div className='pt-6'>
                     <FormField
                       control={form.control}
@@ -639,7 +611,10 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                     />
                   </div>
                 )}
-              </div>
+              </div>  */}
+              <MultiProperty
+                form={form as UseFormReturn<AddCustomerFormRequest>}
+              />
 
               {/* Tags */}
               <div className='pt-2'>

@@ -1,4 +1,3 @@
-// MultiEmail.jsx or MultiEmail.tsx if you're using TypeScript
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { RxCross2 } from 'react-icons/rx';

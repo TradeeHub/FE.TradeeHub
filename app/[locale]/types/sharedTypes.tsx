@@ -121,24 +121,30 @@ export type UserPlace = {
 };
 
 export type AddCustomerFormRequest = {
-  title: string;
-  name: string;
-  surname: string;
-  alias: string;
-  customerType: string;
-  companyName: string;
+  title: string | null;
+  name: string | null;
+  surname: string | null;
+  alias: string | null;
+  customerType: string | null;
+  companyName: string | null;
   useCompanyName: boolean;
-  emails: { email: string; emailType: string; receiveNotifications: boolean }[];
-  phoneNumbers: {
-    phoneNumber: string;
-    phoneNumberType: string;
+  emails: {
+    email: string | null;
+    emailType: string | null;
     receiveNotifications: boolean;
   }[];
-  property: UserPlace;
-  isBillingAddress: boolean;
-  billing?: UserPlace | null;
+  phoneNumbers: {
+    phoneNumber: string | null;
+    phoneNumberType: string | null;
+    receiveNotifications: boolean;
+  }[];
+  properties: {
+    isBillingAddress: boolean;
+    billing?: UserPlace | null; // Optional to align with your GraphQL input that allows this to be nullable
+    property?: UserPlace | null;
+  }[]; // Adjusted to reflect multiple properties handling
   tags: string[];
-  reference?: Reference | null;
+  reference?: Reference | null; // Assuming `Reference` is already defined elsewhere
   comment?: string | null;
 };
 

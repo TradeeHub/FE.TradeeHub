@@ -31,15 +31,13 @@ export type AccountConfirmationResponse = {
 
 export type AddNewCustomerRequestInput = {
   alias?: InputMaybe<Scalars['String']['input']>;
-  billing?: InputMaybe<CustomerPlaceRequestInput>;
   comment?: InputMaybe<Scalars['String']['input']>;
   companyName?: InputMaybe<Scalars['String']['input']>;
   customerType: Scalars['String']['input'];
   emails?: InputMaybe<Array<EmailRequestInput>>;
-  isBillingAddress: Scalars['Boolean']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   phoneNumbers?: InputMaybe<Array<PhoneNumberRequestInput>>;
-  property?: InputMaybe<CustomerPlaceRequestInput>;
+  properties?: InputMaybe<Array<PropertyRequestInput>>;
   reference?: InputMaybe<LinkReferenceRequestInput>;
   surname?: InputMaybe<Scalars['String']['input']>;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -60,7 +58,7 @@ export type AddNewExternalReferenceRequestInput = {
   email?: InputMaybe<EmailRequestInput>;
   name: Scalars['String']['input'];
   phoneNumber?: InputMaybe<PhoneNumberRequestInput>;
-  place?: InputMaybe<CustomerPlaceRequestInput>;
+  place?: InputMaybe<PlaceRequestInput>;
   referenceType: Scalars['String']['input'];
   url?: InputMaybe<Scalars['String']['input']>;
   useCompanyName: Scalars['Boolean']['input'];
@@ -405,16 +403,6 @@ export type CustomerEntitySort = {
   title?: InputMaybe<SortOperationKind>;
   useCompanyName?: InputMaybe<SortOperationKind>;
   userOwnerId?: InputMaybe<SortOperationKind>;
-};
-
-export type CustomerPlaceRequestInput = {
-  address: Scalars['String']['input'];
-  callingCode: Scalars['String']['input'];
-  country: Scalars['String']['input'];
-  countryCode: Scalars['String']['input'];
-  location: LocationRequestInput;
-  placeId: Scalars['String']['input'];
-  viewport: ViewportRequestInput;
 };
 
 export enum CustomerStatus {
@@ -971,6 +959,12 @@ export type PropertyEntity = {
   owner: UserEntity;
   property: PlaceEntity;
   quotes?: Maybe<Array<Scalars['ID']['output']>>;
+};
+
+export type PropertyRequestInput = {
+  billing?: InputMaybe<PlaceRequestInput>;
+  isBillingAddress: Scalars['Boolean']['input'];
+  property?: InputMaybe<PlaceRequestInput>;
 };
 
 export type Query = {

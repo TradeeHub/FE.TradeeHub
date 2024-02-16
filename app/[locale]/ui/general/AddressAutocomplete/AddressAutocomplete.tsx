@@ -192,8 +192,8 @@ const AddressAutocomplete = <
   }, [hasMadeSelection.current]);
 
   useEffect(() => {
-    setLabelFloat(!!field.value?.Address); // Make sure to safely access Address
-  }, [field.value]);
+    setLabelFloat(!!field?.value?.Address); // Make sure to safely access Address
+  }, [field?.value]);
 
   useEffect(() => {
     const loader = new Loader({
@@ -206,7 +206,7 @@ const AddressAutocomplete = <
         new google.maps.places.AutocompleteService();
     });
 
-    if (field.value?.Address) {
+    if (field?.value?.Address) {
       setInputValue(field.value.Address);
       hasMadeSelection.current = true;
     }
@@ -222,7 +222,7 @@ const AddressAutocomplete = <
     setLabelFloat(!!inputValue);
     // Add here any additional logic if needed when the input loses focus
   };
-  const inputId = `input-${field.name}`; // Create a unique ID for the input based on the field name
+  const inputId = `input-${field?.name}`; // Create a unique ID for the input based on the field name
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     // Arrow down
