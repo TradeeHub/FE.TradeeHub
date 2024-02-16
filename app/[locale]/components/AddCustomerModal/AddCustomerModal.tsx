@@ -12,29 +12,17 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
 } from '@/components/ui/form';
 import React, { useEffect, useState } from 'react';
 import { z } from 'zod';
+
 import {
-  AuthInputWithIcon,
-  StyledFormMessage,
-} from '../../ui/auth/AuthInputWithIcon/AuthInputWithIcon';
-import {
-  ControllerRenderProps,
   UseFormReturn,
-  useFieldArray,
   useForm,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import SelectWithInputForm from '../SelectWithInputForm/SelectWithInputForm';
-import { AddCustomerFormRequest, UserPlace } from '../../types/sharedTypes';
-import { RxCross2 } from 'react-icons/rx';
-import { SwitchWithLabel } from '../SwitchWithLabel/SwitchWithLabel';
-import { CustomButton } from '../CustomButton/CustomButton';
+import { AddCustomerFormRequest } from '../../types/sharedTypes';
 import TagsInput from '../TagsInput/TagsInput';
-import AddressAutocomplete from '../../ui/general/AddressAutocomplete/AddressAutocomplete';
-import { Checkbox } from '@/components/ui/checkbox';
 import CommentSection from '../../ui/general/Comment';
 import {
   AddNewCustomerRequestInput,
@@ -47,12 +35,12 @@ import { ToastAction } from '@/components/ui/toast';
 import { usePathname, useRouter } from 'next/navigation';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import CustomerReferenceSearch from '../../ui/general/CustomerReferenceSearch/CustomerReferenceSearch';
-import { RootState } from '@/lib/store';
-import { useSelector } from 'react-redux';
 import ProgressBar from '../../ui/auth/ProgressBar/ProgressBar';
 import MultiPhoneNumber from './AddPhoneNumber/AddPhoneNumber';
 import MultiEmail from './MultiEmail/MultiEmail';
 import MultiProperty from './MultiProperty/MultiProperty';
+import CustomerIdentityForm from './CustomerIdentityForm/CustomerIdentityForm';
+import CustomerTypeForm from '../CustomerTypeForm/CustomerTypeForm';
 
 type ModalProps = {
   isOpen: boolean;
@@ -60,31 +48,6 @@ type ModalProps = {
   onCustomerAdded: () => void;
   modalName: string;
 };
-
-const titleOptions = [
-  { label: 'No Title', value: 'Empty' },
-  { label: 'Mr.', value: 'Mr.' },
-  { label: 'Mrs.', value: 'Mrs.' },
-  { label: 'Ms.', value: 'Ms.' },
-  { label: 'Miss.', value: 'Miss.' },
-  { label: 'Dr.', value: 'Dr.' },
-  { label: 'Other', value: 'Other' },
-];
-
-const customerTypeOptions = [
-  { label: 'Customer Type', value: 'Empty' },
-  { label: 'Home Owner', value: 'Home Owner' },
-  { label: 'Tenant', value: 'Tenant' },
-  { label: 'Landlord', value: 'Landlord' },
-  { label: 'Small Business', value: 'Small Business' },
-  { label: 'Agency', value: 'Agency' },
-  { label: 'Real Estate', value: 'Real Estate' },
-  { label: 'City Council', value: 'City Council' },
-  { label: 'Property Management Company', value: 'Property Management' },
-  { label: 'Construction Firm', value: 'Construction Firm' },
-  { label: 'Educational Institution', value: 'Educational Institution' },
-  { label: 'Other', value: 'Other' },
-];
 
 const LocationSchema = z.object({
   lat: z.number(),
@@ -116,11 +79,11 @@ const AddCustomerModal: React.FC<ModalProps> = ({
   const router = useRouter();
   const pathname = usePathname();
   const TOTAL_STEPS = 2;
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(1);
 
   const { addNewCustomer, addNewCustomerResponse, addNewCustomerLoading } =
     useAddNewCustomer();
-  const user = useSelector((state: RootState) => state.user.data);
+  // const user = useSelector((state: RootState) => state.user.data);
 
   const formSchema = z
     .object({
@@ -135,7 +98,13 @@ const AddCustomerModal: React.FC<ModalProps> = ({
         .array(
           z.object({
             emailType: z.string(),
-            email: z.string().email().optional().nullable(), // Simplified email validation
+            email: z
+              .string()
+              .optional()
+              .nullable()
+              .refine((val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
+                message: 'Invalid email format',
+              }),
             receiveNotifications: z.boolean(),
           }),
         )
@@ -180,6 +149,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
           id: z.string(),
           referenceType: z.string(),
         })
+        .optional()
         .nullable(),
       comment: z.string().nullable(),
       multiValidation: z.string().nullable().optional(),
@@ -233,103 +203,83 @@ const AddCustomerModal: React.FC<ModalProps> = ({
     },
   });
 
-  const { watch, setValue, resetField } = form;
-  // const property = watch('property');
-  // const isBillingAddress = watch('isBillingAddress');
-  const customerType = watch('customerType');
-  const hiddenCompanyTypes = ['', 'Home Owner', 'Tenant', 'Landlord'];
-
   const handleAddCustomer = async (formData: z.infer<typeof formSchema>) => {
-    const formValues = form.getValues();
-    console.log('formData', formData, 'formValues', formValues);
+    console.log('formData', formData);
 
     const customerData: AddNewCustomerRequestInput = {
-      title: formValues.title,
-      name: formValues.name,
-      surname: formValues.surname,
-      alias: formValues.alias,
-      customerType: formValues.customerType ?? '',
-      companyName: formValues.companyName,
-      useCompanyName: formValues.useCompanyName,
-      emails: formValues.emails?.map((email) => ({
-        emailType: email.emailType,
-        email: email.email,
-        receiveNotifications: email.receiveNotifications,
-      })),
-      phoneNumbers: formValues.phoneNumbers?.map((phone) => ({
-        phoneNumberType: phone.phoneNumberType,
-        phoneNumber: phone.phoneNumber,
-        receiveNotifications: phone.receiveNotifications,
-      })),
-      property: formValues.property
+      title: formData.title ?? '',
+      name: formData.name ?? '',
+      surname: formData.surname ?? '',
+      alias: formData.alias ?? '',
+      customerType: formData.customerType ?? '',
+      companyName: formData.companyName ?? '',
+      useCompanyName: formData.useCompanyName ?? false,
+      emails:
+        formData.emails?.map((email) => ({
+          emailType: email.emailType,
+          email: email.email ?? '',
+          receiveNotifications: email.receiveNotifications,
+        })) ?? [],
+      phoneNumbers:
+        formData.phoneNumbers?.map((phone) => ({
+          phoneNumberType: phone.phoneNumberType,
+          phoneNumber: phone.phoneNumber ?? '',
+          receiveNotifications: phone.receiveNotifications,
+        })) ?? [],
+      properties:
+        formData.properties?.map((property) => ({
+          isBillingAddress: property.isBillingAddress,
+          billing: property.billing
+            ? {
+                placeId: property.billing.PlaceId,
+                address: property.billing.Address,
+                country: property.billing.Country,
+                countryCode: property.billing.CountryCode,
+                callingCode: property.billing.CallingCode,
+                location: {
+                  lat: property.billing.Location.lat,
+                  lng: property.billing.Location.lng,
+                },
+                viewport: {
+                  northeast: property.billing.Viewport.northeast,
+                  southwest: property.billing.Viewport.southwest,
+                },
+              }
+            : null,
+          property: property.property
+            ? {
+                placeId: property.property.PlaceId,
+                address: property.property.Address,
+                country: property.property.Country,
+                countryCode: property.property.CountryCode,
+                callingCode: property.property.CallingCode,
+                location: {
+                  lat: property.property.Location.lat,
+                  lng: property.property.Location.lng,
+                },
+                viewport: {
+                  northeast: property.property.Viewport.northeast,
+                  southwest: property.property.Viewport.southwest,
+                },
+              }
+            : null,
+        })) ?? [],
+      tags: formData.tags ?? [],
+      reference: formData.reference
         ? {
-            placeId: formValues.property.PlaceId,
-            address: formValues.property.Address,
-            country: formValues.property.Country,
-            countryCode: formValues.property.CountryCode,
-            callingCode: formValues.property.CallingCode,
-            location: {
-              lat: formValues.property.Location.lat,
-              lng: formValues.property.Location.lng,
-            },
-            viewport: {
-              northeast: formValues.property.Viewport.northeast,
-              southwest: formValues.property.Viewport.southwest,
-            },
+            id: formData.reference.id,
+            referenceType: formData.reference.referenceType as ReferenceType,
           }
         : null,
-      isBillingAddress: formValues.isBillingAddress,
-      billing: formValues.billing
-        ? {
-            placeId: formValues.billing.PlaceId,
-            address: formValues.billing.Address,
-            country: formValues.billing.Country,
-            countryCode: formValues.billing.CountryCode,
-            callingCode: formValues.billing.CallingCode,
-            location: {
-              lat: formValues.billing.Location.lat,
-              lng: formValues.billing.Location.lng,
-            },
-            viewport: {
-              northeast: formValues.billing.Viewport.northeast,
-              southwest: formValues.billing.Viewport.southwest,
-            },
-          }
-        : null,
-      tags: formValues.tags,
-      reference: formValues.reference
-        ? {
-            id: formValues.reference.id,
-            referenceType: formValues.reference.referenceType as ReferenceType,
-          }
-        : null,
-      comment: formValues.comment,
+      comment: formData.comment ?? '',
     };
 
     addNewCustomer(customerData);
   };
 
-  const onPlaceSelectForProperty = (place: UserPlace | null) => {
-    if (place) {
-      setValue('property', place);
-      // If a property is selected, by default, billing address is same as property
-      setValue('isBillingAddress', true);
-    } else {
-      resetField('property');
-      setValue('isBillingAddress', false); // Reset or adjust based on your logic
-    }
-  };
-
-  const onPlaceSelectForBilling = (place: UserPlace | null) => {
-    if (place) {
-      setValue('billing', place);
-    } else {
-      resetField('billing'); // Or set to an initial empty state as per your schema
-    }
-  };
-
   const handleClose = () => {
     form.reset();
+    setCurrentStep(1);
     onClose();
   };
 
@@ -375,171 +325,10 @@ const AddCustomerModal: React.FC<ModalProps> = ({
 
           <Form {...form}>
             <form className='space-y-6'>
-              <div className='flex items-center'>
-                {' '}
-                {/* Bottom margin for spacing between rows */}
-                <div className='w-1/4 pr-2'>
-                  <FormField
-                    control={form.control}
-                    name='title'
-                    render={({ field }) => (
-                      <FormItem>
-                        <SelectWithInputForm<AddCustomerFormRequest, 'title'>
-                          form={form as UseFormReturn<AddCustomerFormRequest>} // Cast the form prop to the correct type
-                          field={
-                            field as ControllerRenderProps<
-                              AddCustomerFormRequest,
-                              'title'
-                            >
-                          } // Cast the field prop to the correct type
-                          options={titleOptions}
-                          inputPlaceHolder='Other Title'
-                          defaultValue='Empty'
-                        />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
+        
+              <CustomerIdentityForm form={form as UseFormReturn<AddCustomerFormRequest>} />
 
-              <div
-                className='pd-2 flex flex-wrap items-center gap-4 '
-                style={{ marginTop: 15 }}
-              >
-                <div className='flex-1'>
-                  {' '}
-                  {/* This div wraps the FormField for 'name' */}
-                  <FormField
-                    control={form.control}
-                    name='name'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <AuthInputWithIcon
-                            field={field}
-                            autoFocus={true}
-                            placeholder='Name'
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className='flex-1'>
-                  {' '}
-                  {/* This div wraps the FormField for 'name' */}
-                  <FormField
-                    control={form.control}
-                    name='surname'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <AuthInputWithIcon
-                            field={field}
-                            autoFocus={false}
-                            placeholder='Surname'
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className='flex-1'>
-                  {' '}
-                  {/* This div wraps the FormField for 'name' */}
-                  <FormField
-                    control={form.control}
-                    name='alias'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <AuthInputWithIcon
-                            field={field}
-                            autoFocus={false}
-                            placeholder='Alias'
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-              <div style={{ marginTop: 0 }}>
-                <FormField
-                  control={form.control}
-                  name='multiValidation'
-                  render={() => <StyledFormMessage />}
-                />
-              </div>
-              <div className=''>
-                <FormField
-                  control={form.control}
-                  name='customerType'
-                  render={({ field }) => (
-                    <FormItem>
-                      <SelectWithInputForm<
-                        AddCustomerFormRequest,
-                        'customerType'
-                      >
-                        form={form as UseFormReturn<AddCustomerFormRequest>} // Cast the form prop to the correct type
-                        field={
-                          field as ControllerRenderProps<
-                            AddCustomerFormRequest,
-                            'customerType'
-                          >
-                        } // Cast the field prop to the correct type
-                        options={customerTypeOptions}
-                        inputPlaceHolder='Other Customer Type'
-                        defaultValue='Empty'
-                      />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              {!hiddenCompanyTypes.includes(customerType as string) && (
-                <>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name='companyName'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <AuthInputWithIcon
-                              field={field}
-                              autoFocus={false}
-                              placeholder='Company Name'
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <div className='mt-1 pl-4'>
-                      <FormField
-                        control={form.control}
-                        name='useCompanyName'
-                        render={({ field }) => (
-                          <FormItem className='flex flex-row items-start space-x-2 space-y-0'>
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={(checked: boolean) => {
-                                  field.onChange(checked);
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className='text-sm'>
-                              Use company name as main display instead of name.
-                            </FormLabel>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
-              {/* Phone Numbers */}
+              <CustomerTypeForm form={form as UseFormReturn<AddCustomerFormRequest>} />
 
               <MultiPhoneNumber
                 form={form as UseFormReturn<AddCustomerFormRequest>}
@@ -548,75 +337,10 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                 form={form as UseFormReturn<AddCustomerFormRequest>}
               />
 
-              {/* Property*/}
-              {/* <div className='pt-2'>
-                <FormField
-                  control={form.control}
-                  name={`property`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <AddressAutocomplete
-                          field={field}
-                          onPlaceSelected={onPlaceSelectForProperty}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                {property?.PlaceId && (
-                  <div className='mt-1 pl-4'>
-                    <FormField
-                      control={form.control}
-                      name='isBillingAddress'
-                      render={({ field }) => (
-                        <FormItem className='flex flex-row items-start space-x-2 space-y-0'>
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={(checked) => {
-                                field.onChange(checked);
-                                if (checked) {
-                                  resetField('billing');
-                                }
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className='text-sm'>
-                            Same address for billing and property.
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-
-                {/* Conditionally render billing address field */}
-              {/* {!isBillingAddress && property?.PlaceId && (
-                  <div className='pt-6'>
-                    <FormField
-                      control={form.control}
-                      name='billing'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <AddressAutocomplete
-                              field={field}
-                              onPlaceSelected={onPlaceSelectForBilling}
-                              placeholder='Billing Address'
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-              </div>  */}
               <MultiProperty
                 form={form as UseFormReturn<AddCustomerFormRequest>}
               />
 
-              {/* Tags */}
               <div className='pt-2'>
                 <FormField
                   control={form.control}
@@ -672,7 +396,23 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                 Close
               </Button>
             </DialogClose>
-            <Button
+             { currentStep === 1 && (    <Button
+              type='button'
+              variant='default'
+              onClick={()=> setCurrentStep((prev) => prev + 1)}
+              disabled={addNewCustomerLoading}
+            >
+              {addNewCustomerLoading ? (
+                <>
+                  <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+                  Adding...
+                </>
+              ) : (
+                'Continue'
+              )}
+            </Button>
+            )}
+            { currentStep === 2 && (    <Button
               type='button'
               variant='default'
               onClick={form.handleSubmit(handleAddCustomer)}
@@ -687,6 +427,8 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                 'Add'
               )}
             </Button>
+            )}
+         
           </DialogFooter>
         </DialogContent>
       </Dialog>

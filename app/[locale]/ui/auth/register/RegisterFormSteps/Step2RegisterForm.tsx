@@ -5,7 +5,6 @@ import { Control } from 'react-hook-form';
 import AddressAutocomplete from '../../../general/AddressAutocomplete/AddressAutocomplete';
 import {
   AuthInputWithIcon,
-  StyledFormMessage,
 } from '../../AuthInputWithIcon/AuthInputWithIcon';
 
 const Step2RegisterForm = ({

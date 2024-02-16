@@ -4,7 +4,6 @@ import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import { RegisterRequest } from '@/app/[locale]/types/sharedTypes';
 import {
   AuthInputWithIcon,
-  StyledFormMessage,
 } from '../../AuthInputWithIcon/AuthInputWithIcon';
 import {
   SelectContent,

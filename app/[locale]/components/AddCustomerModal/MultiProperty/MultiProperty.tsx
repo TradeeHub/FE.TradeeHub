@@ -1,7 +1,15 @@
 import React from 'react';
 import { Button } from '@/components/ui/button'; // Adjust import path as necessary
-import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'; // Adjust import path as necessary
-import { AddCustomerFormRequest, UserPlace } from '@/app/[locale]/types/sharedTypes'; // Adjust import path as necessary
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form'; // Adjust import path as necessary
+import {
+  AddCustomerFormRequest,
+  UserPlace,
+} from '@/app/[locale]/types/sharedTypes'; // Adjust import path as necessary
 import AddressAutocomplete from '@/app/[locale]/ui/general/AddressAutocomplete/AddressAutocomplete';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form';
@@ -20,7 +28,7 @@ const MultiProperty: React.FC<MultiPropertyProps> = ({ form }) => {
     name: 'properties',
   });
 
-    const properties = watch('properties');
+  const properties = watch('properties');
 
   const onPlaceSelectForProperty = (index: number, place: UserPlace | null) => {
     setValue(`properties.${index}.property`, place);
@@ -33,7 +41,7 @@ const MultiProperty: React.FC<MultiPropertyProps> = ({ form }) => {
   //   const isBillingAddresses = fields.map((field, index) =>
   //   watch(`properties.${index}.isBillingAddress`, true) // Default to true to align with your initial requirement
   // );
-// !getValues(`properties.${index}.isBillingAddress`)
+  // !getValues(`properties.${index}.isBillingAddress`)
 
   return (
     <div>
@@ -48,7 +56,9 @@ const MultiProperty: React.FC<MultiPropertyProps> = ({ form }) => {
                   render={({ field }) => (
                     <AddressAutocomplete
                       field={field}
-                      onPlaceSelected={(place) => onPlaceSelectForProperty(index, place)}
+                      onPlaceSelected={(place) =>
+                        onPlaceSelectForProperty(index, place)
+                      }
                       placeholder='Search for Property Address'
                     />
                   )}
@@ -73,7 +83,9 @@ const MultiProperty: React.FC<MultiPropertyProps> = ({ form }) => {
                 type='button'
                 variant='ghost'
                 size='sm'
-                onClick={() => append({ property: null, isBillingAddress: true })}
+                onClick={() =>
+                  append({ property: null, isBillingAddress: true })
+                }
                 className='add-button'
               >
                 Add
@@ -81,49 +93,53 @@ const MultiProperty: React.FC<MultiPropertyProps> = ({ form }) => {
             )}
           </div>
 
-{properties[index].property && (
-          <div className='mt-1 pl-4'>
-            <FormField
-              control={form.control}
-              name={`properties.${index}.isBillingAddress`}
-              render={({ field }) => (
-                <FormItem className='flex flex-row items-start space-x-2 space-y-0'>
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={(checked) => {
-                        field.onChange(checked);
-                        if(checked) {
-                          resetField(`properties.${index}.billing`);
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormLabel className='text-sm'>
-                    Same address for billing and property.
-                  </FormLabel>
-                </FormItem>
-              )}
-            />
-          </div>)}
-
-          {!properties[index].isBillingAddress && properties[index].property && (
-            <FormItem className='flex-grow mt-5'>
-              <FormControl>
-                <Controller
-                  name={`properties.${index}.billing`}
-                  control={control}
-                  render={({ field }) => (
-                    <AddressAutocomplete
-                      field={field}
-                      onPlaceSelected={(place) => onPlaceSelectForBilling(index, place)}
-                      placeholder='Search for Billing Address'
-                    />
-                  )}
-                />
-              </FormControl>
-            </FormItem>
+          {properties[index].property && (
+            <div className='mt-1 pl-4'>
+              <FormField
+                control={form.control}
+                name={`properties.${index}.isBillingAddress`}
+                render={({ field }) => (
+                  <FormItem className='flex flex-row items-start space-x-2 space-y-0'>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          if (checked) {
+                            resetField(`properties.${index}.billing`);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel className='text-sm'>
+                      Same address for billing and property.
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+            </div>
           )}
+
+          {!properties[index].isBillingAddress &&
+            properties[index].property && (
+              <FormItem className='mt-5 flex-grow'>
+                <FormControl>
+                  <Controller
+                    name={`properties.${index}.billing`}
+                    control={control}
+                    render={({ field }) => (
+                      <AddressAutocomplete
+                        field={field}
+                        onPlaceSelected={(place) =>
+                          onPlaceSelectForBilling(index, place)
+                        }
+                        placeholder='Search for Billing Address'
+                      />
+                    )}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
         </div>
       ))}
     </div>

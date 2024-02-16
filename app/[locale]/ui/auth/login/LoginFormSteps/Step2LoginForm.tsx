@@ -4,7 +4,6 @@ import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import { LoginRequest } from '@/app/[locale]/types/sharedTypes';
 import {
   AuthInputWithIcon,
-  StyledFormMessage,
 } from '../../AuthInputWithIcon/AuthInputWithIcon';
 
 const Step1LoginForm = ({
