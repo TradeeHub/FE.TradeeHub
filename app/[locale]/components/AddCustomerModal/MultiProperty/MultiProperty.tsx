@@ -13,23 +13,27 @@ interface MultiPropertyProps {
 }
 
 const MultiProperty: React.FC<MultiPropertyProps> = ({ form }) => {
-  const { control, setValue, watch } = form;
+  const { control, setValue, watch, resetField } = form;
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'properties',
   });
 
+    const properties = watch('properties');
+
   const onPlaceSelectForProperty = (index: number, place: UserPlace | null) => {
     setValue(`properties.${index}.property`, place);
-    if (!place) setValue(`properties.${index}.isBillingAddress`, false);
+    // if (!place) setValue(`properties.${index}.isBillingAddress`, true);
   };
 
   const onPlaceSelectForBilling = (index: number, place: UserPlace | null) => {
     setValue(`properties.${index}.billing`, place);
   };
-
-  
+  //   const isBillingAddresses = fields.map((field, index) =>
+  //   watch(`properties.${index}.isBillingAddress`, true) // Default to true to align with your initial requirement
+  // );
+// !getValues(`properties.${index}.isBillingAddress`)
 
   return (
     <div>
@@ -77,6 +81,7 @@ const MultiProperty: React.FC<MultiPropertyProps> = ({ form }) => {
             )}
           </div>
 
+{properties[index].property && (
           <div className='mt-1 pl-4'>
             <FormField
               control={form.control}
@@ -88,6 +93,9 @@ const MultiProperty: React.FC<MultiPropertyProps> = ({ form }) => {
                       checked={field.value}
                       onCheckedChange={(checked) => {
                         field.onChange(checked);
+                        if(checked) {
+                          resetField(`properties.${index}.billing`);
+                        }
                       }}
                     />
                   </FormControl>
@@ -97,9 +105,9 @@ const MultiProperty: React.FC<MultiPropertyProps> = ({ form }) => {
                 </FormItem>
               )}
             />
-          </div>
+          </div>)}
 
-          {!watch(`properties.${index}.isBillingAddress`) && (
+          {!properties[index].isBillingAddress && properties[index].property && (
             <FormItem className='flex-grow mt-5'>
               <FormControl>
                 <Controller
