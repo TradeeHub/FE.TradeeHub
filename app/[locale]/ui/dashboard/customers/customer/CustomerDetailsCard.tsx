@@ -142,7 +142,7 @@ const ReferenceDetails = ({
 const DetailsTab = ({ customer }: { customer: CustomerEntity }) => {
   const mainPhone = customer?.phoneNumbers?.[0]?.phoneNumber || '';
   const recentProperty = customer?.properties?.[0] || null;
-  const mainEmail = customer?.emails?.[0].email || '';
+  const mainEmail = customer?.emails?.[0]?.email || '';
 
   const modifiedAtFormatted = customer?.modifiedAt
     ? moment(customer?.modifiedAt).local().format('Do MMM YYYY HH:mm')

@@ -13,7 +13,7 @@ const SwitchWithLabel = React.forwardRef<
     offLabel?: string;
     label?: string;
   }
->(({ className, checked, onLabel, offLabel, label, ...props }, ref) => (
+>(({ className, checked, onCheckedChange, onLabel, offLabel, label, ...props }, ref) => (
   <div className='no-block relative font-roboto'>
     <label
       className={
@@ -25,6 +25,8 @@ const SwitchWithLabel = React.forwardRef<
     <SwitchPrimitives.Root
       {...props}
       ref={ref}
+      checked={checked} // Controlled state
+      onCheckedChange={onCheckedChange} // Handle change
       className={cn(
         'focus-visible:ring-primary-500 mt-2 inline-flex h-6 w-14 items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75',
         checked ? 'bg-primary' : 'bg-input',
