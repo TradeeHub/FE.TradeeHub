@@ -246,10 +246,6 @@ const PropertiesTab = ({ customer }: { customer: CustomerEntity }) => {
                 <AdditionalPropertyInfo property={property} />
               </div>
             )}
-            {property?.billing &&
-              property.property.placeId !== property.billing.placeId && (
-                <div className='text-sm'>{`Billing Address: ${property.billing.address}`}</div>
-              )}
           </div>
         ))
       ) : (
@@ -304,11 +300,7 @@ const AdditionalPropertyInfo = ({ property }: { property: PropertyEntity }) => {
         <div className='space-y-4'>
           <div>
             <h3 className='text-lg font-semibold'>Billing Address</h3>
-            <p className='text-sm'>{property.property.address}</p>
-            {property.billing &&
-              property.property.placeId !== property.billing.placeId && (
-                <p className='text-sm'>{`Billing Address: ${property.billing.address}`}</p>
-              )}
+            <p className='text-sm'>{property.billing?.address}</p>
           </div>
           <h3 className='text-lg font-semibold'>Property Info</h3>
 
