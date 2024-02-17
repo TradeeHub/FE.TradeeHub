@@ -27,7 +27,7 @@ type SelectWithInputFormProps<
 > = {
   form: UseFormReturn<TFieldValues>;
   field: ControllerRenderProps<TFieldValues, TFieldName>;
-  options: Option[]; // Replace 'const' with the correct type
+  options: Option[];
   defaultValue: string;
   inputPlaceHolder: string;
 };
@@ -42,11 +42,17 @@ const SelectWithInputForm = <
   defaultValue,
   inputPlaceHolder,
 }: SelectWithInputFormProps<TFieldValues, TFieldName>) => {
-  const [isEditable, setIsEditable] = useState(false);
+  // Determine if the current value is a custom value not found in the options
+  const initialValue = form.getValues(field.name);
+  const isInitialValueCustom = initialValue && !options.some(option => option.value === initialValue);
+  const [isEditable, setIsEditable] = useState(isInitialValueCustom);
 
   useEffect(() => {
+    // This effect now also updates `isEditable` based on the current value
     const currentValue = form.getValues(field.name);
-    // Set form value to an empty string if defaultValue is 'Empty'
+    const isCustomValue = currentValue && !options.some(option => option.value === currentValue);
+    setIsEditable(isCustomValue);
+
     const effectiveValue = defaultValue === 'Empty' ? '' : defaultValue;
     if (currentValue === undefined || currentValue === '') {
       form.setValue(
@@ -55,20 +61,19 @@ const SelectWithInputForm = <
         { shouldValidate: true },
       );
     }
-  }, [form, field.name, defaultValue]);
+  }, [form, field.name, defaultValue, options]);
 
   const handleSelectChange = (value: string) => {
     if (value.toLowerCase() === 'other') {
       setIsEditable(true);
-      form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>);
-    } else if (value.toLowerCase() === 'empty') {
-      setIsEditable(false);
       form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>, {
         shouldDirty: true,
       });
     } else {
       setIsEditable(false);
-      form.setValue(field.name, value as PathValue<TFieldValues, TFieldName>);
+      form.setValue(field.name, value as PathValue<TFieldValues, TFieldName>, {
+        shouldDirty: true,
+      });
     }
   };
 
@@ -77,6 +82,7 @@ const SelectWithInputForm = <
     form.setValue(
       field.name,
       defaultValue as PathValue<TFieldValues, TFieldName>,
+      { shouldDirty: true },
     );
   };
 
@@ -85,13 +91,14 @@ const SelectWithInputForm = <
       {isEditable ? (
         <AuthInputWithIcon
           field={field}
-          autoFocus={true}
+          // Removed autoFocus to prevent automatic focusing
           placeholder={inputPlaceHolder}
+          value={form.getValues(field.name) as string}
         />
       ) : (
         <Select
           onValueChange={handleSelectChange}
-          defaultValue={field.value || defaultValue}
+          defaultValue={form.getValues(field.name) || defaultValue}
         >
           <SelectTrigger>
             <SelectValue />

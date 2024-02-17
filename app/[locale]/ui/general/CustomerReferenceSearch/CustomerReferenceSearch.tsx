@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Command,
   CommandItem,
@@ -35,28 +35,25 @@ const CustomerReferenceSearch = <
   const [inputValue, setInputValue] = useState<string>('');
   const [references, setReferences] = useState<ReferenceResponse[]>([]);
   const [labelFloat, setLabelFloat] = useState(false);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false); // New state to control the popover visibility
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const popoverContentRef = useRef<HTMLInputElement>(null);
-  const selectedDisplayNameRef = useRef<string | null>(null);
-  const [highlightedIndex, setHighlightedIndex] = useState(0); // -1 means no item is highlighted
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
 
   const { searchCustomerReferences } = useSearchCustomerReferences();
 
+  // Effect to sync input value with the form field value
+  useEffect(() => {
+    if (field.value && field.value.displayName) {
+      setInputValue(field.value.displayName);
+    } else {
+      setInputValue('');
+    }
+  }, [field.value]);
+
   const handleInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
-    if (
-      field.value !== null &&
-      term !== field.value?.displayName &&
-      term.length < (selectedDisplayNameRef.current?.length ?? 0)
-    ) {
-      field.onChange(null); // Clear the selected value in form
-      setInputValue('');
-      selectedDisplayNameRef.current = null;
-      setIsPopoverOpen(false);
-    } else {
-      setInputValue(term);
-      setIsPopoverOpen(true); // Open the popover when there is input
-    }
+    setInputValue(term);
+    setIsPopoverOpen(true);
 
     if (term.trim() !== '') {
       const request: SearchReferenceRequestInput = {
@@ -64,11 +61,6 @@ const CustomerReferenceSearch = <
         pageSize: 10,
       };
       const customerReferences = await searchCustomerReferences(request);
-
-      if (references.length !== customerReferences.references.length) {
-        setHighlightedIndex(0); // Reset the highlighted index when the input changes
-      }
-
       setReferences(customerReferences.references);
     } else {
       setReferences([]);
@@ -76,17 +68,15 @@ const CustomerReferenceSearch = <
   };
 
   const handlerReferenceSelected = (reference: ReferenceResponse) => {
-    if (reference) {
-      setInputValue(reference.displayName);
-      selectedDisplayNameRef.current = reference.displayName;
-      const referenceObject = {
-        id: reference.id.toString(),
-        referenceType: reference.referenceType,
-      };
-      field.onChange(referenceObject);
-      setReferences([]);
-      setIsPopoverOpen(false);
-    }
+    setInputValue(reference.displayName);
+    const referenceObject = {
+      id: reference.id.toString(),
+      displayName: reference.displayName, // Ensure displayName is stored
+      referenceType: reference.referenceType,
+    };
+    field.onChange(referenceObject);
+    setReferences([]);
+    setIsPopoverOpen(false);
   };
 
   const handleInputFocus = () => {
@@ -99,30 +89,19 @@ const CustomerReferenceSearch = <
   const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (!popoverContentRef.current?.contains(e.relatedTarget)) {
       setIsPopoverOpen(false);
-
-      if (field.value === null) {
-        setInputValue('');
-      }
       setLabelFloat(false);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Arrow down
     if (e.key === 'ArrowDown') {
-      e.preventDefault(); // Prevent the cursor from moving
-      setHighlightedIndex((prevIndex) =>
-        Math.min(prevIndex + 1, references.length - 1),
-      );
-    }
-    // Arrow up
-    else if (e.key === 'ArrowUp') {
-      e.preventDefault(); // Prevent the cursor from moving
+      e.preventDefault();
+      setHighlightedIndex((prevIndex) => Math.min(prevIndex + 1, references.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
       setHighlightedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    }
-    // Enter
-    else if (e.key === 'Enter' && highlightedIndex >= 0) {
-      e.preventDefault(); // Prevent form submission
+    } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+      e.preventDefault();
       handlerReferenceSelected(references[highlightedIndex]);
     }
   };
@@ -131,15 +110,8 @@ const CustomerReferenceSearch = <
 
   return (
     <div className='relative border-b-2 border-gray-300 font-roboto focus-within:border-primary'>
-      <Popover
-        open={isPopoverOpen && references.length > 0}
-        onOpenChange={setIsPopoverOpen}
-      >
-        <PopoverTrigger
-          onClick={(e) => e.preventDefault()}
-          asChild
-          className='rounded-none'
-        >
+      <Popover open={isPopoverOpen && references.length > 0} onOpenChange={setIsPopoverOpen}>
+        <PopoverTrigger onClick={(e) => e.preventDefault()} asChild className='rounded-none'>
           <Command>
             <input
               {...field}
@@ -155,35 +127,19 @@ const CustomerReferenceSearch = <
             />
           </Command>
         </PopoverTrigger>
-        <label
-          htmlFor={inputId}
-          className={`absolute transition-all duration-200 ease-in-out ${
+        <label htmlFor={inputId} className={`absolute transition-all duration-200 ease-in-out ${
             labelFloat || inputValue
               ? 'left-3 top-[-0.7rem] text-xs font-semibold text-primary'
               : 'left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500'
-          }`}
-        >
+          }`}>
           {placeholder}
         </label>
-        <PopoverContent
-          ref={popoverContentRef}
-          className='z-50 mt-1 flex w-screen max-w-md flex-col rounded-md bg-white shadow-md'
-          side='bottom'
-          align='start'
-          onOpenAutoFocus={(e) => e.preventDefault()}
-        >
+        <PopoverContent ref={popoverContentRef} className='z-50 mt-1 flex w-screen max-w-md flex-col rounded-md bg-white shadow-md' side='bottom' align='start' onOpenAutoFocus={(e) => e.preventDefault()}>
           <Command>
             <CommandList>
               <CommandGroup>
                 {references.map((reference, index) => (
-                  <CommandItem
-                    key={reference.id}
-                    highlighted={highlightedIndex === index}
-                    onMouseEnter={() => setHighlightedIndex(index)}
-                    onSelect={() => {
-                      handlerReferenceSelected(reference);
-                    }}
-                  >
+                  <CommandItem key={reference.id} highlighted={highlightedIndex === index} onMouseEnter={() => setHighlightedIndex(index)} onSelect={() => handlerReferenceSelected(reference)}>
                     {reference.displayName}
                   </CommandItem>
                 ))}
