@@ -306,7 +306,8 @@ const AddCustomerModal: React.FC<ModalProps> = ({
     if (currentStep < TOTAL_STEPS) {
       const isFormValid = await form.trigger();
       const { errors } = form.formState;
-      const criticalFields = ['companyName', 'multiValidation'];
+      const criticalFields = ['companyName', 'multiValidation', 'phoneNumbers'];
+      console.log('errors', errors);
       const hasCriticalErrors = criticalFields.some((fieldName) => errors[fieldName]);
       if (isFormValid || !hasCriticalErrors) {
         setCurrentStep((prevStep) => prevStep + 1);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import {
   FormControl,
@@ -31,9 +31,19 @@ type CustomerTypeFormProps = {
 };
 
 const CustomerTypeForm: React.FC<CustomerTypeFormProps> = ({ form }) => {
-  const { watch, control } = form;
+  const { watch, control, setValue } = form;
   const customerType = watch('customerType');
-  const hiddenCompanyTypes = ['', 'Home Owner', 'Tenant', 'Landlord'];
+  const hiddenCompanyTypes = ['Empty', 'Home Owner', 'Tenant', 'Landlord', ''];
+
+  // Use useEffect to watch for changes in customerType
+  useEffect(() => {
+    // Check if the current customerType is in the list of hiddenCompanyTypes
+    if (hiddenCompanyTypes.includes(customerType)) {
+      // Reset company name and useCompanyName checkbox values
+      setValue('companyName', '');
+      setValue('useCompanyName', false);
+    }
+  }, [customerType, setValue, hiddenCompanyTypes]);
 
   return (
     <>
