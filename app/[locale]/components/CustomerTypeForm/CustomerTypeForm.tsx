@@ -1,6 +1,11 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
 import SelectWithInputForm from '../SelectWithInputForm/SelectWithInputForm';
 import { AddCustomerFormRequest } from '../../types/sharedTypes';
 import { AuthInputWithIcon } from '../../ui/auth/AuthInputWithIcon/AuthInputWithIcon';
@@ -47,7 +52,7 @@ const CustomerTypeForm: React.FC<CustomerTypeFormProps> = ({ form }) => {
           </FormItem>
         )}
       />
-    {!hiddenCompanyTypes.includes(customerType ?? '') && (
+      {!hiddenCompanyTypes.includes(customerType ?? '') && (
         <>
           <FormField
             control={control}
@@ -64,7 +69,7 @@ const CustomerTypeForm: React.FC<CustomerTypeFormProps> = ({ form }) => {
               </FormItem>
             )}
           />
-          <div className='mt-1 pl-4'>
+          <div className='mt-0 pl-4' style={{ marginTop: 6 }}>
             <FormField
               control={control}
               name='useCompanyName'

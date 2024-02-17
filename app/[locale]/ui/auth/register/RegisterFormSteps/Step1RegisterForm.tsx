@@ -2,9 +2,7 @@ import React from 'react';
 import { Control } from 'react-hook-form';
 import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import { RegisterRequest } from '@/app/[locale]/types/sharedTypes';
-import {
-  AuthInputWithIcon,
-} from '../../AuthInputWithIcon/AuthInputWithIcon';
+import { AuthInputWithIcon } from '../../AuthInputWithIcon/AuthInputWithIcon';
 
 const Step1RegisterForm = ({
   control,

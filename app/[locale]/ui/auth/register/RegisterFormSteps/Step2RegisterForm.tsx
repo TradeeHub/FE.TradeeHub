@@ -3,9 +3,7 @@ import React from 'react';
 import { RegisterRequest, UserPlace } from '@/app/[locale]/types/sharedTypes';
 import { Control } from 'react-hook-form';
 import AddressAutocomplete from '../../../general/AddressAutocomplete/AddressAutocomplete';
-import {
-  AuthInputWithIcon,
-} from '../../AuthInputWithIcon/AuthInputWithIcon';
+import { AuthInputWithIcon } from '../../AuthInputWithIcon/AuthInputWithIcon';
 
 const Step2RegisterForm = ({
   control,

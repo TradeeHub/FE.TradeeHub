@@ -167,7 +167,7 @@ const CustomerReferenceSearch = <
         </label>
         <PopoverContent
           ref={popoverContentRef}
-          className='z-50 mt-1 flex w-screen max-w-md flex-col overflow-auto rounded-md bg-white shadow-md'
+          className='z-50 mt-1 flex w-screen max-w-md flex-col rounded-md bg-white shadow-md'
           side='bottom'
           align='start'
           onOpenAutoFocus={(e) => e.preventDefault()}

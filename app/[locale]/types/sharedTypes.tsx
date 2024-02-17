@@ -146,6 +146,7 @@ export type AddCustomerFormRequest = {
   tags: string[];
   reference?: Reference | null; // Assuming `Reference` is already defined elsewhere
   comment?: string | null;
+  multiValidation?: string | null;
 };
 
 type Reference = {

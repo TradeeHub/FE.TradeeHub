@@ -4,8 +4,10 @@ import { UseFormReturn } from 'react-hook-form';
 import { FormField, FormControl, FormItem } from '@/components/ui/form';
 import { AddCustomerFormRequest } from '@/app/[locale]/types/sharedTypes';
 import SelectWithInputForm from '../../SelectWithInputForm/SelectWithInputForm';
-import { AuthInputWithIcon } from '@/app/[locale]/ui/auth/AuthInputWithIcon/AuthInputWithIcon';
-
+import {
+  AuthInputWithIcon,
+  StyledFormMessage,
+} from '@/app/[locale]/ui/auth/AuthInputWithIcon/AuthInputWithIcon';
 
 const titleOptions = [
   { label: 'No Title', value: 'Empty' },
@@ -21,7 +23,9 @@ type CustomerIdentityFormProps = {
   form: UseFormReturn<AddCustomerFormRequest>;
 };
 
-const CustomerIdentityForm: React.FC<CustomerIdentityFormProps> = ({ form }) => {
+const CustomerIdentityForm: React.FC<CustomerIdentityFormProps> = ({
+  form,
+}) => {
   return (
     <>
       <div className='w-1/4 pr-2'>
@@ -41,7 +45,7 @@ const CustomerIdentityForm: React.FC<CustomerIdentityFormProps> = ({ form }) => 
           )}
         />
       </div>
-      <div className='flex flex-wrap items-center gap-4'>
+      <div className='pd-2 flex flex-wrap items-center gap-4'>
         <div className='flex-1'>
           <FormField
             control={form.control}
@@ -93,6 +97,16 @@ const CustomerIdentityForm: React.FC<CustomerIdentityFormProps> = ({ form }) => 
             )}
           />
         </div>
+      </div>
+      {/* Move multiValidation below the flex container */}
+      <div style={{ marginTop: 6 }}>
+        {' '}
+        {/* Adjust marginTop as needed for layout */}
+        <FormField
+          control={form.control}
+          name='multiValidation'
+          render={() => <StyledFormMessage />}
+        />
       </div>
     </>
   );

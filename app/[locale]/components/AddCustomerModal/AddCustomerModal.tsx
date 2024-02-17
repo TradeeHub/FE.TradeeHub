@@ -7,19 +7,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import React, { useEffect, useState } from 'react';
 import { z } from 'zod';
 
-import {
-  UseFormReturn,
-  useForm,
-} from 'react-hook-form';
+import { UseFormReturn, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AddCustomerFormRequest } from '../../types/sharedTypes';
 import TagsInput from '../TagsInput/TagsInput';
@@ -41,6 +33,7 @@ import MultiEmail from './MultiEmail/MultiEmail';
 import MultiProperty from './MultiProperty/MultiProperty';
 import CustomerIdentityForm from './CustomerIdentityForm/CustomerIdentityForm';
 import CustomerTypeForm from '../CustomerTypeForm/CustomerTypeForm';
+import { IoArrowBack } from 'react-icons/io5';
 
 type ModalProps = {
   isOpen: boolean;
@@ -309,97 +302,142 @@ const AddCustomerModal: React.FC<ModalProps> = ({
     }
   }, [addNewCustomerResponse]);
 
-  return (
-    <>
-      <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className='w-full max-w-2xl font-roboto'>
-          <DialogHeader className='flex items-center justify-center'>
-            {' '}
-            <DialogTitle className='text-center'>{modalName}</DialogTitle>{' '}
-          </DialogHeader>
-          <ProgressBar
-            totalSteps={TOTAL_STEPS}
-            currentStep={currentStep}
-            labels={['Details', ' Additional Info']}
-          />
+  const onContinue = async () => {
+    if (currentStep < TOTAL_STEPS) {
+      if (currentStep === 1) {
+        const isFormValid = await form.trigger();
+        if (isFormValid) {
+          setCurrentStep((prevStep) => prevStep + 1);
+        }
+      }
+    }
+  };
 
-          <Form {...form}>
-            <form className='space-y-6'>
-        
-              <CustomerIdentityForm form={form as UseFormReturn<AddCustomerFormRequest>} />
+  const goBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
 
-              <CustomerTypeForm form={form as UseFormReturn<AddCustomerFormRequest>} />
+return (
+  <>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className='w-full max-w-2xl font-roboto'>
+        <DialogHeader className='relative flex items-center justify-center'>
+          {currentStep > 1 && (
+            <button
+              onClick={goBack}
+              className='absolute left-0 text-primary focus:outline-none dark:text-accent'
+              aria-label='Go back'
+            >
+              <IoArrowBack size={24} />
+            </button>
+          )}
 
-              <MultiPhoneNumber
-                form={form as UseFormReturn<AddCustomerFormRequest>}
-              />
-              <MultiEmail
-                form={form as UseFormReturn<AddCustomerFormRequest>}
-              />
+          <div className='inline-block w-full'>
+            <DialogTitle className='text-center'>{modalName}</DialogTitle>
+          </div>
 
-              <MultiProperty
-                form={form as UseFormReturn<AddCustomerFormRequest>}
-              />
+          {/* Placeholder for symmetry. It's hidden but maintains the space. */}
+          <div className='absolute right-4 opacity-0'>
+            <IoArrowBack size={24} />
+          </div>
+        </DialogHeader>
 
-              <div className='pt-2'>
-                <FormField
-                  control={form.control}
-                  name='tags'
-                  render={({ field }) => (
-                    <TagsInput
-                      field={field}
-                      placeholder='Tags' // Optional: customize the placeholder text
-                    />
-                  )}
+        <ProgressBar
+          totalSteps={TOTAL_STEPS}
+          currentStep={currentStep}
+          labels={['Details', ' Additional Info']}
+        />
+
+        <Form {...form}>
+          <form className='space-y-8'> {/* Increased vertical spacing */}
+            {currentStep === 1 && (
+              <>
+                <CustomerIdentityForm
+                  form={form as UseFormReturn<AddCustomerFormRequest>}
                 />
-              </div>
 
-              <div className='pt-2'>
-                <FormField
-                  control={form.control}
-                  name='reference'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <CustomerReferenceSearch
-                          field={field}
-                          placeholder='Reference'
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
+                <CustomerTypeForm
+                  form={form as UseFormReturn<AddCustomerFormRequest>}
                 />
-              </div>
 
-              <div className='pt-2'>
-                <FormField
-                  control={form.control}
-                  name='comment'
-                  render={({ field }) => (
-                    <CommentSection
-                      field={field}
-                      placeholder='Add an internal comment' // Optional: customize the placeholder text
-                    />
-                  )}
-                />{' '}
-              </div>
-            </form>
-          </Form>
-          <DialogFooter className='sm:justify-end'>
-            <DialogClose asChild>
-              <Button
-                type='button'
-                variant='outline'
-                onClick={handleClose}
-                disabled={addNewCustomerLoading}
-              >
-                Close
-              </Button>
-            </DialogClose>
-             { currentStep === 1 && (    <Button
+                <MultiPhoneNumber
+                  form={form as UseFormReturn<AddCustomerFormRequest>}
+                />
+
+                <MultiProperty
+                  form={form as UseFormReturn<AddCustomerFormRequest>}
+                />
+              </>
+            )}
+            {currentStep === 2 && (
+              <>
+                <div className='pt-4'>
+                  <FormField
+                    control={form.control}
+                    name='tags'
+                    render={({ field }) => (
+                      <TagsInput
+                        field={field}
+                        placeholder='Tags' // Optional: customize the placeholder text
+                      />
+                    )}
+                  />
+                </div>
+                <MultiEmail
+                  form={form as UseFormReturn<AddCustomerFormRequest>}
+                />
+
+                <div className='pt-2'> {/* Increased top padding */}
+                  <FormField
+                    control={form.control}
+                    name='reference'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <CustomerReferenceSearch
+                            field={field}
+                            placeholder='Reference'
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className='pt-2'> {/* Increased top padding */}
+                  <FormField
+                    control={form.control}
+                    name='comment'
+                    render={({ field }) => (
+                      <CommentSection
+                        field={field}
+                        placeholder='Add an internal comment' // Optional: customize the placeholder text
+                      />
+                    )}
+                  />
+                </div>
+              </>
+            )}
+          </form>
+        </Form>
+        <DialogFooter className='sm:justify-end'>
+          <DialogClose asChild>
+            <Button
+              type='button'
+              variant='outline'
+              onClick={handleClose}
+              disabled={addNewCustomerLoading}
+            >
+              Close
+            </Button>
+          </DialogClose>
+          {currentStep === 1 && (
+            <Button
               type='button'
               variant='default'
-              onClick={()=> setCurrentStep((prev) => prev + 1)}
+              onClick={onContinue}
               disabled={addNewCustomerLoading}
             >
               {addNewCustomerLoading ? (
@@ -411,8 +449,9 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                 'Continue'
               )}
             </Button>
-            )}
-            { currentStep === 2 && (    <Button
+          )}
+          {currentStep === 2 && (
+            <Button
               type='button'
               variant='default'
               onClick={form.handleSubmit(handleAddCustomer)}
@@ -427,13 +466,13 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                 'Add'
               )}
             </Button>
-            )}
-         
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  </>
+);
+
 };
 
 export default AddCustomerModal;

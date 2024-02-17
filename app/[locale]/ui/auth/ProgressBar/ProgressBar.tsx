@@ -11,7 +11,7 @@ const ProgressBar = ({
     <div style={{ marginTop: 14 }}>
       <div className='flex w-full justify-between' style={{ marginBottom: 4 }}>
         {labels.map((label, index) => (
-          <div key={index} className='flex-1 text-center text-xs'>
+          <div key={index} className='flex-1 text-center text-xs font-bold'>
             {label}
           </div>
         ))}
