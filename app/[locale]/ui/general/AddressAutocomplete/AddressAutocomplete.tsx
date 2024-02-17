@@ -101,11 +101,11 @@ const AddressAutocomplete = <
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState<string>('');
   const [suggestions, setSuggestions] = useState<AutocompletePrediction[]>([]);
-  const autocompleteServiceRef =
-    useRef<google.maps.places.AutocompleteService | null>(null);
+  const autocompleteServiceRef = useRef<google.maps.places.AutocompleteService | null>(null);
   const popoverContentRef = useRef<HTMLDivElement>(null);
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY;
   const hasMadeSelection = useRef<boolean>(false);
+  const sessionTokenRef = useRef<google.maps.places.AutocompleteSessionToken | undefined>(undefined);
 
   const fetchPredictions = debounce((input) => {
     if (input && autocompleteServiceRef.current) {
@@ -119,6 +119,7 @@ const AddressAutocomplete = <
           location: user ? location : undefined,
           radius: user ? 48280 : undefined,
           types: ['address'],
+          sessionToken: sessionTokenRef.current,
         },
         (predictions, status) => {
           if (
@@ -154,6 +155,7 @@ const AddressAutocomplete = <
         placesService.getDetails(
           {
             placeId: location.place_id,
+            sessionToken: sessionTokenRef.current, // Reuse the same session token
             fields: [
               'geometry',
               'formatted_address',
@@ -168,6 +170,7 @@ const AddressAutocomplete = <
               setSuggestions([]);
               setInputValue(place.formatted_address || '');
               setHighlightedIndex(0);
+              sessionTokenRef.current = undefined; // Clear the session token
             } else {
               console.error('Error getting details:', status);
             }
@@ -202,8 +205,7 @@ const AddressAutocomplete = <
     });
 
     loader.load().then(() => {
-      autocompleteServiceRef.current =
-        new google.maps.places.AutocompleteService();
+      autocompleteServiceRef.current = new google.maps.places.AutocompleteService();
     });
 
     if (field?.value?.Address) {
@@ -216,7 +218,10 @@ const AddressAutocomplete = <
 
   const handleInputFocus = () => {
     setLabelFloat(true);
-    // You may need additional logic here to handle the popover or other actions on focus
+    if(sessionTokenRef.current === undefined){
+      sessionTokenRef.current = new google.maps.places.AutocompleteSessionToken();
+    }
+    console.log('sessionTokenRef.current', sessionTokenRef.current);
   };
   const handleInputBlur = () => {
     setLabelFloat(!!inputValue);
