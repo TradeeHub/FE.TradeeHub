@@ -77,7 +77,7 @@ const gridColumnDef: ColDef[] = [
     field: 'phoneNumbers',
     cellRenderer: (params: { value: PhoneNumberEntity[] }) => {
       const phoneNumbers = params?.value?.map((x) => x?.phoneNumber);
-      return phoneNumbers && phoneNumbers[0].length > 0 ? (
+      return phoneNumbers && phoneNumbers[0]?.length > 0 ? (
         <ArrayDataPopover items={phoneNumbers} />
       ) : (
         ''
