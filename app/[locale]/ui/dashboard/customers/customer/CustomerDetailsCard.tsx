@@ -52,7 +52,7 @@ const CustomerDetailsCard = ({ customer }: { customer: CustomerEntity }) => {
 
   return (
     <>
-      <Card className='h-[370px] w-[480px]'>
+      <Card className={customer.useCompanyName ? `h-[390px] w-[480px]` : `h-[360px] w-[480px]`}>
         <CardHeader className='pb-0'>
           <CardTitle className='border-b border-gray-800/10 pb-2'>
             {' '}
@@ -209,6 +209,11 @@ const AdditionalInfoTab = ({ customer }: { customer: CustomerEntity }) => {
     <div className='grid grid-cols-[auto,1fr] gap-x-4 gap-y-2'>
       <dt className='text-sm font-medium'>Type:</dt>
       <dd className='text-sm'>{customer?.customerType}</dd>
+
+      {customer?.companyName && (<>
+      <dt className='text-sm font-medium'>Company Name:</dt>
+      <dd className='text-sm'>{customer?.companyName}</dd>
+      </>)}
 
       <dt className='text-sm font-medium'>Title:</dt>
       <dd className='text-sm'>{customer?.title}</dd>

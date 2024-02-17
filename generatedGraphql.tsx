@@ -45,12 +45,6 @@ export type AddNewCustomerRequestInput = {
   useCompanyName: Scalars['Boolean']['input'];
 };
 
-export type AddNewCustomerResponse = {
-  __typename?: 'AddNewCustomerResponse';
-  customerReferenceNumber: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-};
-
 export type AddNewExternalReferenceRequestInput = {
   companyName?: InputMaybe<Scalars['String']['input']>;
   compensation?: InputMaybe<CompensationDetailsRequestInput>;
@@ -682,7 +676,7 @@ export type LogoutResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addNewCustomer: AddNewCustomerResponse;
+  addNewCustomer: CustomerEntity;
   addNewExternalReference: AddNewExternalReferenceResponse;
   changePassword: ConfirmForgotPasswordResponse;
   confirmAccount: AccountConfirmationResponse;
@@ -1412,7 +1406,7 @@ export type AddNewCustomerMutationVariables = Exact<{
 }>;
 
 
-export type AddNewCustomerMutation = { __typename?: 'Mutation', addNewCustomer: { __typename?: 'AddNewCustomerResponse', id: string, customerReferenceNumber: string } };
+export type AddNewCustomerMutation = { __typename?: 'Mutation', addNewCustomer: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null } };
 
 export type CustomerQueryVariables = Exact<{
   id: Scalars['ID']['input'];
