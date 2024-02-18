@@ -20,7 +20,7 @@ const ProgressBar = ({
         {[...Array(totalSteps)].map((_, index) => (
           <div
             key={index}
-            className={`mx-1 h-2 rounded ${index < currentStep ? 'bg-primary' : 'bg-gray-300'}`}
+            className={`mx-1 h-1.5 rounded ${index < currentStep ? 'bg-primary' : 'bg-gray-300'}`}
             style={{ flex: 1 }}
           ></div>
         ))}

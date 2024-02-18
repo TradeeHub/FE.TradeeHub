@@ -54,11 +54,7 @@ const CustomerDetailsCard = ({ customer }: { customer: CustomerEntity }) => {
   return (
     <>
       <Card
-        className={
-          customer.useCompanyName
-            ? `h-[390px] w-[480px]`
-            : `h-[360px] w-[480px]`
-        }
+        className={ `h-[390px] w-[480px]`}
       >
         <CardHeader className='pb-0'>
           <CardTitle className='border-b border-gray-800/10 pb-2'>
@@ -90,7 +86,7 @@ const CustomerDetailsCard = ({ customer }: { customer: CustomerEntity }) => {
             </div>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+<CardContent className='max-h-[calc(100%-75px)] overflow-auto'>
           <Tabs defaultValue='details'>
             <TabsList className='flex w-full items-center justify-between px-0'>
               <TabsTrigger value='details'>Contact Details</TabsTrigger>
