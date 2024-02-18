@@ -308,7 +308,9 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       const { errors } = form.formState;
       const criticalFields = ['companyName', 'multiValidation', 'phoneNumbers'];
       console.log('errors', errors);
-      const hasCriticalErrors = criticalFields.some((fieldName) => errors[fieldName]);
+      const hasCriticalErrors = criticalFields.some(
+        (fieldName) => errors[fieldName],
+      );
       if (isFormValid || !hasCriticalErrors) {
         setCurrentStep((prevStep) => prevStep + 1);
       }
@@ -321,160 +323,165 @@ const AddCustomerModal: React.FC<ModalProps> = ({
     }
   };
 
-return (
-  <>
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className='w-full max-w-2xl font-roboto'>
-        <DialogHeader className='relative flex items-center justify-center'>
-          {currentStep > 1 && (
-            <button
-              onClick={goBack}
-              className='absolute left-0 text-primary focus:outline-none dark:text-accent'
-              aria-label='Go back'
-            >
+  return (
+    <>
+      <Dialog open={isOpen} onOpenChange={handleClose}>
+        <DialogContent className='w-full max-w-2xl font-roboto'>
+          <DialogHeader className='relative flex items-center justify-center'>
+            {currentStep > 1 && (
+              <button
+                onClick={goBack}
+                className='absolute left-0 text-primary focus:outline-none dark:text-accent'
+                aria-label='Go back'
+              >
+                <IoArrowBack size={24} />
+              </button>
+            )}
+
+            <div className='inline-block w-full'>
+              <DialogTitle className='text-center'>{modalName}</DialogTitle>
+            </div>
+
+            {/* Placeholder for symmetry. It's hidden but maintains the space. */}
+            <div className='absolute right-4 opacity-0'>
               <IoArrowBack size={24} />
-            </button>
-          )}
+            </div>
+          </DialogHeader>
 
-          <div className='inline-block w-full'>
-            <DialogTitle className='text-center'>{modalName}</DialogTitle>
-          </div>
+          <ProgressBar
+            totalSteps={TOTAL_STEPS}
+            currentStep={currentStep}
+            labels={['Details', ' Additional Info']}
+          />
 
-          {/* Placeholder for symmetry. It's hidden but maintains the space. */}
-          <div className='absolute right-4 opacity-0'>
-            <IoArrowBack size={24} />
-          </div>
-        </DialogHeader>
+          <Form {...form}>
+            <form className='space-y-8'>
+              {' '}
+              {/* Increased vertical spacing */}
+              {currentStep === 1 && (
+                <>
+                  <CustomerIdentityForm
+                    form={form as UseFormReturn<AddCustomerFormRequest>}
+                  />
 
-        <ProgressBar
-          totalSteps={TOTAL_STEPS}
-          currentStep={currentStep}
-          labels={['Details', ' Additional Info']}
-        />
+                  <CustomerTypeForm
+                    form={form as UseFormReturn<AddCustomerFormRequest>}
+                  />
 
-        <Form {...form}>
-          <form className='space-y-8'> {/* Increased vertical spacing */}
+                  <MultiPhoneNumber
+                    form={form as UseFormReturn<AddCustomerFormRequest>}
+                  />
+
+                  <MultiProperty
+                    form={form as UseFormReturn<AddCustomerFormRequest>}
+                  />
+                </>
+              )}
+              {currentStep === 2 && (
+                <>
+                  <div className='pt-4'>
+                    <FormField
+                      control={form.control}
+                      name='tags'
+                      render={({ field }) => (
+                        <TagsInput
+                          field={field}
+                          placeholder='Tags' // Optional: customize the placeholder text
+                        />
+                      )}
+                    />
+                  </div>
+                  <MultiEmail
+                    form={form as UseFormReturn<AddCustomerFormRequest>}
+                  />
+
+                  <div className='pt-2'>
+                    {' '}
+                    {/* Increased top padding */}
+                    <FormField
+                      control={form.control}
+                      name='reference'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <CustomerReferenceSearch
+                              field={field}
+                              placeholder='Reference'
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className='pt-2'>
+                    {' '}
+                    {/* Increased top padding */}
+                    <FormField
+                      control={form.control}
+                      name='comment'
+                      render={({ field }) => (
+                        <CommentSection
+                          field={field}
+                          placeholder='Add an internal comment' // Optional: customize the placeholder text
+                        />
+                      )}
+                    />
+                  </div>
+                </>
+              )}
+            </form>
+          </Form>
+          <DialogFooter className='sm:justify-end'>
+            <DialogClose asChild>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={handleClose}
+                disabled={addNewCustomerLoading}
+              >
+                Close
+              </Button>
+            </DialogClose>
             {currentStep === 1 && (
-              <>
-                <CustomerIdentityForm
-                  form={form as UseFormReturn<AddCustomerFormRequest>}
-                />
-
-                <CustomerTypeForm
-                  form={form as UseFormReturn<AddCustomerFormRequest>}
-                />
-
-                <MultiPhoneNumber
-                  form={form as UseFormReturn<AddCustomerFormRequest>}
-                />
-
-                <MultiProperty
-                  form={form as UseFormReturn<AddCustomerFormRequest>}
-                />
-              </>
+              <Button
+                type='button'
+                variant='default'
+                onClick={onContinue}
+                disabled={addNewCustomerLoading}
+              >
+                {addNewCustomerLoading ? (
+                  <>
+                    <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+                    Adding...
+                  </>
+                ) : (
+                  'Continue'
+                )}
+              </Button>
             )}
             {currentStep === 2 && (
-              <>
-                <div className='pt-4'>
-                  <FormField
-                    control={form.control}
-                    name='tags'
-                    render={({ field }) => (
-                      <TagsInput
-                        field={field}
-                        placeholder='Tags' // Optional: customize the placeholder text
-                      />
-                    )}
-                  />
-                </div>
-                <MultiEmail
-                  form={form as UseFormReturn<AddCustomerFormRequest>}
-                />
-
-                <div className='pt-2'> {/* Increased top padding */}
-                  <FormField
-                    control={form.control}
-                    name='reference'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <CustomerReferenceSearch
-                            field={field}
-                            placeholder='Reference'
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className='pt-2'> {/* Increased top padding */}
-                  <FormField
-                    control={form.control}
-                    name='comment'
-                    render={({ field }) => (
-                      <CommentSection
-                        field={field}
-                        placeholder='Add an internal comment' // Optional: customize the placeholder text
-                      />
-                    )}
-                  />
-                </div>
-              </>
+              <Button
+                type='button'
+                variant='default'
+                onClick={form.handleSubmit(handleAddCustomer)}
+                disabled={addNewCustomerLoading}
+              >
+                {addNewCustomerLoading ? (
+                  <>
+                    <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+                    Adding...
+                  </>
+                ) : (
+                  'Add'
+                )}
+              </Button>
             )}
-          </form>
-        </Form>
-        <DialogFooter className='sm:justify-end'>
-          <DialogClose asChild>
-            <Button
-              type='button'
-              variant='outline'
-              onClick={handleClose}
-              disabled={addNewCustomerLoading}
-            >
-              Close
-            </Button>
-          </DialogClose>
-          {currentStep === 1 && (
-            <Button
-              type='button'
-              variant='default'
-              onClick={onContinue}
-              disabled={addNewCustomerLoading}
-            >
-              {addNewCustomerLoading ? (
-                <>
-                  <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
-                  Adding...
-                </>
-              ) : (
-                'Continue'
-              )}
-            </Button>
-          )}
-          {currentStep === 2 && (
-            <Button
-              type='button'
-              variant='default'
-              onClick={form.handleSubmit(handleAddCustomer)}
-              disabled={addNewCustomerLoading}
-            >
-              {addNewCustomerLoading ? (
-                <>
-                  <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
-                  Adding...
-                </>
-              ) : (
-                'Add'
-              )}
-            </Button>
-          )}
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  </>
-);
-
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 };
 
 export default AddCustomerModal;

@@ -24,6 +24,7 @@ import { usePathname } from 'next/navigation';
 import { Popover, PopoverContent } from '@/components/ui/popover';
 import { PopoverTrigger } from '@radix-ui/react-popover';
 import { CustomButton } from '@/app/[locale]/components/CustomButton/CustomButton';
+import { Transition } from '@headlessui/react';
 
 function sortProperties(properties: (PropertyEntity | null)[]) {
   return properties
@@ -52,7 +53,13 @@ const CustomerDetailsCard = ({ customer }: { customer: CustomerEntity }) => {
 
   return (
     <>
-      <Card className={customer.useCompanyName ? `h-[390px] w-[480px]` : `h-[360px] w-[480px]`}>
+      <Card
+        className={
+          customer.useCompanyName
+            ? `h-[390px] w-[480px]`
+            : `h-[360px] w-[480px]`
+        }
+      >
         <CardHeader className='pb-0'>
           <CardTitle className='border-b border-gray-800/10 pb-2'>
             {' '}
@@ -140,13 +147,90 @@ const ReferenceDetails = ({
 };
 
 const DetailsTab = ({ customer }: { customer: CustomerEntity }) => {
-  const mainPhone = customer?.phoneNumbers?.[0]?.phoneNumber || '';
+  // const mainPhone = customer?.phoneNumbers?.[0]?.phoneNumber || '';
   const recentProperty = customer?.properties?.[0] || null;
-  const mainEmail = customer?.emails?.[0]?.email || '';
+  // const mainEmail = customer?.emails?.[0]?.email || '';
 
   const modifiedAtFormatted = customer?.modifiedAt
     ? moment(customer?.modifiedAt).local().format('Do MMM YYYY HH:mm')
     : '';
+
+  const renderPhoneNumbers = () => (
+    <Popover>
+      <PopoverTrigger asChild>
+        <CustomButton variant='outline' size='sm'>
+          More Info
+        </CustomButton>
+      </PopoverTrigger>
+      <PopoverContent className='w-auto max-w-xs space-y-3 p-4'>
+        <h3 className='text-lg font-medium'>Phone Numbers</h3>
+        {customer.phoneNumbers?.map((phone, index) => (
+          <div
+            key={index}
+            className='space-y-1 rounded-md bg-gray-50 p-2 dark:bg-card'
+          >
+            <div className='grid grid-cols-[auto,1fr] gap-x-4 gap-y-2'>
+              <dt className='text-sm font-medium'>Type:</dt>
+              <dd className='text-sm'>{phone.phoneNumberType}</dd>
+              <dt className='text-sm font-medium'>Notifications:</dt>
+              <dd className='text-sm font-bold'>
+                <span
+                  className={`${phone.receiveNotifications ? 'text-green-600' : 'text-red-600'}`}
+                >
+                  {phone.receiveNotifications ? 'ON' : 'OFF'}
+                </span>
+              </dd>
+              <dt className='col-span-2'>
+                <div className='flex items-center gap-1'>
+                  <HiOutlinePhone className='h-4 w-4 text-gray-500' />
+                  <span className='text-base'>{phone.phoneNumber}</span>
+                </div>
+              </dt>
+            </div>
+          </div>
+        ))}
+      </PopoverContent>
+    </Popover>
+  );
+
+  const renderEmails = () => (
+    <Popover>
+      <PopoverTrigger asChild>
+        <CustomButton variant='outline' size='sm'>
+          More Info
+        </CustomButton>
+      </PopoverTrigger>
+      <PopoverContent className='w-auto max-w-xs space-y-3 p-4'>
+        <h3 className='text-lg font-medium'>Email Addresses</h3>
+        {customer.emails?.map((email, index) => (
+          <div
+            key={index}
+            className='space-y-1 rounded-md bg-gray-50 p-2 dark:bg-card'
+          >
+            <div className='grid grid-cols-[auto,1fr] gap-x-4 gap-y-2'>
+              <dt className='text-sm font-medium'>Type:</dt>
+              <dd className='text-sm'>{email.emailType}</dd>
+              <dt className='text-sm font-medium'>Notifications:</dt>
+              <dd className='text-sm font-bold'>
+                <span
+                  className={`${email.receiveNotifications ? 'text-green-600' : 'text-red-600'}`}
+                >
+                  {email.receiveNotifications ? 'ON' : 'OFF'}
+                </span>
+              </dd>
+              <dt className='col-span-2'>
+                <div className='flex items-center gap-1'>
+                  <AiOutlineMail className='h-4 w-4 text-gray-500' />
+                  <span className='text-base'>{email.email}</span>
+                </div>
+              </dt>
+            </div>
+          </div>
+        ))}
+      </PopoverContent>
+    </Popover>
+  );
+
   const plForDd = 'pl-4';
   return (
     <>
@@ -164,14 +248,23 @@ const DetailsTab = ({ customer }: { customer: CustomerEntity }) => {
           aria-hidden='true'
         />
         <dt className='text-sm font-medium'>Phone:</dt>
-        <dd className={`text-sm ${plForDd}`}>{mainPhone}</dd>
+        <dd className={`text-sm ${plForDd}`}>
+          {customer.phoneNumbers?.[0]?.phoneNumber || 'N/A'}
+          {customer.phoneNumbers &&
+            customer.phoneNumbers.length > 0 &&
+            renderPhoneNumbers()}
+        </dd>
 
         <AiOutlineMail
           className='mr-2 h-5 w-5 justify-self-end text-gray-600'
           aria-hidden='true'
         />
         <dt className='text-sm font-medium'>Email:</dt>
-        <dd className={`text-sm ${plForDd}`}>{mainEmail}</dd>
+        <dd className={`text-sm ${plForDd}`}>
+          {customer.emails?.[0]?.email || 'N/A'}
+          
+          {customer.emails && customer.emails.length > 0 && renderEmails()}
+        </dd>
 
         <FaPeoplePulling
           className='mr-2 h-5 w-5 justify-self-end text-gray-600'
@@ -210,10 +303,12 @@ const AdditionalInfoTab = ({ customer }: { customer: CustomerEntity }) => {
       <dt className='text-sm font-medium'>Type:</dt>
       <dd className='text-sm'>{customer?.customerType}</dd>
 
-      {customer?.companyName && (<>
-      <dt className='text-sm font-medium'>Company Name:</dt>
-      <dd className='text-sm'>{customer?.companyName}</dd>
-      </>)}
+      {customer?.companyName && (
+        <>
+          <dt className='text-sm font-medium'>Company Name:</dt>
+          <dd className='text-sm'>{customer?.companyName}</dd>
+        </>
+      )}
 
       <dt className='text-sm font-medium'>Title:</dt>
       <dd className='text-sm'>{customer?.title}</dd>
@@ -305,12 +400,14 @@ const AdditionalPropertyInfo = ({ property }: { property: PropertyEntity }) => {
         <div className='space-y-4'>
           <div>
             <h3 className='text-lg font-semibold'>Billing Address</h3>
-            <p className='text-sm'>{property.billing?.address}</p>
+            <p className='space-y-1 rounded-md bg-gray-50 p-2 text-sm dark:bg-card'>
+              {property.billing?.address}
+            </p>
           </div>
           <h3 className='text-lg font-semibold'>Property Info</h3>
 
           <div
-            className='grid grid-cols-[auto,1fr] gap-x-4 gap-y-2'
+            className='grid grid-cols-[auto,1fr] gap-x-4 gap-y-2 space-y-1 rounded-md bg-gray-50 p-2 dark:bg-card'
             style={{ marginTop: 0 }}
           >
             <dt className='text-sm font-medium'>Created:</dt>

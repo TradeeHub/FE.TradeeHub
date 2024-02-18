@@ -44,13 +44,15 @@ const SelectWithInputForm = <
 }: SelectWithInputFormProps<TFieldValues, TFieldName>) => {
   // Determine if the current value is a custom value not found in the options
   const initialValue = form.getValues(field.name);
-  const isInitialValueCustom = initialValue && !options.some(option => option.value === initialValue);
+  const isInitialValueCustom =
+    initialValue && !options.some((option) => option.value === initialValue);
   const [isEditable, setIsEditable] = useState(isInitialValueCustom);
 
   useEffect(() => {
     // This effect now also updates `isEditable` based on the current value
     const currentValue = form.getValues(field.name);
-    const isCustomValue = currentValue && !options.some(option => option.value === currentValue);
+    const isCustomValue =
+      currentValue && !options.some((option) => option.value === currentValue);
     setIsEditable(isCustomValue);
 
     const effectiveValue = defaultValue === 'Empty' ? '' : defaultValue;

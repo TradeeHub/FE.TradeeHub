@@ -96,7 +96,9 @@ const CustomerReferenceSearch = <
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setHighlightedIndex((prevIndex) => Math.min(prevIndex + 1, references.length - 1));
+      setHighlightedIndex((prevIndex) =>
+        Math.min(prevIndex + 1, references.length - 1),
+      );
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setHighlightedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
@@ -110,8 +112,15 @@ const CustomerReferenceSearch = <
 
   return (
     <div className='relative border-b-2 border-gray-300 font-roboto focus-within:border-primary'>
-      <Popover open={isPopoverOpen && references.length > 0} onOpenChange={setIsPopoverOpen}>
-        <PopoverTrigger onClick={(e) => e.preventDefault()} asChild className='rounded-none'>
+      <Popover
+        open={isPopoverOpen && references.length > 0}
+        onOpenChange={setIsPopoverOpen}
+      >
+        <PopoverTrigger
+          onClick={(e) => e.preventDefault()}
+          asChild
+          className='rounded-none'
+        >
           <Command>
             <input
               {...field}
@@ -127,19 +136,33 @@ const CustomerReferenceSearch = <
             />
           </Command>
         </PopoverTrigger>
-        <label htmlFor={inputId} className={`absolute transition-all duration-200 ease-in-out ${
+        <label
+          htmlFor={inputId}
+          className={`absolute transition-all duration-200 ease-in-out ${
             labelFloat || inputValue
               ? 'left-3 top-[-0.7rem] text-xs font-semibold text-primary'
               : 'left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500'
-          }`}>
+          }`}
+        >
           {placeholder}
         </label>
-        <PopoverContent ref={popoverContentRef} className='z-50 mt-1 flex w-screen max-w-md flex-col rounded-md bg-white shadow-md' side='bottom' align='start' onOpenAutoFocus={(e) => e.preventDefault()}>
+        <PopoverContent
+          ref={popoverContentRef}
+          className='z-50 mt-1 flex w-screen max-w-md flex-col rounded-md bg-white shadow-md'
+          side='bottom'
+          align='start'
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
           <Command>
             <CommandList>
               <CommandGroup>
                 {references.map((reference, index) => (
-                  <CommandItem key={reference.id} highlighted={highlightedIndex === index} onMouseEnter={() => setHighlightedIndex(index)} onSelect={() => handlerReferenceSelected(reference)}>
+                  <CommandItem
+                    key={reference.id}
+                    highlighted={highlightedIndex === index}
+                    onMouseEnter={() => setHighlightedIndex(index)}
+                    onSelect={() => handlerReferenceSelected(reference)}
+                  >
                     {reference.displayName}
                   </CommandItem>
                 ))}

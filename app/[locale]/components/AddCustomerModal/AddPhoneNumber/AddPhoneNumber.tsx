@@ -100,7 +100,12 @@ const MultiPhoneNumber: React.FC<MultiPhoneNumberProps> = ({ form }) => {
               render={({ field }) => (
                 <SwitchWithLabel
                   checked={field.value}
-                  onCheckedChange={(checked) => form.setValue(`phoneNumbers.${index}.receiveNotifications`, checked)}
+                  onCheckedChange={(checked) =>
+                    form.setValue(
+                      `phoneNumbers.${index}.receiveNotifications`,
+                      checked,
+                    )
+                  }
                   onLabel='ON'
                   offLabel='OFF'
                   aria-label='Notifications'

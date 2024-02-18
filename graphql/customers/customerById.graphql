@@ -47,10 +47,12 @@ query customer($id: ID!) {
     emails {
       email
       emailType
+      receiveNotifications
     }
     phoneNumbers {
       phoneNumber
       phoneNumberType
+      receiveNotifications
     }
     properties {
       id
