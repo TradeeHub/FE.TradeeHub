@@ -24,7 +24,7 @@ import { usePathname } from 'next/navigation';
 import { Popover, PopoverContent } from '@/components/ui/popover';
 import { PopoverTrigger } from '@radix-ui/react-popover';
 import { CustomButton } from '@/app/[locale]/components/CustomButton/CustomButton';
-import { Transition } from '@headlessui/react';
+import { BriefcaseIcon } from '@heroicons/react/20/solid';
 
 function sortProperties(properties: (PropertyEntity | null)[]) {
   return properties
@@ -65,17 +65,25 @@ const CustomerDetailsCard = ({ customer }: { customer: CustomerEntity }) => {
             {' '}
             {/* Consistent border */}
             <div className='flex items-center gap-x-4'>
-              <UserCircleIcon
-                className='h-12 w-12 text-gray-600'
-                aria-hidden='true'
-              />
+         {customer.useCompanyName ? (
+            <BriefcaseIcon
+              className='h-12 w-12 text-gray-600'
+              aria-hidden='true'
+            />
+          ) : (
+            <UserCircleIcon
+              className='h-12 w-12 text-gray-600'
+              aria-hidden='true'
+            />
+          )}
+
               <div>
                 <h3 className='text-lg font-semibold'>
                   {customer.useCompanyName
                     ? customer?.companyName
                     : customer?.fullName}
                 </h3>
-                <span className='text-sm text-gray-500'>
+                <span className='text-sm text-secondary'>
                   {customer?.customerReferenceNumber}
                 </span>
               </div>
@@ -249,10 +257,12 @@ const DetailsTab = ({ customer }: { customer: CustomerEntity }) => {
         />
         <dt className='text-sm font-medium'>Phone:</dt>
         <dd className={`text-sm ${plForDd}`}>
-          {customer.phoneNumbers?.[0]?.phoneNumber || 'N/A'}
-          {customer.phoneNumbers &&
-            customer.phoneNumbers.length > 0 &&
-            renderPhoneNumbers()}
+          <div className='flex w-full items-center justify-between'>
+            {customer.phoneNumbers?.[0]?.phoneNumber || ''}
+            {customer.phoneNumbers &&
+              customer.phoneNumbers.length > 0 &&
+              renderPhoneNumbers()}
+          </div>
         </dd>
 
         <AiOutlineMail
@@ -261,9 +271,12 @@ const DetailsTab = ({ customer }: { customer: CustomerEntity }) => {
         />
         <dt className='text-sm font-medium'>Email:</dt>
         <dd className={`text-sm ${plForDd}`}>
-          {customer.emails?.[0]?.email || 'N/A'}
-          
-          {customer.emails && customer.emails.length > 0 && renderEmails()}
+          <div className='flex w-full items-center justify-between'>
+            {customer.emails?.[0]?.email || ''}
+            {customer.emails && customer.emails.length > 0 && (
+              <span>{renderEmails()}</span>
+            )}
+          </div>
         </dd>
 
         <FaPeoplePulling
