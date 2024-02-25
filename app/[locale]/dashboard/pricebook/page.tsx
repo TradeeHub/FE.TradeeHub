@@ -18,7 +18,7 @@ const PriceBook = () => {
         isOpen={isModalOpen}
         onClose={toggleModal}
         // onCustomerAdded={refreshGridData} // Assuming you have such a prop
-        modalName='Add New Service Category'
+        modalName='Create New Service Category'
         onAdded={undefined}
       />
     </>

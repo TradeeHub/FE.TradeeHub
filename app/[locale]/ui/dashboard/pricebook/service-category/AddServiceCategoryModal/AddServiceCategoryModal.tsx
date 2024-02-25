@@ -22,6 +22,8 @@ import {
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import SingleImageUploadComponent from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Link from 'next/link';
 
 // Assuming AddNewServiceCategoryRequestInput is correctly imported and usable here
 const formSchema = z.object({
@@ -42,81 +44,96 @@ const AddServiceCategoryModal = ({ isOpen, onClose, onAdded, modalName }) => {
     onAdded(); // Callback after adding
   };
 
-  return (
-    <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className='w-full max-w-xl font-roboto'>
-          <DialogHeader className='relative flex items-center justify-center'>
-            <DialogTitle className='text-center'>{modalName}</DialogTitle>
-          </DialogHeader>
+return (
+  <Dialog open={isOpen} onOpenChange={onClose}>
+    <DialogContent className='w-full max-w-2xl p-6'>
+      <DialogHeader className='mb-4'>
+        <DialogTitle className='text-center'>Create New Service Category</DialogTitle>
+      </DialogHeader>
 
-          <Form {...form}>
-            <form className='grid w-full gap-2'>
-                    <FormField
-                    control={form.control}
-                    name='name'
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Username</FormLabel>
-                        <FormControl>
-                            <Input placeholder='Enter Item Name' {...field} />
-                        </FormControl>
-                        <FormDescription>
-                            This is your public display name.
-                        </FormDescription>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-              <FormField
-                control={form.control}
-                name='description'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <>
-                        <div className='grid w-full gap-1.5'>
-                          <Label htmlFor='service-category-description'>
-                            Description
-                          </Label>
 
-                          <Textarea
-                            placeholder='Please enter a service category description'
-                            // className='resize-none'
-                            id='service-category-description'
-                            {...field}
-                          />
-                        </div>
-                      </>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <Form {...form}>
+        <form className='grid grid-cols-3 gap-4'>
+          <div className='col-span-1'>
+            <SingleImageUploadComponent control={form.control} name='images' />
+          </div>
 
-              <SingleImageUploadComponent control={form.control} name='images' />
+          <div className='col-span-2 flex flex-col justify-between'>
+            <FormField
+              control={form.control}
+              name='name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Service Category Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder='Enter Service Category Name' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <DialogFooter className='sm:justify-end'>
-                <button
-                  type='button'
-                  onClick={onClose}
-                  className='inline-flex justify-center rounded-md border border-transparent bg-gray-500 px-4 py-2 text-base font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2'
-                >
-                  Close
-                </button>
-                <button
-                  type='submit'
-                  className='inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
-                >
-                  Add Service Category
-                </button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
+            <FormField
+              control={form.control}
+              name='parentServiceCategoryId'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Choose parent service category (optional)</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder='Select Parent Category(optional)' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {/* Map your categories here */}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className='col-span-3'>
+            <FormField
+              control={form.control}
+              name='description'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder='Please enter a service category description' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          
+          <DialogFooter className='col-span-3 flex justify-between'>
+            <button
+              type='button'
+              onClick={onClose}
+              className='rounded-md bg-gray-500 px-4 py-2 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2'
+            >
+              Close
+            </button>
+            <button
+              type='submit'
+              className='rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+            >
+              Save
+            </button>
+          </DialogFooter>
+        </form>
+      </Form>
+    </DialogContent>
+  </Dialog>
+);
+
+
+
+
+
 };
 
 export default AddServiceCategoryModal;
