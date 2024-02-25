@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useController } from 'react-hook-form';
 import { HiX } from 'react-icons/hi';
+import { MdOutlineAddPhotoAlternate } from 'react-icons/md';
 
 const SingleImageUploadComponent = ({ control, name }) => {
   const { field } = useController({ control, name });
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Memoize the preview URL to prevent unnecessary re-renders
   const preview = useMemo(() => {
     if (field.value && field.value[0]) {
       const file = field.value[0];
@@ -17,7 +17,6 @@ const SingleImageUploadComponent = ({ control, name }) => {
   }, [field.value]);
 
   useEffect(() => {
-    // Clean up the object URL on unmount or when the value changes
     return () => {
       if (preview.startsWith('blob:')) {
         URL.revokeObjectURL(preview);
@@ -27,20 +26,27 @@ const SingleImageUploadComponent = ({ control, name }) => {
 
   const handleDragOver = (e) => {
     e.preventDefault();
-    setDragOver(true);
+    if (!dragOver) {
+      setDragOver(true);
+    }
   };
 
   const handleDragLeave = (e) => {
     e.preventDefault();
+    // Check if the mouse is actually leaving the upload area, not just moving over a child element
+    if (e.currentTarget.contains(e.relatedTarget)) {
+      return; // If moving to a child element, don't change the state
+    }
     setDragOver(false);
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     setDragOver(false);
-    const newFile = e.dataTransfer.files[0];
-    if (newFile) {
-      field.onChange([newFile]);
+    const newFiles = e.dataTransfer.files;
+    if (newFiles.length) {
+      const updatedFiles = field.value ? [...field.value, ...newFiles] : [...newFiles];
+      field.onChange(updatedFiles);
     }
   };
 
@@ -52,12 +58,11 @@ const SingleImageUploadComponent = ({ control, name }) => {
   };
 
   const handleRemoveImage = (e) => {
-    e.stopPropagation(); // Prevent click from propagating
+    e.stopPropagation();
     field.onChange([]);
   };
 
   const handleUploadAreaClick = (e) => {
-    // Prevent the file input from opening if there's already a preview
     if (!preview) {
       fileInputRef.current.click();
     }
@@ -82,6 +87,7 @@ const SingleImageUploadComponent = ({ control, name }) => {
             style={{ position: 'absolute', zIndex: -1 }}
           />
           <div className='text-center'>
+            <MdOutlineAddPhotoAlternate className='mx-auto text-gray-400 h-8 w-8' />
             <p className='mt-1 text-sm text-gray-400'>
               Drag 'n' drop a file here, or click to select a file
             </p>
