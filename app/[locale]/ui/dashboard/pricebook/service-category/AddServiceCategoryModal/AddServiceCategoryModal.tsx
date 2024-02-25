@@ -84,10 +84,12 @@ return (
               name='parentServiceCategoryId'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Choose parent service category (optional)</FormLabel>
+                    <FormLabel style={{ marginBottom: '0' }} className='text-xs pb-0 pl-3 text-primary font-bold'>
+                    Parent Category (optional)
+                  </FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder='Select Parent Category(optional)' />
+                    <SelectTrigger style={{marginTop: 0}}>
+                      <SelectValue placeholder='Select Parent Category (optional)' />
                     </SelectTrigger>
                     <SelectContent>
                       {/* Map your categories here */}
@@ -106,7 +108,7 @@ return (
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea placeholder='Please enter a service category description' {...field} />
+                    <Textarea placeholder='Please enter a service category description (optional)' className='min-h-[100px]' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
