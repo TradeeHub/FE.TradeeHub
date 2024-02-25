@@ -1,28 +1,29 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useController } from 'react-hook-form';
 import { HiX } from 'react-icons/hi';
 
 const SingleImageUploadComponent = ({ control, name }) => {
   const { field } = useController({ control, name });
   const [dragOver, setDragOver] = useState(false);
-  const [preview, setPreview] = useState('');
   const fileInputRef = useRef(null);
 
-  useEffect(() => {
+  // Memoize the preview URL to prevent unnecessary re-renders
+  const preview = useMemo(() => {
     if (field.value && field.value[0]) {
       const file = field.value[0];
-      const filePreview = typeof file === 'string' ? file : URL.createObjectURL(file);
-      setPreview(filePreview);
-    } else {
-      setPreview('');
+      return typeof file === 'string' ? file : URL.createObjectURL(file);
     }
+    return '';
+  }, [field.value]);
 
+  useEffect(() => {
+    // Clean up the object URL on unmount or when the value changes
     return () => {
-      if (preview && preview.startsWith('blob:')) {
+      if (preview.startsWith('blob:')) {
         URL.revokeObjectURL(preview);
       }
     };
-  }, [field.value]);
+  }, [preview]);
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -51,23 +52,20 @@ const SingleImageUploadComponent = ({ control, name }) => {
   };
 
   const handleRemoveImage = (e) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Prevent click from propagating
     field.onChange([]);
-    setPreview('');
   };
 
   const handleUploadAreaClick = (e) => {
     // Prevent the file input from opening if there's already a preview
-    if (preview) {
-      e.stopPropagation();
-    } else {
+    if (!preview) {
       fileInputRef.current.click();
     }
   };
 
   return (
     <div className='space-y-4'>
-      {!field.value?.[0] && (
+      {!preview && (
         <div
           className={`flex justify-center items-center w-full h-32 bg-gray-50 rounded-lg border-2 ${dragOver ? 'border-indigo-500' : 'border-gray-300'} border-dashed cursor-pointer`}
           onClick={handleUploadAreaClick}
