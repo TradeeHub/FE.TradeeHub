@@ -1,4 +1,4 @@
-query customer($id: ID!) {
+query Customer($id: ID!) {
   customer(id: $id) {
     id
     customerReferenceNumber
@@ -41,7 +41,6 @@ query customer($id: ID!) {
     }
     comments {
       comment
-      uploadUrls
       commentType
     }
     emails {

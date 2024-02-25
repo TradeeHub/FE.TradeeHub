@@ -18,7 +18,8 @@ import TagsInput from '../TagsInput/TagsInput';
 import CommentSection from '../../ui/general/Comment';
 import {
   AddNewCustomerRequestInput,
-  AddNewCustomerResponse,
+  CustomerEntity,
+  // AddNewCustomerMutation,
   ReferenceType,
 } from '@/generatedGraphql';
 import { useAddNewCustomer } from '../../hooks/customer/useCustomer';
@@ -282,7 +283,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
 
   useEffect(() => {
     const customer =
-      addNewCustomerResponse?.addNewCustomer as AddNewCustomerResponse;
+      addNewCustomerResponse?.addNewCustomer as CustomerEntity;
     if (customer) {
       handleClose();
       toast({
@@ -309,7 +310,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       const criticalFields = ['companyName', 'multiValidation', 'phoneNumbers'];
       console.log('errors', errors);
       const hasCriticalErrors = criticalFields.some(
-        (fieldName) => errors[fieldName],
+        (fieldName) => errors[fieldName as keyof typeof errors],
       );
       if (isFormValid || !hasCriticalErrors) {
         setCurrentStep((prevStep) => prevStep + 1);

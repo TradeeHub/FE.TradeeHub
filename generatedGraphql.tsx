@@ -20,6 +20,7 @@ export type Scalars = {
   Long: { input: any; output: any; }
   Short: { input: any; output: any; }
   UUID: { input: any; output: any; }
+  Upload: { input: any; output: any; }
 };
 
 export type AccountConfirmationResponse = {
@@ -27,6 +28,30 @@ export type AccountConfirmationResponse = {
   confirmSignUpResponse?: Maybe<ConfirmSignUpResponse>;
   isConfirmationSuccess: Scalars['Boolean']['output'];
   message?: Maybe<Scalars['String']['output']>;
+};
+
+export type AddLaborRateRequestInput = {
+  cost: Scalars['Decimal']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  price: Scalars['Decimal']['input'];
+  pricingTiers?: InputMaybe<Array<PricingTierRequestInput>>;
+  rateType?: InputMaybe<Scalars['String']['input']>;
+  serviceIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
+export type AddMaterialRequestInput = {
+  cost: Scalars['Decimal']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  identifier?: InputMaybe<Scalars['String']['input']>;
+  images?: InputMaybe<Array<Scalars['Upload']['input']>>;
+  markup?: InputMaybe<MarkupEntityInput>;
+  name: Scalars['String']['input'];
+  onlineMaterialUrls?: InputMaybe<Array<Scalars['String']['input']>>;
+  price: Scalars['Decimal']['input'];
+  pricingTiers?: InputMaybe<Array<PricingTierEntityInput>>;
+  serviceIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  unitType: Scalars['String']['input'];
 };
 
 export type AddNewCustomerRequestInput = {
@@ -64,6 +89,90 @@ export type AddNewExternalReferenceResponse = {
   name: Scalars['String']['output'];
 };
 
+export type AddNewServiceCategoryRequestInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  images?: InputMaybe<Array<Scalars['Upload']['input']>>;
+  name: Scalars['String']['input'];
+  parentServiceCategoryId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type AddServiceBundleRequestInput = {
+  additionalCosts?: InputMaybe<Array<AdditionalServiceCostRequestInput>>;
+  allowOnlineBooking: Scalars['Boolean']['input'];
+  cost: Scalars['Decimal']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  duration?: InputMaybe<ServiceDurationRequestInput>;
+  images?: InputMaybe<Array<Scalars['Upload']['input']>>;
+  laborRates?: InputMaybe<Array<ServiceLabourRequestInput>>;
+  markup?: InputMaybe<MarkupRequestInput>;
+  materials?: InputMaybe<Array<ServiceMaterialRequestInput>>;
+  name: Scalars['String']['input'];
+  price: Scalars['Decimal']['input'];
+  serviceCategoryId: Scalars['ID']['input'];
+  serviceCreationType: ServiceCreationType;
+  serviceId: Scalars['ID']['input'];
+  taxRateId: Scalars['ID']['input'];
+  unit?: InputMaybe<Scalars['Decimal']['input']>;
+  unitType?: InputMaybe<Scalars['String']['input']>;
+  useCalculatedPrice: Scalars['Boolean']['input'];
+  warrantyIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
+export type AddServiceRequestInput = {
+  additionalCosts?: InputMaybe<Array<AdditionalServiceCostRequestInput>>;
+  allowOnlineBooking: Scalars['Boolean']['input'];
+  cost: Scalars['Decimal']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  duration?: InputMaybe<ServiceDurationRequestInput>;
+  images?: InputMaybe<Array<Scalars['Upload']['input']>>;
+  laborRates?: InputMaybe<Array<ServiceLabourRequestInput>>;
+  markup?: InputMaybe<MarkupRequestInput>;
+  materials?: InputMaybe<Array<ServiceMaterialRequestInput>>;
+  name: Scalars['String']['input'];
+  price: Scalars['Decimal']['input'];
+  serviceCategoryId: Scalars['ID']['input'];
+  serviceCreationType: ServiceCreationType;
+  taxRateId: Scalars['ID']['input'];
+  unit?: InputMaybe<Scalars['Decimal']['input']>;
+  unitType?: InputMaybe<Scalars['String']['input']>;
+  useCalculatedPrice: Scalars['Boolean']['input'];
+  warrantyIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
+export type AddTaxRateRequestInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  percentageRate: Scalars['Decimal']['input'];
+};
+
+export type AddWarrantyRequestInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  price?: InputMaybe<Scalars['Decimal']['input']>;
+  serviceIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  terms: Scalars['String']['input'];
+  warrantyDuration: WarrantyDurationRequestInput;
+  warrantyType?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AdditionalServiceCostEntity = {
+  __typename?: 'AdditionalServiceCostEntity';
+  cost: Scalars['Decimal']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  taxRate?: Maybe<TaxRateEntity>;
+  taxRateId?: Maybe<Scalars['ID']['output']>;
+  taxRateType?: Maybe<TaxRateType>;
+};
+
+export type AdditionalServiceCostRequestInput = {
+  cost: Scalars['Decimal']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  taxRateId?: InputMaybe<Scalars['ID']['input']>;
+  taxRateType?: InputMaybe<TaxRateType>;
+};
+
 export enum ApplyPolicy {
   AfterResolver = 'AFTER_RESOLVER',
   BeforeResolver = 'BEFORE_RESOLVER',
@@ -90,16 +199,22 @@ export type CodeDeliveryDetailsType = {
   destination?: Maybe<Scalars['String']['output']>;
 };
 
-export type CommentEntity = {
+export type CommentEntity = Node & {
   __typename?: 'CommentEntity';
   archived: Scalars['Boolean']['output'];
   comment?: Maybe<Scalars['String']['output']>;
   commentType: CommentType;
   createdAt: Scalars['DateTime']['output'];
   createdById: Scalars['UUID']['output'];
+  creator: UserEntity;
+  customer?: Maybe<CustomerEntity>;
   customerId: Scalars['ID']['output'];
   id: Scalars['ID']['output'];
-  uploadUrls: Array<Scalars['String']['output']>;
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedById?: Maybe<Scalars['UUID']['output']>;
+  modifier?: Maybe<UserEntity>;
+  owner: UserEntity;
+  uploads?: Maybe<Array<UploadEntity>>;
   userOwnerId: Scalars['UUID']['output'];
 };
 
@@ -160,9 +275,11 @@ export type CustomerEntity = Node & {
   __typename?: 'CustomerEntity';
   alias?: Maybe<Scalars['String']['output']>;
   archived: Scalars['Boolean']['output'];
-  comments?: Maybe<Array<Maybe<CommentEntity>>>;
+  commentIds?: Maybe<Array<Scalars['ID']['output']>>;
+  comments: Array<CommentEntity>;
   companyName?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
+  createdById: Scalars['UUID']['output'];
   creator: UserEntity;
   customerRating?: Maybe<Scalars['Decimal']['output']>;
   customerReferenceNumber?: Maybe<Scalars['String']['output']>;
@@ -171,17 +288,20 @@ export type CustomerEntity = Node & {
   fullName?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedById?: Maybe<Scalars['UUID']['output']>;
   modifier?: Maybe<UserEntity>;
   name?: Maybe<Scalars['String']['output']>;
   owner: UserEntity;
   phoneNumbers?: Maybe<Array<PhoneNumberEntity>>;
-  properties?: Maybe<Array<Maybe<PropertyEntity>>>;
+  properties: Array<PropertyEntity>;
+  propertyIds?: Maybe<Array<Scalars['ID']['output']>>;
   reference?: Maybe<ReferenceInfoEntity>;
   status: CustomerStatus;
   surname?: Maybe<Scalars['String']['output']>;
   tags?: Maybe<Array<Scalars['String']['output']>>;
   title?: Maybe<Scalars['String']['output']>;
   useCompanyName: Scalars['Boolean']['output'];
+  userOwnerId: Scalars['UUID']['output'];
 };
 
 export type CustomerEntityFilter = {
@@ -199,10 +319,10 @@ export type CustomerEntityFilter = {
   alias_starts_with?: InputMaybe<Scalars['String']['input']>;
   archived?: InputMaybe<Scalars['Boolean']['input']>;
   archived_not?: InputMaybe<Scalars['Boolean']['input']>;
-  comments_all?: InputMaybe<ObjectIdFilter>;
-  comments_any?: InputMaybe<Scalars['Boolean']['input']>;
-  comments_none?: InputMaybe<ObjectIdFilter>;
-  comments_some?: InputMaybe<ObjectIdFilter>;
+  commentIds_all?: InputMaybe<ObjectIdFilter>;
+  commentIds_any?: InputMaybe<Scalars['Boolean']['input']>;
+  commentIds_none?: InputMaybe<ObjectIdFilter>;
+  commentIds_some?: InputMaybe<ObjectIdFilter>;
   companyName?: InputMaybe<Scalars['String']['input']>;
   companyName_contains?: InputMaybe<Scalars['String']['input']>;
   companyName_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -225,18 +345,18 @@ export type CustomerEntityFilter = {
   createdAt_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
   createdAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
   createdAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdBy?: InputMaybe<Scalars['UUID']['input']>;
-  createdBy_gt?: InputMaybe<Scalars['UUID']['input']>;
-  createdBy_gte?: InputMaybe<Scalars['UUID']['input']>;
-  createdBy_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  createdBy_lt?: InputMaybe<Scalars['UUID']['input']>;
-  createdBy_lte?: InputMaybe<Scalars['UUID']['input']>;
-  createdBy_not?: InputMaybe<Scalars['UUID']['input']>;
-  createdBy_not_gt?: InputMaybe<Scalars['UUID']['input']>;
-  createdBy_not_gte?: InputMaybe<Scalars['UUID']['input']>;
-  createdBy_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  createdBy_not_lt?: InputMaybe<Scalars['UUID']['input']>;
-  createdBy_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_gt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_gte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  createdById_lt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_lte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  createdById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
   customerRating?: InputMaybe<Scalars['Decimal']['input']>;
   customerRating_gt?: InputMaybe<Scalars['Decimal']['input']>;
   customerRating_gte?: InputMaybe<Scalars['Decimal']['input']>;
@@ -295,18 +415,18 @@ export type CustomerEntityFilter = {
   modifiedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
   modifiedAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
   modifiedAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedBy?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedBy_gt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedBy_gte?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedBy_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
-  modifiedBy_lt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedBy_lte?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedBy_not?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedBy_not_gt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedBy_not_gte?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedBy_not_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
-  modifiedBy_not_lt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedBy_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_gt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_gte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  modifiedById_lt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_lte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  modifiedById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   name_contains?: InputMaybe<Scalars['String']['input']>;
   name_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -321,10 +441,10 @@ export type CustomerEntityFilter = {
   phoneNumbers_any?: InputMaybe<Scalars['Boolean']['input']>;
   phoneNumbers_none?: InputMaybe<PhoneNumberEntityFilter>;
   phoneNumbers_some?: InputMaybe<PhoneNumberEntityFilter>;
-  properties_all?: InputMaybe<ObjectIdFilter>;
-  properties_any?: InputMaybe<Scalars['Boolean']['input']>;
-  properties_none?: InputMaybe<ObjectIdFilter>;
-  properties_some?: InputMaybe<ObjectIdFilter>;
+  propertyIds_all?: InputMaybe<ObjectIdFilter>;
+  propertyIds_any?: InputMaybe<Scalars['Boolean']['input']>;
+  propertyIds_none?: InputMaybe<ObjectIdFilter>;
+  propertyIds_some?: InputMaybe<ObjectIdFilter>;
   reference?: InputMaybe<ReferenceInfoEntityFilter>;
   status?: InputMaybe<CustomerStatus>;
   status_gt?: InputMaybe<CustomerStatus>;
@@ -383,13 +503,13 @@ export type CustomerEntitySort = {
   archived?: InputMaybe<SortOperationKind>;
   companyName?: InputMaybe<SortOperationKind>;
   createdAt?: InputMaybe<SortOperationKind>;
-  createdBy?: InputMaybe<SortOperationKind>;
+  createdById?: InputMaybe<SortOperationKind>;
   customerRating?: InputMaybe<SortOperationKind>;
   customerReferenceNumber?: InputMaybe<SortOperationKind>;
   customerType?: InputMaybe<SortOperationKind>;
   fullName?: InputMaybe<SortOperationKind>;
   modifiedAt?: InputMaybe<SortOperationKind>;
-  modifiedBy?: InputMaybe<SortOperationKind>;
+  modifiedById?: InputMaybe<SortOperationKind>;
   name?: InputMaybe<SortOperationKind>;
   reference?: InputMaybe<ReferenceInfoEntitySort>;
   status?: InputMaybe<SortOperationKind>;
@@ -439,6 +559,14 @@ export type DeliveryMediumType = {
   value?: Maybe<Scalars['String']['output']>;
 };
 
+export enum DurationType {
+  Days = 'DAYS',
+  Hours = 'HOURS',
+  Minutes = 'MINUTES',
+  Months = 'MONTHS',
+  Weeks = 'WEEKS'
+}
+
 export type EmailEntity = {
   __typename?: 'EmailEntity';
   email: Scalars['String']['output'];
@@ -479,7 +607,7 @@ export type EmailRequestInput = {
   receiveNotifications: Scalars['Boolean']['input'];
 };
 
-export type ExternalReferenceEntity = {
+export type ExternalReferenceEntity = Node & {
   __typename?: 'ExternalReferenceEntity';
   companyName?: Maybe<Scalars['String']['output']>;
   compensation?: Maybe<CompensationDetailsEntity>;
@@ -487,8 +615,9 @@ export type ExternalReferenceEntity = {
   email?: Maybe<EmailEntity>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  owner: UserEntity;
   phoneNumber?: Maybe<PhoneNumberEntity>;
-  place?: Maybe<PlaceEntity>;
+  place?: Maybe<PlaceRequestEntity>;
   referenceType: Scalars['String']['output'];
   url?: Maybe<Scalars['String']['output']>;
   useCompanyName: Scalars['Boolean']['output'];
@@ -599,10 +728,162 @@ export type ISingleFilterOfStringFilter = {
   element_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type ImageEntity = {
+  __typename?: 'ImageEntity';
+  byteSize?: Maybe<Scalars['Long']['output']>;
+  contentType?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  createdById: Scalars['UUID']['output'];
+  creator: UserEntity;
+  description?: Maybe<Scalars['String']['output']>;
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedById?: Maybe<Scalars['UUID']['output']>;
+  modifier?: Maybe<UserEntity>;
+  name: Scalars['String']['output'];
+  s3Key: Scalars['String']['output'];
+  url: Scalars['String']['output'];
+};
+
+export type ImageEntityFilter = {
+  AND?: InputMaybe<Array<ImageEntityFilter>>;
+  OR?: InputMaybe<Array<ImageEntityFilter>>;
+  byteSize?: InputMaybe<Scalars['Long']['input']>;
+  byteSize_gt?: InputMaybe<Scalars['Long']['input']>;
+  byteSize_gte?: InputMaybe<Scalars['Long']['input']>;
+  byteSize_in?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
+  byteSize_lt?: InputMaybe<Scalars['Long']['input']>;
+  byteSize_lte?: InputMaybe<Scalars['Long']['input']>;
+  byteSize_not?: InputMaybe<Scalars['Long']['input']>;
+  byteSize_not_gt?: InputMaybe<Scalars['Long']['input']>;
+  byteSize_not_gte?: InputMaybe<Scalars['Long']['input']>;
+  byteSize_not_in?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
+  byteSize_not_lt?: InputMaybe<Scalars['Long']['input']>;
+  byteSize_not_lte?: InputMaybe<Scalars['Long']['input']>;
+  contentType?: InputMaybe<Scalars['String']['input']>;
+  contentType_contains?: InputMaybe<Scalars['String']['input']>;
+  contentType_ends_with?: InputMaybe<Scalars['String']['input']>;
+  contentType_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  contentType_not?: InputMaybe<Scalars['String']['input']>;
+  contentType_not_contains?: InputMaybe<Scalars['String']['input']>;
+  contentType_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  contentType_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  contentType_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  contentType_starts_with?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdById?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_gt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_gte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  createdById_lt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_lte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  createdById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  description_contains?: InputMaybe<Scalars['String']['input']>;
+  description_ends_with?: InputMaybe<Scalars['String']['input']>;
+  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  description_not?: InputMaybe<Scalars['String']['input']>;
+  description_not_contains?: InputMaybe<Scalars['String']['input']>;
+  description_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  description_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  description_starts_with?: InputMaybe<Scalars['String']['input']>;
+  modifiedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  modifiedAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  modifiedAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedById?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_gt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_gte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  modifiedById_lt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_lte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  modifiedById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  name_starts_with?: InputMaybe<Scalars['String']['input']>;
+  s3Key?: InputMaybe<Scalars['String']['input']>;
+  s3Key_contains?: InputMaybe<Scalars['String']['input']>;
+  s3Key_ends_with?: InputMaybe<Scalars['String']['input']>;
+  s3Key_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  s3Key_not?: InputMaybe<Scalars['String']['input']>;
+  s3Key_not_contains?: InputMaybe<Scalars['String']['input']>;
+  s3Key_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  s3Key_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  s3Key_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  s3Key_starts_with?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
+  url_contains?: InputMaybe<Scalars['String']['input']>;
+  url_ends_with?: InputMaybe<Scalars['String']['input']>;
+  url_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  url_not?: InputMaybe<Scalars['String']['input']>;
+  url_not_contains?: InputMaybe<Scalars['String']['input']>;
+  url_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  url_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  url_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  url_starts_with?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type KeyValuePairOfStringAndString = {
   __typename?: 'KeyValuePairOfStringAndString';
   key: Scalars['String']['output'];
   value: Scalars['String']['output'];
+};
+
+export type LaborRateEntity = Node & {
+  __typename?: 'LaborRateEntity';
+  cost: Scalars['Decimal']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  createdById: Scalars['UUID']['output'];
+  creator: UserEntity;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedById?: Maybe<Scalars['UUID']['output']>;
+  modifier?: Maybe<UserEntity>;
+  name: Scalars['String']['output'];
+  owner: UserEntity;
+  price: Scalars['Decimal']['output'];
+  pricingTiers?: Maybe<Array<PricingTierEntity>>;
+  rateType?: Maybe<Scalars['String']['output']>;
+  serviceIds?: Maybe<Array<Scalars['ID']['output']>>;
+  services: Array<ServiceEntity>;
+  userOwnerId: Scalars['UUID']['output'];
 };
 
 export type LinkReferenceRequestInput = {
@@ -650,9 +931,49 @@ export type LocationEntitySort = {
   lng?: InputMaybe<SortOperationKind>;
 };
 
+export type LocationRequest = {
+  __typename?: 'LocationRequest';
+  lat: Scalars['Decimal']['output'];
+  lng: Scalars['Decimal']['output'];
+};
+
+export type LocationRequestFilter = {
+  AND?: InputMaybe<Array<LocationRequestFilter>>;
+  OR?: InputMaybe<Array<LocationRequestFilter>>;
+  lat?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_in?: InputMaybe<Array<Scalars['Decimal']['input']>>;
+  lat_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_not?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_not_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_not_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_not_in?: InputMaybe<Array<Scalars['Decimal']['input']>>;
+  lat_not_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  lat_not_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  lng?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_in?: InputMaybe<Array<Scalars['Decimal']['input']>>;
+  lng_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_lte?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_not?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_not_gt?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_not_gte?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_not_in?: InputMaybe<Array<Scalars['Decimal']['input']>>;
+  lng_not_lt?: InputMaybe<Scalars['Decimal']['input']>;
+  lng_not_lte?: InputMaybe<Scalars['Decimal']['input']>;
+};
+
 export type LocationRequestInput = {
   lat: Scalars['Decimal']['input'];
   lng: Scalars['Decimal']['input'];
+};
+
+export type LocationRequestSort = {
+  lat?: InputMaybe<SortOperationKind>;
+  lng?: InputMaybe<SortOperationKind>;
 };
 
 export type LoginRequestInput = {
@@ -674,10 +995,63 @@ export type LogoutResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type MarkupEntity = {
+  __typename?: 'MarkupEntity';
+  type: MarkupType;
+  value: Scalars['Decimal']['output'];
+};
+
+export type MarkupEntityInput = {
+  type: MarkupType;
+  value: Scalars['Decimal']['input'];
+};
+
+export type MarkupRequestInput = {
+  type: MarkupType;
+  value: Scalars['Decimal']['input'];
+};
+
+export enum MarkupType {
+  Fixed = 'FIXED',
+  Percentage = 'PERCENTAGE'
+}
+
+export type MaterialEntity = Node & {
+  __typename?: 'MaterialEntity';
+  cost: Scalars['Decimal']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  createdById: Scalars['UUID']['output'];
+  creator: UserEntity;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  identifier?: Maybe<Scalars['String']['output']>;
+  images?: Maybe<Array<ImageEntity>>;
+  markup?: Maybe<MarkupEntity>;
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedById?: Maybe<Scalars['UUID']['output']>;
+  modifier?: Maybe<UserEntity>;
+  name: Scalars['String']['output'];
+  onlineMaterialUrls?: Maybe<Array<Scalars['String']['output']>>;
+  owner: UserEntity;
+  price: Scalars['Decimal']['output'];
+  pricingTiers?: Maybe<Array<PricingTierEntity>>;
+  serviceIds?: Maybe<Array<Scalars['ID']['output']>>;
+  services: Array<ServiceEntity>;
+  unitType: Scalars['String']['output'];
+  userOwnerId: Scalars['UUID']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  addLaborRate: LaborRateEntity;
+  addMaterial: MaterialEntity;
   addNewCustomer: CustomerEntity;
   addNewExternalReference: AddNewExternalReferenceResponse;
+  addNewServiceCategory: ServiceCategoryEntity;
+  addService: ServiceEntity;
+  addServiceBundle: ServiceBundleEntity;
+  addTaxRate: TaxRateEntity;
+  addWarranty: WarrantyEntity;
   changePassword: ConfirmForgotPasswordResponse;
   confirmAccount: AccountConfirmationResponse;
   forgotPassword: ForgotPasswordResponse;
@@ -688,6 +1062,16 @@ export type Mutation = {
 };
 
 
+export type MutationAddLaborRateArgs = {
+  request: AddLaborRateRequestInput;
+};
+
+
+export type MutationAddMaterialArgs = {
+  request: AddMaterialRequestInput;
+};
+
+
 export type MutationAddNewCustomerArgs = {
   request: AddNewCustomerRequestInput;
 };
@@ -695,6 +1079,31 @@ export type MutationAddNewCustomerArgs = {
 
 export type MutationAddNewExternalReferenceArgs = {
   request: AddNewExternalReferenceRequestInput;
+};
+
+
+export type MutationAddNewServiceCategoryArgs = {
+  request: AddNewServiceCategoryRequestInput;
+};
+
+
+export type MutationAddServiceArgs = {
+  request: AddServiceRequestInput;
+};
+
+
+export type MutationAddServiceBundleArgs = {
+  request: AddServiceBundleRequestInput;
+};
+
+
+export type MutationAddTaxRateArgs = {
+  request: AddTaxRateRequestInput;
+};
+
+
+export type MutationAddWarrantyArgs = {
+  request: AddWarrantyRequestInput;
 };
 
 
@@ -929,6 +1338,84 @@ export type PlaceEntitySort = {
   viewport?: InputMaybe<ViewportEntitySort>;
 };
 
+export type PlaceRequestEntity = {
+  __typename?: 'PlaceRequestEntity';
+  address: Scalars['String']['output'];
+  callingCode: Scalars['String']['output'];
+  country: Scalars['String']['output'];
+  countryCode: Scalars['String']['output'];
+  location: LocationRequest;
+  placeId: Scalars['String']['output'];
+  viewport: ViewportRequest;
+};
+
+export type PlaceRequestEntityFilter = {
+  AND?: InputMaybe<Array<PlaceRequestEntityFilter>>;
+  OR?: InputMaybe<Array<PlaceRequestEntityFilter>>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  address_contains?: InputMaybe<Scalars['String']['input']>;
+  address_ends_with?: InputMaybe<Scalars['String']['input']>;
+  address_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  address_not?: InputMaybe<Scalars['String']['input']>;
+  address_not_contains?: InputMaybe<Scalars['String']['input']>;
+  address_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  address_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  address_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  address_starts_with?: InputMaybe<Scalars['String']['input']>;
+  callingCode?: InputMaybe<Scalars['String']['input']>;
+  callingCode_contains?: InputMaybe<Scalars['String']['input']>;
+  callingCode_ends_with?: InputMaybe<Scalars['String']['input']>;
+  callingCode_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  callingCode_not?: InputMaybe<Scalars['String']['input']>;
+  callingCode_not_contains?: InputMaybe<Scalars['String']['input']>;
+  callingCode_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  callingCode_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  callingCode_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  callingCode_starts_with?: InputMaybe<Scalars['String']['input']>;
+  country?: InputMaybe<Scalars['String']['input']>;
+  countryCode?: InputMaybe<Scalars['String']['input']>;
+  countryCode_contains?: InputMaybe<Scalars['String']['input']>;
+  countryCode_ends_with?: InputMaybe<Scalars['String']['input']>;
+  countryCode_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  countryCode_not?: InputMaybe<Scalars['String']['input']>;
+  countryCode_not_contains?: InputMaybe<Scalars['String']['input']>;
+  countryCode_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  countryCode_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  countryCode_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  countryCode_starts_with?: InputMaybe<Scalars['String']['input']>;
+  country_contains?: InputMaybe<Scalars['String']['input']>;
+  country_ends_with?: InputMaybe<Scalars['String']['input']>;
+  country_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  country_not?: InputMaybe<Scalars['String']['input']>;
+  country_not_contains?: InputMaybe<Scalars['String']['input']>;
+  country_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  country_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  country_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  country_starts_with?: InputMaybe<Scalars['String']['input']>;
+  location?: InputMaybe<LocationRequestFilter>;
+  placeId?: InputMaybe<Scalars['String']['input']>;
+  placeId_contains?: InputMaybe<Scalars['String']['input']>;
+  placeId_ends_with?: InputMaybe<Scalars['String']['input']>;
+  placeId_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  placeId_not?: InputMaybe<Scalars['String']['input']>;
+  placeId_not_contains?: InputMaybe<Scalars['String']['input']>;
+  placeId_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  placeId_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  placeId_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  placeId_starts_with?: InputMaybe<Scalars['String']['input']>;
+  viewport?: InputMaybe<ViewportRequestFilter>;
+};
+
+export type PlaceRequestEntitySort = {
+  address?: InputMaybe<SortOperationKind>;
+  callingCode?: InputMaybe<SortOperationKind>;
+  country?: InputMaybe<SortOperationKind>;
+  countryCode?: InputMaybe<SortOperationKind>;
+  location?: InputMaybe<LocationRequestSort>;
+  placeId?: InputMaybe<SortOperationKind>;
+  viewport?: InputMaybe<ViewportRequestSort>;
+};
+
 export type PlaceRequestInput = {
   address: Scalars['String']['input'];
   callingCode: Scalars['String']['input'];
@@ -939,20 +1426,151 @@ export type PlaceRequestInput = {
   viewport: ViewportRequestInput;
 };
 
-export type PropertyEntity = {
+export type PricingTierEntity = {
+  __typename?: 'PricingTierEntity';
+  cost?: Maybe<Scalars['Decimal']['output']>;
+  price: Scalars['Decimal']['output'];
+  unitRange: RangeOfDecimal;
+};
+
+export type PricingTierEntityInput = {
+  cost?: InputMaybe<Scalars['Decimal']['input']>;
+  price: Scalars['Decimal']['input'];
+  unitRange: RangeOfDecimalInput;
+};
+
+export type PricingTierRequestInput = {
+  cost?: InputMaybe<Scalars['Decimal']['input']>;
+  price: Scalars['Decimal']['input'];
+  unitRange: RangeOfDecimalInput;
+};
+
+/** A connection to a list of items. */
+export type PropertiesConnection = {
+  __typename?: 'PropertiesConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<PropertiesEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<PropertyEntity>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type PropertiesEdge = {
+  __typename?: 'PropertiesEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: PropertyEntity;
+};
+
+export type PropertyEntity = Node & {
   __typename?: 'PropertyEntity';
-  billing?: Maybe<PlaceEntity>;
+  billing?: Maybe<PlaceRequestEntity>;
   createdAt: Scalars['DateTime']['output'];
+  createdById: Scalars['UUID']['output'];
   creator: UserEntity;
-  /** The customers associated with this property. */
-  customers?: Maybe<Array<Maybe<CustomerEntity>>>;
+  customerIds: Array<Scalars['ID']['output']>;
+  customers: Array<CustomerEntity>;
   id: Scalars['ID']['output'];
-  jobs?: Maybe<Array<Scalars['ID']['output']>>;
+  jobIds?: Maybe<Array<Scalars['ID']['output']>>;
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedById?: Maybe<Scalars['UUID']['output']>;
   modifier?: Maybe<UserEntity>;
   owner: UserEntity;
-  property: PlaceEntity;
-  quotes?: Maybe<Array<Scalars['ID']['output']>>;
+  property: PlaceRequestEntity;
+  quoteIds?: Maybe<Array<Scalars['ID']['output']>>;
+  userOwnerId: Scalars['UUID']['output'];
+};
+
+export type PropertyEntityFilter = {
+  AND?: InputMaybe<Array<PropertyEntityFilter>>;
+  OR?: InputMaybe<Array<PropertyEntityFilter>>;
+  billing?: InputMaybe<PlaceRequestEntityFilter>;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdById?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_gt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_gte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  createdById_lt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_lte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  createdById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  customerIds_all?: InputMaybe<ObjectIdFilter>;
+  customerIds_any?: InputMaybe<Scalars['Boolean']['input']>;
+  customerIds_none?: InputMaybe<ObjectIdFilter>;
+  customerIds_some?: InputMaybe<ObjectIdFilter>;
+  jobIds_all?: InputMaybe<ObjectIdFilter>;
+  jobIds_any?: InputMaybe<Scalars['Boolean']['input']>;
+  jobIds_none?: InputMaybe<ObjectIdFilter>;
+  jobIds_some?: InputMaybe<ObjectIdFilter>;
+  modifiedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  modifiedAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  modifiedAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedById?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_gt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_gte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  modifiedById_lt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_lte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  modifiedById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  property?: InputMaybe<PlaceRequestEntityFilter>;
+  quoteIds_all?: InputMaybe<ObjectIdFilter>;
+  quoteIds_any?: InputMaybe<Scalars['Boolean']['input']>;
+  quoteIds_none?: InputMaybe<ObjectIdFilter>;
+  quoteIds_some?: InputMaybe<ObjectIdFilter>;
+  userOwnerId?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_gt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_gte?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  userOwnerId_lt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_lte?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  userOwnerId_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type PropertyEntitySort = {
+  billing?: InputMaybe<PlaceRequestEntitySort>;
+  createdAt?: InputMaybe<SortOperationKind>;
+  createdById?: InputMaybe<SortOperationKind>;
+  modifiedAt?: InputMaybe<SortOperationKind>;
+  modifiedById?: InputMaybe<SortOperationKind>;
+  property?: InputMaybe<PlaceRequestEntitySort>;
+  userOwnerId?: InputMaybe<SortOperationKind>;
 };
 
 export type PropertyRequestInput = {
@@ -963,15 +1581,32 @@ export type PropertyRequestInput = {
 
 export type Query = {
   __typename?: 'Query';
+  comment?: Maybe<CommentEntity>;
   customer?: Maybe<CustomerEntity>;
   customerById?: Maybe<CustomerEntity>;
   customers?: Maybe<CustomersConnection>;
+  externalReference?: Maybe<ExternalReferenceEntity>;
+  laborRate?: Maybe<LaborRateEntity>;
   loggedInUser?: Maybe<UserEntity>;
+  material?: Maybe<MaterialEntity>;
+  properties?: Maybe<PropertiesConnection>;
+  property?: Maybe<PropertyEntity>;
   propertyById?: Maybe<PropertyEntity>;
   searchCustomerReferences: ReferenceTrackingResponse;
+  service?: Maybe<ServiceEntity>;
+  serviceBundle?: Maybe<ServiceBundleEntity>;
+  serviceCategories?: Maybe<ServiceCategoriesConnection>;
+  serviceCategory?: Maybe<ServiceCategoryEntity>;
+  taxRate?: Maybe<TaxRateEntity>;
   user?: Maybe<UserEntity>;
   userByAwsCognitoId: Array<UserEntity>;
   users?: Maybe<UsersConnection>;
+  warranty?: Maybe<WarrantyEntity>;
+};
+
+
+export type QueryCommentArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -995,6 +1630,36 @@ export type QueryCustomersArgs = {
 };
 
 
+export type QueryExternalReferenceArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryLaborRateArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryMaterialArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryPropertiesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<PropertyEntitySort>;
+  where?: InputMaybe<PropertyEntityFilter>;
+};
+
+
+export type QueryPropertyArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type QueryPropertyByIdArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1002,6 +1667,36 @@ export type QueryPropertyByIdArgs = {
 
 export type QuerySearchCustomerReferencesArgs = {
   request: SearchReferenceRequestInput;
+};
+
+
+export type QueryServiceArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryServiceBundleArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryServiceCategoriesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<ServiceCategoryEntitySort>;
+  where?: InputMaybe<ServiceCategoryEntityFilter>;
+};
+
+
+export type QueryServiceCategoryArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryTaxRateArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1024,10 +1719,45 @@ export type QueryUsersArgs = {
   where?: InputMaybe<UserEntityFilter>;
 };
 
+
+export type QueryWarrantyArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type RangeOfDecimal = {
+  __typename?: 'RangeOfDecimal';
+  max: Scalars['Decimal']['output'];
+  min: Scalars['Decimal']['output'];
+  overlaps: Scalars['Boolean']['output'];
+};
+
+
+export type RangeOfDecimalOverlapsArgs = {
+  other?: InputMaybe<RangeOfDecimalInput>;
+};
+
+export type RangeOfDecimalInput = {
+  max: Scalars['Decimal']['input'];
+  min: Scalars['Decimal']['input'];
+};
+
+export type RangeTierUnitEntity = {
+  __typename?: 'RangeTierUnitEntity';
+  quantity: Scalars['Decimal']['output'];
+  range: RangeOfDecimal;
+};
+
+export type RangeTierUnitRequestInput = {
+  quantity: Scalars['Decimal']['input'];
+  range: RangeOfDecimalInput;
+};
+
 export type ReferenceInfoEntity = {
   __typename?: 'ReferenceInfoEntity';
   customer?: Maybe<CustomerEntity>;
+  customerId?: Maybe<Scalars['ID']['output']>;
   externalReference?: Maybe<ExternalReferenceEntity>;
+  externalReferenceId?: Maybe<Scalars['ID']['output']>;
   referenceType: ReferenceType;
 };
 
@@ -1113,6 +1843,267 @@ export type SearchReferenceRequestInput = {
   searchTerm: Scalars['String']['input'];
 };
 
+export type ServiceBundleEntity = Node & {
+  __typename?: 'ServiceBundleEntity';
+  additionalCosts?: Maybe<Array<AdditionalServiceCostEntity>>;
+  allowOnlineBooking: Scalars['Boolean']['output'];
+  cost: Scalars['Decimal']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  createdById: Scalars['UUID']['output'];
+  creator: UserEntity;
+  description?: Maybe<Scalars['String']['output']>;
+  duration?: Maybe<ServiceDurationEntity>;
+  id: Scalars['ID']['output'];
+  images?: Maybe<Array<ImageEntity>>;
+  laborRates?: Maybe<Array<ServiceLabourEntity>>;
+  markup?: Maybe<MarkupEntity>;
+  materials?: Maybe<Array<ServiceMaterialEntity>>;
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedById?: Maybe<Scalars['UUID']['output']>;
+  modifier?: Maybe<UserEntity>;
+  name: Scalars['String']['output'];
+  owner: UserEntity;
+  price: Scalars['Decimal']['output'];
+  service?: Maybe<ServiceEntity>;
+  serviceCategory?: Maybe<ServiceCategoryEntity>;
+  serviceCategoryId: Scalars['ID']['output'];
+  serviceCreationType: ServiceCreationType;
+  serviceId: Scalars['ID']['output'];
+  taxRate?: Maybe<TaxRateEntity>;
+  unit?: Maybe<Scalars['Decimal']['output']>;
+  unitType?: Maybe<Scalars['String']['output']>;
+  useCalculatedPrice: Scalars['Boolean']['output'];
+  warranties: Array<WarrantyEntity>;
+  warrantyIds?: Maybe<Array<Scalars['ID']['output']>>;
+};
+
+/** A connection to a list of items. */
+export type ServiceCategoriesConnection = {
+  __typename?: 'ServiceCategoriesConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<ServiceCategoriesEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<ServiceCategoryEntity>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type ServiceCategoriesEdge = {
+  __typename?: 'ServiceCategoriesEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: ServiceCategoryEntity;
+};
+
+export type ServiceCategoryEntity = Node & {
+  __typename?: 'ServiceCategoryEntity';
+  createdAt: Scalars['DateTime']['output'];
+  creator: UserEntity;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  images?: Maybe<Array<ImageEntity>>;
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifier?: Maybe<UserEntity>;
+  name: Scalars['String']['output'];
+  owner: UserEntity;
+  parentServiceCategory?: Maybe<ServiceCategoryEntity>;
+  parentServiceCategoryId?: Maybe<Scalars['ID']['output']>;
+  serviceCategories: Array<ServiceCategoryEntity>;
+  services: Array<ServiceEntity>;
+};
+
+export type ServiceCategoryEntityFilter = {
+  AND?: InputMaybe<Array<ServiceCategoryEntityFilter>>;
+  OR?: InputMaybe<Array<ServiceCategoryEntityFilter>>;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  createdAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  createdAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  createdById?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_gt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_gte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  createdById_lt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_lte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  createdById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  createdById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  description_contains?: InputMaybe<Scalars['String']['input']>;
+  description_ends_with?: InputMaybe<Scalars['String']['input']>;
+  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  description_not?: InputMaybe<Scalars['String']['input']>;
+  description_not_contains?: InputMaybe<Scalars['String']['input']>;
+  description_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  description_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  description_starts_with?: InputMaybe<Scalars['String']['input']>;
+  images_all?: InputMaybe<ImageEntityFilter>;
+  images_any?: InputMaybe<Scalars['Boolean']['input']>;
+  images_none?: InputMaybe<ImageEntityFilter>;
+  images_some?: InputMaybe<ImageEntityFilter>;
+  modifiedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  modifiedAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  modifiedAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  modifiedById?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_gt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_gte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  modifiedById_lt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_lte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  modifiedById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  modifiedById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  name_starts_with?: InputMaybe<Scalars['String']['input']>;
+  serviceCategoryIds_all?: InputMaybe<ObjectIdFilter>;
+  serviceCategoryIds_any?: InputMaybe<Scalars['Boolean']['input']>;
+  serviceCategoryIds_none?: InputMaybe<ObjectIdFilter>;
+  serviceCategoryIds_some?: InputMaybe<ObjectIdFilter>;
+  serviceIds_all?: InputMaybe<ObjectIdFilter>;
+  serviceIds_any?: InputMaybe<Scalars['Boolean']['input']>;
+  serviceIds_none?: InputMaybe<ObjectIdFilter>;
+  serviceIds_some?: InputMaybe<ObjectIdFilter>;
+  userOwnerId?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_gt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_gte?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  userOwnerId_lt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_lte?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_gt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_gte?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  userOwnerId_not_lt?: InputMaybe<Scalars['UUID']['input']>;
+  userOwnerId_not_lte?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type ServiceCategoryEntitySort = {
+  createdAt?: InputMaybe<SortOperationKind>;
+  createdById?: InputMaybe<SortOperationKind>;
+  description?: InputMaybe<SortOperationKind>;
+  modifiedAt?: InputMaybe<SortOperationKind>;
+  modifiedById?: InputMaybe<SortOperationKind>;
+  name?: InputMaybe<SortOperationKind>;
+  userOwnerId?: InputMaybe<SortOperationKind>;
+};
+
+export enum ServiceCreationType {
+  Dynamic = 'DYNAMIC',
+  Fixed = 'FIXED'
+}
+
+export type ServiceDurationEntity = {
+  __typename?: 'ServiceDurationEntity';
+  durationRangeFrom: Scalars['Decimal']['output'];
+  durationRangeTo?: Maybe<Scalars['Decimal']['output']>;
+  ranges?: Maybe<Array<RangeTierUnitEntity>>;
+  ratio?: Maybe<Scalars['Decimal']['output']>;
+  type: DurationType;
+};
+
+export type ServiceDurationRequestInput = {
+  durationRangeFrom: Scalars['Decimal']['input'];
+  durationRangeTo?: InputMaybe<Scalars['Decimal']['input']>;
+  ranges?: InputMaybe<Array<RangeTierUnitRequestInput>>;
+  ratio?: InputMaybe<Scalars['Decimal']['input']>;
+  type: DurationType;
+};
+
+export type ServiceEntity = Node & {
+  __typename?: 'ServiceEntity';
+  additionalCosts?: Maybe<Array<AdditionalServiceCostEntity>>;
+  allowOnlineBooking: Scalars['Boolean']['output'];
+  bundles: Array<ServiceBundleEntity>;
+  cost: Scalars['Decimal']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  createdById: Scalars['UUID']['output'];
+  creator: UserEntity;
+  description?: Maybe<Scalars['String']['output']>;
+  duration?: Maybe<ServiceDurationEntity>;
+  id: Scalars['ID']['output'];
+  images?: Maybe<Array<ImageEntity>>;
+  laborRates?: Maybe<Array<ServiceLabourEntity>>;
+  markup?: Maybe<MarkupEntity>;
+  materials?: Maybe<Array<ServiceMaterialEntity>>;
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedById?: Maybe<Scalars['UUID']['output']>;
+  modifier?: Maybe<UserEntity>;
+  name: Scalars['String']['output'];
+  owner: UserEntity;
+  price: Scalars['Decimal']['output'];
+  serviceCategory?: Maybe<ServiceCategoryEntity>;
+  serviceCreationType: ServiceCreationType;
+  taxRate?: Maybe<TaxRateEntity>;
+  unit?: Maybe<Scalars['Decimal']['output']>;
+  unitType?: Maybe<Scalars['String']['output']>;
+  useCalculatedPrice: Scalars['Boolean']['output'];
+  warranties: Array<WarrantyEntity>;
+};
+
+export type ServiceLabourEntity = {
+  __typename?: 'ServiceLabourEntity';
+  laborRate?: Maybe<LaborRateEntity>;
+  quantity?: Maybe<Scalars['Decimal']['output']>;
+  ranges?: Maybe<Array<RangeTierUnitEntity>>;
+  ratio?: Maybe<Scalars['Decimal']['output']>;
+};
+
+export type ServiceLabourRequestInput = {
+  labourRateId: Scalars['ID']['input'];
+  quantity?: InputMaybe<Scalars['Decimal']['input']>;
+  ranges?: InputMaybe<Array<RangeTierUnitRequestInput>>;
+  ratio?: InputMaybe<Scalars['Decimal']['input']>;
+};
+
+export type ServiceMaterialEntity = {
+  __typename?: 'ServiceMaterialEntity';
+  material?: Maybe<MaterialEntity>;
+  quantity?: Maybe<Scalars['Decimal']['output']>;
+  ranges?: Maybe<Array<RangeTierUnitEntity>>;
+  ratio?: Maybe<Scalars['Decimal']['output']>;
+};
+
+export type ServiceMaterialRequestInput = {
+  materialId: Scalars['ID']['input'];
+  quantity?: InputMaybe<Scalars['Decimal']['input']>;
+  ranges?: InputMaybe<Array<RangeTierUnitRequestInput>>;
+  ratio?: InputMaybe<Scalars['Decimal']['input']>;
+};
+
 export type SignUpResponse = {
   __typename?: 'SignUpResponse';
   codeDeliveryDetails?: Maybe<CodeDeliveryDetailsType>;
@@ -1127,6 +2118,44 @@ export enum SortOperationKind {
   Asc = 'ASC',
   Desc = 'DESC'
 }
+
+export type TaxRateEntity = Node & {
+  __typename?: 'TaxRateEntity';
+  createdAt: Scalars['DateTime']['output'];
+  createdById: Scalars['UUID']['output'];
+  creator: UserEntity;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedById?: Maybe<Scalars['UUID']['output']>;
+  modifier?: Maybe<UserEntity>;
+  name: Scalars['String']['output'];
+  owner: UserEntity;
+  percentageRate: Scalars['Decimal']['output'];
+  userOwnerId: Scalars['UUID']['output'];
+};
+
+export enum TaxRateType {
+  Except = 'EXCEPT',
+  Inclusive = 'INCLUSIVE',
+  SpecificRate = 'SPECIFIC_RATE'
+}
+
+export type UploadEntity = {
+  __typename?: 'UploadEntity';
+  byteSize?: Maybe<Scalars['Long']['output']>;
+  contentType?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  createdById: Scalars['UUID']['output'];
+  creator: UserEntity;
+  description?: Maybe<Scalars['String']['output']>;
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedById?: Maybe<Scalars['UUID']['output']>;
+  modifier?: Maybe<UserEntity>;
+  name: Scalars['String']['output'];
+  s3Key: Scalars['String']['output'];
+  url: Scalars['String']['output'];
+};
 
 export type UserEntity = Node & {
   __typename?: 'UserEntity';
@@ -1341,9 +2370,66 @@ export type ViewportEntitySort = {
   southwest?: InputMaybe<LocationEntitySort>;
 };
 
+export type ViewportRequest = {
+  __typename?: 'ViewportRequest';
+  northeast: LocationRequest;
+  southwest: LocationRequest;
+};
+
+export type ViewportRequestFilter = {
+  AND?: InputMaybe<Array<ViewportRequestFilter>>;
+  OR?: InputMaybe<Array<ViewportRequestFilter>>;
+  northeast?: InputMaybe<LocationRequestFilter>;
+  southwest?: InputMaybe<LocationRequestFilter>;
+};
+
 export type ViewportRequestInput = {
   northeast: LocationRequestInput;
   southwest: LocationRequestInput;
+};
+
+export type ViewportRequestSort = {
+  northeast?: InputMaybe<LocationRequestSort>;
+  southwest?: InputMaybe<LocationRequestSort>;
+};
+
+export type WarrantyDurationEntity = {
+  __typename?: 'WarrantyDurationEntity';
+  duration: Scalars['Int']['output'];
+  durationType: WarrantyDurationType;
+};
+
+export type WarrantyDurationRequestInput = {
+  duration: Scalars['Int']['input'];
+  durationType: WarrantyDurationType;
+};
+
+export enum WarrantyDurationType {
+  Days = 'DAYS',
+  Lifetime = 'LIFETIME',
+  Months = 'MONTHS',
+  Weeks = 'WEEKS',
+  Years = 'YEARS'
+}
+
+export type WarrantyEntity = Node & {
+  __typename?: 'WarrantyEntity';
+  createdAt: Scalars['DateTime']['output'];
+  createdById: Scalars['UUID']['output'];
+  creator: UserEntity;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  modifiedAt?: Maybe<Scalars['DateTime']['output']>;
+  modifiedById?: Maybe<Scalars['UUID']['output']>;
+  modifier?: Maybe<UserEntity>;
+  name: Scalars['String']['output'];
+  owner: UserEntity;
+  price?: Maybe<Scalars['Decimal']['output']>;
+  serviceIds?: Maybe<Array<Scalars['ID']['output']>>;
+  terms: Scalars['String']['output'];
+  userOwnerId: Scalars['UUID']['output'];
+  warrantyDuration: WarrantyDurationEntity;
+  warrantyType?: Maybe<Scalars['String']['output']>;
 };
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -1413,7 +2499,7 @@ export type CustomerQueryVariables = Exact<{
 }>;
 
 
-export type CustomerQuery = { __typename?: 'Query', customer?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName?: string | null, alias?: string | null, customerType: string, companyName?: string | null, useCompanyName: boolean, status: CustomerStatus, createdAt: any, modifiedAt?: any | null, archived: boolean, customerRating?: any | null, tags?: Array<string> | null, creator: { __typename?: 'UserEntity', id: string, name: string }, modifier?: { __typename?: 'UserEntity', id: string, name: string } | null, reference?: { __typename?: 'ReferenceInfoEntity', referenceType: ReferenceType, customer?: { __typename?: 'CustomerEntity', id: string, fullName?: string | null, customerReferenceNumber?: string | null, companyName?: string | null, useCompanyName: boolean } | null, externalReference?: { __typename?: 'ExternalReferenceEntity', id: string, useCompanyName: boolean, companyName?: string | null, name: string } | null } | null, comments?: Array<{ __typename?: 'CommentEntity', comment?: string | null, uploadUrls: Array<string>, commentType: CommentType } | null> | null, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string, receiveNotifications: boolean }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string, receiveNotifications: boolean }> | null, properties?: Array<{ __typename?: 'PropertyEntity', id: string, createdAt: any, modifiedAt?: any | null, property: { __typename?: 'PlaceEntity', placeId: string, address: string }, billing?: { __typename?: 'PlaceEntity', placeId: string, address: string } | null, creator: { __typename?: 'UserEntity', name: string }, modifier?: { __typename?: 'UserEntity', name: string } | null } | null> | null } | null };
+export type CustomerQuery = { __typename?: 'Query', customer?: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, name?: string | null, surname?: string | null, fullName?: string | null, alias?: string | null, customerType: string, companyName?: string | null, useCompanyName: boolean, status: CustomerStatus, createdAt: any, modifiedAt?: any | null, archived: boolean, customerRating?: any | null, tags?: Array<string> | null, creator: { __typename?: 'UserEntity', id: string, name: string }, modifier?: { __typename?: 'UserEntity', id: string, name: string } | null, reference?: { __typename?: 'ReferenceInfoEntity', referenceType: ReferenceType, customer?: { __typename?: 'CustomerEntity', id: string, fullName?: string | null, customerReferenceNumber?: string | null, companyName?: string | null, useCompanyName: boolean } | null, externalReference?: { __typename?: 'ExternalReferenceEntity', id: string, useCompanyName: boolean, companyName?: string | null, name: string } | null } | null, comments: Array<{ __typename?: 'CommentEntity', comment?: string | null, commentType: CommentType }>, emails?: Array<{ __typename?: 'EmailEntity', email: string, emailType: string, receiveNotifications: boolean }> | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string, phoneNumberType: string, receiveNotifications: boolean }> | null, properties: Array<{ __typename?: 'PropertyEntity', id: string, createdAt: any, modifiedAt?: any | null, property: { __typename?: 'PlaceRequestEntity', placeId: string, address: string }, billing?: { __typename?: 'PlaceRequestEntity', placeId: string, address: string } | null, creator: { __typename?: 'UserEntity', name: string }, modifier?: { __typename?: 'UserEntity', name: string } | null }> } | null };
 
 export type CustomersPagedQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
@@ -1421,7 +2507,7 @@ export type CustomersPagedQueryVariables = Exact<{
 }>;
 
 
-export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, status: CustomerStatus, fullName?: string | null, tags?: Array<string> | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string }> | null, properties?: Array<{ __typename?: 'PropertyEntity', property: { __typename?: 'PlaceEntity', address: string } } | null> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+export type CustomersPagedQuery = { __typename?: 'Query', customers?: { __typename?: 'CustomersConnection', edges?: Array<{ __typename?: 'CustomersEdge', node: { __typename?: 'CustomerEntity', id: string, customerReferenceNumber?: string | null, title?: string | null, status: CustomerStatus, fullName?: string | null, tags?: Array<string> | null, name?: string | null, surname?: string | null, modifiedAt?: any | null, phoneNumbers?: Array<{ __typename?: 'PhoneNumberEntity', phoneNumber: string }> | null, properties: Array<{ __typename?: 'PropertyEntity', property: { __typename?: 'PlaceRequestEntity', address: string } }> } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 export type SearchCustomerReferencesQueryVariables = Exact<{
   request: SearchReferenceRequestInput;
@@ -1786,7 +2872,7 @@ export type AddNewCustomerMutationHookResult = ReturnType<typeof useAddNewCustom
 export type AddNewCustomerMutationResult = Apollo.MutationResult<AddNewCustomerMutation>;
 export type AddNewCustomerMutationOptions = Apollo.BaseMutationOptions<AddNewCustomerMutation, AddNewCustomerMutationVariables>;
 export const CustomerDocument = gql`
-    query customer($id: ID!) {
+    query Customer($id: ID!) {
   customer(id: $id) {
     id
     customerReferenceNumber
@@ -1829,7 +2915,6 @@ export const CustomerDocument = gql`
     }
     comments {
       comment
-      uploadUrls
       commentType
     }
     emails {

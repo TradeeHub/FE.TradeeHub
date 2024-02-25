@@ -95,7 +95,7 @@ const SelectWithInputForm = <
           field={field}
           // Removed autoFocus to prevent automatic focusing
           placeholder={inputPlaceHolder}
-          value={form.getValues(field.name) as string}
+          // value={form.getValues(field.name) as string}
         />
       ) : (
         <Select

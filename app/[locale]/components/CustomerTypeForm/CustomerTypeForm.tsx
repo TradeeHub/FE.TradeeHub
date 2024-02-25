@@ -38,7 +38,7 @@ const CustomerTypeForm: React.FC<CustomerTypeFormProps> = ({ form }) => {
   // Use useEffect to watch for changes in customerType
   useEffect(() => {
     // Check if the current customerType is in the list of hiddenCompanyTypes
-    if (hiddenCompanyTypes.includes(customerType)) {
+    if (hiddenCompanyTypes.includes(customerType ?? '')) {
       // Reset company name and useCompanyName checkbox values
       setValue('companyName', '');
       setValue('useCompanyName', false);
