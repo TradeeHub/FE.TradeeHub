@@ -1,5 +1,8 @@
 {
     "terminal.integrated.env.windows": {
         "SSH_AUTH_SOCK": "$env:SSH_AUTH_SOCK"
-    }
+    },
+    "cSpell.words": [
+        "pricebook"
+    ]
 }

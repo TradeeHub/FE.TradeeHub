@@ -25,6 +25,8 @@ interface LinkItem {
 import { useLocale } from 'next-intl';
 import { useTranslations } from 'next-intl';
 import ChangeLanguage from '@/app/[locale]/components/ChangeLanguage';
+import { IoBookOutline } from 'react-icons/io5';
+import { IoBookSharp } from 'react-icons/io5';
 
 const SideBar = () => {
   const t = useTranslations('general');
@@ -81,6 +83,14 @@ const SideBar = () => {
       path: `/${locale}/dashboard/analytics`,
       icon: PiChartPieSliceThin,
       inactiveIcon: PiChartPieSliceFill,
+    },
+    {
+      title: t('pricebook'),
+      path: `/${locale}/dashboard/pricebook`,
+      icon: IoBookOutline,
+      inactiveIcon: IoBookSharp
+      
+      ,
     },
   ];
 
