@@ -88,9 +88,7 @@ const SideBar = () => {
       title: t('pricebook'),
       path: `/${locale}/dashboard/pricebook`,
       icon: IoBookOutline,
-      inactiveIcon: IoBookSharp
-      
-      ,
+      inactiveIcon: IoBookSharp,
     },
   ];
 

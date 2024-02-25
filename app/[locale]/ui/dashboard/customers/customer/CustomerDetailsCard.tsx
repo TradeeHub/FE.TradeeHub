@@ -53,25 +53,23 @@ const CustomerDetailsCard = ({ customer }: { customer: CustomerEntity }) => {
 
   return (
     <>
-      <Card
-  className='min-h-[360px] max-h-[395px] w-[480px] flex flex-col overflow-hidden'
-      >
+      <Card className='flex max-h-[395px] min-h-[360px] w-[480px] flex-col overflow-hidden'>
         <CardHeader className='pb-0'>
           <CardTitle className='border-b border-gray-800/10 pb-2'>
             {' '}
             {/* Consistent border */}
             <div className='flex items-center gap-x-4'>
-         {customer.useCompanyName ? (
-            <BriefcaseIcon
-              className='h-12 w-12 text-gray-600'
-              aria-hidden='true'
-            />
-          ) : (
-            <UserCircleIcon
-              className='h-12 w-12 text-gray-600'
-              aria-hidden='true'
-            />
-          )}
+              {customer.useCompanyName ? (
+                <BriefcaseIcon
+                  className='h-12 w-12 text-gray-600'
+                  aria-hidden='true'
+                />
+              ) : (
+                <UserCircleIcon
+                  className='h-12 w-12 text-gray-600'
+                  aria-hidden='true'
+                />
+              )}
 
               <div>
                 <h3 className='text-lg font-semibold'>

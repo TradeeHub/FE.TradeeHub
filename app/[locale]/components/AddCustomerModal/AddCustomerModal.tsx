@@ -282,8 +282,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
   };
 
   useEffect(() => {
-    const customer =
-      addNewCustomerResponse?.addNewCustomer as CustomerEntity;
+    const customer = addNewCustomerResponse?.addNewCustomer as CustomerEntity;
     if (customer) {
       handleClose();
       toast({
