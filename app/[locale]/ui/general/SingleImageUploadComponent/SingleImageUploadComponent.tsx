@@ -94,18 +94,19 @@ const SingleImageUploadComponent = ({ control, name }) => {
           </div>
         </div>
       )}
-      {preview && (
-        <div className='relative' onClick={handleUploadAreaClick}>
-          <img src={preview} alt='Preview' className='h-32 w-full object-cover rounded-lg' />
-          <button
-            type='button'
-            className='absolute top-0 right-0 bg-black p-1 rounded-full text-white'
-            onClick={handleRemoveImage}
-          >
-            <HiX className='h-4 w-4' />
-          </button>
-        </div>
-      )}
+    {preview && (
+    <div className='relative' onClick={handleUploadAreaClick}>
+        <img src={preview} alt='Preview' className='h-32 w-full object-contain rounded-lg' />
+        <button
+        type='button'
+        className='absolute top-0 right-0 bg-black p-1 rounded-full text-white'
+        onClick={handleRemoveImage}
+        >
+        <HiX className='h-4 w-4' />
+        </button>
+    </div>
+    )}
+
     </div>
   );
 };

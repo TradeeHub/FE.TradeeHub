@@ -24,6 +24,10 @@ import { Input } from '@/components/ui/input';
 import SingleImageUploadComponent from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
+import { AuthInputWithIcon } from '@/app/[locale]/ui/auth/AuthInputWithIcon/AuthInputWithIcon';
+import { SimpleInputForm } from '@/app/[locale]/ui/general/SimpleInputForm/SimpleInputForm';
+import { CustomButton } from '@/app/[locale]/components/CustomButton/CustomButton';
+import { Button } from '@/components/ui/button';
 
 // Assuming AddNewServiceCategoryRequestInput is correctly imported and usable here
 const formSchema = z.object({
@@ -63,13 +67,15 @@ return (
               control={form.control}
               name='name'
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Service Category Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Enter Service Category Name' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                    <FormItem>
+                <FormControl>
+                  <SimpleInputForm
+                    field={field}
+                    // autoFocus={true}
+                    placeholder='Category Name'
+                  />
+                </FormControl>
+              </FormItem>
               )}
             />
 
@@ -99,7 +105,6 @@ return (
               name='description'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea placeholder='Please enter a service category description' {...field} />
                   </FormControl>
@@ -110,19 +115,22 @@ return (
           </div>
           
           <DialogFooter className='col-span-3 flex justify-between'>
-            <button
-              type='button'
-              onClick={onClose}
-              className='rounded-md bg-gray-500 px-4 py-2 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2'
-            >
-              Close
-            </button>
-            <button
-              type='submit'
-              className='rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
-            >
-              Save
-            </button>
+              <Button
+                type='button'
+                variant='ghost'
+                size='default'
+                // onClick={addPhoneNumber}
+              >
+                Cancel
+              </Button>
+             <Button
+                type='button'
+                variant='default'
+                size='default'
+                // onClick={addPhoneNumber}
+              >
+                Save
+              </Button>
           </DialogFooter>
         </form>
       </Form>
