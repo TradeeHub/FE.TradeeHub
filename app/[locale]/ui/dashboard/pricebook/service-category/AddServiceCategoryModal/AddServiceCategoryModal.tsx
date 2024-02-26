@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import ImageUploadComponent from '@/app/[locale]/ui/general/ImageUploadComponent/ImageUploadComponent';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Dialog,
@@ -15,18 +14,12 @@ import {
   FormItem,
   FormLabel,
   FormControl,
-  FormDescription,
   FormMessage,
   Form,
 } from '@/components/ui/form';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import SingleImageUploadComponent from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Link from 'next/link';
-import { AuthInputWithIcon } from '@/app/[locale]/ui/auth/AuthInputWithIcon/AuthInputWithIcon';
+import { Select, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SimpleInputForm } from '@/app/[locale]/ui/general/SimpleInputForm/SimpleInputForm';
-import { CustomButton } from '@/app/[locale]/components/CustomButton/CustomButton';
 import { Button } from '@/components/ui/button';
 
 // Assuming AddNewServiceCategoryRequestInput is correctly imported and usable here
@@ -42,14 +35,27 @@ const AddServiceCategoryModal = ({ isOpen, onClose, onAdded, modalName }) => {
     resolver: zodResolver(formSchema),
   });
 
+   const handleClose = () => {
+    form.reset();
+    onClose();
+  };
+
   const onSubmit = (data) => {
     console.log(data);
     // Here, you would handle your form submission, such as sending data to an API
     onAdded(); // Callback after adding
   };
 
+    const handleAddCustomer = async (formData: z.infer<typeof formSchema>) => {
+    console.log('formData', formData);
+
+  
+
+    addNewCustomer(customerData);
+  };
+
 return (
-  <Dialog open={isOpen} onOpenChange={onClose}>
+  <Dialog open={isOpen} onOpenChange={handleClose}>
     <DialogContent className='w-full max-w-2xl p-6'>
       <DialogHeader className='mb-4'>
         <DialogTitle className='text-center'>Create New Service Category</DialogTitle>
@@ -121,7 +127,7 @@ return (
                 type='button'
                 variant='ghost'
                 size='default'
-                // onClick={addPhoneNumber}
+                onClick={handleClose}
               >
                 Cancel
               </Button>
@@ -129,7 +135,7 @@ return (
                 type='button'
                 variant='default'
                 size='default'
-                // onClick={addPhoneNumber}
+                onClick={form.handleSubmit(handleAddCustomer)}
               >
                 Save
               </Button>
@@ -139,10 +145,6 @@ return (
     </DialogContent>
   </Dialog>
 );
-
-
-
-
 
 };
 
