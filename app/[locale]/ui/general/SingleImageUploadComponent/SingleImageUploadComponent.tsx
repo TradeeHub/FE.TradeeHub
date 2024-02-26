@@ -1,12 +1,19 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useController } from 'react-hook-form';
+import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 import { HiX } from 'react-icons/hi';
 import { MdOutlineAddPhotoAlternate } from 'react-icons/md';
 
-const SingleImageUploadComponent = ({ control, name }) => {
-  const { field } = useController({ control, name });
+const SingleImageUploadComponent = <
+  TFieldValues extends FieldValues,
+  TName extends FieldPath<TFieldValues>,
+>({
+  field,
+}: {
+  field: ControllerRenderProps<TFieldValues, TName>;
+}) => {
+  // const { field } = useController({ field });
   const [dragOver, setDragOver] = useState(false);
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const preview = useMemo(() => {
     if (field.value && field.value[0]) {
@@ -24,26 +31,26 @@ const SingleImageUploadComponent = ({ control, name }) => {
     };
   }, [preview]);
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (!dragOver) {
       setDragOver(true);
     }
   };
 
-  const handleDragLeave = (e) => {
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     // Check if the mouse is actually leaving the upload area, not just moving over a child element
-    if (e.currentTarget.contains(e.relatedTarget)) {
+    if (e.currentTarget.contains(e.relatedTarget as Node)) {
       return; // If moving to a child element, don't change the state
     }
     setDragOver(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setDragOver(false);
-    const newFiles = e.dataTransfer.files;
+    const newFiles = Array.from(e.dataTransfer.files); // Convert FileList to array
     if (newFiles.length) {
       const updatedFiles = field.value
         ? [...field.value, ...newFiles]
@@ -52,20 +59,20 @@ const SingleImageUploadComponent = ({ control, name }) => {
     }
   };
 
-  const handleFileChange = (e) => {
-    const newFile = e.target.files[0];
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFile = e.target.files?.[0];
     if (newFile) {
       field.onChange([newFile]);
     }
   };
 
-  const handleRemoveImage = (e) => {
+  const handleRemoveImage = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     field.onChange([]);
   };
 
-  const handleUploadAreaClick = (e) => {
-    if (!preview) {
+  const handleUploadAreaClick = () => {
+    if (!preview && fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
@@ -79,6 +86,7 @@ const SingleImageUploadComponent = ({ control, name }) => {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
+          style={{ position: 'relative' }} // Add relative positioning here
         >
           <input
             ref={fileInputRef}
@@ -87,12 +95,31 @@ const SingleImageUploadComponent = ({ control, name }) => {
             onChange={handleFileChange}
             className='h-full w-full cursor-pointer opacity-0'
             accept='image/*'
-            style={{ position: 'absolute', zIndex: -1 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              width: '100%',
+              height: '100%',
+              cursor: 'pointer',
+              opacity: 0,
+              pointerEvents: 'none',
+            }} // Add pointer-events: none
           />
-          <div className='text-center'>
+          <div
+            className='text-center'
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
             <MdOutlineAddPhotoAlternate className='mx-auto h-8 w-8 text-gray-400' />
             <p className='mt-1 text-sm text-gray-400'>
-              Drag 'n' drop a file here, or click to select a file
+              Drag 'n' drop, or click to select
             </p>
           </div>
         </div>

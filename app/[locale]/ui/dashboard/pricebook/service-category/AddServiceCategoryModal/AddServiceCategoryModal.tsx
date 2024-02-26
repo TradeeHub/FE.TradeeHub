@@ -28,6 +28,8 @@ import { SimpleInputForm } from '@/app/[locale]/ui/general/SimpleInputForm/Simpl
 import { Button } from '@/components/ui/button';
 import { useAddNewServiceCategory } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import { AddNewServiceCategoryRequestInput } from '@/generatedGraphql';
+import { useEffect } from 'react';
+import { useToast } from '@/components/ui/use-toast';
 
 // Assuming AddNewServiceCategoryRequestInput is correctly imported and usable here
 const formSchema = z.object({
@@ -37,10 +39,22 @@ const formSchema = z.object({
   parentServiceCategoryId: z.string().optional(),
 });
 
-const AddServiceCategoryModal = ({ isOpen, onClose, onAdded, modalName }) => {
+const AddServiceCategoryModal = ({
+  isOpen,
+  onClose,
+  onAdded,
+  modalName,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onAdded: () => void;
+  modalName: string;
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const { toast } = useToast();
 
   const {
     addNewServiceCategory,
@@ -53,23 +67,33 @@ const AddServiceCategoryModal = ({ isOpen, onClose, onAdded, modalName }) => {
     onClose();
   };
 
-  // const onSubmit = (data) => {
-  //   console.log(data);
-  //   // Here, you would handle your form submission, such as sending data to an API
-  //   onAdded(); // Callback after adding
-  // };
+  useEffect(() => {
+    const resp = addNewServiceCategoryResponse?.addNewServiceCategory;
+    if (resp?.id) {
+      handleClose();
+      toast({
+        title: 'Successfully Created New Service Category',
+        description: (
+          <span>
+            You have successfully created a new service category{' '}
+            <b>
+              <u>{resp.name}</u>
+            </b>
+          </span>
+        ),
+      });
+    }
+  }, [addNewServiceCategoryResponse]);
 
   const handleSave = async (formData: z.infer<typeof formSchema>) => {
-    console.log('formData', formData);
-
-     const request : AddNewServiceCategoryRequestInput = {
+    const request: AddNewServiceCategoryRequestInput = {
       images: formData.images,
       name: formData.name,
       description: formData.description,
       parentServiceCategoryId: formData.parentServiceCategoryId,
     };
 
-console.log('request', request);
+    console.log('request', request);
     addNewServiceCategory(request);
   };
 
@@ -77,17 +101,22 @@ console.log('request', request);
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className='w-full max-w-2xl p-6'>
         <DialogHeader className='mb-4'>
-          <DialogTitle className='text-center'>
-            Create New Service Category
-          </DialogTitle>
+          <DialogTitle className='text-center'>{modalName}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
           <form className='grid grid-cols-3 gap-4'>
             <div className='col-span-1'>
-              <SingleImageUploadComponent
+              <FormField
                 control={form.control}
                 name='images'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <SingleImageUploadComponent field={field} />
+                    </FormControl>
+                  </FormItem>
+                )}
               />
             </div>
 
@@ -169,8 +198,9 @@ console.log('request', request);
                 variant='default'
                 size='default'
                 onClick={form.handleSubmit(handleSave)}
+                disabled={addNewServiceCategoryLoading} // Disable button when loading
               >
-                Save
+                {addNewServiceCategoryLoading ? 'Saving...' : 'Save'}
               </Button>
             </DialogFooter>
           </form>

@@ -2,7 +2,7 @@
 // ^ this file needs the "use client" pragma
 import { onError } from '@apollo/client/link/error';
 import { ApolloLink } from '@apollo/client';
-import  createUploadLink  from 'apollo-upload-client/createUploadLink.mjs';
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 
 import {
   ApolloNextAppProvider,
@@ -19,8 +19,8 @@ function makeClient() {
     credentials: 'include',
     fetchOptions: { cache: 'no-store' },
     headers: {
-    'graphql-preflight': '',
-     },
+      'graphql-preflight': '',
+    },
   });
 
   const errorLink = onError(({ graphQLErrors }) => {
