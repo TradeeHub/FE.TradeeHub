@@ -15,18 +15,19 @@ const ImageUploadComponent = ({ control, name }) => {
     }
 
     // Generate previews for new files
-    const filePreviews = Array.from(field.value).map(file =>
-      typeof file === 'string' ? file : URL.createObjectURL(file)
+    const filePreviews = Array.from(field.value).map((file) =>
+      typeof file === 'string' ? file : URL.createObjectURL(file),
     );
 
     setPreviews(filePreviews);
 
     // Cleanup function for revoking URLs
-    return () => filePreviews.forEach(url => {
-      if (url.startsWith('blob:')) {
-        URL.revokeObjectURL(url);
-      }
-    });
+    return () =>
+      filePreviews.forEach((url) => {
+        if (url.startsWith('blob:')) {
+          URL.revokeObjectURL(url);
+        }
+      });
   }, [field.value]);
 
   const handleDragOver = (e) => {
@@ -44,7 +45,9 @@ const ImageUploadComponent = ({ control, name }) => {
     setDragOver(false);
     const newFiles = e.dataTransfer.files;
     if (newFiles.length) {
-      const updatedFiles = field.value ? [...field.value, ...newFiles] : [...newFiles];
+      const updatedFiles = field.value
+        ? [...field.value, ...newFiles]
+        : [...newFiles];
       field.onChange(updatedFiles);
     }
   };
@@ -52,7 +55,9 @@ const ImageUploadComponent = ({ control, name }) => {
   const handleFilesChange = (e) => {
     const newFiles = e.target.files;
     if (newFiles.length) {
-      const updatedFiles = field.value ? [...field.value, ...newFiles] : [...newFiles];
+      const updatedFiles = field.value
+        ? [...field.value, ...newFiles]
+        : [...newFiles];
       field.onChange(updatedFiles);
     }
   };
@@ -70,7 +75,7 @@ const ImageUploadComponent = ({ control, name }) => {
   return (
     <div className='space-y-4'>
       <div
-        className={`flex justify-center items-center w-full h-32 bg-gray-50 rounded-lg border-2 ${dragOver ? 'border-indigo-500' : 'border-gray-300'} border-dashed cursor-pointer`}
+        className={`flex h-32 w-full items-center justify-center rounded-lg border-2 bg-gray-50 ${dragOver ? 'border-indigo-500' : 'border-gray-300'} cursor-pointer border-dashed`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -79,11 +84,11 @@ const ImageUploadComponent = ({ control, name }) => {
           type='file'
           multiple
           onChange={handleFilesChange}
-          className='absolute w-full h-full opacity-0 cursor-pointer'
+          className='absolute h-full w-full cursor-pointer opacity-0'
           accept='image/*'
         />
         <div className='text-center'>
-          <MdOutlineAddPhotoAlternate className='mx-auto text-gray-400 h-8 w-8' />
+          <MdOutlineAddPhotoAlternate className='mx-auto h-8 w-8 text-gray-400' />
           <p className='mt-1 text-sm text-gray-400'>
             Drag 'n' drop some files here, or click to select files
           </p>
@@ -92,10 +97,14 @@ const ImageUploadComponent = ({ control, name }) => {
       <div className='flex flex-wrap gap-2'>
         {previews.map((preview, index) => (
           <div key={index} className='relative'>
-            <img src={preview} alt={`preview-${index}`} className='h-24 w-24 object-cover rounded-md' />
+            <img
+              src={preview}
+              alt={`preview-${index}`}
+              className='h-24 w-24 rounded-md object-cover'
+            />
             <button
               type='button'
-              className='absolute top-0 right-0 bg-red-600 p-1 rounded-full text-white'
+              className='absolute right-0 top-0 rounded-full bg-red-600 p-1 text-white'
               onClick={() => handleRemoveImage(index)}
             >
               <HiX className='h-4 w-4' />

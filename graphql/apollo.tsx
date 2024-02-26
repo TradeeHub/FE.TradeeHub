@@ -6,7 +6,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const GRAPHQL_ENDPOINT = 'http://localhost:5269/graphql/';
+const GRAPHQL_ENDPOINT = 'http://localhost:5020/graphql/';
 
 const StrapiApolloProvider = ({ children }: Props) => {
   const client = new ApolloClient({

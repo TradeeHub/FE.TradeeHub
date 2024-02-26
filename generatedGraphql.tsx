@@ -2516,6 +2516,13 @@ export type SearchCustomerReferencesQueryVariables = Exact<{
 
 export type SearchCustomerReferencesQuery = { __typename?: 'Query', searchCustomerReferences: { __typename?: 'ReferenceTrackingResponse', customerNextCursor?: string | null, customerHasNextPage: boolean, externalNextCursor?: string | null, externalHasNextPage: boolean, references: Array<{ __typename?: 'ReferenceResponse', id: string, displayName: string, phoneNumber?: string | null, referenceType: ReferenceType }> } };
 
+export type AddNewServiceCategoryMutationVariables = Exact<{
+  input: AddNewServiceCategoryRequestInput;
+}>;
+
+
+export type AddNewServiceCategoryMutation = { __typename?: 'Mutation', addNewServiceCategory: { __typename?: 'ServiceCategoryEntity', name: string, id: string } };
+
 
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($input: ChangedForgottenPasswordRequestInput!) {
@@ -2967,7 +2974,7 @@ export const CustomerDocument = gql`
  *   },
  * });
  */
-export function useCustomerQuery(baseOptions: Apollo.QueryHookOptions<CustomerQuery, CustomerQueryVariables>) {
+export function useCustomerQuery(baseOptions: Apollo.QueryHookOptions<CustomerQuery, CustomerQueryVariables> & ({ variables: CustomerQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<CustomerQuery, CustomerQueryVariables>(CustomerDocument, options);
       }
@@ -3032,7 +3039,7 @@ export const CustomersPagedDocument = gql`
  *   },
  * });
  */
-export function useCustomersPagedQuery(baseOptions: Apollo.QueryHookOptions<CustomersPagedQuery, CustomersPagedQueryVariables>) {
+export function useCustomersPagedQuery(baseOptions: Apollo.QueryHookOptions<CustomersPagedQuery, CustomersPagedQueryVariables> & ({ variables: CustomersPagedQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<CustomersPagedQuery, CustomersPagedQueryVariables>(CustomersPagedDocument, options);
       }
@@ -3081,7 +3088,7 @@ export const SearchCustomerReferencesDocument = gql`
  *   },
  * });
  */
-export function useSearchCustomerReferencesQuery(baseOptions: Apollo.QueryHookOptions<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>) {
+export function useSearchCustomerReferencesQuery(baseOptions: Apollo.QueryHookOptions<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables> & ({ variables: SearchCustomerReferencesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>(SearchCustomerReferencesDocument, options);
       }
@@ -3097,3 +3104,37 @@ export type SearchCustomerReferencesQueryHookResult = ReturnType<typeof useSearc
 export type SearchCustomerReferencesLazyQueryHookResult = ReturnType<typeof useSearchCustomerReferencesLazyQuery>;
 export type SearchCustomerReferencesSuspenseQueryHookResult = ReturnType<typeof useSearchCustomerReferencesSuspenseQuery>;
 export type SearchCustomerReferencesQueryResult = Apollo.QueryResult<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>;
+export const AddNewServiceCategoryDocument = gql`
+    mutation AddNewServiceCategory($input: AddNewServiceCategoryRequestInput!) {
+  addNewServiceCategory(request: $input) {
+    name
+    id
+  }
+}
+    `;
+export type AddNewServiceCategoryMutationFn = Apollo.MutationFunction<AddNewServiceCategoryMutation, AddNewServiceCategoryMutationVariables>;
+
+/**
+ * __useAddNewServiceCategoryMutation__
+ *
+ * To run a mutation, you first call `useAddNewServiceCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddNewServiceCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addNewServiceCategoryMutation, { data, loading, error }] = useAddNewServiceCategoryMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddNewServiceCategoryMutation(baseOptions?: Apollo.MutationHookOptions<AddNewServiceCategoryMutation, AddNewServiceCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddNewServiceCategoryMutation, AddNewServiceCategoryMutationVariables>(AddNewServiceCategoryDocument, options);
+      }
+export type AddNewServiceCategoryMutationHookResult = ReturnType<typeof useAddNewServiceCategoryMutation>;
+export type AddNewServiceCategoryMutationResult = Apollo.MutationResult<AddNewServiceCategoryMutation>;
+export type AddNewServiceCategoryMutationOptions = Apollo.BaseMutationOptions<AddNewServiceCategoryMutation, AddNewServiceCategoryMutationVariables>;

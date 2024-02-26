@@ -1,7 +1,9 @@
 'use client';
 // ^ this file needs the "use client" pragma
 import { onError } from '@apollo/client/link/error';
-import { ApolloLink, HttpLink } from '@apollo/client';
+import { ApolloLink } from '@apollo/client';
+import  createUploadLink  from 'apollo-upload-client/createUploadLink.mjs';
+
 import {
   ApolloNextAppProvider,
   NextSSRInMemoryCache,
@@ -11,11 +13,14 @@ import {
 import authenticatedVar from './constants/authenticated';
 
 function makeClient() {
-  const httpLink = new HttpLink({
+  const httpLink = createUploadLink({
     // this needs to be an absolute url, as relative urls cannot be used in SSR
     uri: 'http://localhost:5020/graphql/',
     credentials: 'include',
     fetchOptions: { cache: 'no-store' },
+    headers: {
+    'graphql-preflight': '',
+     },
   });
 
   const errorLink = onError(({ graphQLErrors }) => {

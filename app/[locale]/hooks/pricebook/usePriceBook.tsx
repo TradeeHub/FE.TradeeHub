@@ -1,12 +1,11 @@
 import { useQuery } from '@apollo/client';
 import {
-  AddNewCustomerRequestInput,
   CustomerDocument,
   CustomerQuery,
   CustomerQueryVariables,
   CustomerEntity,
-  useAddNewCustomerMutation,
   AddNewServiceCategoryRequestInput,
+  useAddNewServiceCategoryMutation,
 } from '@/generatedGraphql';
 import { UseCustomerReturnType } from '@/app/[locale]/types/sharedTypes';
 
@@ -29,12 +28,15 @@ const useService = (customerId: string): UseCustomerReturnType => {
 };
 
 const useAddNewServiceCategory = () => {
-  const [addNewServiceCategoryMutation, { data, loading, error }] = useAddNewServiceCategoryMutation();
+  const [addNewServiceCategoryMutation, { data, loading, error }] =
+    useAddNewServiceCategoryMutation();
 
-  const addNewServiceCategory = async (input: AddNewServiceCategoryRequestInput) => {
+  const addNewServiceCategory = async (
+    input: AddNewServiceCategoryRequestInput,
+  ) => {
     try {
       await addNewServiceCategoryMutation({
-        variables: { request: input },
+        variables: { input },
       });
     } catch (e) {
       console.error('Error adding new service category:', e);
@@ -48,6 +50,5 @@ const useAddNewServiceCategory = () => {
     addNewServiceCategoryError: error,
   };
 };
-};
 
-export { useServiceCategory, useService };
+export { useAddNewServiceCategory, useService };
