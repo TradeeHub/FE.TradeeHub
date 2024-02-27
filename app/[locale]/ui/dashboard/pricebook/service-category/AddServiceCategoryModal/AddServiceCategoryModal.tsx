@@ -17,26 +17,27 @@ import {
   FormMessage,
   Form,
 } from '@/components/ui/form';
-import SingleImageUploadComponent from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
+import SingleImageUploadForm from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
 import {
   Select,
   SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { SimpleInputForm } from '@/app/[locale]/ui/general/SimpleInputForm/SimpleInputForm';
 import { Button } from '@/components/ui/button';
-import { useAddNewServiceCategory } from '@/app/[locale]/hooks/pricebook/usePriceBook';
-import { AddNewServiceCategoryRequestInput } from '@/generatedGraphql';
-import { useEffect } from 'react';
+import { useAddNewServiceCategory, useGetAllServiceCategoriesLazy } from '@/app/[locale]/hooks/pricebook/usePriceBook';
+import { AddNewServiceCategoryRequestInput, ServiceCategoryEntity } from '@/generatedGraphql';
+import { useEffect, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import { AuthInputWithIcon } from '@/app/[locale]/ui/auth/AuthInputWithIcon/AuthInputWithIcon';
 
 // Assuming AddNewServiceCategoryRequestInput is correctly imported and usable here
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  description: z.string().optional(),
-  images: z.array(z.any()).optional(), // Adjust as needed for your application
-  parentServiceCategoryId: z.string().optional(),
+  description: z.string().optional().nullable(), // Now accepts string, undefined, or null
+  images: z.array(z.any()).optional().nullable(), // Now accepts array, undefined, or null
+  parentServiceCategoryId: z.string().optional().nullable(), // Now accepts string, undefined, or null
 });
 
 const AddServiceCategoryModal = ({
@@ -52,7 +53,15 @@ const AddServiceCategoryModal = ({
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      parentServiceCategoryId: null,
+    }
   });
+  const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
+  const { getAllServiceCategories, serviceCategories, loading, error } = useGetAllServiceCategoriesLazy(); // Fetch categories
+  const [fetched, setFetched] = useState(false); // State to track if categories have been fetched
 
   const { toast } = useToast();
 
@@ -65,6 +74,27 @@ const AddServiceCategoryModal = ({
   const handleClose = () => {
     form.reset();
     onClose();
+  };
+
+
+  useEffect(() => {
+    console.log('serviceCategories', serviceCategories);
+  if (serviceCategories) {
+    // const formattedCategories = serviceCategories.map(category => ({
+    //   id: category.id,
+    //   name: category.name,
+    // }));
+    setCategories(serviceCategories);
+  }
+}, [serviceCategories]);
+
+
+  const handleSelectTriggerClick = () => {
+    console.log('handleSelectTriggerClick');
+    if (!fetched) {
+      getAllServiceCategories();
+      setFetched(true); // Mark as fetched to prevent future fetches
+    }
   };
 
   useEffect(() => {
@@ -113,7 +143,7 @@ const AddServiceCategoryModal = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <SingleImageUploadComponent field={field} />
+                      <SingleImageUploadForm field={field} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -121,21 +151,23 @@ const AddServiceCategoryModal = ({
             </div>
 
             <div className='col-span-2 flex flex-col justify-between'>
-              <FormField
-                control={form.control}
-                name='name'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <SimpleInputForm
-                        field={field}
-                        // autoFocus={true}
-                        placeholder='Category Name'
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+ 
+
+            <FormField
+              control={form.control}
+              name='name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <AuthInputWithIcon
+                      field={field}
+                      autoFocus={true}
+                      placeholder='Category Name'
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
               <FormField
                 control={form.control}
@@ -149,14 +181,17 @@ const AddServiceCategoryModal = ({
                       Parent Category (optional)
                     </FormLabel>
                     <Select
+                      onOpenChange={handleSelectTriggerClick}
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      defaultValue={field.value || ''}
                     >
-                      <SelectTrigger style={{ marginTop: 0 }}>
+                      <SelectTrigger style={{ marginTop: 0 }} onClick={handleSelectTriggerClick}>
                         <SelectValue placeholder='Select Parent Category (optional)' />
                       </SelectTrigger>
                       <SelectContent>
-                        {/* Map your categories here */}
+                        {categories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -176,6 +211,7 @@ const AddServiceCategoryModal = ({
                         placeholder='Please enter a service category description (optional)'
                         className='min-h-[100px]'
                         {...field}
+                        value={field.value || ''}
                       />
                     </FormControl>
                     <FormMessage />

@@ -1,30 +1,21 @@
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import {
-  CustomerDocument,
-  CustomerQuery,
-  CustomerQueryVariables,
-  CustomerEntity,
   AddNewServiceCategoryRequestInput,
   useAddNewServiceCategoryMutation,
+  GetAllServiceCategoriesQuery,
+  GetAllServiceCategoriesQueryVariables,
+  GetAllServiceCategoriesDocument,
 } from '@/generatedGraphql';
-import { UseCustomerReturnType } from '@/app/[locale]/types/sharedTypes';
 
-const useService = (customerId: string): UseCustomerReturnType => {
-  const { data, error, loading } = useQuery<
-    CustomerQuery,
-    CustomerQueryVariables
-  >(CustomerDocument, {
-    variables: { id: decodeURIComponent(customerId) },
-    notifyOnNetworkStatusChange: true,
-  });
+const useGetAllServiceCategoriesLazy = () => {
+  const [getAllServiceCategories, { data, loading, error }] = useLazyQuery<
+    GetAllServiceCategoriesQuery,
+    GetAllServiceCategoriesQueryVariables
+  >(GetAllServiceCategoriesDocument, { notifyOnNetworkStatusChange: true });
 
-  if (error) {
-    console.error('Error fetching more data:', error);
-  }
+  const serviceCategories = data?.serviceCategories;
 
-  const customer = data?.customer as CustomerEntity | null;
-
-  return { customer, loading, error };
+  return { getAllServiceCategories, serviceCategories, loading, error };
 };
 
 const useAddNewServiceCategory = () => {
@@ -51,4 +42,4 @@ const useAddNewServiceCategory = () => {
   };
 };
 
-export { useAddNewServiceCategory, useService };
+export { useAddNewServiceCategory, useGetAllServiceCategoriesLazy };

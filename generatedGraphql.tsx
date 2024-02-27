@@ -744,121 +744,6 @@ export type ImageEntity = {
   url: Scalars['String']['output'];
 };
 
-export type ImageEntityFilter = {
-  AND?: InputMaybe<Array<ImageEntityFilter>>;
-  OR?: InputMaybe<Array<ImageEntityFilter>>;
-  byteSize?: InputMaybe<Scalars['Long']['input']>;
-  byteSize_gt?: InputMaybe<Scalars['Long']['input']>;
-  byteSize_gte?: InputMaybe<Scalars['Long']['input']>;
-  byteSize_in?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
-  byteSize_lt?: InputMaybe<Scalars['Long']['input']>;
-  byteSize_lte?: InputMaybe<Scalars['Long']['input']>;
-  byteSize_not?: InputMaybe<Scalars['Long']['input']>;
-  byteSize_not_gt?: InputMaybe<Scalars['Long']['input']>;
-  byteSize_not_gte?: InputMaybe<Scalars['Long']['input']>;
-  byteSize_not_in?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
-  byteSize_not_lt?: InputMaybe<Scalars['Long']['input']>;
-  byteSize_not_lte?: InputMaybe<Scalars['Long']['input']>;
-  contentType?: InputMaybe<Scalars['String']['input']>;
-  contentType_contains?: InputMaybe<Scalars['String']['input']>;
-  contentType_ends_with?: InputMaybe<Scalars['String']['input']>;
-  contentType_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  contentType_not?: InputMaybe<Scalars['String']['input']>;
-  contentType_not_contains?: InputMaybe<Scalars['String']['input']>;
-  contentType_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  contentType_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  contentType_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  contentType_starts_with?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  createdAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_not?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  createdAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdById?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_gt?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_gte?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  createdById_lt?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_lte?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_not?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  createdById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  description_contains?: InputMaybe<Scalars['String']['input']>;
-  description_ends_with?: InputMaybe<Scalars['String']['input']>;
-  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  description_not?: InputMaybe<Scalars['String']['input']>;
-  description_not_contains?: InputMaybe<Scalars['String']['input']>;
-  description_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  description_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  description_starts_with?: InputMaybe<Scalars['String']['input']>;
-  modifiedAt?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  modifiedAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_not?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  modifiedAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedById?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_gt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_gte?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
-  modifiedById_lt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_lte?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_not?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_not_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
-  modifiedById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  name_contains?: InputMaybe<Scalars['String']['input']>;
-  name_ends_with?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not?: InputMaybe<Scalars['String']['input']>;
-  name_not_contains?: InputMaybe<Scalars['String']['input']>;
-  name_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  name_starts_with?: InputMaybe<Scalars['String']['input']>;
-  s3Key?: InputMaybe<Scalars['String']['input']>;
-  s3Key_contains?: InputMaybe<Scalars['String']['input']>;
-  s3Key_ends_with?: InputMaybe<Scalars['String']['input']>;
-  s3Key_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  s3Key_not?: InputMaybe<Scalars['String']['input']>;
-  s3Key_not_contains?: InputMaybe<Scalars['String']['input']>;
-  s3Key_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  s3Key_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  s3Key_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  s3Key_starts_with?: InputMaybe<Scalars['String']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
-  url_contains?: InputMaybe<Scalars['String']['input']>;
-  url_ends_with?: InputMaybe<Scalars['String']['input']>;
-  url_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  url_not?: InputMaybe<Scalars['String']['input']>;
-  url_not_contains?: InputMaybe<Scalars['String']['input']>;
-  url_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  url_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  url_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  url_starts_with?: InputMaybe<Scalars['String']['input']>;
-};
-
 export type KeyValuePairOfStringAndString = {
   __typename?: 'KeyValuePairOfStringAndString';
   key: Scalars['String']['output'];
@@ -1595,7 +1480,7 @@ export type Query = {
   searchCustomerReferences: ReferenceTrackingResponse;
   service?: Maybe<ServiceEntity>;
   serviceBundle?: Maybe<ServiceBundleEntity>;
-  serviceCategories?: Maybe<ServiceCategoriesConnection>;
+  serviceCategories: Array<ServiceCategoryEntity>;
   serviceCategory?: Maybe<ServiceCategoryEntity>;
   taxRate?: Maybe<TaxRateEntity>;
   user?: Maybe<UserEntity>;
@@ -1677,16 +1562,6 @@ export type QueryServiceArgs = {
 
 export type QueryServiceBundleArgs = {
   id: Scalars['ID']['input'];
-};
-
-
-export type QueryServiceCategoriesArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  before?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<ServiceCategoryEntitySort>;
-  where?: InputMaybe<ServiceCategoryEntityFilter>;
 };
 
 
@@ -1849,7 +1724,6 @@ export type ServiceBundleEntity = Node & {
   allowOnlineBooking: Scalars['Boolean']['output'];
   cost: Scalars['Decimal']['output'];
   createdAt: Scalars['DateTime']['output'];
-  createdById: Scalars['UUID']['output'];
   creator: UserEntity;
   description?: Maybe<Scalars['String']['output']>;
   duration?: Maybe<ServiceDurationEntity>;
@@ -1859,7 +1733,6 @@ export type ServiceBundleEntity = Node & {
   markup?: Maybe<MarkupEntity>;
   materials?: Maybe<Array<ServiceMaterialEntity>>;
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
-  modifiedById?: Maybe<Scalars['UUID']['output']>;
   modifier?: Maybe<UserEntity>;
   name: Scalars['String']['output'];
   owner: UserEntity;
@@ -1877,26 +1750,6 @@ export type ServiceBundleEntity = Node & {
   warrantyIds?: Maybe<Array<Scalars['ID']['output']>>;
 };
 
-/** A connection to a list of items. */
-export type ServiceCategoriesConnection = {
-  __typename?: 'ServiceCategoriesConnection';
-  /** A list of edges. */
-  edges?: Maybe<Array<ServiceCategoriesEdge>>;
-  /** A flattened list of the nodes. */
-  nodes?: Maybe<Array<ServiceCategoryEntity>>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-};
-
-/** An edge in a connection. */
-export type ServiceCategoriesEdge = {
-  __typename?: 'ServiceCategoriesEdge';
-  /** A cursor for use in pagination. */
-  cursor: Scalars['String']['output'];
-  /** The item at the end of the edge. */
-  node: ServiceCategoryEntity;
-};
-
 export type ServiceCategoryEntity = Node & {
   __typename?: 'ServiceCategoryEntity';
   createdAt: Scalars['DateTime']['output'];
@@ -1912,113 +1765,6 @@ export type ServiceCategoryEntity = Node & {
   parentServiceCategoryId?: Maybe<Scalars['ID']['output']>;
   serviceCategories: Array<ServiceCategoryEntity>;
   services: Array<ServiceEntity>;
-};
-
-export type ServiceCategoryEntityFilter = {
-  AND?: InputMaybe<Array<ServiceCategoryEntityFilter>>;
-  OR?: InputMaybe<Array<ServiceCategoryEntityFilter>>;
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  createdAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_not?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  createdAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  createdAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  createdById?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_gt?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_gte?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  createdById_lt?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_lte?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_not?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  createdById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
-  createdById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  description_contains?: InputMaybe<Scalars['String']['input']>;
-  description_ends_with?: InputMaybe<Scalars['String']['input']>;
-  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  description_not?: InputMaybe<Scalars['String']['input']>;
-  description_not_contains?: InputMaybe<Scalars['String']['input']>;
-  description_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  description_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  description_starts_with?: InputMaybe<Scalars['String']['input']>;
-  images_all?: InputMaybe<ImageEntityFilter>;
-  images_any?: InputMaybe<Scalars['Boolean']['input']>;
-  images_none?: InputMaybe<ImageEntityFilter>;
-  images_some?: InputMaybe<ImageEntityFilter>;
-  modifiedAt?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  modifiedAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_not?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_not_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_not_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
-  modifiedAt_not_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedAt_not_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  modifiedById?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_gt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_gte?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
-  modifiedById_lt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_lte?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_not?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_not_gt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_not_gte?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_not_in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
-  modifiedById_not_lt?: InputMaybe<Scalars['UUID']['input']>;
-  modifiedById_not_lte?: InputMaybe<Scalars['UUID']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  name_contains?: InputMaybe<Scalars['String']['input']>;
-  name_ends_with?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not?: InputMaybe<Scalars['String']['input']>;
-  name_not_contains?: InputMaybe<Scalars['String']['input']>;
-  name_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  name_starts_with?: InputMaybe<Scalars['String']['input']>;
-  serviceCategoryIds_all?: InputMaybe<ObjectIdFilter>;
-  serviceCategoryIds_any?: InputMaybe<Scalars['Boolean']['input']>;
-  serviceCategoryIds_none?: InputMaybe<ObjectIdFilter>;
-  serviceCategoryIds_some?: InputMaybe<ObjectIdFilter>;
-  serviceIds_all?: InputMaybe<ObjectIdFilter>;
-  serviceIds_any?: InputMaybe<Scalars['Boolean']['input']>;
-  serviceIds_none?: InputMaybe<ObjectIdFilter>;
-  serviceIds_some?: InputMaybe<ObjectIdFilter>;
-  userOwnerId?: InputMaybe<Scalars['UUID']['input']>;
-  userOwnerId_gt?: InputMaybe<Scalars['UUID']['input']>;
-  userOwnerId_gte?: InputMaybe<Scalars['UUID']['input']>;
-  userOwnerId_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  userOwnerId_lt?: InputMaybe<Scalars['UUID']['input']>;
-  userOwnerId_lte?: InputMaybe<Scalars['UUID']['input']>;
-  userOwnerId_not?: InputMaybe<Scalars['UUID']['input']>;
-  userOwnerId_not_gt?: InputMaybe<Scalars['UUID']['input']>;
-  userOwnerId_not_gte?: InputMaybe<Scalars['UUID']['input']>;
-  userOwnerId_not_in?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  userOwnerId_not_lt?: InputMaybe<Scalars['UUID']['input']>;
-  userOwnerId_not_lte?: InputMaybe<Scalars['UUID']['input']>;
-};
-
-export type ServiceCategoryEntitySort = {
-  createdAt?: InputMaybe<SortOperationKind>;
-  createdById?: InputMaybe<SortOperationKind>;
-  description?: InputMaybe<SortOperationKind>;
-  modifiedAt?: InputMaybe<SortOperationKind>;
-  modifiedById?: InputMaybe<SortOperationKind>;
-  name?: InputMaybe<SortOperationKind>;
-  userOwnerId?: InputMaybe<SortOperationKind>;
 };
 
 export enum ServiceCreationType {
@@ -2050,7 +1796,6 @@ export type ServiceEntity = Node & {
   bundles: Array<ServiceBundleEntity>;
   cost: Scalars['Decimal']['output'];
   createdAt: Scalars['DateTime']['output'];
-  createdById: Scalars['UUID']['output'];
   creator: UserEntity;
   description?: Maybe<Scalars['String']['output']>;
   duration?: Maybe<ServiceDurationEntity>;
@@ -2060,7 +1805,6 @@ export type ServiceEntity = Node & {
   markup?: Maybe<MarkupEntity>;
   materials?: Maybe<Array<ServiceMaterialEntity>>;
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
-  modifiedById?: Maybe<Scalars['UUID']['output']>;
   modifier?: Maybe<UserEntity>;
   name: Scalars['String']['output'];
   owner: UserEntity;
@@ -2522,6 +2266,11 @@ export type AddNewServiceCategoryMutationVariables = Exact<{
 
 
 export type AddNewServiceCategoryMutation = { __typename?: 'Mutation', addNewServiceCategory: { __typename?: 'ServiceCategoryEntity', name: string, id: string } };
+
+export type GetAllServiceCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllServiceCategoriesQuery = { __typename?: 'Query', serviceCategories: Array<{ __typename?: 'ServiceCategoryEntity', id: string, name: string }> };
 
 
 export const ChangePasswordDocument = gql`
@@ -3138,3 +2887,43 @@ export function useAddNewServiceCategoryMutation(baseOptions?: Apollo.MutationHo
 export type AddNewServiceCategoryMutationHookResult = ReturnType<typeof useAddNewServiceCategoryMutation>;
 export type AddNewServiceCategoryMutationResult = Apollo.MutationResult<AddNewServiceCategoryMutation>;
 export type AddNewServiceCategoryMutationOptions = Apollo.BaseMutationOptions<AddNewServiceCategoryMutation, AddNewServiceCategoryMutationVariables>;
+export const GetAllServiceCategoriesDocument = gql`
+    query GetAllServiceCategories {
+  serviceCategories {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetAllServiceCategoriesQuery__
+ *
+ * To run a query within a React component, call `useGetAllServiceCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllServiceCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllServiceCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllServiceCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>(GetAllServiceCategoriesDocument, options);
+      }
+export function useGetAllServiceCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>(GetAllServiceCategoriesDocument, options);
+        }
+export function useGetAllServiceCategoriesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>(GetAllServiceCategoriesDocument, options);
+        }
+export type GetAllServiceCategoriesQueryHookResult = ReturnType<typeof useGetAllServiceCategoriesQuery>;
+export type GetAllServiceCategoriesLazyQueryHookResult = ReturnType<typeof useGetAllServiceCategoriesLazyQuery>;
+export type GetAllServiceCategoriesSuspenseQueryHookResult = ReturnType<typeof useGetAllServiceCategoriesSuspenseQuery>;
+export type GetAllServiceCategoriesQueryResult = Apollo.QueryResult<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>;
