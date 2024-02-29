@@ -45,18 +45,11 @@ const SimpleInputForm = <
 
   const handleInputFocus = () => {
     setLabelFloat(true);
-    // If it's a telephone input and the field is empty and user has a calling code,
-    // set the input value to the calling code when the user focuses on the input field.
+
     if (type === 'tel' && user?.place?.callingCode && !field.value) {
       field.onChange(`+${user.place.callingCode}`);
     }
   };
-
-  //  useEffect(() => {
-  //     if (user && type === 'tel' && user.place?.callingCode && !field.value) {
-  //       field.onChange(`+${user.place.callingCode}`);
-  //     }
-  //   }, [user, field, type]);
 
   useEffect(() => {
     setLabelFloat(!!field.value);
@@ -67,33 +60,33 @@ const SimpleInputForm = <
 
   return (
     <>
-      <div className='relative border-b-2 border-gray-300 font-roboto focus-within:border-primary'>
+      <div className='relative rounded-md border shadow-sm focus-within:border-primary'>
         {Icon && (
           <Icon className='absolute left-3 top-3 h-5 w-5 text-gray-500' />
         )}
         <input
           {...field}
-          id={inputId} // Set the ID for the input
+          id={inputId}
           type={isPasswordType && !showPassword ? 'password' : 'text'}
           autoFocus={autoFocus}
-          className={`text-md w-full px-3 py-1 ${Icon ? 'pl-10' : ''} ${isPasswordType ? 'pr-10' : ''} bg-transparent focus:outline-none`}
+          className={`text-md block w-full rounded-md border-gray-300 bg-white px-4 py-2 focus:border-primary focus:outline-none focus:ring-0 focus:ring-primary ${Icon ? 'pl-10' : ''} ${isPasswordType ? 'pr-12' : ''}`}
           onKeyDown={handleKeyDown}
           onFocus={handleInputFocus}
           onBlur={() => setLabelFloat(!!field.value)}
         />
-        <label
+         <label
           htmlFor={inputId} // Set the htmlFor attribute to match the input's ID
-          className={`absolute left-3 transition-all duration-200 ease-in-out ${
+          className={`absolute left-3 transition-all duration-200 ease-in-out bg-white px-1 ${
             labelFloat || field.value
-              ? 'top-[-0.7rem] mb-1 text-xs font-semibold text-primary'
-              : 'top-1/2 -translate-y-1/2 transform text-sm text-gray-500'
+              ? 'top-[-0.7rem] mb-1 text-sm font-semibold text-primary font-roboto'
+              : 'top-1/2 -translate-y-1/2 transform text-md text-gray-500'
           }`}
         >
           {placeholder}
         </label>
         {isPasswordType && (
           <span
-            className='absolute right-3 top-2 cursor-pointer text-xs text-gray-500'
+            className='absolute right-3 top-3 cursor-pointer text-xs text-gray-500'
             onClick={handleToggleShowPassword}
           >
             {showPassword ? 'Hide' : 'Show'}

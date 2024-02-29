@@ -3,7 +3,7 @@ import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 import { HiX } from 'react-icons/hi';
 import { MdOutlineAddPhotoAlternate } from 'react-icons/md';
 
-const SingleImageUploadForm= <
+const SingleImageUploadForm = <
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>,
 >({

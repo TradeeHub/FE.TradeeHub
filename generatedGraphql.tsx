@@ -41,6 +41,7 @@ export type AddLaborRateRequestInput = {
 };
 
 export type AddMaterialRequestInput = {
+  allowOnlineBooking: Scalars['Boolean']['input'];
   cost: Scalars['Decimal']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
   identifier?: InputMaybe<Scalars['String']['input']>;
@@ -48,9 +49,11 @@ export type AddMaterialRequestInput = {
   markup?: InputMaybe<MarkupEntityInput>;
   name: Scalars['String']['input'];
   onlineMaterialUrls?: InputMaybe<Array<Scalars['String']['input']>>;
+  onlinePrice?: InputMaybe<Scalars['Decimal']['input']>;
   price: Scalars['Decimal']['input'];
   pricingTiers?: InputMaybe<Array<PricingTierEntityInput>>;
   serviceIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  taxable: Scalars['Boolean']['input'];
   unitType: Scalars['String']['input'];
 };
 
