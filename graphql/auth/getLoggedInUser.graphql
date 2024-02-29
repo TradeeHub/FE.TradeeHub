@@ -4,6 +4,8 @@ query LoggedInUser {
     name
     companyName
     email
+    currency
+    currencySymbol
     place {
       country
       countryCode

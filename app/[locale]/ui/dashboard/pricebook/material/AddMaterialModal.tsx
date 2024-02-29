@@ -38,6 +38,8 @@ import {
   SimpleSelectValue,
 } from '../../../general/SimpleSelect/SimpleSelect';
 import SelectWithInput from '../../../general/SelectWithInput/SelectWithInput';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/lib/store';
 
 const unitOptions = [
   { label: 'Other', value: 'Other' },
@@ -117,15 +119,16 @@ const AddMaterialModal = ({
       taxable: false,
       allowOnlineBooking: false,
       onlinePrice: null,
-      cost: 0.0,
-      price: 0.0,
+      cost: 0.00,
+      price: 0.00,
       unitType: '',
       images: [],
       onlineMaterialUrls: [],
       pricingTiers: [],
     },
   });
-
+  const user = useSelector((state: RootState) => state.user.data) 
+  console.log('user', user);
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
   const { getAllServiceCategories, serviceCategories, loading, error } =
     useGetAllServiceCategoriesLazy(); // Fetch categories
@@ -277,6 +280,7 @@ const AddMaterialModal = ({
                       <SimpleInput
                         field={field}
                         autoFocus={true}
+                        currencySymbol = {user?.currencySymbol}
                         placeholder='Cost'
                         type='number'
                       />
@@ -292,6 +296,7 @@ const AddMaterialModal = ({
                       <SimpleInput
                         field={field}
                         placeholder='Price'
+                        currencySymbol = {user?.currencySymbol}
                         type='number'
                       />
                     </FormItem>
