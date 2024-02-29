@@ -17,7 +17,7 @@ type InputWithIconProps<
   onEnterPress?: () => void;
 };
 
-const SimpleInputForm = <
+const SimpleInput = <
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>,
 >({
@@ -67,7 +67,7 @@ const SimpleInputForm = <
         <input
           {...field}
           id={inputId}
-          type={isPasswordType && !showPassword ? 'password' : 'text'}
+          type={isPasswordType && !showPassword ? 'password' : type }
           autoFocus={autoFocus}
           className={`text-md block w-full rounded-md border-gray-300 bg-white px-4 py-2 focus:border-primary focus:outline-none focus:ring-0 focus:ring-primary ${Icon ? 'pl-10' : ''} ${isPasswordType ? 'pr-12' : ''}`}
           onKeyDown={handleKeyDown}
@@ -79,7 +79,7 @@ const SimpleInputForm = <
           className={`absolute left-3 transition-all duration-200 ease-in-out bg-white px-1 ${
             labelFloat || field.value
               ? 'top-[-0.7rem] mb-1 text-sm font-semibold text-primary font-roboto'
-              : 'top-1/2 -translate-y-1/2 transform text-md text-gray-500'
+              : 'top-1/2 -translate-y-1/2 text-md text-gray-500'
           }`}
         >
           {placeholder}
@@ -112,4 +112,4 @@ const StyledFormMessage = () => {
   );
 };
 
-export { SimpleInputForm, StyledFormMessage };
+export { SimpleInput, StyledFormMessage };

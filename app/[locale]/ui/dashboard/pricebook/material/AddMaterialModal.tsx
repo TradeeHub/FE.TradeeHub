@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { boolean, z } from 'zod';
+import { z } from 'zod';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Dialog,
@@ -12,19 +12,11 @@ import {
 import {
   FormField,
   FormItem,
-  FormLabel,
   FormControl,
   FormMessage,
   Form,
 } from '@/components/ui/form';
 import SingleImageUploadForm from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import {
   useAddNewServiceCategory,
@@ -37,11 +29,19 @@ import {
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { AuthInputWithIcon } from '@/app/[locale]/ui/auth/AuthInputWithIcon/AuthInputWithIcon';
-import { SwitchWithLabel } from '@/app/[locale]/components/SwitchWithLabel/SwitchWithLabel';
-import { SimpleCellEditor } from 'ag-grid-community/dist/lib/rendering/cellEditors/simpleCellEditor';
-import { SimpleInputForm } from '../../../general/SimpleInputForm/SimpleInputForm';
-import { SimpleSelect, SimpleSelectContent, SimpleSelectTrigger, SimpleSelectValue } from '../../../general/SimpleSelect/SimpleSelect';
+import { SimpleInput} from '../../../general/SimpleInput/SimpleInput';
+import { SimpleSelect, SimpleSelectContent, SimpleSelectItem, SimpleSelectTrigger, SimpleSelectValue } from '../../../general/SimpleSelect/SimpleSelect';
+import SelectWithInput from '../../../general/SelectWithInput/SelectWithInput';
+const titleOptions = [
+  { label: 'No Title', value: 'Empty' },
+  { label: 'Mr.', value: 'Mr.' },
+  { label: 'Mrs.', value: 'Mrs.' },
+  { label: 'Ms.', value: 'Ms.' },
+  { label: 'Miss.', value: 'Miss.' },
+  { label: 'Dr.', value: 'Dr.' },
+  { label: 'Other', value: 'Other' },
+];
+
 
 const markupEntitySchema = z
   .object({
@@ -101,8 +101,8 @@ const AddMaterialModal = ({
       taxable: false,
       allowOnlineBooking: false,
       onlinePrice: null,
-      cost: 0,
-      price: 0,
+      cost: 0.00,
+      price: 0.00,
       unitType: '',
       images: [],
       onlineMaterialUrls: [],
@@ -210,14 +210,14 @@ const AddMaterialModal = ({
               />
             </div>
 
-            <div className='col-span-1 space-y-12 md:col-span-3 '>
+            <div className='col-span-1 space-y-11 md:col-span-3 '>
               <div className='flex flex-col md:flex-row md:space-x-4'>
                 <FormField
                   control={form.control}
                   name='name'
                   render={({ field }) => (
                     <FormItem className='flex-1'>
-                      <SimpleInputForm
+                      <SimpleInput
                         field={field}
                         autoFocus={true}
                         placeholder='Name'
@@ -231,7 +231,7 @@ const AddMaterialModal = ({
                   name='identifier'
                   render={({ field }) => (
                     <FormItem className='flex-1'>
-                      <AuthInputWithIcon
+                      <SimpleInput
                         field={field}
                         placeholder='Identifier'
                       />
@@ -239,22 +239,61 @@ const AddMaterialModal = ({
                   )}
                 />
               </div>
-<div className='flex space-x-4'>
+                <div className='flex flex-col md:flex-row md:space-x-4'>
+
+            
+<FormField
+    control={form.control}
+    name='unitType'
+    render={({ field }) => (
+                    <FormItem className='flex-1'>
+            <SelectWithInput<AddMaterialRequestInput, 'unitType'>
+                form={form} // Cast 'form' to the correct type
+                field={field} // Cast 'field' to the correct type
+                options={titleOptions}
+                inputPlaceHolder='Unit Type'
+                defaultValue={''} // Update the defaultValue to an empty string or the appropriate value
+            />
+        </FormItem>
+    )}
+/>
                 <FormField
                   control={form.control}
                   name='cost'
                   render={({ field }) => (
                     <FormItem className='flex-1'>
-                      <SimpleInputForm
+                      <SimpleInput
                         field={field}
                         autoFocus={true}
                         placeholder='Cost'
+                        type='number'
                       />
                     </FormItem>
                   )}
                 />
 
                 <FormField
+                  control={form.control}
+                  name='price'
+                  render={({ field }) => (
+                    <FormItem className='flex-1'>
+                      <SimpleInput
+                        field={field}
+                        placeholder='Price'
+                        type='number'
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <div className='col-span-4 space-y-4'>
+
+
+
+
+
+                                <FormField
                 control={form.control}
                 name='parentServiceCategoryId'
                 render={({ field }) => (
@@ -272,6 +311,7 @@ const AddMaterialModal = ({
                     >
                       <SimpleSelectTrigger
                         style={{ marginTop: 0 }}
+                        className='flex-1 w-full'
                         label='Parent Category (optional)'
                         onClick={handleSelectTriggerClick}
                       >
@@ -279,9 +319,9 @@ const AddMaterialModal = ({
                       </SimpleSelectTrigger>
                       <SimpleSelectContent>
                         {categories.map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
+                          <SimpleSelectItem key={category.id} value={category.id}>
                             {category.name}
-                          </SelectItem>
+                          </SimpleSelectItem>
                         ))}
                       </SimpleSelectContent>
                     </SimpleSelect>
@@ -289,9 +329,6 @@ const AddMaterialModal = ({
                   </FormItem>
                 )}
               />
-              </div>
-            </div>
-            <div className='col-span-4'>
               <FormField
                 control={form.control}
                 name='description'
