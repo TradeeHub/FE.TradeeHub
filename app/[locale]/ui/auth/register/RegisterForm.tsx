@@ -23,6 +23,8 @@ import { useSelector } from 'react-redux';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import AuthTitle from '../AuthTitle/AuthTitle';
 import Link from 'next/link';
+import countryToCurrency, { Currencies, Countries } from 'country-to-currency';
+import getSymbolFromCurrency from 'currency-symbol-map';
 
 const LocationSchema = z.object({
   lat: z.number(),
@@ -96,11 +98,18 @@ const formSchema = z
 const transformRegisterRequest = (
   request: RegisterRequest,
 ): RegisterRequestInput => {
+  const currency = countryToCurrency[
+    request.userPlace?.CountryCode as Countries
+  ] as Currencies;
+  const currencySymbol = getSymbolFromCurrency(currency);
+
   return {
     email: request.email,
     password: request.password,
     name: request.name,
     phoneNumber: request.phoneNumber,
+    currency: currency,
+    currencySymbol: currencySymbol ?? '',
     place: {
       callingCode: request.userPlace?.CallingCode ?? '',
       country: request.userPlace?.Country ?? '',

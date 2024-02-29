@@ -29,19 +29,35 @@ import {
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { SimpleInput} from '../../../general/SimpleInput/SimpleInput';
-import { SimpleSelect, SimpleSelectContent, SimpleSelectItem, SimpleSelectTrigger, SimpleSelectValue } from '../../../general/SimpleSelect/SimpleSelect';
+import { SimpleInput } from '../../../general/SimpleInput/SimpleInput';
+import {
+  SimpleSelect,
+  SimpleSelectContent,
+  SimpleSelectItem,
+  SimpleSelectTrigger,
+  SimpleSelectValue,
+} from '../../../general/SimpleSelect/SimpleSelect';
 import SelectWithInput from '../../../general/SelectWithInput/SelectWithInput';
-const titleOptions = [
-  { label: 'No Title', value: 'Empty' },
-  { label: 'Mr.', value: 'Mr.' },
-  { label: 'Mrs.', value: 'Mrs.' },
-  { label: 'Ms.', value: 'Ms.' },
-  { label: 'Miss.', value: 'Miss.' },
-  { label: 'Dr.', value: 'Dr.' },
-  { label: 'Other', value: 'Other' },
-];
 
+const unitOptions = [
+  { label: 'Other', value: 'Other' },
+  { label: 'Each', value: 'Each' },
+  { label: 'Bag', value: 'Bag' },
+  { label: 'Square Meter (sqm)', value: 'Sqm' },
+  { label: 'Meter', value: 'Meter' },
+  { label: 'Kilogram (kg)', value: 'Kilo' },
+  { label: 'Liter', value: 'Liter' },
+  { label: 'Roll', value: 'Roll' },
+  { label: 'Box', value: 'Box' },
+  { label: 'Pack', value: 'Pack' },
+  { label: 'Sheet', value: 'Sheet' },
+  { label: 'Cubic Meter', value: 'CubicMeter' },
+  { label: 'Gallon', value: 'Gallon' },
+  { label: 'Pound (lbs)', value: 'Pound' },
+  { label: 'Foot', value: 'Foot' },
+  { label: 'Yard', value: 'Yard' },
+  { label: 'Bundle', value: 'Bundle' },
+];
 
 const markupEntitySchema = z
   .object({
@@ -101,8 +117,8 @@ const AddMaterialModal = ({
       taxable: false,
       allowOnlineBooking: false,
       onlinePrice: null,
-      cost: 0.00,
-      price: 0.00,
+      cost: 0.0,
+      price: 0.0,
       unitType: '',
       images: [],
       onlineMaterialUrls: [],
@@ -189,7 +205,7 @@ const AddMaterialModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className='w-full max-w-3xl p-6'>
+      <DialogContent className='w-full max-w-4xl p-6'>
         <DialogHeader className='mb-4'>
           <DialogTitle className='text-center'>{modalName}</DialogTitle>
         </DialogHeader>
@@ -228,35 +244,31 @@ const AddMaterialModal = ({
 
                 <FormField
                   control={form.control}
-                  name='identifier'
+                  name='unitType'
                   render={({ field }) => (
                     <FormItem className='flex-1'>
-                      <SimpleInput
-                        field={field}
-                        placeholder='Identifier'
+                      <SelectWithInput<AddMaterialRequestInput, 'unitType'>
+                        form={form} // Cast 'form' to the correct type
+                        field={field} // Cast 'field' to the correct type
+                        options={unitOptions}
+                        inputPlaceHolder='Unit Type'
+                        defaultValue={''} // Update the defaultValue to an empty string or the appropriate value
                       />
                     </FormItem>
                   )}
                 />
               </div>
-                <div className='flex flex-col md:flex-row md:space-x-4'>
-
-            
-<FormField
-    control={form.control}
-    name='unitType'
-    render={({ field }) => (
+              <div className='flex flex-col md:flex-row md:space-x-4'>
+                <FormField
+                  control={form.control}
+                  name='identifier'
+                  render={({ field }) => (
                     <FormItem className='flex-1'>
-            <SelectWithInput<AddMaterialRequestInput, 'unitType'>
-                form={form} // Cast 'form' to the correct type
-                field={field} // Cast 'field' to the correct type
-                options={titleOptions}
-                inputPlaceHolder='Unit Type'
-                defaultValue={''} // Update the defaultValue to an empty string or the appropriate value
-            />
-        </FormItem>
-    )}
-/>
+                      <SimpleInput field={field} placeholder='Identifier' />
+                    </FormItem>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name='cost'
@@ -287,13 +299,8 @@ const AddMaterialModal = ({
                 />
               </div>
             </div>
-            <div className='col-span-4 space-y-4'>
-
-
-
-
-
-                                <FormField
+            <div className='col-span-2 space-y-4'>
+              <FormField
                 control={form.control}
                 name='parentServiceCategoryId'
                 render={({ field }) => (
@@ -311,7 +318,7 @@ const AddMaterialModal = ({
                     >
                       <SimpleSelectTrigger
                         style={{ marginTop: 0 }}
-                        className='flex-1 w-full'
+                        className='w-full flex-1'
                         label='Parent Category (optional)'
                         onClick={handleSelectTriggerClick}
                       >
@@ -319,7 +326,10 @@ const AddMaterialModal = ({
                       </SimpleSelectTrigger>
                       <SimpleSelectContent>
                         {categories.map((category) => (
-                          <SimpleSelectItem key={category.id} value={category.id}>
+                          <SimpleSelectItem
+                            key={category.id}
+                            value={category.id}
+                          >
                             {category.name}
                           </SimpleSelectItem>
                         ))}

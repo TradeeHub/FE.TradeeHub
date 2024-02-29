@@ -37,6 +37,14 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { AuthInputWithIcon } from '@/app/[locale]/ui/auth/AuthInputWithIcon/AuthInputWithIcon';
+import { SimpleInput } from '@/app/[locale]/ui/general/SimpleInput/SimpleInput';
+import {
+  SimpleSelect,
+  SimpleSelectContent,
+  SimpleSelectItem,
+  SimpleSelectTrigger,
+  SimpleSelectValue,
+} from '@/app/[locale]/ui/general/SimpleSelect/SimpleSelect';
 
 // Assuming AddNewServiceCategoryRequestInput is correctly imported and usable here
 const formSchema = z.object({
@@ -159,7 +167,7 @@ const AddServiceCategoryModal = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <AuthInputWithIcon
+                      <SimpleInput
                         field={field}
                         autoFocus={true}
                         placeholder='Category Name'
@@ -174,31 +182,29 @@ const AddServiceCategoryModal = ({
                 name='parentServiceCategoryId'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel
-                      style={{ marginBottom: '0' }}
-                      className='pb-0 pl-3 text-xs font-bold text-primary'
-                    >
-                      Parent Category (optional)
-                    </FormLabel>
-                    <Select
+                    <SimpleSelect
                       onOpenChange={handleSelectTriggerClick}
                       onValueChange={field.onChange}
                       defaultValue={field.value || ''}
                     >
-                      <SelectTrigger
+                      <SimpleSelectTrigger
                         style={{ marginTop: 0 }}
+                        label='Parent Category (optional)'
                         onClick={handleSelectTriggerClick}
                       >
-                        <SelectValue placeholder='Select Parent Category (optional)' />
-                      </SelectTrigger>
-                      <SelectContent>
+                        <SimpleSelectValue placeholder='Select Parent Category (optional)' />
+                      </SimpleSelectTrigger>
+                      <SimpleSelectContent>
                         {categories.map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
+                          <SimpleSelectItem
+                            key={category.id}
+                            value={category.id}
+                          >
                             {category.name}
-                          </SelectItem>
+                          </SimpleSelectItem>
                         ))}
-                      </SelectContent>
-                    </Select>
+                      </SimpleSelectContent>
+                    </SimpleSelect>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -213,7 +219,7 @@ const AddServiceCategoryModal = ({
                   <FormItem>
                     <FormControl>
                       <Textarea
-                        placeholder='Please enter a service category description (optional)'
+                        placeholder='Please enter a service category description (optional) text-md'
                         className='min-h-[100px]'
                         {...field}
                         value={field.value || ''}

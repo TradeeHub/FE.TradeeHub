@@ -67,19 +67,19 @@ const SimpleInput = <
         <input
           {...field}
           id={inputId}
-          type={isPasswordType && !showPassword ? 'password' : type }
+          type={isPasswordType && !showPassword ? 'password' : type}
           autoFocus={autoFocus}
           className={`text-md block w-full rounded-md border-gray-300 bg-white px-4 py-2 focus:border-primary focus:outline-none focus:ring-0 focus:ring-primary ${Icon ? 'pl-10' : ''} ${isPasswordType ? 'pr-12' : ''}`}
           onKeyDown={handleKeyDown}
           onFocus={handleInputFocus}
           onBlur={() => setLabelFloat(!!field.value)}
         />
-         <label
+        <label
           htmlFor={inputId} // Set the htmlFor attribute to match the input's ID
-          className={`absolute left-3 transition-all duration-200 ease-in-out bg-white px-1 ${
+          className={`absolute left-3 bg-white px-1 transition-all duration-200 ease-in-out ${
             labelFloat || field.value
-              ? 'top-[-0.7rem] mb-1 text-sm font-semibold text-primary font-roboto'
-              : 'top-1/2 -translate-y-1/2 text-md text-gray-500'
+              ? 'top-[-0.7rem] mb-1 font-roboto text-sm font-semibold text-primary'
+              : 'text-md top-1/2 -translate-y-1/2 text-gray-500'
           }`}
         >
           {placeholder}

@@ -8,7 +8,13 @@ import {
 } from 'react-hook-form';
 import { RxCross2 } from 'react-icons/rx';
 import { SimpleInput } from '../SimpleInput/SimpleInput';
-import { SimpleSelect, SimpleSelectContent, SimpleSelectItem, SimpleSelectTrigger, SimpleSelectValue } from '../SimpleSelect/SimpleSelect';
+import {
+  SimpleSelect,
+  SimpleSelectContent,
+  SimpleSelectItem,
+  SimpleSelectTrigger,
+  SimpleSelectValue,
+} from '../SimpleSelect/SimpleSelect';
 
 type Option = {
   label: string;
@@ -108,12 +114,12 @@ const SelectWithInput = <
         </SimpleSelect>
       )}
       {isEditable && (
-         <span
-        className='absolute inset-y-0 right-0 flex items-center pr-4 cursor-pointer text-xs font-bold text-gray-500 text-secondary'
-        onClick={handleCancel}
-      >
-        <RxCross2 /> {/* Assuming this is the red 'x' cross icon */}
-      </span>
+        <span
+          className='absolute inset-y-0 right-0 flex cursor-pointer items-center pr-4 text-xs font-bold text-gray-500 text-secondary'
+          onClick={handleCancel}
+        >
+          <RxCross2 /> {/* Assuming this is the red 'x' cross icon */}
+        </span>
       )}
     </div>
   );

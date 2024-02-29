@@ -19,7 +19,9 @@ const SimpleSelectValue = SelectPrimitive.Value;
 
 const SimpleSelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & { label?: string }
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
+    label?: string;
+  }
 >(({ className, label, ...props }, ref) => (
   <div className='relative'>
     <SelectPrimitive.Trigger
@@ -30,7 +32,9 @@ const SimpleSelectTrigger = React.forwardRef<
       )}
       {...props}
     >
-      <span className='absolute top-0 left-3 -translate-y-1/2 bg-white px-1 text-md font-semibold text-primary font-roboto'>{label}</span>
+      <span className='text-md absolute left-3 top-0 -translate-y-1/2 bg-white px-1 font-roboto font-semibold text-primary'>
+        {label}
+      </span>
       {props.children}
       <SelectPrimitive.Icon asChild>
         <CaretSortIcon className='h-4 w-4 opacity-50' />
@@ -56,7 +60,8 @@ const SimpleSelectScrollUpButton = React.forwardRef<
     <ChevronUpIcon />
   </SelectPrimitive.ScrollUpButton>
 ));
-SimpleSelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName;
+SimpleSelectScrollUpButton.displayName =
+  SelectPrimitive.ScrollUpButton.displayName;
 
 const SimpleSelectScrollDownButton = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.ScrollDownButton>,
