@@ -28,7 +28,7 @@ const SimpleInput = <
   placeholder = '',
   type = 'text',
   onEnterPress = () => {},
-  currencySymbol
+  currencySymbol,
 }: InputWithIconProps<TFieldValues, TName>) => {
   const [showPassword, setShowPassword] = useState(false);
   const [labelFloat, setLabelFloat] = useState(false);
@@ -60,55 +60,53 @@ const SimpleInput = <
   const isPasswordType = type === 'password';
   const inputId = `input-${field.name}`; // Create a unique ID for the input based on the field name
 
- return (
-  <>
-    <div className='relative rounded-md border shadow-sm focus-within:border-primary'>
-      {Icon && (
-        <Icon className='absolute left-3 top-3 h-5 w-5 text-gray-500' />
-      )}
-      {currencySymbol && (
-        <div
-          className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary font-semibold flex items-center justify-center pointer-events-none'>
-          {currencySymbol}
-        </div>
-      )}
-      <input
-        {...field}
-        id={inputId}
-        step={currencySymbol ? '1.00' : undefined}
-        type={isPasswordType && !showPassword ? 'password' : type}
-        autoFocus={autoFocus}
-        className={`text-md w-full rounded-md border-gray-300 bg-white py-2 focus:border-primary focus:outline-none focus:ring-0 focus:ring-primary ${
-          currencySymbol ? 'pr-4 pl-8' : 'px-4'
-        } ${isPasswordType ? 'pr-12' : ''}`}
-        onKeyDown={handleKeyDown}
-        onFocus={handleInputFocus}
-        onBlur={() => setLabelFloat(!!field.value)}
-      />
-      <label
-        htmlFor={inputId}
-        className={`absolute left-3 bg-white px-1 transition-all duration-200 ease-in-out ${
-          labelFloat || field.value
-            ? 'top-[-0.7rem] mb-1 font-roboto text-sm font-semibold text-primary'
-            : 'text-md top-1/2 -translate-y-1/2 text-gray-500'
-        }`}
-      >
-        {placeholder}
-      </label>
-      {isPasswordType && (
-        <span
-          className='absolute right-3 top-3 cursor-pointer text-xs text-gray-500'
-          onClick={handleToggleShowPassword}
+  return (
+    <>
+      <div className='relative rounded-md border shadow-sm focus-within:border-primary'>
+        {Icon && (
+          <Icon className='absolute left-3 top-3 h-5 w-5 text-gray-500' />
+        )}
+        {currencySymbol && (
+          <div className='pointer-events-none absolute left-3 top-1/2 flex h-5 w-5 -translate-y-1/2 transform items-center justify-center font-semibold text-primary'>
+            {currencySymbol}
+          </div>
+        )}
+        <input
+          {...field}
+          id={inputId}
+          step={currencySymbol ? '1.00' : undefined}
+          type={isPasswordType && !showPassword ? 'password' : type}
+          autoFocus={autoFocus}
+          className={`text-md w-full rounded-md border-gray-300 bg-white py-2 focus:border-primary focus:outline-none focus:ring-0 focus:ring-primary ${
+            currencySymbol ? 'pl-8 pr-4' : 'px-4'
+          } ${isPasswordType ? 'pr-12' : ''}`}
+          onKeyDown={handleKeyDown}
+          onFocus={handleInputFocus}
+          onBlur={() => setLabelFloat(!!field.value)}
+        />
+        <label
+          htmlFor={inputId}
+          className={`absolute left-3 bg-white px-1 transition-all duration-200 ease-in-out ${
+            labelFloat || field.value
+              ? 'top-[-0.7rem] mb-1 font-roboto text-sm font-semibold text-primary'
+              : 'text-md top-1/2 -translate-y-1/2 text-gray-500'
+          }`}
         >
-          {showPassword ? 'Hide' : 'Show'}
-        </span>
-      )}
-    </div>
+          {placeholder}
+        </label>
+        {isPasswordType && (
+          <span
+            className='absolute right-3 top-3 cursor-pointer text-xs text-gray-500'
+            onClick={handleToggleShowPassword}
+          >
+            {showPassword ? 'Hide' : 'Show'}
+          </span>
+        )}
+      </div>
 
-    
-    <StyledFormMessage />
-  </>
-);
+      <StyledFormMessage />
+    </>
+  );
 };
 
 const StyledFormMessage = () => {

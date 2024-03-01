@@ -15,6 +15,8 @@ import {
   FormControl,
   FormMessage,
   Form,
+  FormLabel,
+  FormDescription,
 } from '@/components/ui/form';
 import SingleImageUploadForm from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
 import { Button } from '@/components/ui/button';
@@ -25,6 +27,7 @@ import {
 import {
   AddMaterialRequestInput,
   AddNewServiceCategoryRequestInput,
+  PricingTierEntity,
   ServiceCategoryEntity,
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
@@ -40,6 +43,8 @@ import {
 import SelectWithInput from '../../../general/SelectWithInput/SelectWithInput';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
+import { Switch } from '@/components/ui/switch';
+import PricingTier from './PricingTier/PricingTier';
 
 const unitOptions = [
   { label: 'Other', value: 'Other' },
@@ -119,15 +124,15 @@ const AddMaterialModal = ({
       taxable: false,
       allowOnlineBooking: false,
       onlinePrice: null,
-      cost: 0.00,
-      price: 0.00,
+      cost: 0.0,
+      price: 0.0,
       unitType: '',
       images: [],
       onlineMaterialUrls: [],
       pricingTiers: [],
     },
   });
-  const user = useSelector((state: RootState) => state.user.data) 
+  const user = useSelector((state: RootState) => state.user.data);
   console.log('user', user);
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
   const { getAllServiceCategories, serviceCategories, loading, error } =
@@ -271,34 +276,34 @@ const AddMaterialModal = ({
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={form.control}
-                  name='cost'
+                  name='taxable'
                   render={({ field }) => (
-                    <FormItem className='flex-1'>
-                      <SimpleInput
-                        field={field}
-                        autoFocus={true}
-                        currencySymbol = {user?.currencySymbol}
-                        placeholder='Cost'
-                        type='number'
-                      />
+                    <FormItem className='flex flex-1 items-center justify-between rounded-lg border p-1.5 px-4 shadow-sm'>
+                      <FormLabel className=''>Taxable</FormLabel>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
 
                 <FormField
                   control={form.control}
-                  name='price'
+                  name='taxable'
                   render={({ field }) => (
-                    <FormItem className='flex-1'>
-                      <SimpleInput
-                        field={field}
-                        placeholder='Price'
-                        currencySymbol = {user?.currencySymbol}
-                        type='number'
-                      />
+                    <FormItem className='flex flex-1 items-center justify-between rounded-lg border p-1.5 px-4 shadow-sm'>
+                      <FormLabel className=''>Online Display</FormLabel>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -361,6 +366,41 @@ const AddMaterialModal = ({
                   </FormItem>
                 )}
               />
+            </div>
+            <div className='col-span-2 space-y-4'>
+              <FormField
+                control={form.control}
+                name='cost'
+                render={({ field }) => (
+                  <FormItem className='flex-1'>
+                    <SimpleInput
+                      field={field}
+                      autoFocus={true}
+                      currencySymbol={user?.currencySymbol}
+                      placeholder='Cost'
+                      type='number'
+                    />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='price'
+                render={({ field }) => (
+                  <FormItem className='flex-1'>
+                    <SimpleInput
+                      field={field}
+                      placeholder='Price'
+                      currencySymbol={user?.currencySymbol}
+                      type='number'
+                    />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className='col-span-2'>
+              <PricingTier />
             </div>
 
             <DialogFooter className='col-span-4 flex justify-between'>

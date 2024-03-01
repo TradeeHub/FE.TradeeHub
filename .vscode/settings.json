@@ -3,6 +3,7 @@
         "SSH_AUTH_SOCK": "$env:SSH_AUTH_SOCK"
     },
     "cSpell.words": [
-        "pricebook"
+        "pricebook",
+        "Xmark"
     ]
 }

@@ -23,19 +23,23 @@ const PriceBook = () => {
 
       <Button onClick={() => setIsMaterialModalOpen(true)}>Add Material</Button>
 
-      {isMaterialModalOpen && <AddMaterialModal
-        isOpen={isMaterialModalOpen}
-        onClose={toggleMaterialModal}
-        modalName='Create New Material'
-      />}
+      {isMaterialModalOpen && (
+        <AddMaterialModal
+          isOpen={isMaterialModalOpen}
+          onClose={toggleMaterialModal}
+          modalName='Create New Material'
+        />
+      )}
 
-      {isModalOpen && <AddServiceCategoryModal
-        isOpen={isModalOpen}
-        onClose={toggleModal}
-        // onCustomerAdded={refreshGridData} // Assuming you have such a prop
-        modalName='Create New Service Category'
-        // onAdded={undefined}
-      />}
+      {isModalOpen && (
+        <AddServiceCategoryModal
+          isOpen={isModalOpen}
+          onClose={toggleModal}
+          // onCustomerAdded={refreshGridData} // Assuming you have such a prop
+          modalName='Create New Service Category'
+          // onAdded={undefined}
+        />
+      )}
     </>
   );
 };
