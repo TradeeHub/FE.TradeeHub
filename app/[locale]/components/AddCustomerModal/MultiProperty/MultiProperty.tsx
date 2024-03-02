@@ -1,149 +1,187 @@
-import React from 'react';
-import { Button } from '@/components/ui/button'; // Adjust import path as necessary
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@/components/ui/form'; // Adjust import path as necessary
-import {
-  AddCustomerFormRequest,
-  UserPlace,
-} from '@/app/[locale]/types/sharedTypes'; // Adjust import path as necessary
-import AddressAutocomplete from '@/app/[locale]/ui/general/AddressAutocomplete/AddressAutocomplete';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form';
-import { RxCross2 } from 'react-icons/rx';
-import { CustomButton } from '../../CustomButton/CustomButton';
+import React, { useEffect } from 'react';
+import { ArrayPath, Controller, ControllerRenderProps, FieldValues, Path, PathValue, UseFormReturn, useFieldArray } from 'react-hook-form';
+import { FaXmark } from 'react-icons/fa6';
+import { MdAdd } from 'react-icons/md';
+import { FormControl, FormField, FormItem } from '@/components/ui/form';
+import { PricingTierEntity } from '@/generatedGraphql';
+import { PricingTierEntityWithId } from '@/app/[locale]/types/sharedTypes';
 
-interface MultiPropertyProps {
-  form: UseFormReturn<AddCustomerFormRequest>; // Adjust typing as necessary
-}
+type SelectWithInputFormProps<
+  TFieldValues extends FieldValues> = {
+  form: UseFormReturn<TFieldValues>;
+  field: ControllerRenderProps<PricingTierEntityWithId>;
+  title?: string;
+};
 
-const MultiProperty: React.FC<MultiPropertyProps> = ({ form }) => {
-  const { control, setValue, watch, resetField } = form;
+const PricingTier = <
+  TFieldValues extends FieldValues>({
+  form,
+  field,
+}: SelectWithInputFormProps<PricingTierEntityWithId>) => {
+
+  const { control, watch, setValue } = form;
 
   const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'properties',
+    control: form.control,
+    name: field.name as ArrayPath<PricingTierEntityWithId>,
   });
 
-  const properties = watch('properties');
+  const pricingTiers = watch(field.name);
 
-  const onPlaceSelectForProperty = (index: number, place: UserPlace | null) => {
-    setValue(`properties.${index}.property`, place);
-    // if (!place) setValue(`properties.${index}.isBillingAddress`, true);
-  };
+  console.log('pricingTiers', fields);
+  
+  useEffect(() => {
+    pricingTiers?.forEach((tier: PricingTierEntity, index: number) => {
+      console.log('tier', tier);
+      if (index < pricingTiers.length - 1) {
+        const nextMinValue = Number(pricingTiers[index]?.unitRange?.max) + 1;
+        if (Number(pricingTiers[index + 1]?.unitRange?.min) !== nextMinValue) {
+          setValue(`pricingTiers.${index + 1}.unitRange.min` as Path<PricingTierEntityWithId>, nextMinValue as PathValue<TFieldValues, Path<TFieldValues>>);
+        }
+      }
+    });
+  }, [pricingTiers, setValue]);
 
-  const onPlaceSelectForBilling = (index: number, place: UserPlace | null) => {
-    setValue(`properties.${index}.billing`, place);
+  const addNewTier = () => {
+    console.log('addNewTier', form.getValues());
+    const lastTier = fields[fields.length - 1] as PricingTierEntityWithId;
+    append({
+      cost: 0,
+      price: 0,
+      unitRange: {
+        min: lastTier ? Number(lastTier.unitRange?.max) + 1 : 0,
+        max: 0,
+      },
+    });
   };
-  //   const isBillingAddresses = fields.map((field, index) =>
-  //   watch(`properties.${index}.isBillingAddress`, true) // Default to true to align with your initial requirement
-  // );
-  // !getValues(`properties.${index}.isBillingAddress`)
 
   return (
-    <div>
-      {fields.map((field, index) => (
-        <div key={field.id} className='mb-4'>
-          <div className='flex items-end gap-2'>
-            <FormItem className='flex-grow'>
-              <FormControl>
-                <Controller
-                  name={`properties.${index}.property`}
-                  control={control}
-                  render={({ field }) => (
-                    <AddressAutocomplete
-                      field={field}
-                      onPlaceSelected={(place) =>
-                        onPlaceSelectForProperty(index, place)
-                      }
-                      placeholder='Search for Property Address'
+    <div className='overflow-hidden rounded-lg border border-gray-200 bg-white shadow'>
+      <table className='min-w-full divide-y divide-gray-200'>
+        <thead className='bg-gray-50'>
+          <tr>
+            <th className='px-2 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'>
+              Range From
+            </th>
+            <th className='px-2 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'>
+              Range To
+            </th>
+            <th className='px-2 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'>
+              Cost
+            </th>
+            <th className='px-2 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'>
+              Price
+            </th>
+            <th className='text-center text-sm font-semibold uppercase tracking-wider'>
+              <button
+                type='button'
+                onClick={addNewTier}
+                className='py-1 pr-6 text-green-700 hover:text-green-900 focus:outline-none'
+                style={{ fontSize: '1.2rem' }}
+              >
+                <MdAdd style={{ fontSize: '1.2rem' }} />
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody className='divide-y divide-gray-200 bg-white'>
+          {fields.map((field, index) => (
+            <tr key={field.id}>
+              <td className='whitespace-nowrap px-2 py-2'>
+                <FormItem>
+                  <FormControl>
+                    <Controller
+                      name={`pricingTiers.${index}.unitRange.min` as Path<PricingTierEntityWithId>}
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                          type='number'
+                          className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
+                          readOnly
+                        />
+                      )}
                     />
+                  </FormControl>
+                </FormItem>
+              </td>
+              <td className='whitespace-nowrap px-2 py-2'>
+                <FormItem>
+                  <FormControl>
+                    <Controller
+                      name={`pricingTiers.${index}.unitRange.max` as Path<PricingTierEntityWithId>}
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                          type='number'
+                          className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
+                        />
+                      )}
+                    />
+                  </FormControl>
+                </FormItem>
+              </td>
+              <td className='whitespace-nowrap px-2 py-2'>
+                <FormField
+                  control={form.control}
+                  name={`pricingTiers.${index}.cost`as Path<PricingTierEntityWithId>}
+                  render={({ field }) => (
+                    <FormItem className='flex flex-row items-start space-x-2 space-y-0'>
+                      <FormControl>
+                        <input
+                          {...field.value}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                          type='number'
+                          className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
+                        />
+                      </FormControl>
+                    </FormItem>
                   )}
                 />
-              </FormControl>
-            </FormItem>
-
-            {/* Add and Remove buttons */}
-            {index > 0 && (
-              <Button
-                type='button'
-                variant='ghost'
-                onClick={() => remove(index)}
-                className='remove-button'
-              >
-                <RxCross2 />
-              </Button>
-            )}
-
-            {index === 0 && (
-              <CustomButton
-                type='button'
-                variant='ghost'
-                size='sm'
-                onClick={() =>
-                  append({ property: null, isBillingAddress: true })
-                }
-                className='add-button'
-              >
-                Add
-              </CustomButton>
-            )}
-          </div>
-
-          {properties[index].property && (
-            <div className='mt-1 pl-4'>
-              <FormField
-                control={form.control}
-                name={`properties.${index}.isBillingAddress`}
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-start space-x-2 space-y-0'>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={(checked) => {
-                          field.onChange(checked);
-                          if (checked) {
-                            resetField(`properties.${index}.billing`);
+              </td>
+              <td className='whitespace-nowrap px-2 py-2'>
+                <FormItem>
+                  <FormControl>
+                    <Controller
+                      control={control}
+                      name={`pricingTiers.${index}.price` as Path<PricingTierEntityWithId>}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
                           }
-                        }}
-                      />
-                    </FormControl>
-                    <FormLabel className='text-sm'>
-                      Same address for billing and property.
-                    </FormLabel>
-                  </FormItem>
+                          type='number'
+                          className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
+                        />
+                      )}
+                    />
+                  </FormControl>
+                </FormItem>
+              </td>
+              <td className='px-2 text-sm font-medium'>
+                {index > 0 && (
+                  <button
+                    onClick={() => remove(index)}
+                    className='pr-5 pt-1 text-red-600 hover:text-red-900 focus:outline-none'
+                  >
+                    <FaXmark />
+                  </button>
                 )}
-              />
-            </div>
-          )}
-
-          {!properties[index].isBillingAddress &&
-            properties[index].property && (
-              <FormItem className='mt-5 flex-grow'>
-                <FormControl>
-                  <Controller
-                    name={`properties.${index}.billing`}
-                    control={control}
-                    render={({ field }) => (
-                      <AddressAutocomplete
-                        field={field}
-                        onPlaceSelected={(place) =>
-                          onPlaceSelectForBilling(index, place)
-                        }
-                        placeholder='Search for Billing Address'
-                      />
-                    )}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-        </div>
-      ))}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default MultiProperty;
+export default PricingTier;

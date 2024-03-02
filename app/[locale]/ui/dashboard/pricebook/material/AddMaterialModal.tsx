@@ -1,4 +1,4 @@
-import { UseFormReturn, useForm } from 'react-hook-form';
+import { ControllerRenderProps, UseFormReturn, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Textarea } from '@/components/ui/textarea';
@@ -44,6 +44,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { Switch } from '@/components/ui/switch';
 import PricingTier from './PricingTier/PricingTier';
+import { PricingTierEntityWithId } from '@/app/[locale]/types/sharedTypes';
 
 const unitOptions = [
   { label: 'Other', value: 'Other' },

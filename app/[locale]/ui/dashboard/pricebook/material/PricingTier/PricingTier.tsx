@@ -1,20 +1,17 @@
 import React, { useEffect } from 'react';
-import { ArrayPath, Controller, ControllerRenderProps, FieldPath, FieldValues, Path, PathValue, UseFormReturn, useFieldArray } from 'react-hook-form';
+import { ArrayPath, Controller, ControllerRenderProps, FieldArray, FieldPath, FieldValues, Path, PathValue, UseFormReturn, useFieldArray } from 'react-hook-form';
 import { FaXmark } from 'react-icons/fa6';
 import { MdAdd } from 'react-icons/md';
 import { FormControl, FormField, FormItem } from '@/components/ui/form';
 import { PricingTierEntity } from '@/generatedGraphql';
-
-export type PricingTierEntityWithId = PricingTierEntity & {
-  id: string;
-};
+import { PricingTierEntityWithId } from '@/app/[locale]/types/sharedTypes';
 
 type SelectWithInputFormProps<
-  TFieldValues extends FieldValues,
-  TFieldName extends FieldPath<TFieldValues>,
+  PricingTierEntityWithId extends FieldValues,
+  TFieldName extends FieldPath<PricingTierEntityWithId>,
 > = {
-  form: UseFormReturn<TFieldValues>;
-  field: ControllerRenderProps<TFieldValues, TFieldName>;
+  form: UseFormReturn<PricingTierEntityWithId>;
+  field: ControllerRenderProps<PricingTierEntityWithId, TFieldName>;
   title?: string;
 };
 
@@ -51,16 +48,18 @@ const PricingTier = <
 
   const addNewTier = () => {
     console.log('addNewTier', form.getValues());
-    const lastTier = fields[fields.length - 1];
+    const lastTier = fields[fields.length - 1] as TFieldValues;
     append({
-      cost: 0,
+      cost: 0, // Assuming cost is allowed and is a number
       price: 0,
       unitRange: {
-        min: lastTier ? Number(lastTier.unitRange?.max as Path<TFieldValues>) + 1 : 0,
+        min: lastTier ? Number(lastTier.unitRange?.max) + 1 : 0,
         max: 0,
+        overlaps: false, // Assuming this is required based on your type definitions
       },
-    });
+    } as FieldArray<TFieldValues, ArrayPath<TFieldValues>>);
   };
+
 
   return (
     <div className='overflow-hidden rounded-lg border border-gray-200 bg-white shadow'>

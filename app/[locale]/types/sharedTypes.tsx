@@ -4,6 +4,7 @@ import {
   CustomersPagedQuery,
   Exact,
   InputMaybe,
+  PricingTierEntity,
   UserEntity,
 } from '@/generatedGraphql';
 import { ApolloError, ApolloQueryResult } from '@apollo/client';
@@ -152,4 +153,8 @@ export type AddCustomerFormRequest = {
 type Reference = {
   id: string;
   referenceType: string;
+};
+
+export type PricingTierEntityWithId = PricingTierEntity & {
+  id: string;
 };
