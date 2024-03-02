@@ -15,6 +15,14 @@ import {
   SimpleSelectTrigger,
   SimpleSelectValue,
 } from '../SimpleSelect/SimpleSelect';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { AuthInputWithIcon } from '../../auth/AuthInputWithIcon/AuthInputWithIcon';
 
 type Option = {
   label: string;
@@ -91,34 +99,35 @@ const SelectWithInput = <
   return (
     <div className='relative border-gray-300 focus-within:border-primary'>
       {isEditable ? (
-        <SimpleInput
+        <AuthInputWithIcon
           field={field}
-          autoFocus={true}
+          // Removed autoFocus to prevent automatic focusing
           placeholder={inputPlaceHolder}
+          // value={form.getValues(field.name) as string}
         />
       ) : (
-        <SimpleSelect
+        <Select
           onValueChange={handleSelectChange}
           defaultValue={form.getValues(field.name) || defaultValue}
         >
-          <SimpleSelectTrigger label={inputPlaceHolder}>
-            <SimpleSelectValue />
-          </SimpleSelectTrigger>
-          <SimpleSelectContent>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
             {options.map((option, index) => (
-              <SimpleSelectItem key={index} value={option.value}>
+              <SelectItem key={index} value={option.value}>
                 {option.label}
-              </SimpleSelectItem>
+              </SelectItem>
             ))}
-          </SimpleSelectContent>
-        </SimpleSelect>
+          </SelectContent>
+        </Select>
       )}
       {isEditable && (
         <span
-          className='absolute inset-y-0 right-0 flex cursor-pointer items-center pr-4 text-xs font-bold text-gray-500 text-secondary'
+          className='absolute right-0 top-2 cursor-pointer text-xs font-bold text-gray-500 text-secondary'
           onClick={handleCancel}
         >
-          <RxCross2 /> {/* Assuming this is the red 'x' cross icon */}
+          <RxCross2 />
         </span>
       )}
     </div>

@@ -82,6 +82,11 @@ const SimpleInput = <
           } ${isPasswordType ? 'pr-12' : ''}`}
           onKeyDown={handleKeyDown}
           onFocus={handleInputFocus}
+          onChange={(e) =>
+            type === 'number'
+              ? field.onChange(Number(e.target.value))
+              : field.onChange(e.target.value)
+          }
           onBlur={() => setLabelFloat(!!field.value)}
         />
         <label

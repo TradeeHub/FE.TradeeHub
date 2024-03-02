@@ -1609,7 +1609,6 @@ export type RangeOfDecimal = {
   overlaps: Scalars['Boolean']['output'];
 };
 
-
 export type RangeOfDecimalOverlapsArgs = {
   other?: InputMaybe<RangeOfDecimalInput>;
 };

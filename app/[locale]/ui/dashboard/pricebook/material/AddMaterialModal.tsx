@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { UseFormReturn, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,7 +16,6 @@ import {
   FormMessage,
   Form,
   FormLabel,
-  FormDescription,
 } from '@/components/ui/form';
 import SingleImageUploadForm from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
 import { Button } from '@/components/ui/button';
@@ -26,7 +25,7 @@ import {
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import {
   AddMaterialRequestInput,
-  AddNewServiceCategoryRequestInput,
+  MarkupType,
   PricingTierEntity,
   ServiceCategoryEntity,
 } from '@/generatedGraphql';
@@ -74,12 +73,19 @@ const markupEntitySchema = z
   .optional()
   .nullable();
 
+const rangeOfDecimalSchema = z.object({
+  max: z.number().optional(),
+  min: z.number().optional(),
+  overlaps: z.boolean(),
+});
+
 const pricingTierEntitySchema = z
   .array(
     z.object({
-      // Define the structure according to your PricingTierEntity class
-      tierName: z.string(),
-      price: z.number(),
+      id: z.string().optional().nullable(),
+      cost: z.number().optional().nullable(), // Assuming cost can be nullable
+      price: z.number().optional().nullable(),
+      unitRange: rangeOfDecimalSchema,
     }),
   )
   .optional()
@@ -90,12 +96,13 @@ const formSchema = z.object({
   serviceIds: z.array(z.string()).optional().nullable(),
   description: z.string().optional().nullable(),
   identifier: z.string().optional().nullable(),
+  parentServiceCategoryId: z.string().optional().nullable(),
   markup: markupEntitySchema,
   taxable: z.boolean(),
   allowOnlineBooking: z.boolean(),
   onlinePrice: z.number().optional().nullable(),
-  cost: z.number(),
-  price: z.number(),
+  cost: z.number().optional().nullable(),
+  price: z.number().optional().nullable(),
   unitType: z.string(),
   images: z.array(z.any()).optional().nullable(), // Assuming a placeholder for file upload input
   onlineMaterialUrls: z.array(z.string()).optional().nullable(),
@@ -105,7 +112,6 @@ const formSchema = z.object({
 const AddMaterialModal = ({
   isOpen,
   onClose,
-  onAdded,
   modalName,
 }: {
   isOpen: boolean;
@@ -120,12 +126,13 @@ const AddMaterialModal = ({
       serviceIds: [],
       description: null,
       identifier: null,
+      parentServiceCategoryId: null,
       markup: null,
       taxable: false,
       allowOnlineBooking: false,
       onlinePrice: null,
-      cost: 0.0,
-      price: 0.0,
+      cost: 0,
+      price: 0,
       unitType: '',
       images: [],
       onlineMaterialUrls: [],
@@ -133,19 +140,15 @@ const AddMaterialModal = ({
     },
   });
   const user = useSelector((state: RootState) => state.user.data);
-  console.log('user', user);
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
-  const { getAllServiceCategories, serviceCategories, loading, error } =
+  const { getAllServiceCategories, serviceCategories } =
     useGetAllServiceCategoriesLazy(); // Fetch categories
   const fetchedRef = useRef<boolean>(false);
 
   const { toast } = useToast();
 
-  const {
-    addNewServiceCategory,
-    addNewServiceCategoryResponse,
-    addNewServiceCategoryLoading,
-  } = useAddNewServiceCategory();
+  const { addNewServiceCategoryResponse, addNewServiceCategoryLoading } =
+    useAddNewServiceCategory();
 
   const handleClose = () => {
     form.reset();
@@ -186,27 +189,44 @@ const AddMaterialModal = ({
   }, [addNewServiceCategoryResponse]);
 
   const handleSave = async (formData: z.infer<typeof formSchema>) => {
+    // Format decimal values as strings in the expected decimal format
+    const formatDecimal = (value: number) => value.toString();
+
+    console.log('formData', formData);
+
+    // Ensure all decimal values are formatted as strings
     const request: AddMaterialRequestInput = {
       allowOnlineBooking: formData.allowOnlineBooking,
       cost: formData.cost,
       description: formData.description,
       identifier: formData.identifier,
       images: formData.images, // Assuming you have a way to handle file uploads correctly
-      markup: {
-        type: 'fixed',
-        value: formData.markup,
-      },
+      markup: formData.markup
+        ? {
+            type: formData.markup.type as MarkupType,
+            value: formatDecimal(formData.markup.value),
+          }
+        : undefined,
       name: formData.name,
       onlineMaterialUrls: formData.onlineMaterialUrls,
-      onlinePrice: formData.onlinePrice,
+      onlinePrice: formData.onlinePrice
+        ? formatDecimal(formData.onlinePrice)
+        : undefined,
       price: formData.price,
-      pricingTiers: formData.pricingTiers,
+      pricingTiers: formData.pricingTiers?.map((tier) => ({
+        cost: tier.cost ? formatDecimal(tier.cost) : undefined,
+        price: formatDecimal(tier.price ?? 0),
+        unitRange: {
+          max: formatDecimal(tier.unitRange.max ?? 0),
+          min: formatDecimal(tier.unitRange.min ?? 0),
+        },
+      })),
       serviceIds: formData.serviceIds,
       taxable: formData.taxable,
       unitType: formData.unitType,
     };
 
-    addNewServiceCategory(request);
+    console.log('request', request);
 
     fetchedRef.current = false;
   };
@@ -294,10 +314,10 @@ const AddMaterialModal = ({
 
                 <FormField
                   control={form.control}
-                  name='taxable'
+                  name='allowOnlineBooking'
                   render={({ field }) => (
                     <FormItem className='flex flex-1 items-center justify-between rounded-lg border p-1.5 px-4 shadow-sm'>
-                      <FormLabel className=''>Online Display</FormLabel>
+                      <FormLabel className=''>Online Booking</FormLabel>
                       <FormControl>
                         <Switch
                           checked={field.value}
@@ -315,12 +335,6 @@ const AddMaterialModal = ({
                 name='parentServiceCategoryId'
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel
-                      style={{ marginBottom: '0' }}
-                      className='pb-0 pl-3 text-xs font-bold text-primary'
-                    >
-                      Parent Category (optional)
-                    </FormLabel> */}
                     <SimpleSelect
                       onOpenChange={handleSelectTriggerClick}
                       onValueChange={field.onChange}
@@ -400,7 +414,19 @@ const AddMaterialModal = ({
               />
             </div>
             <div className='col-span-2'>
-              <PricingTier />
+              <FormField
+                control={form.control}
+                name='pricingTiers'
+                render={({ field }) => (
+                  <FormItem className='flex-1'>
+                    <PricingTier
+                      form={form}
+                      field={field}
+                      title='Add Pricing Tiers'
+                    />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <DialogFooter className='col-span-4 flex justify-between'>

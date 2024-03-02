@@ -1,21 +1,64 @@
-import React from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import React, { useEffect } from 'react';
+import { ArrayPath, Controller, ControllerRenderProps, FieldPath, FieldValues, Path, PathValue, UseFormReturn, useFieldArray } from 'react-hook-form';
 import { FaXmark } from 'react-icons/fa6';
 import { MdAdd } from 'react-icons/md';
+import { FormControl, FormField, FormItem } from '@/components/ui/form';
+import { PricingTierEntity } from '@/generatedGraphql';
 
-const PricingTier = () => {
-  const { control, register, getValues } = useFormContext();
+export type PricingTierEntityWithId = PricingTierEntity & {
+  id: string;
+};
+
+type SelectWithInputFormProps<
+  TFieldValues extends FieldValues,
+  TFieldName extends FieldPath<TFieldValues>,
+> = {
+  form: UseFormReturn<TFieldValues>;
+  field: ControllerRenderProps<TFieldValues, TFieldName>;
+  title?: string;
+};
+
+const PricingTier = <
+  TFieldValues extends FieldValues,
+  TFieldName extends FieldPath<TFieldValues>,
+>({
+  form,
+  field,
+}: SelectWithInputFormProps<TFieldValues, TFieldName>) => {
+
+  const { control, watch, setValue } = form;
+
   const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'pricingTiers',
+    control: form.control,
+    name: field.name as ArrayPath<TFieldValues>,
   });
 
+  const pricingTiers = watch(field.name);
+
+  console.log('pricingTiers', fields);
+  
+  useEffect(() => {
+    pricingTiers?.forEach((tier: PricingTierEntity, index: number) => {
+      console.log('tier', tier);
+      if (index < pricingTiers.length - 1) {
+        const nextMinValue = Number(pricingTiers[index]?.unitRange?.max) + 1;
+        if (Number(pricingTiers[index + 1]?.unitRange?.min) !== nextMinValue) {
+          setValue(`pricingTiers.${index + 1}.unitRange.min` as Path<TFieldValues>, nextMinValue as PathValue<TFieldValues, Path<TFieldValues>>);
+        }
+      }
+    });
+  }, [pricingTiers, setValue]);
+
   const addNewTier = () => {
-    const lastTierMaxValue = Number(fields[fields.length - 1]?.range?.max) || 0; // Corrected to ensure numeric addition
+    console.log('addNewTier', form.getValues());
+    const lastTier = fields[fields.length - 1];
     append({
-      range: { min: lastTierMaxValue + 1, max: lastTierMaxValue + 1 },
       cost: 0,
       price: 0,
+      unitRange: {
+        min: lastTier ? Number(lastTier.unitRange?.max as Path<TFieldValues>) + 1 : 0,
+        max: 0,
+      },
     });
   };
 
@@ -24,16 +67,16 @@ const PricingTier = () => {
       <table className='min-w-full divide-y divide-gray-200'>
         <thead className='bg-gray-50'>
           <tr>
-            <th className='px-2 py-3 text-left text-center text-xs font-medium uppercase tracking-wider text-gray-500'>
+            <th className='px-2 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'>
               Range From
             </th>
-            <th className='px-2 py-3 text-left text-center text-xs font-medium uppercase tracking-wider text-gray-500'>
+            <th className='px-2 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'>
               Range To
             </th>
-            <th className='px-2 py-3 text-left text-center text-xs font-medium uppercase tracking-wider text-gray-500'>
+            <th className='px-2 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'>
               Cost
             </th>
-            <th className='px-2 py-3 text-left text-center text-xs font-medium uppercase tracking-wider text-gray-500'>
+            <th className='px-2 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'>
               Price
             </th>
             <th className='text-center text-sm font-semibold uppercase tracking-wider'>
@@ -52,33 +95,83 @@ const PricingTier = () => {
           {fields.map((field, index) => (
             <tr key={field.id}>
               <td className='whitespace-nowrap px-2 py-2'>
-                <input
-                  {...register(`pricingTiers.${index}.range.min`)}
-                  type='number'
-                  className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
-                  readOnly
+                <FormItem>
+                  <FormControl>
+                    <Controller
+                      name={`pricingTiers.${index}.unitRange.min` as Path<TFieldValues>}
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                          type='number'
+                          className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
+                          readOnly
+                        />
+                      )}
+                    />
+                  </FormControl>
+                </FormItem>
+              </td>
+              <td className='whitespace-nowrap px-2 py-2'>
+                <FormItem>
+                  <FormControl>
+                    <Controller
+                      name={`pricingTiers.${index}.unitRange.max` as Path<TFieldValues>}
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                          type='number'
+                          className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
+                        />
+                      )}
+                    />
+                  </FormControl>
+                </FormItem>
+              </td>
+              <td className='whitespace-nowrap px-2 py-2'>
+                <FormField
+                  control={form.control}
+                  name={`pricingTiers.${index}.cost`as Path<TFieldValues>}
+                  render={({ field }) => (
+                    <FormItem className='flex flex-row items-start space-x-2 space-y-0'>
+                      <FormControl>
+                        <input
+                          {...field.value}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                          type='number'
+                          className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
                 />
               </td>
               <td className='whitespace-nowrap px-2 py-2'>
-                <input
-                  {...register(`pricingTiers.${index}.range.max`)}
-                  type='number'
-                  className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
-                />
-              </td>
-              <td className='whitespace-nowrap px-2 py-2'>
-                <input
-                  {...register(`pricingTiers.${index}.price`)}
-                  type='number'
-                  className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
-                />
-              </td>
-              <td className='whitespace-nowrap px-2 py-2'>
-                <input
-                  {...register(`pricingTiers.${index}.cost`)}
-                  type='number'
-                  className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
-                />
+                <FormItem>
+                  <FormControl>
+                    <Controller
+                      control={control}
+                      name={`pricingTiers.${index}.price` as Path<TFieldValues>}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                          type='number'
+                          className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
+                        />
+                      )}
+                    />
+                  </FormControl>
+                </FormItem>
               </td>
               <td className='px-2 text-sm font-medium'>
                 {index > 0 && (

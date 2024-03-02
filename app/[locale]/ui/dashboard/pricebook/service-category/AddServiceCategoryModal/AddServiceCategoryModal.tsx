@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { boolean, z } from 'zod';
+import { z } from 'zod';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Dialog,
@@ -12,19 +12,11 @@ import {
 import {
   FormField,
   FormItem,
-  FormLabel,
   FormControl,
   FormMessage,
   Form,
 } from '@/components/ui/form';
 import SingleImageUploadForm from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import {
   useAddNewServiceCategory,
@@ -36,7 +28,6 @@ import {
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { AuthInputWithIcon } from '@/app/[locale]/ui/auth/AuthInputWithIcon/AuthInputWithIcon';
 import { SimpleInput } from '@/app/[locale]/ui/general/SimpleInput/SimpleInput';
 import {
   SimpleSelect,
@@ -57,7 +48,6 @@ const formSchema = z.object({
 const AddServiceCategoryModal = ({
   isOpen,
   onClose,
-  onAdded,
   modalName,
 }: {
   isOpen: boolean;
@@ -74,7 +64,7 @@ const AddServiceCategoryModal = ({
     },
   });
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
-  const { getAllServiceCategories, serviceCategories, loading, error } =
+  const { getAllServiceCategories, serviceCategories } =
     useGetAllServiceCategoriesLazy(); // Fetch categories
   const fetchedRef = useRef<boolean>(false);
 
