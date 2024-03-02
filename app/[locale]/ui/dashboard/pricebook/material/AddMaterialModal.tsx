@@ -274,12 +274,12 @@ const AddMaterialModal = ({
                   name='unitType'
                   render={({ field }) => (
                     <FormItem className='flex-1'>
-                      <SelectWithInput<AddMaterialRequestInput, 'unitType'>
-                        form={form} // Cast 'form' to the correct type
-                        field={field} // Cast 'field' to the correct type
+                      <SelectWithInput
+                        form={form}
+                        field={field}
                         options={unitOptions}
                         inputPlaceHolder='Unit Type'
-                        defaultValue={''} // Update the defaultValue to an empty string or the appropriate value
+                        defaultValue={''}
                       />
                     </FormItem>
                   )}
