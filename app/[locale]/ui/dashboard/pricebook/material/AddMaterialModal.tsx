@@ -421,7 +421,7 @@ const AddMaterialModal = ({
                     <PricingTier
                       form={form}
                       field={field}
-                      title='Add Pricing Tiers'
+                      title='Unit Type Pricing Range'
                       currencySymbol={user?.currencySymbol}
                     />
                   </FormItem>

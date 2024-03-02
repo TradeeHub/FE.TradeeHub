@@ -42,40 +42,78 @@ const PricingTier = <
     name: field.name as ArrayPath<TFieldValues>,
   });
 
-  const pricingTiers = watch(field.name);
+  // New function to update the next row's "Range From"
+  const updateNextRowMin = (currentIndex: number, currentMaxValue: number) => {
+    if (currentIndex + 1 < fields.length) {
+      const nextMinValue = currentMaxValue + 1;
+      setValue(
+        `${field.name}.${currentIndex + 1}.unitRange.min` as Path<TFieldValues>,
+        nextMinValue as PathValue<TFieldValues, Path<TFieldValues>>,
+      );
 
-  console.log('pricingTiers', fields);
+      // Get the current "Range To" of the next line to check if it needs adjustment
+      const nextRangeTo = watch(
+        `${field.name}.${currentIndex + 1}.unitRange.max` as Path<TFieldValues>,
+      );
 
-  useEffect(() => {
-    pricingTiers?.forEach((tier: PricingTierEntity, index: number) => {
-      console.log('tier', tier);
-      if (index < pricingTiers.length - 1) {
-        const nextMinValue = Number(pricingTiers[index]?.unitRange?.max) + 1;
-        if (Number(pricingTiers[index + 1]?.unitRange?.min) !== nextMinValue) {
-          setValue(
-            `pricingTiers.${index + 1}.unitRange.min` as Path<TFieldValues>,
-            nextMinValue as PathValue<TFieldValues, Path<TFieldValues>>,
-          );
-        }
+      // If the "Range To" of the next line is less than or equal to its "Range From", adjust it
+      if (nextRangeTo <= nextMinValue) {
+        setValue(
+          `${field.name}.${currentIndex + 1}.unitRange.max` as Path<TFieldValues>,
+          (nextMinValue + 10) as PathValue<TFieldValues, Path<TFieldValues>>,
+        );
       }
-    });
-  }, [pricingTiers, setValue]);
+    }
+  };
+
+  const handleBlur = (index: number) => {
+    const currentRangeTo = watch(
+      `${field.name}.${index}.unitRange.max` as Path<TFieldValues>,
+    );
+    const currentRangeToSet =
+      currentRangeTo === '' ? 0 : Number(currentRangeTo);
+    const currentRangeFrom = watch(
+      `${field.name}.${index}.unitRange.min` as Path<TFieldValues>,
+    );
+
+    if (currentRangeToSet <= currentRangeFrom) {
+      const correctedValue = currentRangeFrom + 10;
+      setValue(
+        `${field.name}.${index}.unitRange.max` as Path<TFieldValues>,
+        correctedValue as PathValue<TFieldValues, Path<TFieldValues>>,
+      );
+      updateNextRowMin(index, correctedValue); // Ensure the next row's min is updated accordingly
+    } else {
+      setValue(
+        `${field.name}.${index}.unitRange.max` as Path<TFieldValues>,
+        currentRangeToSet as PathValue<TFieldValues, Path<TFieldValues>>,
+      );
+      updateNextRowMin(index, currentRangeToSet); // Still check and adjust the next row as needed
+    }
+  };
 
   const addNewTier = () => {
-    console.log('addNewTier', form.getValues());
-    const lastTier = fields[fields.length - 1] as TFieldValues;
+    const lastTierIndex = fields.length - 1;
+
+    const lastTier = fields[lastTierIndex] as TFieldValues; // Update the type to PricingTierEntity
+    const minValue = lastTier ? Number(lastTier.unitRange?.max) + 1 : 0;
     append({
       cost: 0,
       price: 0,
       unitRange: {
-        min: lastTier ? Number(lastTier.unitRange?.max) + 1 : 0,
-        max: 0,
+        min: minValue,
+        max: minValue + 10,
         overlaps: false, // Assuming this is required based on your type definitions
       },
     } as FieldArray<TFieldValues, ArrayPath<TFieldValues>>);
+
+    if (lastTierIndex + 1 < fields.length) {
+      updateNextRowMin(lastTierIndex, minValue + 10);
+    }
   };
 
-  return (
+  return (<>
+    <span className='pl-3 text-md text-primary font-semibold pb-0 font-roboto'>{title}</span>
     <div className='overflow-hidden rounded-lg border border-gray-200 bg-white shadow'>
       <table className='min-w-full divide-y divide-gray-200'>
         <thead className='bg-gray-50'>
@@ -92,16 +130,18 @@ const PricingTier = <
             <th className='px-2 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500'>
               Price
             </th>
-            <th className='text-center text-sm font-semibold uppercase tracking-wider'>
-              <button
-                type='button'
-                onClick={addNewTier}
-                className='py-1 pr-6 text-green-700 hover:text-green-900 focus:outline-none'
-                style={{ fontSize: '1.2rem' }}
-              >
-                <MdAdd style={{ fontSize: '1.2rem' }} />
-              </button>
-            </th>
+<th className='text-center text-sm font-semibold uppercase tracking-wider'>
+  <button
+    type='button'
+    onClick={addNewTier}
+    className='mx-auto py-1 text-green-700 hover:text-green-900 focus:outline-none'
+    style={{ fontSize: '1.2rem', display: 'block' }}
+  >
+    <MdAdd style={{ fontSize: '1.2rem' }} />
+  </button>
+</th>
+
+
           </tr>
         </thead>
         <tbody className='divide-y divide-gray-200 bg-white'>
@@ -122,7 +162,7 @@ const PricingTier = <
                             field.onChange(Number(e.target.value))
                           }
                           type='number'
-                          className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
+                          className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center text-gray-400 focus:outline-none focus:ring-0 sm:text-sm'
                           readOnly
                         />
                       )}
@@ -130,6 +170,7 @@ const PricingTier = <
                   </FormControl>
                 </FormItem>
               </td>
+
               <td className='whitespace-nowrap px-2 py-2'>
                 <FormItem>
                   <FormControl>
@@ -141,11 +182,10 @@ const PricingTier = <
                       render={({ field }) => (
                         <input
                           {...field}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
                           type='number'
                           className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
+                          onChange={(e) => field.onChange(e.target.value)} // Allow any change
+                          onBlur={() => handleBlur(index)} // Apply validation on blur
                         />
                       )}
                     />
@@ -252,7 +292,7 @@ const PricingTier = <
                 {index > 0 && (
                   <button
                     onClick={() => remove(index)}
-                    className='pr-5 pt-1 text-red-600 hover:text-red-900 focus:outline-none'
+                    className='pt-1 text-red-600 hover:text-red-900 focus:outline-none'
                   >
                     <FaXmark />
                   </button>
@@ -263,6 +303,7 @@ const PricingTier = <
         </tbody>
       </table>
     </div>
+    </>
   );
 };
 
