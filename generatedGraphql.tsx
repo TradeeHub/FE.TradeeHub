@@ -42,7 +42,7 @@ export type AddLaborRateRequestInput = {
 
 export type AddMaterialRequestInput = {
   allowOnlineBooking: Scalars['Boolean']['input'];
-  cost: Scalars['Decimal']['input'];
+  cost?: InputMaybe<Scalars['Decimal']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   identifier?: InputMaybe<Scalars['String']['input']>;
   images?: InputMaybe<Array<Scalars['Upload']['input']>>;
@@ -50,11 +50,12 @@ export type AddMaterialRequestInput = {
   name: Scalars['String']['input'];
   onlineMaterialUrls?: InputMaybe<Array<Scalars['String']['input']>>;
   onlinePrice?: InputMaybe<Scalars['Decimal']['input']>;
-  price: Scalars['Decimal']['input'];
+  parentServiceCategoryId?: InputMaybe<Scalars['ID']['input']>;
+  price?: InputMaybe<Scalars['Decimal']['input']>;
   pricingTiers?: InputMaybe<Array<PricingTierEntityInput>>;
-  serviceIds?: InputMaybe<Array<Scalars['ID']['input']>>;
   taxable: Scalars['Boolean']['input'];
   unitType: Scalars['String']['input'];
+  usePriceRange: Scalars['Boolean']['input'];
 };
 
 export type AddNewCustomerRequestInput = {
@@ -906,7 +907,8 @@ export enum MarkupType {
 
 export type MaterialEntity = Node & {
   __typename?: 'MaterialEntity';
-  cost: Scalars['Decimal']['output'];
+  allowOnlineBooking: Scalars['Boolean']['output'];
+  cost?: Maybe<Scalars['Decimal']['output']>;
   createdAt: Scalars['DateTime']['output'];
   createdById: Scalars['UUID']['output'];
   creator: UserEntity;
@@ -920,12 +922,15 @@ export type MaterialEntity = Node & {
   modifier?: Maybe<UserEntity>;
   name: Scalars['String']['output'];
   onlineMaterialUrls?: Maybe<Array<Scalars['String']['output']>>;
+  onlinePrice?: Maybe<Scalars['Decimal']['output']>;
   owner: UserEntity;
-  price: Scalars['Decimal']['output'];
+  parentServiceCategoryId?: Maybe<Scalars['ID']['output']>;
+  price?: Maybe<Scalars['Decimal']['output']>;
   pricingTiers?: Maybe<Array<PricingTierEntity>>;
-  serviceIds?: Maybe<Array<Scalars['ID']['output']>>;
-  services: Array<ServiceEntity>;
+  services?: Maybe<ServiceCategoryEntity>;
+  taxable: Scalars['Boolean']['output'];
   unitType: Scalars['String']['output'];
+  usePriceRange: Scalars['Boolean']['output'];
   userOwnerId: Scalars['UUID']['output'];
 };
 
@@ -1608,6 +1613,7 @@ export type RangeOfDecimal = {
   min: Scalars['Decimal']['output'];
   overlaps: Scalars['Boolean']['output'];
 };
+
 
 export type RangeOfDecimalOverlapsArgs = {
   other?: InputMaybe<RangeOfDecimalInput>;

@@ -97,6 +97,7 @@ const formSchema = z.object({
   identifier: z.string().optional().nullable(),
   parentServiceCategoryId: z.string().optional().nullable(),
   markup: markupEntitySchema,
+  usePriceRange: z.boolean(),
   taxable: z.boolean(),
   allowOnlineBooking: z.boolean(),
   onlinePrice: z.number().optional().nullable(),
@@ -239,6 +240,7 @@ const AddMaterialModal = ({
 
         <Form {...form}>
           <form className='grid grid-cols-4 gap-4'>
+            {/* Images */}
             <div className='col-span-1'>
               <FormField
                 control={form.control}
@@ -254,6 +256,7 @@ const AddMaterialModal = ({
             </div>
 
             <div className='col-span-1 space-y-11 md:col-span-3 '>
+              {/* Name and Unit Type */}
               <div className='flex flex-col md:flex-row md:space-x-4'>
                 <FormField
                   control={form.control}
@@ -285,7 +288,10 @@ const AddMaterialModal = ({
                   )}
                 />
               </div>
-              <div className='flex flex-col md:flex-row md:space-x-4'>
+
+{/* indentifier, taxable and online booking */}
+
+<div className='grid grid-cols-3 gap-4'> {/* Use grid-cols-3 for three equal columns */}
                 <FormField
                   control={form.control}
                   name='identifier'
@@ -328,6 +334,8 @@ const AddMaterialModal = ({
                 />
               </div>
             </div>
+
+{/* parent category and description */}
             <div className='col-span-2 space-y-4'>
               <FormField
                 control={form.control}
@@ -380,38 +388,79 @@ const AddMaterialModal = ({
                 )}
               />
             </div>
-            <div className='col-span-2 space-y-4'>
-              <FormField
-                control={form.control}
-                name='cost'
-                render={({ field }) => (
-                  <FormItem className='flex-1'>
-                    <SimpleInput
-                      field={field}
-                      autoFocus={true}
-                      currencySymbol={user?.currencySymbol}
-                      placeholder='Cost'
-                      type='number'
-                    />
-                  </FormItem>
-                )}
-              />
+            
 
-              <FormField
-                control={form.control}
-                name='price'
-                render={({ field }) => (
-                  <FormItem className='flex-1'>
-                    <SimpleInput
-                      field={field}
-                      placeholder='Price'
-                      currencySymbol={user?.currencySymbol}
-                      type='number'
-                    />
-                  </FormItem>
-                )}
-              />
-            </div>
+
+
+{/* cost and price */}
+<div className='col-span-2 grid grid-cols-2 gap-4'> {/* This container takes up 2 columns and has 2 columns within it */}
+  <FormField
+    control={form.control}
+    name='cost'
+    render={({ field }) => (
+      <FormItem className='flex-1'>
+        <SimpleInput
+          field={field}
+          autoFocus={true}
+          currencySymbol={user?.currencySymbol}
+          placeholder='Cost'
+          type='number'
+        />
+      </FormItem>
+    )}
+  />
+
+  <FormField
+    control={form.control}
+    name='price'
+    render={({ field }) => (
+      <FormItem className='flex-1'>
+        <SimpleInput
+          field={field}
+          placeholder='Price'
+          currencySymbol={user?.currencySymbol}
+          type='number'
+        />
+      </FormItem>
+    )}
+  />
+</div>
+
+
+<div className='col-span-2 grid grid-cols-2 gap-4'> {/* This container takes up 2 columns and has 2 columns within it */}
+  <FormField
+    control={form.control}
+    name='usePriceRange'
+    render={({ field }) => (
+      <FormItem className='flex-1'>
+        <SimpleInput
+          field={field}
+          autoFocus={true}
+          currencySymbol={user?.currencySymbol}
+          placeholder='Use Price Range'
+          type='number'
+        />
+      </FormItem>
+    )}
+  />
+
+  <FormField
+    control={form.control}
+    name='price'
+    render={({ field }) => (
+      <FormItem className='flex-1'>
+        <SimpleInput
+          field={field}
+          placeholder='Price'
+          currencySymbol={user?.currencySymbol}
+          type='number'
+        />
+      </FormItem>
+    )}
+  />
+</div>
+
+{/* Pricing Tier Range */}
             <div className='col-span-2'>
               <FormField
                 control={form.control}
@@ -453,6 +502,8 @@ const AddMaterialModal = ({
       </DialogContent>
     </Dialog>
   );
+
+  
 };
 
 export default AddMaterialModal;
