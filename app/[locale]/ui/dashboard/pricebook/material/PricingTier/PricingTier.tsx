@@ -4,7 +4,6 @@ import { FaXmark } from 'react-icons/fa6';
 import { MdAdd } from 'react-icons/md';
 import { FormControl, FormField, FormItem } from '@/components/ui/form';
 import { PricingTierEntity } from '@/generatedGraphql';
-import { PricingTierEntityWithId } from '@/app/[locale]/types/sharedTypes';
 
 type SelectWithInputFormProps<
   PricingTierEntityWithId extends FieldValues,

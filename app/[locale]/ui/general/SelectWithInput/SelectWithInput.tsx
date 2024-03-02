@@ -15,14 +15,6 @@ import {
   SimpleSelectTrigger,
   SimpleSelectValue,
 } from '../SimpleSelect/SimpleSelect';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { AuthInputWithIcon } from '../../auth/AuthInputWithIcon/AuthInputWithIcon';
 
 type Option = {
   label: string;
@@ -99,35 +91,34 @@ const SelectWithInput = <
   return (
     <div className='relative border-gray-300 focus-within:border-primary'>
       {isEditable ? (
-        <AuthInputWithIcon
+        <SimpleInput
           field={field}
-          // Removed autoFocus to prevent automatic focusing
+          autoFocus={true}
           placeholder={inputPlaceHolder}
-          // value={form.getValues(field.name) as string}
         />
       ) : (
-        <Select
+        <SimpleSelect
           onValueChange={handleSelectChange}
           defaultValue={form.getValues(field.name) || defaultValue}
         >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
+          <SimpleSelectTrigger label={inputPlaceHolder}>
+            <SimpleSelectValue />
+          </SimpleSelectTrigger>
+          <SimpleSelectContent>
             {options.map((option, index) => (
-              <SelectItem key={index} value={option.value}>
+              <SimpleSelectItem key={index} value={option.value}>
                 {option.label}
-              </SelectItem>
+              </SimpleSelectItem>
             ))}
-          </SelectContent>
-        </Select>
+          </SimpleSelectContent>
+        </SimpleSelect>
       )}
       {isEditable && (
         <span
-          className='absolute right-0 top-2 cursor-pointer text-xs font-bold text-gray-500 text-secondary'
+          className='absolute inset-y-0 right-0 flex cursor-pointer items-center pr-4 text-xs font-bold text-gray-500 text-secondary'
           onClick={handleCancel}
         >
-          <RxCross2 />
+          <RxCross2 /> {/* Assuming this is the red 'x' cross icon */}
         </span>
       )}
     </div>
