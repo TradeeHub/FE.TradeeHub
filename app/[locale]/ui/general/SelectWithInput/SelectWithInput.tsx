@@ -27,6 +27,7 @@ type SelectWithInputFormProps<
 > = {
   form: UseFormReturn<TFieldValues>;
   field: ControllerRenderProps<TFieldValues, TFieldName>;
+  title: string;
   options: Option[];
   defaultValue: string;
   inputPlaceHolder: string;
@@ -38,6 +39,7 @@ const SelectWithInput = <
 >({
   form,
   field,
+  title,
   options,
   defaultValue,
   inputPlaceHolder,
@@ -93,16 +95,17 @@ const SelectWithInput = <
       {isEditable ? (
         <SimpleInput
           field={field}
+          title={title}
           autoFocus={true}
-          placeholder={inputPlaceHolder}
+          placeholder={'Input ' + title}
         />
       ) : (
         <SimpleSelect
           onValueChange={handleSelectChange}
           defaultValue={form.getValues(field.name) || defaultValue}
         >
-          <SimpleSelectTrigger label={inputPlaceHolder}>
-            <SimpleSelectValue />
+          <SimpleSelectTrigger label={title}>
+            <SimpleSelectValue placeholder={inputPlaceHolder} />
           </SimpleSelectTrigger>
           <SimpleSelectContent>
             {options.map((option, index) => (

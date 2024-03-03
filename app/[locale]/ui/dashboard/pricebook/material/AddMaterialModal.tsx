@@ -105,7 +105,7 @@ const formSchema = z.object({
   price: z.number().optional().nullable(),
   unitType: z.string(),
   images: z.array(z.any()).optional().nullable(), // Assuming a placeholder for file upload input
-  onlineMaterialUrls: z.array(z.string()).optional().nullable(),
+  onlineMaterialUrl: z.string().optional().nullable(),
   pricingTiers: pricingTierEntitySchema,
 });
 
@@ -128,6 +128,7 @@ const AddMaterialModal = ({
       identifier: null,
       parentServiceCategoryId: null,
       markup: null,
+      usePriceRange: false,
       taxable: false,
       allowOnlineBooking: false,
       onlinePrice: null,
@@ -135,7 +136,7 @@ const AddMaterialModal = ({
       price: 0,
       unitType: '',
       images: [],
-      onlineMaterialUrls: [],
+      onlineMaterialUrl: '',
       pricingTiers: [],
     },
   });
@@ -144,6 +145,7 @@ const AddMaterialModal = ({
   const { getAllServiceCategories, serviceCategories } =
     useGetAllServiceCategoriesLazy(); // Fetch categories
   const fetchedRef = useRef<boolean>(false);
+  const usePriceRange = form.watch('usePriceRange');
 
   const { toast } = useToast();
 
@@ -208,7 +210,9 @@ const AddMaterialModal = ({
           }
         : undefined,
       name: formData.name,
-      onlineMaterialUrls: formData.onlineMaterialUrls,
+      onlineMaterialUrls: formData.onlineMaterialUrl
+        ? [formData.onlineMaterialUrl]
+        : [],
       onlinePrice: formData.onlinePrice
         ? formatDecimal(formData.onlinePrice)
         : undefined,
@@ -221,7 +225,7 @@ const AddMaterialModal = ({
           min: formatDecimal(tier.unitRange.min ?? 0),
         },
       })),
-      serviceIds: formData.serviceIds,
+      parentServiceCategoryId: formData.parentServiceCategoryId,
       taxable: formData.taxable,
       unitType: formData.unitType,
     };
@@ -236,145 +240,126 @@ const AddMaterialModal = ({
       <DialogContent className='w-full max-w-4xl p-6'>
         <DialogHeader className='mb-4'>
           <DialogTitle className='text-center'>{modalName}</DialogTitle>
+          <BreakpointIndicator />
         </DialogHeader>
 
         <Form {...form}>
-          <form className='grid grid-cols-4 gap-4'>
+          <form className='flex flex-col gap-6'>
             {/* Images */}
-            <div className='col-span-1'>
+            <div className='flex w-full gap-6'>
+              {/* Images - 1/3 of screen */}
+              <div className='w-1/3 shrink-0'>
+                <FormField
+                  control={form.control}
+                  name='images'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <SingleImageUploadForm field={field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Name and Unit Type - 2/3 of screen */}
+              <div className='flex w-2/3 flex-col gap-6'>
+                <div className='flex flex-row gap-6'>
+                  {/* Name FormField */}
+                  <FormField
+                    control={form.control}
+                    name='name'
+                    render={({ field }) => (
+                      <FormItem className='flex-1'>
+                        <SimpleInput
+                          title='Name'
+                          field={field}
+                          autoFocus={true}
+                          placeholder='Name'
+                        />
+                      </FormItem>
+                    )}
+                  />
+                  {/* Unit Type FormField */}
+                  <FormField
+                    control={form.control}
+                    name='unitType'
+                    render={({ field }) => (
+                      <FormItem className='flex-1'>
+                        <SelectWithInput
+                          form={form}
+                          field={field}
+                          options={unitOptions}
+                          title='Unit Type'
+                          inputPlaceHolder='Select Unit Type'
+                          defaultValue={''}
+                        />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Spacer - This div will grow and take up all available space pushing the next element to the bottom */}
+                <div className='flex-grow'></div>
+
+                {/* Parent Category FormField */}
+                <FormField
+                  control={form.control}
+                  name='parentServiceCategoryId'
+                  render={({ field }) => (
+                    <FormItem className='flex-1'>
+                      <SimpleSelect
+                        onOpenChange={handleSelectTriggerClick}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value || ''}
+                      >
+                        <SimpleSelectTrigger
+                          className='w-full'
+                          label='Parent Category (optional)'
+                          onClick={handleSelectTriggerClick}
+                        >
+                          <SimpleSelectValue placeholder='Select Parent Category (optional)' />
+                        </SimpleSelectTrigger>
+                        <SimpleSelectContent>
+                          {categories.map((category) => (
+                            <SimpleSelectItem
+                              key={category.id}
+                              value={category.id}
+                            >
+                              {category.name}
+                            </SimpleSelectItem>
+                          ))}
+                        </SimpleSelectContent>
+                      </SimpleSelect>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className='flex flex-col gap-6'>
+              {/* Description */}
               <FormField
                 control={form.control}
-                name='images'
+                name='onlineMaterialUrls'
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className='flex-1'>
                     <FormControl>
-                      <SingleImageUploadForm field={field} />
+                      <SimpleInput
+                        field={field}
+                        title='Purchase Url'
+                        placeholder='Input online purchase url'
+                      />
                     </FormControl>
                   </FormItem>
                 )}
               />
-            </div>
-
-            <div className='col-span-1 space-y-11 md:col-span-3 '>
-              {/* Name and Unit Type */}
-              <div className='flex flex-col md:flex-row md:space-x-4'>
-                <FormField
-                  control={form.control}
-                  name='name'
-                  render={({ field }) => (
-                    <FormItem className='flex-1'>
-                      <SimpleInput
-                        field={field}
-                        autoFocus={true}
-                        placeholder='Name'
-                      />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name='unitType'
-                  render={({ field }) => (
-                    <FormItem className='flex-1'>
-                      <SelectWithInput
-                        form={form}
-                        field={field}
-                        options={unitOptions}
-                        inputPlaceHolder='Unit Type'
-                        defaultValue={''}
-                      />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-{/* indentifier, taxable and online booking */}
-
-<div className='grid grid-cols-3 gap-4'> {/* Use grid-cols-3 for three equal columns */}
-                <FormField
-                  control={form.control}
-                  name='identifier'
-                  render={({ field }) => (
-                    <FormItem className='flex-1'>
-                      <SimpleInput field={field} placeholder='Identifier' />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name='taxable'
-                  render={({ field }) => (
-                    <FormItem className='flex flex-1 items-center justify-between rounded-lg border p-1.5 px-4 shadow-sm'>
-                      <FormLabel className=''>Taxable</FormLabel>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name='allowOnlineBooking'
-                  render={({ field }) => (
-                    <FormItem className='flex flex-1 items-center justify-between rounded-lg border p-1.5 px-4 shadow-sm'>
-                      <FormLabel className=''>Online Booking</FormLabel>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-{/* parent category and description */}
-            <div className='col-span-2 space-y-4'>
-              <FormField
-                control={form.control}
-                name='parentServiceCategoryId'
-                render={({ field }) => (
-                  <FormItem>
-                    <SimpleSelect
-                      onOpenChange={handleSelectTriggerClick}
-                      onValueChange={field.onChange}
-                      defaultValue={field.value || ''}
-                    >
-                      <SimpleSelectTrigger
-                        style={{ marginTop: 0 }}
-                        className='w-full flex-1'
-                        label='Parent Category (optional)'
-                        onClick={handleSelectTriggerClick}
-                      >
-                        <SimpleSelectValue placeholder='Select Parent Category (optional)' />
-                      </SimpleSelectTrigger>
-                      <SimpleSelectContent>
-                        {categories.map((category) => (
-                          <SimpleSelectItem
-                            key={category.id}
-                            value={category.id}
-                          >
-                            {category.name}
-                          </SimpleSelectItem>
-                        ))}
-                      </SimpleSelectContent>
-                    </SimpleSelect>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Description */}
               <FormField
                 control={form.control}
                 name='description'
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className='flex-1'>
                     <FormControl>
                       <Textarea
                         placeholder='Please enter a service category description (optional)'
@@ -383,116 +368,149 @@ const AddMaterialModal = ({
                         value={field.value || ''}
                       />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-            
 
-
-
-{/* cost and price */}
-<div className='col-span-2 grid grid-cols-2 gap-4'> {/* This container takes up 2 columns and has 2 columns within it */}
-  <FormField
-    control={form.control}
-    name='cost'
-    render={({ field }) => (
-      <FormItem className='flex-1'>
-        <SimpleInput
-          field={field}
-          autoFocus={true}
-          currencySymbol={user?.currencySymbol}
-          placeholder='Cost'
-          type='number'
-        />
-      </FormItem>
-    )}
-  />
-
-  <FormField
-    control={form.control}
-    name='price'
-    render={({ field }) => (
-      <FormItem className='flex-1'>
-        <SimpleInput
-          field={field}
-          placeholder='Price'
-          currencySymbol={user?.currencySymbol}
-          type='number'
-        />
-      </FormItem>
-    )}
-  />
-</div>
-
-
-<div className='col-span-2 grid grid-cols-2 gap-4'> {/* This container takes up 2 columns and has 2 columns within it */}
-  <FormField
-    control={form.control}
-    name='usePriceRange'
-    render={({ field }) => (
-      <FormItem className='flex-1'>
-        <SimpleInput
-          field={field}
-          autoFocus={true}
-          currencySymbol={user?.currencySymbol}
-          placeholder='Use Price Range'
-          type='number'
-        />
-      </FormItem>
-    )}
-  />
-
-  <FormField
-    control={form.control}
-    name='price'
-    render={({ field }) => (
-      <FormItem className='flex-1'>
-        <SimpleInput
-          field={field}
-          placeholder='Price'
-          currencySymbol={user?.currencySymbol}
-          type='number'
-        />
-      </FormItem>
-    )}
-  />
-</div>
-
-{/* Pricing Tier Range */}
-            <div className='col-span-2'>
-              <FormField
-                control={form.control}
-                name='pricingTiers'
-                render={({ field }) => (
-                  <FormItem className='flex-1'>
-                    <PricingTier
-                      form={form}
-                      field={field}
-                      title='Unit Type Pricing Range'
-                      currencySymbol={user?.currencySymbol}
+              <div className='flex w-full flex-row gap-6'>
+                <div className='flex w-full gap-6'>
+                  {/* Set flex-basis to 33.333% for each child to take up 1/3 of the screen */}
+                  <div className='flex flex-1'>
+                    <FormField
+                      control={form.control}
+                      name='identifier'
+                      render={({ field }) => (
+                        <FormItem className='w-full'>
+                          <SimpleInput
+                            field={field}
+                            title='Identifier'
+                            placeholder='Identifier'
+                          />
+                        </FormItem>
+                      )}
                     />
-                  </FormItem>
+                  </div>
+                  <div className='flex-1'>
+                    <FormField
+                      control={form.control}
+                      name='taxable'
+                      render={({ field }) => (
+                        <FormItem className='flex w-full items-center justify-between'>
+                          <FormLabel className='self-center'>Taxable</FormLabel>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className='flex-1'>
+                    <FormField
+                      control={form.control}
+                      name='allowOnlineBooking'
+                      render={({ field }) => (
+                        <FormItem className='flex w-full items-center justify-between'>
+                          <FormLabel>Online Booking</FormLabel>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div className='flex w-full flex-col gap-6'>
+                <div className='flex w-full flex-row gap-6'>
+                  <div className='flex flex-1'>
+                    <FormField
+                      control={form.control}
+                      name='usePriceRange'
+                      render={({ field }) => (
+                        <FormItem className='flex w-full items-center justify-between'>
+                          <FormLabel>Use Price Range</FormLabel>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  {!usePriceRange && (
+                    <div className='flex w-full flex-row gap-6'>
+                      <div className='flex flex-1'>
+                        <FormField
+                          control={form.control}
+                          name='cost'
+                          render={({ field }) => (
+                            <FormItem className='flex-1'>
+                              <SimpleInput
+                                field={field}
+                                title='Cost'
+                                placeholder='Cost'
+                                type='number'
+                              />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className='flex-1'>
+                        <FormField
+                          control={form.control}
+                          name='price'
+                          render={({ field }) => (
+                            <FormItem className='flex-1'>
+                              <SimpleInput
+                                field={field}
+                                title='Price'
+                                placeholder='Price'
+                                type='number'
+                              />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {usePriceRange && (
+                  <FormField
+                    control={form.control}
+                    name='pricingTiers'
+                    render={({ field }) => (
+                      <FormItem className='flex-1'>
+                        <PricingTier
+                          currencySymbol={user?.currencySymbol}
+                          form={form}
+                          field={field}
+                          title='Unit Type Pricing Range'
+                        />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              />
+              </div>
             </div>
 
-            <DialogFooter className='col-span-4 flex justify-between'>
-              <Button
-                type='button'
-                variant='ghost'
-                size='default'
-                onClick={handleClose}
-              >
+            <DialogFooter className='flex justify-end gap-6'>
+              <Button type='button' variant='ghost' onClick={handleClose}>
                 Cancel
               </Button>
               <Button
-                type='button'
+                type='submit'
                 variant='default'
-                size='default'
-                onClick={form.handleSubmit(handleSave)}
-                disabled={addNewServiceCategoryLoading} // Disable button when loading
+                disabled={addNewServiceCategoryLoading}
               >
                 {addNewServiceCategoryLoading ? 'Saving...' : 'Save'}
               </Button>
@@ -502,8 +520,19 @@ const AddMaterialModal = ({
       </DialogContent>
     </Dialog>
   );
-
-  
 };
 
 export default AddMaterialModal;
+
+const BreakpointIndicator = () => {
+  return (
+    <div className='fixed bottom-0 left-0 z-50 bg-gray-900 p-2 text-white'>
+      <div className='sm:hidden'>XS</div>
+      <div className='hidden sm:block md:hidden'>SM</div>
+      <div className='hidden md:block lg:hidden'>MD</div>
+      <div className='hidden lg:block xl:hidden'>LG</div>
+      <div className='hidden xl:block 2xl:hidden'>XL</div>
+      <div className='hidden 2xl:block'>2XL</div>
+    </div>
+  );
+};

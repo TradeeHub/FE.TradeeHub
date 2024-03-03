@@ -12,6 +12,7 @@ type InputWithIconProps<
   field: ControllerRenderProps<TFieldValues, TName>;
   icon?: IconType; // Make icon optional
   autoFocus?: boolean;
+  title?: string;
   placeholder?: string;
   type?: string;
   onEnterPress?: () => void;
@@ -25,6 +26,7 @@ const SimpleInput = <
   field,
   icon: Icon,
   autoFocus = false,
+  title = '',
   placeholder = '',
   type = 'text',
   onEnterPress = () => {},
@@ -97,7 +99,7 @@ const SimpleInput = <
               : 'text-md top-1/2 -translate-y-1/2 text-gray-500'
           }`}
         >
-          {placeholder}
+          {labelFloat || field.value ? title : placeholder}
         </label>
         {isPasswordType && (
           <span
