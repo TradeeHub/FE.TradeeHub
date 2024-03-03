@@ -132,8 +132,8 @@ const AddMaterialModal = ({
       taxable: false,
       allowOnlineBooking: false,
       onlinePrice: null,
-      cost: 0,
-      price: 0,
+      cost: null,
+      price: null,
       unitType: '',
       images: [],
       onlineMaterialUrl: '',
@@ -202,6 +202,7 @@ const AddMaterialModal = ({
       cost: formData.cost,
       description: formData.description,
       identifier: formData.identifier,
+      usePriceRange: formData.usePriceRange,
       images: formData.images, // Assuming you have a way to handle file uploads correctly
       markup: formData.markup
         ? {
@@ -339,7 +340,7 @@ const AddMaterialModal = ({
 
             <div className='flex w-full gap-6'>
               {/* Left Column for Image URL and Description */}
-              <div className='flex w-1/2 flex-col gap-6'>
+              <div className='flex w-1/2 flex-col gap-6 flex-1'>
                 {/* Image URL */}
                 <FormField
                   control={form.control}
@@ -477,6 +478,7 @@ const AddMaterialModal = ({
                           <FormItem className='w-full'>
                             <SimpleInput
                               field={field}
+                              currencySymbol={user?.currencySymbol}
                               title='Cost'
                               placeholder='Cost'
                               type='number'
@@ -491,6 +493,7 @@ const AddMaterialModal = ({
                           <FormItem className='w-full'>
                             <SimpleInput
                               field={field}
+                              currencySymbol={user?.currencySymbol}
                               title='Price'
                               placeholder='Price'
                               type='number'
