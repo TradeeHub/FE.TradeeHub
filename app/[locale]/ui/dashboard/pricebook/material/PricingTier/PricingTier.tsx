@@ -124,6 +124,13 @@ const PricingTier = <
     }
   };
 
+  const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      console.log('Enter key pressed');
+       e.preventDefault();
+    }
+  };
+
   return (
     <>
       <span className='text-md pb-0 pl-3 font-roboto font-semibold text-primary'>
@@ -145,7 +152,7 @@ const PricingTier = <
               <th className='px-2 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500'>
                 Price
               </th>
-              <th className='text-center text-sm font-semibold uppercase tracking-wider'>
+              <th className='px-2 text-center text-sm font-semibold uppercase tracking-wider'>
                 <button
                   type='button'
                   onClick={addNewTier}
@@ -175,6 +182,7 @@ const PricingTier = <
                               field.onChange(Number(e.target.value))
                             }
                             type='number'
+                            onKeyUp={onKeyPress}
                             className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center text-gray-400 focus:outline-none focus:ring-0 sm:text-sm'
                             readOnly
                           />
@@ -196,6 +204,7 @@ const PricingTier = <
                           <input
                             {...field}
                             type='number'
+                            onKeyDown={onKeyPress}
                             className='form-input mx-auto mt-1 block w-20 rounded-none border-b border-gray-300 px-2 py-1 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
                             onChange={(e) => field.onChange(e.target.value)} // Allow any change
                             onBlur={() => handleBlur(index)} // Apply validation on blur
@@ -221,6 +230,7 @@ const PricingTier = <
                             <input
                               {...restField}
                               ref={ref}
+                              onKeyDown={onKeyPress}
                               value={`${currencySymbol}${value}`}
                               onChange={(e) => {
                                 // Allow numbers and decimal point, remove all other characters
@@ -291,6 +301,7 @@ const PricingTier = <
                               <input
                                 {...restField}
                                 ref={ref}
+                                onKeyDown={onKeyPress}
                                 value={`${currencySymbol}${value}`}
                                 onChange={(e) => {
                                   // Remove everything except numbers and the decimal point, and limit to one decimal point
@@ -302,7 +313,7 @@ const PricingTier = <
                                   const formattedValue = newValue.startsWith(
                                     '.',
                                   )
-                                    ? `0${newValue}`
+                                    ? `${newValue}0`
                                     : newValue;
                                   // Update the value after removing the currency symbol
                                   onChange(
