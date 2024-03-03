@@ -276,7 +276,7 @@ const AddMaterialModal = ({
       <DialogContent className='w-full max-w-4xl p-6'>
         <DialogHeader className='mb-4'>
           <DialogTitle className='text-center'>{modalName}</DialogTitle>
-          <BreakpointIndicator />
+          {/* <BreakpointIndicator /> */}
         </DialogHeader>
 
         <Form {...form}>
@@ -395,16 +395,16 @@ const AddMaterialModal = ({
                   />
                 </div>
                 {/* Description */}
-                <div className='flex flex-col'>
+                <div className='flex h-full flex-grow flex-col'>
                   <FormField
                     control={form.control}
                     name='description'
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className='h-full'>
                         <FormControl>
                           <Textarea
                             placeholder='Please enter a service category description (optional)'
-                            className='min-h-[100px]'
+                            className='h-full w-full resize-y overflow-auto'
                             {...field}
                             value={field.value || ''}
                           />
@@ -529,7 +529,7 @@ const AddMaterialModal = ({
                         control={form.control}
                         name='price'
                         render={({ field }) => (
-                          <FormItem className='w-full'>
+                          <FormItem className='w-full pb-6'>
                             <SimpleInput
                               field={field}
                               currencySymbol={user?.currencySymbol}
@@ -564,9 +564,8 @@ const AddMaterialModal = ({
                     />
                   )}
                 </div>
-
-                <div className='flex gap-6'>
-                  {allowOnlineBooking && !usePriceRange && (
+                {allowOnlineBooking && !usePriceRange && (
+                  <div className='flex gap-6'>
                     <>
                       <FormField
                         control={form.control}
@@ -584,8 +583,8 @@ const AddMaterialModal = ({
                         )}
                       />
                     </>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
 
