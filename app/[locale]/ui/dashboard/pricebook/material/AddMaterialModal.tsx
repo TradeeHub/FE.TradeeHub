@@ -337,172 +337,187 @@ const AddMaterialModal = ({
               </div>
             </div>
 
-            <div className='flex flex-col gap-6'>
-              {/* Description */}
-              <FormField
-                control={form.control}
-                name='onlineMaterialUrls'
-                render={({ field }) => (
-                  <FormItem className='flex-1'>
-                    <FormControl>
-                      <SimpleInput
-                        field={field}
-                        title='Purchase Url'
-                        placeholder='Input online purchase url'
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              {/* Description */}
-              <FormField
-                control={form.control}
-                name='description'
-                render={({ field }) => (
-                  <FormItem className='flex-1'>
-                    <FormControl>
-                      <Textarea
-                        placeholder='Please enter a service category description (optional)'
-                        className='min-h-[100px]'
-                        {...field}
-                        value={field.value || ''}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <div className='flex w-full flex-row gap-6'>
-                <div className='flex w-full gap-6'>
-                  {/* Set flex-basis to 33.333% for each child to take up 1/3 of the screen */}
-                  <div className='flex flex-1'>
-                    <FormField
-                      control={form.control}
-                      name='identifier'
-                      render={({ field }) => (
-                        <FormItem className='w-full'>
-                          <SimpleInput
-                            field={field}
-                            title='Identifier'
-                            placeholder='Identifier'
-                          />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className='flex-1'>
-                    <FormField
-                      control={form.control}
-                      name='taxable'
-                      render={({ field }) => (
-                        <FormItem className='flex w-full items-center justify-between'>
-                          <FormLabel className='self-center'>Taxable</FormLabel>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className='flex-1'>
-                    <FormField
-                      control={form.control}
-                      name='allowOnlineBooking'
-                      render={({ field }) => (
-                        <FormItem className='flex w-full items-center justify-between'>
-                          <FormLabel>Online Booking</FormLabel>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
+            <div className='flex w-full gap-6'>
+              {/* Left Column for Image URL and Description */}
+              <div className='flex w-1/2 flex-col gap-6'>
+                {/* Image URL */}
+                <FormField
+                  control={form.control}
+                  name='onlineMaterialUrl'
+                  render={({ field }) => (
+                    <FormItem className='flex-1'>
+                      <FormControl>
+                        <SimpleInput
+                          field={field}
+                          title='Purchase Url'
+                          placeholder='Input online purchase url'
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                {/* Description */}
+                <FormField
+                  control={form.control}
+                  name='description'
+                  render={({ field }) => (
+                    <FormItem className='flex-1'>
+                      <FormControl>
+                        <Textarea
+                          placeholder='Please enter a service category description (optional)'
+                          className='min-h-[100px]'
+                          {...field}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               </div>
 
-              {/* Right Column */}
-              <div className='flex w-full flex-col gap-6'>
-                <div className='flex w-full flex-row gap-6'>
-                  <div className='flex flex-1'>
-                    <FormField
-                      control={form.control}
-                      name='usePriceRange'
-                      render={({ field }) => (
-                        <FormItem className='flex w-full items-center justify-between'>
-                          <FormLabel>Use Price Range</FormLabel>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  {!usePriceRange && ( <>
-                      <div className='flex flex-1'>
-                        <FormField
-                          control={form.control}
-                          name='cost'
-                          render={({ field }) => (
-                            <FormItem className='flex-1'>
-                              <SimpleInput
-                                field={field}
-                                title='Cost'
-                                placeholder='Cost'
-                                type='number'
-                              />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <div className='flex flex-1'>
-                        <FormField
-                          control={form.control}
-                          name='price'
-                          render={({ field }) => (
-                            <FormItem className='flex-1'>
-                              <SimpleInput
-                                field={field}
-                                title='Price'
-                                placeholder='Price'
-                                type='number'
-                              />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      </>
-                  )}
-
-                {usePriceRange && (
-                        <div className=' flex w-2/3'>
+              {/* Right Column for Form Fields */}
+              <div className='flex w-1/2 flex-col gap-6'>
+                {/* First Row: Identifier and Taxable */}
+                <div className='flex gap-6'>
                   <FormField
                     control={form.control}
-                    name='pricingTiers'
+                    name='identifier'
                     render={({ field }) => (
-                      <FormItem className='flex-1'>
-                        <PricingTier
-                          currencySymbol={user?.currencySymbol}
-                          form={form}
+                      <FormItem className='w-full'>
+                        <SimpleInput
                           field={field}
-                          title='Unit Type Pricing Range'
+                          title='Identifier'
+                          placeholder='Identifier'
                         />
                       </FormItem>
                     )}
                   />
-                  </div>
-                )}
+
+                  <FormField
+                    control={form.control}
+                    name='taxable'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <div className='flex h-full items-center justify-between space-x-2'>
+                          <FormLabel
+                            htmlFor='taxable-switch'
+                            className='flex items-center'
+                          >
+                            Taxable
+                          </FormLabel>
+                          <Switch
+                            id='taxable-switch'
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            className='flex items-center' // Ensuring the switch itself is also centered if needed
+                          />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
                 </div>
-            
+
+                {/* Second Row: Online Booking and Use Price Range */}
+                <div className='flex gap-6'>
+                  <FormField
+                    control={form.control}
+                    name='allowOnlineBooking'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <div className='flex h-full items-center justify-between space-x-2'>
+                          <FormLabel
+                            htmlFor='allow-online-booking-switch'
+                            className='flex items-center'
+                          >
+                            Online Booking
+                          </FormLabel>
+                          <Switch
+                            id='allow-online-booking-switch'
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            className='flex items-center' // Ensuring the switch itself is also centered if needed
+                          />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='usePriceRange'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <div className='flex h-full items-center justify-between space-x-2'>
+                          <FormLabel
+                            htmlFor='use-price-range-switch'
+                            className='flex items-center'
+                          >
+                            Use Price Range
+                          </FormLabel>
+                          <Switch
+                            id='use-price-range-switch'
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            className='flex items-center' // Ensuring the switch itself is also centered if needed
+                          />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Third Row: Cost and Price */}
+                <div className='flex gap-6'>
+                  {!usePriceRange && (
+                    <>
+                      <FormField
+                        control={form.control}
+                        name='cost'
+                        render={({ field }) => (
+                          <FormItem className='w-full'>
+                            <SimpleInput
+                              field={field}
+                              title='Cost'
+                              placeholder='Cost'
+                              type='number'
+                            />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name='price'
+                        render={({ field }) => (
+                          <FormItem className='w-full'>
+                            <SimpleInput
+                              field={field}
+                              title='Price'
+                              placeholder='Price'
+                              type='number'
+                            />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  )}
+
+                  {usePriceRange && (
+                    <FormField
+                      control={form.control}
+                      name='pricingTiers'
+                      render={({ field }) => (
+                        <FormItem className='flex-1'>
+                          <PricingTier
+                            currencySymbol={user?.currencySymbol}
+                            form={form}
+                            field={field}
+                            title='Unit Type Pricing Range'
+                          />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                </div>
               </div>
             </div>
 
