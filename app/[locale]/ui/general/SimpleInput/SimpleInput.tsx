@@ -34,6 +34,8 @@ const SimpleInput = <
 }: InputWithIconProps<TFieldValues, TName>) => {
   const [showPassword, setShowPassword] = useState(false);
   const [labelFloat, setLabelFloat] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
   const user = useSelector((state: RootState) => state.user.data);
 
   const handleToggleShowPassword = () => {
@@ -47,8 +49,14 @@ const SimpleInput = <
     }
   };
 
+  const handleInputBlur = () => {
+    setIsFocused(false); // Update focus state when input loses focus
+    setLabelFloat(!!field.value); // Decide whether to keep the label floated based on input value
+  };
+
   const handleInputFocus = () => {
     setLabelFloat(true);
+    setIsFocused(true); // Update focus state
 
     if (type === 'tel' && user?.place?.callingCode && !field.value) {
       field.onChange(`+${user.place.callingCode}`);
@@ -84,22 +92,27 @@ const SimpleInput = <
           } ${isPasswordType ? 'pr-12' : ''}`}
           onKeyDown={handleKeyDown}
           onFocus={handleInputFocus}
-          onChange={(e) =>
-            type === 'number'
-              ? field.onChange(Number(e.target.value))
-              : field.onChange(e.target.value)
-          }
-          onBlur={() => setLabelFloat(!!field.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            // Check if the input is not empty and it's a numeric field
+            if (value !== '' && type === 'number') {
+              field.onChange(Number(value));
+            } else {
+              // If the input is empty or not a number, directly pass the value without converting
+              field.onChange(value);
+            }
+          }}
+          onBlur={handleInputBlur}
         />
         <label
           htmlFor={inputId}
           className={`absolute left-3 bg-white px-1 transition-all duration-200 ease-in-out ${
-            labelFloat || field.value
+            labelFloat || field.value || isFocused
               ? 'top-[-0.7rem] mb-1 font-roboto text-sm font-semibold text-primary'
               : 'text-md top-1/2 -translate-y-1/2 text-gray-500'
           }`}
         >
-          {labelFloat || field.value ? title : placeholder}
+          {labelFloat || field.value || isFocused ? title : placeholder}
         </label>
         {isPasswordType && (
           <span

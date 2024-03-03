@@ -108,19 +108,23 @@ const formSchema = z.object({
   pricingTiers: pricingTierEntitySchema,
 });
 
-const MarginProfitDisplay = ({ cost, price }: { cost: number, price: number }) => {
+const MarginProfitDisplay = ({
+  cost,
+  price,
+}: {
+  cost: number;
+  price: number;
+}) => {
   const calculateMargin = (cost: number, price: number) => {
     if (price && cost) {
-            return ((price - cost) / price) * 100;
-
+      return ((price - cost) / price) * 100;
     }
     return 0;
   };
 
   const calculateProfit = (cost: number, price: number) => {
     if (price && cost) {
-            return ((price - cost) / cost) * 100;
-
+      return ((price - cost) / cost) * 100;
     }
     return 0;
   };
@@ -129,12 +133,15 @@ const MarginProfitDisplay = ({ cost, price }: { cost: number, price: number }) =
   const profit = calculateProfit(cost, price).toFixed(2);
 
   return (
-       <div className='absolute right-1 flex flex-col items-end pr-6' style={{marginTop: 0}}>
-                          <span className='mt-1 text-xs text-blue-500'>
-                                  M: {margin}% | P: {profit}%
-
-                                      </span>
-                        </div>);
+    <div
+      className='absolute right-1 flex flex-col items-end pr-6'
+      style={{ marginTop: 0 }}
+    >
+      <span className='mt-1 text-xs text-blue-500'>
+        M: {margin}% | P: {profit}%
+      </span>
+    </div>
+  );
 };
 
 const AddMaterialModal = ({
@@ -170,7 +177,8 @@ const AddMaterialModal = ({
   });
   const user = useSelector((state: RootState) => state.user.data);
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
-  const { getAllServiceCategories, serviceCategories } = useGetAllServiceCategoriesLazy();
+  const { getAllServiceCategories, serviceCategories } =
+    useGetAllServiceCategoriesLazy();
   const fetchedRef = useRef<boolean>(false);
   const usePriceRange = form.watch('usePriceRange');
   const allowOnlineBooking = form.watch('allowOnlineBooking');
@@ -367,45 +375,45 @@ const AddMaterialModal = ({
 
             <div className='flex w-full gap-6'>
               {/* Left Column for Image URL and Description */}
- <div className='flex w-1/2 flex-col gap-6'>
-    {/* Image URL */}
-    <div className='flex flex-col'>
-      <FormField
-        control={form.control}
-        name='onlineMaterialUrl'
-        render={({ field }) => (
-          <FormItem>
-            <FormControl>
-              <SimpleInput
-                field={field}
-                title='Purchase Url'
-                placeholder='Input online purchase url'
-              />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-    </div>
-    {/* Description */}
-    <div className='flex flex-col'>
-      <FormField
-        control={form.control}
-        name='description'
-        render={({ field }) => (
-          <FormItem>
-            <FormControl>
-              <Textarea
-                placeholder='Please enter a service category description (optional)'
-                className='min-h-[100px]'
-                {...field}
-                value={field.value || ''}
-              />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-    </div>
-  </div>
+              <div className='flex w-1/2 flex-col gap-6'>
+                {/* Image URL */}
+                <div className='flex flex-col'>
+                  <FormField
+                    control={form.control}
+                    name='onlineMaterialUrl'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <SimpleInput
+                            field={field}
+                            title='Purchase Url'
+                            placeholder='Input online purchase url'
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                {/* Description */}
+                <div className='flex flex-col'>
+                  <FormField
+                    control={form.control}
+                    name='description'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Textarea
+                            placeholder='Please enter a service category description (optional)'
+                            className='min-h-[100px]'
+                            {...field}
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
 
               {/* Right Column for Form Fields */}
               <div className='flex w-1/2 flex-col gap-6'>
@@ -529,7 +537,10 @@ const AddMaterialModal = ({
                               placeholder='Price'
                               type='number'
                             />
-                            <MarginProfitDisplay cost={costWatch ?? 0} price={priceWatch ?? 0} />
+                            <MarginProfitDisplay
+                              cost={costWatch ?? 0}
+                              price={priceWatch ?? 0}
+                            />
                           </FormItem>
                         )}
                       />
@@ -554,8 +565,8 @@ const AddMaterialModal = ({
                   )}
                 </div>
 
-                   <div className='flex gap-6'>
-                  {(allowOnlineBooking && !usePriceRange) && (
+                <div className='flex gap-6'>
+                  {allowOnlineBooking && !usePriceRange && (
                     <>
                       <FormField
                         control={form.control}
