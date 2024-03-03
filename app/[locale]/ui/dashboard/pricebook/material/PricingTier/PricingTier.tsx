@@ -268,11 +268,11 @@ const PricingTier = <
                               const profit = price - cost;
                               const profitPercentage =
                                 cost > 0
-                                  ? ((profit / cost) * 100).toFixed(0)
+                                  ? ((profit / cost) * 100).toFixed(2)
                                   : 0;
                               const margin =
                                 price > 0
-                                  ? ((profit / price) * 100).toFixed(0)
+                                  ? ((profit / price) * 100).toFixed(2)
                                   : 0;
                               return `M: ${margin}% | P: ${profitPercentage}%`;
                             })()}
