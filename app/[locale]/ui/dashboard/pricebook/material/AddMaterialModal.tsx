@@ -529,7 +529,7 @@ const AddMaterialModal = ({
                         control={form.control}
                         name='price'
                         render={({ field }) => (
-                          <FormItem className='w-full pb-6'>
+                          <FormItem className={`w-full ${(!allowOnlineBooking && !usePriceRange) ? 'pb-6' : ''}`}>
                             <SimpleInput
                               field={field}
                               currencySymbol={user?.currencySymbol}
@@ -571,13 +571,17 @@ const AddMaterialModal = ({
                         control={form.control}
                         name='onlinePrice'
                         render={({ field }) => (
-                          <FormItem className='w-full'>
+                          <FormItem className='w-full pb-6'>
                             <SimpleInput
                               field={field}
                               currencySymbol={user?.currencySymbol}
                               title='Online Price'
                               placeholder='Online Price'
                               type='number'
+                            />
+                            <MarginProfitDisplay
+                              cost={costWatch ?? 0}
+                              price={field.value ?? 0}
                             />
                           </FormItem>
                         )}
