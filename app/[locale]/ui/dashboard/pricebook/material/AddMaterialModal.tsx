@@ -447,8 +447,7 @@ const AddMaterialModal = ({
                       )}
                     />
                   </div>
-                  {!usePriceRange && (
-                    <div className='flex w-full flex-row gap-6'>
+                  {!usePriceRange && ( <>
                       <div className='flex flex-1'>
                         <FormField
                           control={form.control}
@@ -465,7 +464,7 @@ const AddMaterialModal = ({
                           )}
                         />
                       </div>
-                      <div className='flex-1'>
+                      <div className='flex flex-1'>
                         <FormField
                           control={form.control}
                           name='price'
@@ -481,10 +480,11 @@ const AddMaterialModal = ({
                           )}
                         />
                       </div>
-                    </div>
+                      </>
                   )}
-                </div>
+
                 {usePriceRange && (
+                        <div className=' flex w-2/3'>
                   <FormField
                     control={form.control}
                     name='pricingTiers'
@@ -499,7 +499,10 @@ const AddMaterialModal = ({
                       </FormItem>
                     )}
                   />
+                  </div>
                 )}
+                </div>
+            
               </div>
             </div>
 
