@@ -63,14 +63,6 @@ const unitOptions = [
   { label: 'Bundle', value: 'Bundle' },
 ];
 
-const markupEntitySchema = z
-  .object({
-    type: z.string(),
-    value: z.number(),
-  })
-  .optional()
-  .nullable();
-
 const rangeOfDecimalSchema = z.object({
   max: z.number().optional(),
   min: z.number().optional(),
@@ -95,7 +87,6 @@ const formSchema = z.object({
   description: z.string().optional().nullable(),
   identifier: z.string().optional().nullable(),
   parentServiceCategoryId: z.string().optional().nullable(),
-  markup: markupEntitySchema,
   usePriceRange: z.boolean(),
   taxable: z.boolean(),
   allowOnlineBooking: z.boolean(),
@@ -228,9 +219,6 @@ const AddMaterialModal = ({
   }, [addNewServiceCategoryResponse]);
 
   const handleSave = async (formData: z.infer<typeof formSchema>) => {
-    // Format decimal values as strings in the expected decimal format
-    const formatDecimal = (value: number) => value.toString();
-
     console.log('formData', formData);
 
     // Ensure all decimal values are formatted as strings
@@ -240,13 +228,7 @@ const AddMaterialModal = ({
       description: formData.description,
       identifier: formData.identifier,
       usePriceRange: formData.usePriceRange,
-      images: formData.images, // Assuming you have a way to handle file uploads correctly
-      markup: formData.markup
-        ? {
-            type: formData.markup.type as MarkupType,
-            value: formatDecimal(formData.markup.value),
-          }
-        : undefined,
+      images: formData.images,
       name: formData.name,
       onlineMaterialUrls: formData.onlineMaterialUrl
         ? [formData.onlineMaterialUrl]
@@ -254,11 +236,11 @@ const AddMaterialModal = ({
       onlinePrice: formData.onlinePrice,
       price: formData.price,
       pricingTiers: formData.pricingTiers?.map((tier) => ({
-        cost: tier.cost ? formatDecimal(tier.cost) : undefined,
-        price: formatDecimal(tier.price ?? 0),
+        cost: tier.cost ? tier.cost : null,
+        price: tier.price,
         unitRange: {
-          max: formatDecimal(tier.unitRange.max ?? 0),
-          min: formatDecimal(tier.unitRange.min ?? 0),
+          max: tier.unitRange.max,
+          min: tier.unitRange.min,
         },
       })),
       parentServiceCategoryId: formData.parentServiceCategoryId,
@@ -529,7 +511,9 @@ const AddMaterialModal = ({
                         control={form.control}
                         name='price'
                         render={({ field }) => (
-                          <FormItem className={`w-full ${(!allowOnlineBooking && !usePriceRange) ? 'pb-6' : ''}`}>
+                          <FormItem
+                            className={`w-full ${!allowOnlineBooking && !usePriceRange ? 'pb-6' : ''}`}
+                          >
                             <SimpleInput
                               field={field}
                               currencySymbol={user?.currencySymbol}
@@ -599,6 +583,7 @@ const AddMaterialModal = ({
               <Button
                 type='submit'
                 variant='default'
+                onClick={form.handleSubmit(handleSave)}
                 disabled={addNewServiceCategoryLoading}
               >
                 {addNewServiceCategoryLoading ? 'Saving...' : 'Save'}

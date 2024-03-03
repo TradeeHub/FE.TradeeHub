@@ -126,8 +126,7 @@ const PricingTier = <
 
   const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      console.log('Enter key pressed');
-       e.preventDefault();
+      e.preventDefault();
     }
   };
 
@@ -226,35 +225,32 @@ const PricingTier = <
                         render={({
                           field: { ref, value, onChange, ...restField },
                         }) => (
-                          <div className='relative'>
-                            <input
-                              {...restField}
-                              ref={ref}
-                              onKeyDown={onKeyPress}
-                              value={`${currencySymbol}${value}`}
-                              onChange={(e) => {
-                                // Allow numbers and decimal point, remove all other characters
-                                const newValue = e.target.value.replace(
-                                  new RegExp(`[^0-9.]|(?<=\\..*)\\.`, 'g'),
-                                  '',
-                                );
-                                // If the newValue starts with a decimal point, prepend a zero
-                                const formattedValue = newValue.startsWith('.')
-                                  ? `0${newValue}`
-                                  : newValue;
-                                onChange(
-                                  formattedValue.replace(
-                                    currencySymbol ?? '',
-                                    '',
-                                  ),
-                                );
-                              }}
-                              className='form-input mt-1 block w-full rounded-none border-b border-gray-300 py-1 pl-4 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
-                              style={{
-                                paddingLeft: `${currencySymbol?.length ?? 1}ch`,
-                              }}
-                            />
-                          </div>
+                          <input
+                            {...restField}
+                            ref={ref}
+                            value={value ? `${currencySymbol}${value}` : ''}
+                            onChange={(e) => {
+                              // Directly pass the raw input value (with currency symbol stripped) to onChange
+                              const newValue = e.target.value.replace(
+                                currencySymbol ?? '',
+                                '',
+                              );
+                              onChange(newValue); // Store raw input for now
+                            }}
+                            onBlur={(e) => {
+                              // Convert raw input to a number on blur, handling empty and incomplete inputs
+                              const numericValue = parseFloat(
+                                e.target.value.replace(/[^0-9.]/g, ''),
+                              );
+                              onChange(isNaN(numericValue) ? 0 : numericValue); // Update with numeric value
+                            }}
+                            onKeyDown={onKeyPress}
+                            type='text' // Keep as text to allow freeform input
+                            className='form-input mt-1 block w-full rounded-none border-b border-gray-300 py-1 pl-4 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
+                            style={{
+                              paddingLeft: `${currencySymbol?.length ?? 1}ch`,
+                            }}
+                          />
                         )}
                       />
                     </FormControl>
@@ -304,24 +300,21 @@ const PricingTier = <
                                 onKeyDown={onKeyPress}
                                 value={`${currencySymbol}${value}`}
                                 onChange={(e) => {
-                                  // Remove everything except numbers and the decimal point, and limit to one decimal point
+                                  // Directly pass the raw input value (with currency symbol stripped) to onChange
                                   const newValue = e.target.value.replace(
-                                    new RegExp(`[^0-9.]|(?<=\\..*)\\.`, 'g'),
+                                    currencySymbol ?? '',
                                     '',
                                   );
-                                  // If the newValue starts with a decimal point, prepend a zero
-                                  const formattedValue = newValue.startsWith(
-                                    '.',
-                                  )
-                                    ? `${newValue}0`
-                                    : newValue;
-                                  // Update the value after removing the currency symbol
-                                  onChange(
-                                    formattedValue.replace(
-                                      currencySymbol ?? '',
-                                      '',
-                                    ),
+                                  onChange(newValue); // Store raw input for now
+                                }}
+                                onBlur={(e) => {
+                                  // Convert raw input to a number on blur, handling empty and incomplete inputs
+                                  const numericValue = parseFloat(
+                                    e.target.value.replace(/[^0-9.]/g, ''),
                                   );
+                                  onChange(
+                                    isNaN(numericValue) ? 0 : numericValue,
+                                  ); // Update with numeric value
                                 }}
                                 type='text' // Keep as text to display the currency symbol
                                 className='form-input mt-1 block w-full rounded-none border-b border-gray-300 py-1 pl-4 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
