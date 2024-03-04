@@ -1,0 +1,6 @@
+mutation AddMaterial($input: AddMaterialRequestInput!) {
+  addMaterial(request: $input) {
+    name
+    id
+  }
+}

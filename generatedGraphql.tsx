@@ -2294,6 +2294,13 @@ export type SearchCustomerReferencesQueryVariables = Exact<{
 
 export type SearchCustomerReferencesQuery = { __typename?: 'Query', searchCustomerReferences: { __typename?: 'ReferenceTrackingResponse', customerNextCursor?: string | null, customerHasNextPage: boolean, externalNextCursor?: string | null, externalHasNextPage: boolean, references: Array<{ __typename?: 'ReferenceResponse', id: string, displayName: string, phoneNumber?: string | null, referenceType: ReferenceType }> } };
 
+export type AddMaterialMutationVariables = Exact<{
+  input: AddMaterialRequestInput;
+}>;
+
+
+export type AddMaterialMutation = { __typename?: 'Mutation', addMaterial: { __typename?: 'MaterialEntity', name: string, id: string } };
+
 export type AddNewServiceCategoryMutationVariables = Exact<{
   input: AddNewServiceCategoryRequestInput;
 }>;
@@ -2889,6 +2896,40 @@ export type SearchCustomerReferencesQueryHookResult = ReturnType<typeof useSearc
 export type SearchCustomerReferencesLazyQueryHookResult = ReturnType<typeof useSearchCustomerReferencesLazyQuery>;
 export type SearchCustomerReferencesSuspenseQueryHookResult = ReturnType<typeof useSearchCustomerReferencesSuspenseQuery>;
 export type SearchCustomerReferencesQueryResult = Apollo.QueryResult<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>;
+export const AddMaterialDocument = gql`
+    mutation AddMaterial($input: AddMaterialRequestInput!) {
+  addMaterial(request: $input) {
+    name
+    id
+  }
+}
+    `;
+export type AddMaterialMutationFn = Apollo.MutationFunction<AddMaterialMutation, AddMaterialMutationVariables>;
+
+/**
+ * __useAddMaterialMutation__
+ *
+ * To run a mutation, you first call `useAddMaterialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddMaterialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addMaterialMutation, { data, loading, error }] = useAddMaterialMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddMaterialMutation(baseOptions?: Apollo.MutationHookOptions<AddMaterialMutation, AddMaterialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddMaterialMutation, AddMaterialMutationVariables>(AddMaterialDocument, options);
+      }
+export type AddMaterialMutationHookResult = ReturnType<typeof useAddMaterialMutation>;
+export type AddMaterialMutationResult = Apollo.MutationResult<AddMaterialMutation>;
+export type AddMaterialMutationOptions = Apollo.BaseMutationOptions<AddMaterialMutation, AddMaterialMutationVariables>;
 export const AddNewServiceCategoryDocument = gql`
     mutation AddNewServiceCategory($input: AddNewServiceCategoryRequestInput!) {
   addNewServiceCategory(request: $input) {

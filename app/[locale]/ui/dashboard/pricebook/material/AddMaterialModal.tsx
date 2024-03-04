@@ -19,12 +19,11 @@ import {
 import SingleImageUploadForm from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
 import { Button } from '@/components/ui/button';
 import {
-  useAddNewServiceCategory,
+  useAddMaterial,
   useGetAllServiceCategoriesLazy,
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import {
   AddMaterialRequestInput,
-  MarkupType,
   ServiceCategoryEntity,
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
@@ -166,6 +165,10 @@ const AddMaterialModal = ({
       pricingTiers: [],
     },
   });
+
+  const { addMaterial, addMaterialResponse, addMaterialLoading } =
+    useAddMaterial();
+
   const user = useSelector((state: RootState) => state.user.data);
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
   const { getAllServiceCategories, serviceCategories } =
@@ -176,9 +179,6 @@ const AddMaterialModal = ({
   const priceWatch = form.watch('price');
   const costWatch = form.watch('cost');
   const { toast } = useToast();
-
-  const { addNewServiceCategoryResponse, addNewServiceCategoryLoading } =
-    useAddNewServiceCategory();
 
   const handleClose = () => {
     form.reset();
@@ -200,28 +200,9 @@ const AddMaterialModal = ({
     }
   };
 
-  useEffect(() => {
-    const resp = addNewServiceCategoryResponse?.addNewServiceCategory;
-    if (resp?.id) {
-      handleClose();
-      toast({
-        title: 'Successfully Created New Service Category',
-        description: (
-          <span>
-            You have successfully created a new service category{' '}
-            <b>
-              <u>{resp.name}</u>
-            </b>
-          </span>
-        ),
-      });
-    }
-  }, [addNewServiceCategoryResponse]);
-
   const handleSave = async (formData: z.infer<typeof formSchema>) => {
     console.log('formData', formData);
 
-    // Ensure all decimal values are formatted as strings
     const request: AddMaterialRequestInput = {
       allowOnlineBooking: formData.allowOnlineBooking,
       cost: formData.cost,
@@ -248,10 +229,28 @@ const AddMaterialModal = ({
       unitType: formData.unitType,
     };
 
-    console.log('request', request);
+    addMaterial(request);
 
     fetchedRef.current = false;
   };
+
+  useEffect(() => {
+    const resp = addMaterialResponse?.addMaterial;
+    if (resp?.id) {
+      handleClose();
+      toast({
+        title: 'Successfully Created a New Material!',
+        description: (
+          <span>
+            You have successfully created a new material{' '}
+            <b>
+              <u>{resp.name}</u>
+            </b>
+          </span>
+        ),
+      });
+    }
+  }, [addMaterialResponse]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -584,9 +583,9 @@ const AddMaterialModal = ({
                 type='submit'
                 variant='default'
                 onClick={form.handleSubmit(handleSave)}
-                disabled={addNewServiceCategoryLoading}
+                disabled={addMaterialLoading}
               >
-                {addNewServiceCategoryLoading ? 'Saving...' : 'Save'}
+                {addMaterialLoading ? 'Saving...' : 'Save'}
               </Button>
             </DialogFooter>
           </form>
@@ -598,15 +597,15 @@ const AddMaterialModal = ({
 
 export default AddMaterialModal;
 
-const BreakpointIndicator = () => {
-  return (
-    <div className='fixed bottom-0 left-0 z-50 bg-gray-900 p-2 text-white'>
-      <div className='sm:hidden'>XS</div>
-      <div className='hidden sm:block md:hidden'>SM</div>
-      <div className='hidden md:block lg:hidden'>MD</div>
-      <div className='hidden lg:block xl:hidden'>LG</div>
-      <div className='hidden xl:block 2xl:hidden'>XL</div>
-      <div className='hidden 2xl:block'>2XL</div>
-    </div>
-  );
-};
+// const BreakpointIndicator = () => {
+//   return (
+//     <div className='fixed bottom-0 left-0 z-50 bg-gray-900 p-2 text-white'>
+//       <div className='sm:hidden'>XS</div>
+//       <div className='hidden sm:block md:hidden'>SM</div>
+//       <div className='hidden md:block lg:hidden'>MD</div>
+//       <div className='hidden lg:block xl:hidden'>LG</div>
+//       <div className='hidden xl:block 2xl:hidden'>XL</div>
+//       <div className='hidden 2xl:block'>2XL</div>
+//     </div>
+//   );
+// };

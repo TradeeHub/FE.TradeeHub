@@ -101,7 +101,7 @@ const AddServiceCategoryModal = ({
     if (resp?.id) {
       handleClose();
       toast({
-        title: 'Successfully Created New Service Category',
+        title: 'Successfully Created a New Service Category!',
         description: (
           <span>
             You have successfully created a new service category{' '}

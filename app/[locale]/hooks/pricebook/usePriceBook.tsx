@@ -5,6 +5,8 @@ import {
   GetAllServiceCategoriesQuery,
   GetAllServiceCategoriesQueryVariables,
   GetAllServiceCategoriesDocument,
+  useAddMaterialMutation,
+  AddMaterialRequestInput,
 } from '@/generatedGraphql';
 
 const useGetAllServiceCategoriesLazy = () => {
@@ -42,4 +44,30 @@ const useAddNewServiceCategory = () => {
   };
 };
 
-export { useAddNewServiceCategory, useGetAllServiceCategoriesLazy };
+const useAddMaterial = () => {
+  const [addMaterialMutation, { data, loading, error }] =
+    useAddMaterialMutation();
+
+  const addMaterial = async (input: AddMaterialRequestInput) => {
+    try {
+      await addMaterialMutation({
+        variables: { input },
+      });
+    } catch (e) {
+      console.error('Error adding new service category:', e);
+    }
+  };
+
+  return {
+    addMaterial,
+    addMaterialResponse: data,
+    addMaterialLoading: loading,
+    addMaterialError: error,
+  };
+};
+
+export {
+  useAddNewServiceCategory,
+  useGetAllServiceCategoriesLazy,
+  useAddMaterial,
+};
