@@ -1,0 +1,6 @@
+mutation AddLaborRate($input: AddLaborRateRequestInput!) {
+  addLaborRate(request: $input) {
+    name
+    id
+  }
+}

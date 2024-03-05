@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 import { IconType } from 'react-icons';
 import { FormMessage } from '@/components/ui/form';
@@ -51,7 +51,7 @@ const SimpleInput = <
 
   const handleInputBlur = () => {
     setIsFocused(false); // Update focus state when input loses focus
-    setLabelFloat(!!field.value); // Decide whether to keep the label floated based on input value
+    setLabelFloat(field.value !== undefined && field.value !== '');
   };
 
   const handleInputFocus = () => {
@@ -63,9 +63,9 @@ const SimpleInput = <
     }
   };
 
-  useEffect(() => {
-    setLabelFloat(!!field.value);
-  }, [field.value]);
+  // useEffect(() => {
+  //     setLabelFloat(field.value !== undefined && field.value !== '');
+  // }, [field.value]);
 
   const isPasswordType = type === 'password';
   const inputId = `input-${field.name}`; // Create a unique ID for the input based on the field name
@@ -95,8 +95,9 @@ const SimpleInput = <
           onChange={(e) => {
             const value = e.target.value;
             // Check if the input is not empty and it's a numeric field
-            if (value !== '' && type === 'number') {
-              field.onChange(Number(value));
+            if (type === 'number') {
+              const numericValue = value === '' ? '' : Number(value);
+              field.onChange(numericValue);
             } else {
               // If the input is empty or not a number, directly pass the value without converting
               field.onChange(value);

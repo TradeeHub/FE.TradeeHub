@@ -31,13 +31,14 @@ export type AccountConfirmationResponse = {
 };
 
 export type AddLaborRateRequestInput = {
-  cost: Scalars['Decimal']['input'];
+  cost?: InputMaybe<Scalars['Decimal']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
-  price: Scalars['Decimal']['input'];
+  parentServiceCategoryId?: InputMaybe<Scalars['ID']['input']>;
+  price?: InputMaybe<Scalars['Decimal']['input']>;
   pricingTiers?: InputMaybe<Array<PricingTierRequestInput>>;
   rateType?: InputMaybe<Scalars['String']['input']>;
-  serviceIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  usePriceRange: Scalars['Boolean']['input'];
 };
 
 export type AddMaterialRequestInput = {
@@ -756,7 +757,7 @@ export type KeyValuePairOfStringAndString = {
 
 export type LaborRateEntity = Node & {
   __typename?: 'LaborRateEntity';
-  cost: Scalars['Decimal']['output'];
+  cost?: Maybe<Scalars['Decimal']['output']>;
   createdAt: Scalars['DateTime']['output'];
   createdById: Scalars['UUID']['output'];
   creator: UserEntity;
@@ -767,11 +768,12 @@ export type LaborRateEntity = Node & {
   modifier?: Maybe<UserEntity>;
   name: Scalars['String']['output'];
   owner: UserEntity;
-  price: Scalars['Decimal']['output'];
+  parentServiceCategoryId?: Maybe<Scalars['ID']['output']>;
+  price?: Maybe<Scalars['Decimal']['output']>;
   pricingTiers?: Maybe<Array<PricingTierEntity>>;
   rateType?: Maybe<Scalars['String']['output']>;
-  serviceIds?: Maybe<Array<Scalars['ID']['output']>>;
-  services: Array<ServiceEntity>;
+  serviceCategory?: Maybe<ServiceCategoryEntity>;
+  usePriceRange: Scalars['Boolean']['output'];
   userOwnerId: Scalars['UUID']['output'];
 };
 
@@ -927,7 +929,7 @@ export type MaterialEntity = Node & {
   parentServiceCategoryId?: Maybe<Scalars['ID']['output']>;
   price?: Maybe<Scalars['Decimal']['output']>;
   pricingTiers?: Maybe<Array<PricingTierEntity>>;
-  services?: Maybe<ServiceCategoryEntity>;
+  serviceCategory?: Maybe<ServiceCategoryEntity>;
   taxable: Scalars['Boolean']['output'];
   unitType: Scalars['String']['output'];
   usePriceRange: Scalars['Boolean']['output'];
@@ -2294,6 +2296,13 @@ export type SearchCustomerReferencesQueryVariables = Exact<{
 
 export type SearchCustomerReferencesQuery = { __typename?: 'Query', searchCustomerReferences: { __typename?: 'ReferenceTrackingResponse', customerNextCursor?: string | null, customerHasNextPage: boolean, externalNextCursor?: string | null, externalHasNextPage: boolean, references: Array<{ __typename?: 'ReferenceResponse', id: string, displayName: string, phoneNumber?: string | null, referenceType: ReferenceType }> } };
 
+export type AddLaborRateMutationVariables = Exact<{
+  input: AddLaborRateRequestInput;
+}>;
+
+
+export type AddLaborRateMutation = { __typename?: 'Mutation', addLaborRate: { __typename?: 'LaborRateEntity', name: string, id: string } };
+
 export type AddMaterialMutationVariables = Exact<{
   input: AddMaterialRequestInput;
 }>;
@@ -2896,6 +2905,40 @@ export type SearchCustomerReferencesQueryHookResult = ReturnType<typeof useSearc
 export type SearchCustomerReferencesLazyQueryHookResult = ReturnType<typeof useSearchCustomerReferencesLazyQuery>;
 export type SearchCustomerReferencesSuspenseQueryHookResult = ReturnType<typeof useSearchCustomerReferencesSuspenseQuery>;
 export type SearchCustomerReferencesQueryResult = Apollo.QueryResult<SearchCustomerReferencesQuery, SearchCustomerReferencesQueryVariables>;
+export const AddLaborRateDocument = gql`
+    mutation AddLaborRate($input: AddLaborRateRequestInput!) {
+  addLaborRate(request: $input) {
+    name
+    id
+  }
+}
+    `;
+export type AddLaborRateMutationFn = Apollo.MutationFunction<AddLaborRateMutation, AddLaborRateMutationVariables>;
+
+/**
+ * __useAddLaborRateMutation__
+ *
+ * To run a mutation, you first call `useAddLaborRateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddLaborRateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addLaborRateMutation, { data, loading, error }] = useAddLaborRateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddLaborRateMutation(baseOptions?: Apollo.MutationHookOptions<AddLaborRateMutation, AddLaborRateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddLaborRateMutation, AddLaborRateMutationVariables>(AddLaborRateDocument, options);
+      }
+export type AddLaborRateMutationHookResult = ReturnType<typeof useAddLaborRateMutation>;
+export type AddLaborRateMutationResult = Apollo.MutationResult<AddLaborRateMutation>;
+export type AddLaborRateMutationOptions = Apollo.BaseMutationOptions<AddLaborRateMutation, AddLaborRateMutationVariables>;
 export const AddMaterialDocument = gql`
     mutation AddMaterial($input: AddMaterialRequestInput!) {
   addMaterial(request: $input) {

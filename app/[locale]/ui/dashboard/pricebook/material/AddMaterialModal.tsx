@@ -82,7 +82,6 @@ const pricingTierEntitySchema = z
 
 const formSchema = z.object({
   name: z.string(),
-  serviceIds: z.array(z.string()).optional().nullable(),
   description: z.string().optional().nullable(),
   identifier: z.string().optional().nullable(),
   parentServiceCategoryId: z.string().optional().nullable(),
@@ -106,7 +105,7 @@ const MarginProfitDisplay = ({
   price: number;
 }) => {
   const calculateMargin = (cost: number, price: number) => {
-    if (price && cost) {
+    if (price) {
       return ((price - cost) / price) * 100;
     }
     return 0;
@@ -148,11 +147,9 @@ const AddMaterialModal = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      serviceIds: [],
       description: null,
       identifier: null,
       parentServiceCategoryId: null,
-      markup: null,
       usePriceRange: false,
       taxable: false,
       allowOnlineBooking: false,

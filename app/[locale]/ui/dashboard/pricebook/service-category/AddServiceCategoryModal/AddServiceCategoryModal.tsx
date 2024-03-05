@@ -158,6 +158,7 @@ const AddServiceCategoryModal = ({
                   <FormItem>
                     <FormControl>
                       <SimpleInput
+                        title='Category Name'
                         field={field}
                         autoFocus={true}
                         placeholder='Category Name'
