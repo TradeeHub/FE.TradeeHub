@@ -1,61 +1,48 @@
-'use client';
-import React, { useState } from 'react';
-import AddServiceCategoryModal from '../../ui/dashboard/pricebook/service-category/AddServiceCategoryModal/AddServiceCategoryModal';
-import { Button } from '@/components/ui/button';
-import AddMaterialModal from '../../ui/dashboard/pricebook/material/AddMaterialModal';
-import AddLabourRateModal from '../../ui/dashboard/pricebook/labor/AddLabourRateModal';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '../../components/TabsCustom/TabsCustom';
+import LaborRates from '../../ui/dashboard/pricebook/labor/LaborRates';
+import Materials from '../../ui/dashboard/pricebook/material/Materials';
+import ServiceCategories from '../../ui/dashboard/pricebook/service-category/ServiceCategories';
 
 const PriceBook = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
-  const [isLabourRateModalOpen, setIsLabourRateModalOpen] = useState(false);
-
-  const toggleModal = () => setIsModalOpen(!isModalOpen);
-  const toggleMaterialModal = () =>
-    setIsMaterialModalOpen(!isMaterialModalOpen);
-  const toggleLabourRateModal = () =>
-    setIsLabourRateModalOpen(!isLabourRateModalOpen);
-
   return (
-    <>
-      <div className='flex gap-6'>
-        <Button onClick={toggleModal}>Add Service Category</Button>
-
-        <Button onClick={() => setIsMaterialModalOpen(true)}>
-          Add Material
-        </Button>
-
-        <Button onClick={() => setIsLabourRateModalOpen(true)}>
-          Add Labour Rate
-        </Button>
+    <div className='flex w-full flex-col items-start'>
+      <div className='mx-auto flex w-full max-w-3xl flex-col gap-4'>
+        <h1 className='text-[32px] font-bold'>Price Book</h1>
+        <Tabs defaultValue='serviceCategories' className='w-full'>
+          <div className='flex justify-start'>
+            <TabsList className='flex flex-row gap-4'>
+              <TabsTrigger value='serviceCategories'>
+                Service Categories
+              </TabsTrigger>
+              <TabsTrigger value='services'>Services</TabsTrigger>
+              <TabsTrigger value='materials'>Materials</TabsTrigger>
+              <TabsTrigger value='laborRates'>Labor Rates</TabsTrigger>
+              <TabsTrigger value='warranties'>Warranties</TabsTrigger>
+            </TabsList>
+          </div>
+          <TabsContent value='serviceCategories'>
+            <ServiceCategories />
+          </TabsContent>
+          <TabsContent value='services'>
+            <div>Services coming soon...</div>
+          </TabsContent>
+          <TabsContent value='materials'>
+            <Materials />
+          </TabsContent>
+          <TabsContent value='laborRates'>
+            <LaborRates />
+          </TabsContent>
+          <TabsContent value='warranties'>
+            <div>Warranties coming soon...</div>
+          </TabsContent>
+        </Tabs>
       </div>
-
-      {isMaterialModalOpen && (
-        <AddMaterialModal
-          isOpen={isMaterialModalOpen}
-          onClose={toggleMaterialModal}
-          modalName='Create New Material'
-        />
-      )}
-
-      {isLabourRateModalOpen && (
-        <AddLabourRateModal
-          isOpen={isLabourRateModalOpen}
-          onClose={toggleLabourRateModal}
-          modalName='Create New Labour Rate'
-        />
-      )}
-
-      {isModalOpen && (
-        <AddServiceCategoryModal
-          isOpen={isModalOpen}
-          onClose={toggleModal}
-          // onCustomerAdded={refreshGridData} // Assuming you have such a prop
-          modalName='Create New Service Category'
-          // onAdded={undefined}
-        />
-      )}
-    </>
+    </div>
   );
 };
 

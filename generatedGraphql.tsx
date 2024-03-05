@@ -2320,7 +2320,7 @@ export type AddNewServiceCategoryMutation = { __typename?: 'Mutation', addNewSer
 export type GetAllServiceCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllServiceCategoriesQuery = { __typename?: 'Query', serviceCategories: Array<{ __typename?: 'ServiceCategoryEntity', id: string, name: string }> };
+export type GetAllServiceCategoriesQuery = { __typename?: 'Query', serviceCategories: Array<{ __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null }> };
 
 
 export const ChangePasswordDocument = gql`
@@ -3012,6 +3012,10 @@ export const GetAllServiceCategoriesDocument = gql`
   serviceCategories {
     id
     name
+    description
+    images {
+      url
+    }
   }
 }
     `;

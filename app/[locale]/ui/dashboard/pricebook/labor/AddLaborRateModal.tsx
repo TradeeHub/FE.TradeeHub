@@ -122,7 +122,7 @@ const MarginProfitDisplay = ({
   );
 };
 
-const AddLabourRateModal = ({
+const AddLaborRateModal = ({
   isOpen,
   onClose,
   modalName,
@@ -412,4 +412,4 @@ const AddLabourRateModal = ({
   );
 };
 
-export default AddLabourRateModal;
+export default AddLaborRateModal;
