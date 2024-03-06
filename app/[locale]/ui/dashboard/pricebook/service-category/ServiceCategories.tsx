@@ -5,61 +5,77 @@ import { IoSearchOutline } from 'react-icons/io5';
 import AddServiceCategoryModal from './AddServiceCategoryModal/AddServiceCategoryModal';
 import { useEffect, useState } from 'react';
 import { useGetAllServiceCategoriesLazy } from '@/app/[locale]/hooks/pricebook/usePriceBook';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { MdOutlineImageNotSupported } from "react-icons/md";
+import { MdOutlineImageNotSupported } from 'react-icons/md';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
-const ServiceCategoryCard = ({ name, description, imageUrl }) => {
-  // Checking if imageUrl is provided and not empty
+const ServiceCategoryCard = ({
+  name,
+  description,
+  imageUrl,
+}: {
+  name: string;
+  description: string;
+  imageUrl: string;
+}) => {
   const imageAvailable = imageUrl && imageUrl.trim() !== '';
 
   return (
-    <Card className='rounded-xl shadow-lg text-center transition duration-300 ease-in-out hover:shadow-xl'>
-      <CardHeader className='p-0'>
-        <div className='relative h-32 w-full overflow-hidden rounded-xl'>
-          {imageAvailable ? (
-            // Displaying the image if available
-            <img src={imageUrl} alt={name}
-              className='h-full w-full object-contain transition-transform duration-300 ease-in-out hover:scale-[1.20] rounded-xl' />
-          ) : (
-            // Displaying the fallback icon if the image is not available
-            <div className='flex justify-center items-center h-full'>
-              <MdOutlineImageNotSupported size={64} className='text-gray-400' />
-            </div>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent className='px-2 py-2'>
-        <CardTitle className='text-primary font-semibold'>{name}</CardTitle>
-        <div className='relative group'>
-          {/* Clipping text to 2 lines */}
-          <CardDescription className='text-gray-700 text-sm overflow-hidden h-12 leading-6 block'>
-            <span className='line-clamp-2'>{description}</span>
-          </CardDescription>
-          {/* Tooltip */}
-          <div className='absolute w-full bg-black text-white text-sm p-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out -top-8 left-0 hidden group-hover:block'>
-            {description}
+    <div className='flex w-full flex-col'>
+      {' '}
+      {/* Ensure this parent container can expand as needed */}
+      <div className='w-full'>
+        {' '}
+        {/* This container will also match its parent's width */}
+        {imageAvailable ? (
+          <img
+            src={imageUrl}
+            alt={name}
+            className='h-32 w-full rounded-lg border border-gray-200 object-contain shadow-sm transition-transform duration-300 ease-in-out hover:scale-110'
+          />
+        ) : (
+          <div className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-200 shadow-sm transition-transform duration-300 ease-in-out hover:scale-110'>
+            <MdOutlineImageNotSupported size={64} className='text-gray-400' />
           </div>
+        )}
+      </div>
+      <div className='pt-4'>
+        <div className='flex items-center justify-between'>
+          {' '}
+          {/* This container applies Flexbox layout */}
+          <h5
+            className='text-md mb-1 line-clamp-1 font-semibold tracking-tight text-gray-800 dark:text-white'
+            title={name}
+          >
+            {name}
+          </h5>
+          <Button variant='ghost' className='rounded-full p-2.5'>
+            <BsThreeDotsVertical />
+          </Button>
         </div>
-      </CardContent>
-      <CardFooter>
-        {/* Footer content */}
-      </CardFooter>
-    </Card>
+
+        <p
+          className='line-clamp-2 overflow-hidden text-gray-500'
+          title={description}
+        >
+          {description}
+        </p>
+      </div>
+    </div>
   );
 };
 
-
 const ServiceCategories = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const { getAllServiceCategories, serviceCategories, loading } =   useGetAllServiceCategoriesLazy(); 
-  
+  const { getAllServiceCategories, serviceCategories, loading } =
+    useGetAllServiceCategoriesLazy();
+
   useEffect(() => {
-      getAllServiceCategories({ fetchPolicy: 'network-only' });
-      if(!loading){
-        console.log('serviceCategories', serviceCategories);
-      }
+    getAllServiceCategories({ fetchPolicy: 'network-only' });
+    if (!loading) {
+      console.log('serviceCategories', serviceCategories);
+    }
   }, []);
   const renderServiceCategories = serviceCategories?.map((category) => (
     <ServiceCategoryCard
@@ -69,7 +85,7 @@ const ServiceCategories = () => {
       imageUrl={category.images?.[0]?.url ?? ''}
     />
   ));
-  
+
   return (
     <>
       {isModalOpen && (
@@ -99,9 +115,9 @@ const ServiceCategories = () => {
           </Button>
         </div>
         <div>
-            <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-        {loading ? <p>Loading...</p> : renderServiceCategories}
-      </div>
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
+            {loading ? <p>Loading...</p> : renderServiceCategories}
+          </div>
         </div>
       </div>
     </>

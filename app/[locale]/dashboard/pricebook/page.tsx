@@ -11,7 +11,7 @@ import ServiceCategories from '../../ui/dashboard/pricebook/service-category/Ser
 const PriceBook = () => {
   return (
     <div className='flex w-full flex-col items-start'>
-      <div className='mx-auto flex w-full max-w-3xl flex-col gap-4'>
+      <div className='mx-auto flex w-full max-w-4xl flex-col gap-4'>
         <h1 className='text-[32px] font-bold'>Price Book</h1>
         <Tabs defaultValue='serviceCategories' className='w-full'>
           <div className='flex justify-start'>

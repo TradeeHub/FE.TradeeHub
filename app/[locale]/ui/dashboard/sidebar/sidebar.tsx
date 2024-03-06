@@ -115,16 +115,16 @@ const SideBar = () => {
                     {' '}
                     {!isActive(item.path) ? (
                       <item.icon
-                        className='h-6 w-6 shrink-0 text-primary'
+                        className='text h-6 w-6 shrink-0 dark:text-white'
                         aria-hidden='true'
                       />
                     ) : (
                       <item.inactiveIcon
-                        className='h-6 w-6 shrink-0 text-primary'
+                        className='text h-6 w-6 shrink-0 dark:text-white'
                         aria-hidden='true'
                       />
                     )}
-                    <span className='font-roboto text-primary'>
+                    <span className='text font-roboto dark:text-white'>
                       {item.title}
                     </span>
                   </Button>
