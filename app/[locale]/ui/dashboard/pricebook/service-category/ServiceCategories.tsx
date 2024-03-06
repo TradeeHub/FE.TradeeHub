@@ -3,12 +3,73 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { IoSearchOutline } from 'react-icons/io5';
 import AddServiceCategoryModal from './AddServiceCategoryModal/AddServiceCategoryModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useGetAllServiceCategoriesLazy } from '@/app/[locale]/hooks/pricebook/usePriceBook';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { MdOutlineImageNotSupported } from "react-icons/md";
+
+const ServiceCategoryCard = ({ name, description, imageUrl }) => {
+  // Checking if imageUrl is provided and not empty
+  const imageAvailable = imageUrl && imageUrl.trim() !== '';
+
+  return (
+    <Card className='rounded-xl shadow-lg text-center transition duration-300 ease-in-out hover:shadow-xl'>
+      <CardHeader className='p-0'>
+        <div className='relative h-32 w-full overflow-hidden rounded-xl'>
+          {imageAvailable ? (
+            // Displaying the image if available
+            <img src={imageUrl} alt={name}
+              className='h-full w-full object-contain transition-transform duration-300 ease-in-out hover:scale-[1.20] rounded-xl' />
+          ) : (
+            // Displaying the fallback icon if the image is not available
+            <div className='flex justify-center items-center h-full'>
+              <MdOutlineImageNotSupported size={64} className='text-gray-400' />
+            </div>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className='px-2 py-2'>
+        <CardTitle className='text-primary font-semibold'>{name}</CardTitle>
+        <div className='relative group'>
+          {/* Clipping text to 2 lines */}
+          <CardDescription className='text-gray-700 text-sm overflow-hidden h-12 leading-6 block'>
+            <span className='line-clamp-2'>{description}</span>
+          </CardDescription>
+          {/* Tooltip */}
+          <div className='absolute w-full bg-black text-white text-sm p-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out -top-8 left-0 hidden group-hover:block'>
+            {description}
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter>
+        {/* Footer content */}
+      </CardFooter>
+    </Card>
+  );
+};
+
 
 const ServiceCategories = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
+  const { getAllServiceCategories, serviceCategories, loading } =   useGetAllServiceCategoriesLazy(); 
+  
+  useEffect(() => {
+      getAllServiceCategories({ fetchPolicy: 'network-only' });
+      if(!loading){
+        console.log('serviceCategories', serviceCategories);
+      }
+  }, []);
+  const renderServiceCategories = serviceCategories?.map((category) => (
+    <ServiceCategoryCard
+      key={category.id}
+      name={category.name}
+      description={category.description ?? ''}
+      imageUrl={category.images?.[0]?.url ?? ''}
+    />
+  ));
+  
   return (
     <>
       {isModalOpen && (
@@ -37,72 +98,14 @@ const ServiceCategories = () => {
             New
           </Button>
         </div>
+        <div>
+            <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+        {loading ? <p>Loading...</p> : renderServiceCategories}
+      </div>
+        </div>
       </div>
     </>
   );
 };
 
 export default ServiceCategories;
-
-// 'use client';
-// import React, { useState } from 'react';
-// import AddServiceCategoryModal from '../../ui/dashboard/pricebook/service-category/AddServiceCategoryModal/AddServiceCategoryModal';
-// import { Button } from '@/components/ui/button';
-// import AddMaterialModal from '../../ui/dashboard/pricebook/material/AddMaterialModal';
-// import AddLabourRateModal from '../../ui/dashboard/pricebook/labor/AddLabourRateModal';
-
-// const PriceBook = () => {
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
-//   const [isLabourRateModalOpen, setIsLabourRateModalOpen] = useState(false);
-
-//   const toggleModal = () => setIsModalOpen(!isModalOpen);
-//   const toggleMaterialModal = () =>
-//     setIsMaterialModalOpen(!isMaterialModalOpen);
-//   const toggleLabourRateModal = () =>
-//     setIsLabourRateModalOpen(!isLabourRateModalOpen);
-
-//   return (
-//     <>
-//       <div className='flex gap-6'>
-//         <Button onClick={toggleModal}>Add Service Category</Button>
-
-//         <Button onClick={() => setIsMaterialModalOpen(true)}>
-//           Add Material
-//         </Button>
-
-//         <Button onClick={() => setIsLabourRateModalOpen(true)}>
-//           Add Labour Rate
-//         </Button>
-//       </div>
-
-//       {isMaterialModalOpen && (
-//         <AddMaterialModal
-//           isOpen={isMaterialModalOpen}
-//           onClose={toggleMaterialModal}
-//           modalName='Create New Material'
-//         />
-//       )}
-
-//       {isLabourRateModalOpen && (
-//         <AddLabourRateModal
-//           isOpen={isLabourRateModalOpen}
-//           onClose={toggleLabourRateModal}
-//           modalName='Create New Labour Rate'
-//         />
-//       )}
-
-//       {isModalOpen && (
-//         <AddServiceCategoryModal
-//           isOpen={isModalOpen}
-//           onClose={toggleModal}
-//           // onCustomerAdded={refreshGridData} // Assuming you have such a prop
-//           modalName='Create New Service Category'
-//           // onAdded={undefined}
-//         />
-//       )}
-//     </>
-//   );
-// };
-
-// export default PriceBook;
