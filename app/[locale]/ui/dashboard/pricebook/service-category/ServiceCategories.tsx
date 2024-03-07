@@ -31,10 +31,10 @@ const ServiceCategoryCard = ({
           <img
             src={imageUrl}
             alt={name}
-            className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-100 object-contain shadow-sm transition-transform duration-300 ease-in-out hover:scale-110'
+            className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-100 object-contain  shadow-sm transition-transform duration-300 ease-in-out hover:scale-110 dark:border-primary/5'
           />
         ) : (
-          <div className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-100 object-contain shadow-sm transition-transform duration-300 ease-in-out hover:scale-110'>
+          <div className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-100 object-contain shadow-sm transition-transform duration-300 ease-in-out hover:scale-110 dark:border-primary/5'>
             <MdOutlineImageNotSupported size={64} className='text-gray-400' />
           </div>
         )}
@@ -50,7 +50,7 @@ const ServiceCategoryCard = ({
             {name}
           </h5>
           <Button variant='ghost' className='rounded-full p-3'>
-            <BsThreeDotsVertical />
+            <BsThreeDotsVertical className='dark:text-white' />
           </Button>
         </div>
 
@@ -84,7 +84,10 @@ const ServiceCategories = () => {
   ));
 
   const onAdded = (newCategory: ServiceCategoryEntity) => {
-    setLocalServiceCategories((prevCategories) => [newCategory, ...prevCategories]);
+    setLocalServiceCategories((prevCategories) => [
+      newCategory,
+      ...prevCategories,
+    ]);
   };
 
   useEffect(() => {
@@ -114,13 +117,17 @@ const ServiceCategories = () => {
           <Input
             type='text'
             placeholder='Search for service categories'
-            className='h-10 w-full rounded-xl border border-border bg-primary/5 pl-10'
+            className='h-10 w-full rounded-xl border border-border bg-primary/5 pl-10 text-white'
           />
         </div>
         <div className='flex flex-row items-center justify-between rounded-xl border-[1px] border-solid p-5'>
           <div>
-            <div className='flex flex-col font-bold'>Service Categories</div>
-            <div className=''>Manage your service categories</div>
+            <div className='flex flex-col font-bold dark:text-white'>
+              Service Categories
+            </div>
+            <div className='text-muted-foreground'>
+              Manage your service categories
+            </div>
           </div>
           <Button variant='default' onClick={toggleModal}>
             New
