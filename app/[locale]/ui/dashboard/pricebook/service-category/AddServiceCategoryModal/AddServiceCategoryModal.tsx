@@ -48,11 +48,12 @@ const formSchema = z.object({
 const AddServiceCategoryModal = ({
   isOpen,
   onClose,
+  onAdded,
   modalName,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onAdded?: () => void;
+  onAdded?: (newCategory: ServiceCategoryEntity) => void;
   modalName: string;
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -99,6 +100,9 @@ const AddServiceCategoryModal = ({
   useEffect(() => {
     const resp = addNewServiceCategoryResponse?.addNewServiceCategory;
     if (resp?.id) {
+      if (onAdded) {
+        onAdded(resp as ServiceCategoryEntity);
+      }
       handleClose();
       toast({
         title: 'Successfully Created a New Service Category!',

@@ -1,6 +1,10 @@
 mutation AddNewServiceCategory($input: AddNewServiceCategoryRequestInput!) {
   addNewServiceCategory(request: $input) {
-    name
     id
+    name
+    description
+    images {
+      url
+    }
   }
 }

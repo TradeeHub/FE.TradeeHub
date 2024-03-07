@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useGetAllServiceCategoriesLazy } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import { MdOutlineImageNotSupported } from 'react-icons/md';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { ServiceCategoryEntity } from '@/generatedGraphql';
 
 const ServiceCategoryCard = ({
   name,
@@ -30,10 +31,10 @@ const ServiceCategoryCard = ({
           <img
             src={imageUrl}
             alt={name}
-            className='h-32 w-full rounded-lg border border-gray-200 object-contain shadow-sm transition-transform duration-300 ease-in-out hover:scale-110'
+            className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-100 object-contain shadow-sm transition-transform duration-300 ease-in-out hover:scale-110'
           />
         ) : (
-          <div className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-200 shadow-sm transition-transform duration-300 ease-in-out hover:scale-110'>
+          <div className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-100 object-contain shadow-sm transition-transform duration-300 ease-in-out hover:scale-110'>
             <MdOutlineImageNotSupported size={64} className='text-gray-400' />
           </div>
         )}
@@ -48,7 +49,7 @@ const ServiceCategoryCard = ({
           >
             {name}
           </h5>
-          <Button variant='ghost' className='rounded-full p-2.5'>
+          <Button variant='ghost' className='rounded-full p-3'>
             <BsThreeDotsVertical />
           </Button>
         </div>
@@ -65,19 +66,15 @@ const ServiceCategoryCard = ({
 };
 
 const ServiceCategories = () => {
+  const [localServiceCategories, setLocalServiceCategories] = useState<
+    ServiceCategoryEntity[]
+  >([]);
+  const { getAllServiceCategories, serviceCategories, loading } =
+    useGetAllServiceCategoriesLazy();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const { getAllServiceCategories, serviceCategories, loading } =
-    useGetAllServiceCategoriesLazy();
-
-  useEffect(() => {
-    getAllServiceCategories({ fetchPolicy: 'network-only' });
-    if (!loading) {
-      console.log('serviceCategories', serviceCategories);
-    }
-  }, []);
-  const renderServiceCategories = serviceCategories?.map((category) => (
+  const renderServiceCategories = localServiceCategories?.map((category) => (
     <ServiceCategoryCard
       key={category.id}
       name={category.name}
@@ -86,12 +83,27 @@ const ServiceCategories = () => {
     />
   ));
 
+  const onAdded = (newCategory: ServiceCategoryEntity) => {
+    setLocalServiceCategories((prevCategories) => [newCategory, ...prevCategories]);
+  };
+
+  useEffect(() => {
+    getAllServiceCategories({ fetchPolicy: 'network-only' });
+  }, []);
+
+  useEffect(() => {
+    if (serviceCategories) {
+      setLocalServiceCategories(serviceCategories as ServiceCategoryEntity[]);
+    }
+  }, [serviceCategories]);
+
   return (
     <>
       {isModalOpen && (
         <AddServiceCategoryModal
           isOpen={isModalOpen}
           onClose={toggleModal}
+          onAdded={onAdded}
           modalName='Create New Service Category'
         />
       )}

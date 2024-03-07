@@ -2315,7 +2315,7 @@ export type AddNewServiceCategoryMutationVariables = Exact<{
 }>;
 
 
-export type AddNewServiceCategoryMutation = { __typename?: 'Mutation', addNewServiceCategory: { __typename?: 'ServiceCategoryEntity', name: string, id: string } };
+export type AddNewServiceCategoryMutation = { __typename?: 'Mutation', addNewServiceCategory: { __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null } };
 
 export type GetAllServiceCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2976,8 +2976,12 @@ export type AddMaterialMutationOptions = Apollo.BaseMutationOptions<AddMaterialM
 export const AddNewServiceCategoryDocument = gql`
     mutation AddNewServiceCategory($input: AddNewServiceCategoryRequestInput!) {
   addNewServiceCategory(request: $input) {
-    name
     id
+    name
+    description
+    images {
+      url
+    }
   }
 }
     `;
