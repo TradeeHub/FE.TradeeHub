@@ -4,7 +4,7 @@ import { IconType } from 'react-icons';
 interface MenuItemButtonProps {
   icon: IconType; // This is a component, not an element.
   name: string;
-  onClick: () => void;
+  onClick?: () => void;
   className?: string;
 }
 

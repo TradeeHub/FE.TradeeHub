@@ -4,22 +4,34 @@ import { Input } from '@/components/ui/input';
 import { IoSearchOutline } from 'react-icons/io5';
 import AddServiceCategoryModal from './AddServiceCategoryModal/AddServiceCategoryModal';
 import { useEffect, useState } from 'react';
-import { useGetAllServiceCategoriesLazy } from '@/app/[locale]/hooks/pricebook/usePriceBook';
+import {
+  useDeleteServiceCategory,
+  useGetAllServiceCategoriesLazy,
+} from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import { MdOutlineImageNotSupported } from 'react-icons/md';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { ServiceCategoryEntity } from '@/generatedGraphql';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import MenuItemButton from '../../navbar/UserProfile/MenuItemButton';
+import { FiEdit } from 'react-icons/fi';
+import { RiDeleteBin7Line } from 'react-icons/ri';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+type ServiceCategoryCardProps = {
+  onDelete: (id: string) => void;
+  serviceCategory: ServiceCategoryEntity;
+};
 
 const ServiceCategoryCard = ({
-  name,
-  description,
-  imageUrl,
-}: {
-  name: string;
-  description: string;
-  imageUrl: string;
-}) => {
-  const imageAvailable = imageUrl && imageUrl.trim() !== '';
-
+  serviceCategory,
+  onDelete,
+}: ServiceCategoryCardProps) => {
+  const imageUrl = serviceCategory.images?.[0]?.url ?? '';
   return (
     <div className='flex w-full flex-col'>
       {' '}
@@ -27,10 +39,10 @@ const ServiceCategoryCard = ({
       <div className='w-full'>
         {' '}
         {/* This container will also match its parent's width */}
-        {imageAvailable ? (
+        {imageUrl.length > 0 ? (
           <img
             src={imageUrl}
-            alt={name}
+            alt={serviceCategory.name}
             className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-100 object-contain  shadow-sm transition-transform duration-300 ease-in-out hover:scale-110 dark:border-primary/5'
           />
         ) : (
@@ -45,25 +57,98 @@ const ServiceCategoryCard = ({
           {/* This container applies Flexbox layout */}
           <h5
             className='text-md mb-1 line-clamp-1 font-semibold tracking-tight text-gray-800 dark:text-white'
-            title={name}
+            title={serviceCategory.name}
           >
-            {name}
+            {serviceCategory.name}
           </h5>
-          <Button variant='ghost' className='rounded-full p-3'>
-            <BsThreeDotsVertical className='dark:text-white' />
-          </Button>
+          
+          <ServiceCategoryDropdownMenu
+            serviceCategory={serviceCategory}
+            onDelete={onDelete}
+          />
         </div>
-
         <p
           className='line-clamp-2 overflow-hidden text-gray-500'
-          title={description}
+          title={serviceCategory.description ?? ''}
         >
-          {description}
+          {serviceCategory.description}
         </p>
       </div>
     </div>
   );
 };
+
+const ServiceCategoryDropdownMenu = ({
+  serviceCategory,
+  onDelete,
+}: ServiceCategoryCardProps) => {
+  const [isAlertOpen, setIsAlertOpen] = useState(false); // State to manage AlertDialog visibility
+
+  const {
+    deleteServiceCategory,
+    deleteServiceCategoryResponse,
+    deleteServiceCategoryLoading,
+    deleteServiceCategoryError,
+  } = useDeleteServiceCategory();
+
+  const handleDelete = () => {
+    deleteServiceCategory(serviceCategory.id);
+    setIsAlertOpen(false); // Close AlertDialog after delete
+  };
+
+  const toggleAlert = () => setIsAlertOpen(!isAlertOpen);
+
+  const handleEdit = () => {
+    // Implementation for edit...
+  };
+
+  useEffect(() => {
+    if (deleteServiceCategoryResponse) {
+      if (deleteServiceCategoryResponse.deleteServiceCategory?.success === true) {
+        onDelete(serviceCategory.id);
+      }
+    }
+  }, [deleteServiceCategoryResponse]);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Button variant='ghost' className='rounded-full p-3'>
+            <BsThreeDotsVertical className='dark:text-white' />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className='w-30 gap-2'>
+          <DropdownMenuItem className='cursor-pointer p-0 focus:bg-border focus:text-accent-foreground'>
+            <MenuItemButton name='Edit' icon={FiEdit} onClick={handleEdit} />
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+              <DropdownMenuItem className='cursor-pointer p-0 focus:bg-border focus:text-accent-foreground'>
+            <MenuItemButton name='Delete' icon={RiDeleteBin7Line} onClick={toggleAlert} />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {isAlertOpen && ( // Render AlertDialog conditionally based on isAlertOpen state
+        <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                <span>You are about to delete <b>{serviceCategory.name}</b> service category this will be removed from services, materials, labor rates and warranties if in use.</span>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setIsAlertOpen(false)}>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+    </>
+  );
+};
+
 
 const ServiceCategories = () => {
   const [localServiceCategories, setLocalServiceCategories] = useState<
@@ -74,12 +159,17 @@ const ServiceCategories = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
+  const handleDeleteCategory = (id: string) => {
+    setLocalServiceCategories((currentCategories) =>
+      currentCategories.filter((category) => category.id !== id),
+    );
+  };
+
   const renderServiceCategories = localServiceCategories?.map((category) => (
     <ServiceCategoryCard
       key={category.id}
-      name={category.name}
-      description={category.description ?? ''}
-      imageUrl={category.images?.[0]?.url ?? ''}
+      serviceCategory={category}
+      onDelete={handleDeleteCategory}
     />
   ));
 
@@ -117,7 +207,7 @@ const ServiceCategories = () => {
           <Input
             type='text'
             placeholder='Search for service categories'
-            className='h-10 w-full rounded-xl border border-border bg-primary/5 pl-10 text-white'
+            className='h-10 w-full rounded-xl border border-border bg-primary/5 pl-10 dark:text-white'
           />
         </div>
         <div className='flex flex-row items-center justify-between rounded-xl border-[1px] border-solid p-5'>

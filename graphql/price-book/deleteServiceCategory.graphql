@@ -1,0 +1,7 @@
+mutation DeleteServiceCategory($id: ID!) {
+  deleteServiceCategory(id: $id) {
+    success
+    messages
+    errors
+  }
+}

@@ -112,8 +112,8 @@ export type AddServiceBundleRequestInput = {
   markup?: InputMaybe<MarkupRequestInput>;
   materials?: InputMaybe<Array<ServiceMaterialRequestInput>>;
   name: Scalars['String']['input'];
+  parentServiceCategoryId?: InputMaybe<Scalars['ID']['input']>;
   price: Scalars['Decimal']['input'];
-  serviceCategoryId: Scalars['ID']['input'];
   serviceCreationType: ServiceCreationType;
   serviceId: Scalars['ID']['input'];
   taxRateId: Scalars['ID']['input'];
@@ -134,8 +134,8 @@ export type AddServiceRequestInput = {
   markup?: InputMaybe<MarkupRequestInput>;
   materials?: InputMaybe<Array<ServiceMaterialRequestInput>>;
   name: Scalars['String']['input'];
+  parentServiceCategoryId?: InputMaybe<Scalars['ID']['input']>;
   price: Scalars['Decimal']['input'];
-  serviceCategoryId: Scalars['ID']['input'];
   serviceCreationType: ServiceCreationType;
   taxRateId: Scalars['ID']['input'];
   unit?: InputMaybe<Scalars['Decimal']['input']>;
@@ -153,8 +153,8 @@ export type AddTaxRateRequestInput = {
 export type AddWarrantyRequestInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  parentServiceCategoryId?: InputMaybe<Scalars['ID']['input']>;
   price?: InputMaybe<Scalars['Decimal']['input']>;
-  serviceIds?: InputMaybe<Array<Scalars['ID']['input']>>;
   terms: Scalars['String']['input'];
   warrantyDuration: WarrantyDurationRequestInput;
   warrantyType?: InputMaybe<Scalars['String']['input']>;
@@ -701,6 +701,12 @@ export enum HttpStatusCode {
   VariantAlsoNegotiates = 'VARIANT_ALSO_NEGOTIATES'
 }
 
+export type IOperationResult = {
+  errors?: Maybe<Array<Scalars['String']['output']>>;
+  messages?: Maybe<Array<Scalars['String']['output']>>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type ISingleFilterOfGuidFilter = {
   AND?: InputMaybe<Array<ISingleFilterOfGuidFilter>>;
   OR?: InputMaybe<Array<ISingleFilterOfGuidFilter>>;
@@ -949,6 +955,7 @@ export type Mutation = {
   addWarranty: WarrantyEntity;
   changePassword: ConfirmForgotPasswordResponse;
   confirmAccount: AccountConfirmationResponse;
+  deleteServiceCategory: IOperationResult;
   forgotPassword: ForgotPasswordResponse;
   login: LoginResponse;
   logout: LogoutResponse;
@@ -1010,6 +1017,11 @@ export type MutationChangePasswordArgs = {
 export type MutationConfirmAccountArgs = {
   confirmationCode: Scalars['String']['input'];
   email: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteServiceCategoryArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1100,6 +1112,25 @@ export type ObjectIdFilter = {
   timestamp_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   timestamp_not_lt?: InputMaybe<Scalars['Int']['input']>;
   timestamp_not_lte?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type OperationResult = IOperationResult & {
+  __typename?: 'OperationResult';
+  addError: OperationResult;
+  addMessage: OperationResult;
+  errors?: Maybe<Array<Scalars['String']['output']>>;
+  messages?: Maybe<Array<Scalars['String']['output']>>;
+  success: Scalars['Boolean']['output'];
+};
+
+
+export type OperationResultAddErrorArgs = {
+  error: Scalars['String']['input'];
+};
+
+
+export type OperationResultAddMessageArgs = {
+  error: Scalars['String']['input'];
 };
 
 /** Information about pagination in a connection. */
@@ -1748,10 +1779,9 @@ export type ServiceBundleEntity = Node & {
   modifier?: Maybe<UserEntity>;
   name: Scalars['String']['output'];
   owner: UserEntity;
+  parentServiceCategoryId?: Maybe<Scalars['ID']['output']>;
   price: Scalars['Decimal']['output'];
-  service?: Maybe<ServiceEntity>;
   serviceCategory?: Maybe<ServiceCategoryEntity>;
-  serviceCategoryId: Scalars['ID']['output'];
   serviceCreationType: ServiceCreationType;
   serviceId: Scalars['ID']['output'];
   taxRate?: Maybe<TaxRateEntity>;
@@ -1820,6 +1850,7 @@ export type ServiceEntity = Node & {
   modifier?: Maybe<UserEntity>;
   name: Scalars['String']['output'];
   owner: UserEntity;
+  parentServiceCategoryId?: Maybe<Scalars['ID']['output']>;
   price: Scalars['Decimal']['output'];
   serviceCategory?: Maybe<ServiceCategoryEntity>;
   serviceCreationType: ServiceCreationType;
@@ -1827,7 +1858,6 @@ export type ServiceEntity = Node & {
   unit?: Maybe<Scalars['Decimal']['output']>;
   unitType?: Maybe<Scalars['String']['output']>;
   useCalculatedPrice: Scalars['Boolean']['output'];
-  warranties: Array<WarrantyEntity>;
 };
 
 export type ServiceLabourEntity = {
@@ -2204,8 +2234,8 @@ export type WarrantyEntity = Node & {
   modifier?: Maybe<UserEntity>;
   name: Scalars['String']['output'];
   owner: UserEntity;
+  parentServiceCategoryId?: Maybe<Scalars['ID']['output']>;
   price?: Maybe<Scalars['Decimal']['output']>;
-  serviceIds?: Maybe<Array<Scalars['ID']['output']>>;
   terms: Scalars['String']['output'];
   userOwnerId: Scalars['UUID']['output'];
   warrantyDuration: WarrantyDurationEntity;
@@ -2316,6 +2346,13 @@ export type AddNewServiceCategoryMutationVariables = Exact<{
 
 
 export type AddNewServiceCategoryMutation = { __typename?: 'Mutation', addNewServiceCategory: { __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null } };
+
+export type DeleteServiceCategoryMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteServiceCategoryMutation = { __typename?: 'Mutation', deleteServiceCategory: { __typename?: 'OperationResult', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } };
 
 export type GetAllServiceCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3011,6 +3048,41 @@ export function useAddNewServiceCategoryMutation(baseOptions?: Apollo.MutationHo
 export type AddNewServiceCategoryMutationHookResult = ReturnType<typeof useAddNewServiceCategoryMutation>;
 export type AddNewServiceCategoryMutationResult = Apollo.MutationResult<AddNewServiceCategoryMutation>;
 export type AddNewServiceCategoryMutationOptions = Apollo.BaseMutationOptions<AddNewServiceCategoryMutation, AddNewServiceCategoryMutationVariables>;
+export const DeleteServiceCategoryDocument = gql`
+    mutation DeleteServiceCategory($id: ID!) {
+  deleteServiceCategory(id: $id) {
+    success
+    messages
+    errors
+  }
+}
+    `;
+export type DeleteServiceCategoryMutationFn = Apollo.MutationFunction<DeleteServiceCategoryMutation, DeleteServiceCategoryMutationVariables>;
+
+/**
+ * __useDeleteServiceCategoryMutation__
+ *
+ * To run a mutation, you first call `useDeleteServiceCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteServiceCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteServiceCategoryMutation, { data, loading, error }] = useDeleteServiceCategoryMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteServiceCategoryMutation(baseOptions?: Apollo.MutationHookOptions<DeleteServiceCategoryMutation, DeleteServiceCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteServiceCategoryMutation, DeleteServiceCategoryMutationVariables>(DeleteServiceCategoryDocument, options);
+      }
+export type DeleteServiceCategoryMutationHookResult = ReturnType<typeof useDeleteServiceCategoryMutation>;
+export type DeleteServiceCategoryMutationResult = Apollo.MutationResult<DeleteServiceCategoryMutation>;
+export type DeleteServiceCategoryMutationOptions = Apollo.BaseMutationOptions<DeleteServiceCategoryMutation, DeleteServiceCategoryMutationVariables>;
 export const GetAllServiceCategoriesDocument = gql`
     query GetAllServiceCategories {
   serviceCategories {
