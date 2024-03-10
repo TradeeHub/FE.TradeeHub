@@ -21,7 +21,7 @@ const AlertPopup = ({
   setIsAlertOpen: (isOpen: boolean) => void;
   onConfirm: () => void;
   title: string;
-  description: string;
+  description: string | React.ReactElement;
   confirmActionName: string;
 }) => {
   return (
@@ -30,7 +30,7 @@ const AlertPopup = ({
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>
-            <span>{description}</span>
+            {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -40,9 +40,7 @@ const ServiceCategoryCard = ({
 
   return (
     <div className='flex w-full flex-col'>
-      {/* Ensure this parent container can expand as needed */}
       <div className='w-full'>
-        {/* This container will also match its parent's width */}
         {imageUrl.length > 0 ? (
           <img
             src={imageUrl}
@@ -57,7 +55,6 @@ const ServiceCategoryCard = ({
       </div>
       <div className='pt-4'>
         <div className='flex items-center justify-between'>
-          {/* This container applies Flexbox layout */}
           <h5
             className='text-md mb-1 line-clamp-1 font-semibold tracking-tight text-gray-800 dark:text-white'
             title={serviceCategory.name}
@@ -114,6 +111,11 @@ const ServiceCategories = () => {
   };
 
   const handleUpdateCategory = (serviceCategory: ServiceCategoryEntity) => {
+    setLocalServiceCategories((currentCategories) => {
+      const filteredCategories = currentCategories.filter((category) => category.id !== serviceCategory.id);
+        
+      return [serviceCategory, ...filteredCategories];
+    });
     toast({
       title: 'Successfully Updated Service Category!',
       description: (
@@ -204,7 +206,11 @@ const ServiceCategories = () => {
           setIsAlertOpen={setIsDeleteAlertOpen}
           onConfirm={handleDeleteCategory}
           title='Are you absolutely sure?'
-          description={`You are about to delete ${serviceCategoryToAction?.name} service category this will be removed from services, materials, labor rates and warranties if in use.`}
+          description={
+            <span>
+              You are about to delete <strong>{serviceCategoryToAction?.name}</strong> service category this will be removed from services, materials, labor rates and warranties if in use.
+            </span>
+          }          
           confirmActionName='Delete'
         />
       )}
