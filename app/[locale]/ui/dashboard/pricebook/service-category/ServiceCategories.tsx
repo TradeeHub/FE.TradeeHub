@@ -11,43 +11,37 @@ import {
 import { MdOutlineImageNotSupported } from 'react-icons/md';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { ServiceCategoryEntity } from '@/generatedGraphql';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import MenuItemButton from '../../navbar/UserProfile/MenuItemButton';
 import { FiEdit } from 'react-icons/fi';
 import { RiDeleteBin7Line } from 'react-icons/ri';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
+import AlertPopup from '../../../general/Alert/AlertPopup';
+import GenericDropdownMenu from '../../../general/GenericDropdownMenu/GenericDropdownMenu';
+
 type ServiceCategoryCardProps = {
-  onDelete: (id: string, name: string) => void;
+  onDelete: (serviceCategory: ServiceCategoryEntity) => void;
+  onUpdate: (serviceCategory: ServiceCategoryEntity) => void;
   serviceCategory: ServiceCategoryEntity;
 };
 
 const ServiceCategoryCard = ({
   serviceCategory,
   onDelete,
+  onUpdate,
 }: ServiceCategoryCardProps) => {
   const imageUrl = serviceCategory.images?.[0]?.url ?? '';
+  const menuItems = [
+    { label: 'Edit', icon: FiEdit, onClick: () => onUpdate(serviceCategory) },
+    {
+      label: 'Delete',
+      icon: RiDeleteBin7Line,
+      onClick: () => onDelete(serviceCategory),
+    },
+  ];
+
   return (
     <div className='flex w-full flex-col'>
-      {' '}
       {/* Ensure this parent container can expand as needed */}
       <div className='w-full'>
-        {' '}
         {/* This container will also match its parent's width */}
         {imageUrl.length > 0 ? (
           <img
@@ -63,7 +57,6 @@ const ServiceCategoryCard = ({
       </div>
       <div className='pt-4'>
         <div className='flex items-center justify-between'>
-          {' '}
           {/* This container applies Flexbox layout */}
           <h5
             className='text-md mb-1 line-clamp-1 font-semibold tracking-tight text-gray-800 dark:text-white'
@@ -71,9 +64,9 @@ const ServiceCategoryCard = ({
           >
             {serviceCategory.name}
           </h5>
-          <ServiceCategoryDropdownMenu
-            serviceCategory={serviceCategory}
-            onDelete={onDelete}
+          <GenericDropdownMenu
+            triggerIcon={<BsThreeDotsVertical className='dark:text-white' />}
+            menuItems={menuItems}
           />
         </div>
         <p
@@ -87,127 +80,47 @@ const ServiceCategoryCard = ({
   );
 };
 
-const ServiceCategoryDropdownMenu = ({
-  serviceCategory,
-  onDelete,
-}: ServiceCategoryCardProps) => {
-  const [isAlertOpen, setIsAlertOpen] = useState(false); // State to manage AlertDialog visibility
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const toggleModal = () => {
-    setIsEditModalOpen(!isEditModalOpen);
-  };
-  const onUpdated = (updatedServiceCategory: ServiceCategoryEntity) => {};
-
+const ServiceCategories = () => {
   const { deleteServiceCategory, deleteServiceCategoryResponse } =
     useDeleteServiceCategory();
+  const { getAllServiceCategories, serviceCategories, loading } =
+    useGetAllServiceCategoriesLazy();
 
-  const handleDelete = () => {
-    deleteServiceCategory(serviceCategory.id);
-    setIsAlertOpen(false); // Close AlertDialog after delete
-  };
-
-  const toggleAlert = () => {
-    setIsAlertOpen(!isAlertOpen);
-  };
-
-  const handleEdit = () => {
-    // Implementation for edit...
-  };
-
-  useEffect(() => {
-    if (deleteServiceCategoryResponse) {
-      if (
-        deleteServiceCategoryResponse.deleteServiceCategory?.success === true
-      ) {
-        onDelete(serviceCategory.id, serviceCategory.name);
-      }
-    }
-  }, [deleteServiceCategoryResponse]);
-
-  return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button variant='ghost' className='rounded-full p-3'>
-            <BsThreeDotsVertical className='dark:text-white' />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className='w-30 gap-2'>
-          <DropdownMenuItem className='cursor-pointer p-0 focus:bg-border focus:text-accent-foreground'>
-            <MenuItemButton name='Edit' icon={FiEdit} onClick={toggleModal} />
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className='cursor-pointer p-0 focus:bg-border focus:text-accent-foreground'>
-            <MenuItemButton
-              name='Delete'
-              icon={RiDeleteBin7Line}
-              onClick={toggleAlert}
-            />
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      {isAlertOpen && ( // Render AlertDialog conditionally based on isAlertOpen state
-        <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                <span>
-                  You are about to delete <b>{serviceCategory.name}</b> service
-                  category this will be removed from services, materials, labor
-                  rates and warranties if in use.
-                </span>
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setIsAlertOpen(false)}>
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete}>
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-
-      {isEditModalOpen && (
-        <AddServiceCategoryModal
-          isOpen={isEditModalOpen}
-          onClose={toggleModal}
-          onUpdated={onUpdated}
-          updateData={serviceCategory}
-          modalName='Update Service Category'
-        />
-      )}
-    </>
-  );
-};
-
-const ServiceCategories = () => {
   const [localServiceCategories, setLocalServiceCategories] = useState<
     ServiceCategoryEntity[]
   >([]);
+  const [serviceCategoryToAction, setServiceCategoryToAction] =
+    useState<ServiceCategoryEntity>();
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   const { toast } = useToast();
 
-  const { getAllServiceCategories, serviceCategories, loading } =
-    useGetAllServiceCategoriesLazy();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const handleDeleteCategory = (id: string, name: string) => {
-    setLocalServiceCategories((currentCategories) =>
-      currentCategories.filter((category) => category.id !== id),
-    );
+  const handleDeleteCategory = () => {
+    deleteServiceCategory(serviceCategoryToAction?.id ?? '');
+  };
 
+  const toggleUpdateModal = (serviceCategory: ServiceCategoryEntity) => {
+    setServiceCategoryToAction(serviceCategory);
+    setIsEditModalOpen(!isEditModalOpen);
+  };
+
+  const toggleDeleteAlert = (serviceCategory: ServiceCategoryEntity) => {
+    setServiceCategoryToAction(serviceCategory);
+    setIsDeleteAlertOpen(!isDeleteAlertOpen);
+  };
+
+  const handleUpdateCategory = (serviceCategory: ServiceCategoryEntity) => {
     toast({
-      title: 'Successfully Deleted Service Category!',
+      title: 'Successfully Updated Service Category!',
       description: (
         <span>
-          You have successfully deleted the service category{' '}
+          You have successfully updated the service category{' '}
           <b>
-            <u>{name}</u>
+            <u>{serviceCategory.name}</u>
           </b>
         </span>
       ),
@@ -218,7 +131,8 @@ const ServiceCategories = () => {
     <ServiceCategoryCard
       key={category.id}
       serviceCategory={category}
-      onDelete={handleDeleteCategory}
+      onUpdate={toggleUpdateModal}
+      onDelete={toggleDeleteAlert}
     />
   ));
 
@@ -228,6 +142,30 @@ const ServiceCategories = () => {
       ...prevCategories,
     ]);
   };
+
+  useEffect(() => {
+    if (
+      deleteServiceCategoryResponse &&
+      deleteServiceCategoryResponse.deleteServiceCategory?.success === true
+    ) {
+      setLocalServiceCategories((currentCategories) =>
+        currentCategories.filter(
+          (category) => category.id !== serviceCategoryToAction?.id,
+        ),
+      );
+      toast({
+        title: 'Successfully Deleted Service Category!',
+        description: (
+          <span>
+            You have successfully deleted the service category{' '}
+            <b>
+              <u>{serviceCategoryToAction?.name}</u>
+            </b>
+          </span>
+        ),
+      });
+    }
+  }, [deleteServiceCategoryResponse]);
 
   useEffect(() => {
     getAllServiceCategories({ fetchPolicy: 'network-only' });
@@ -247,6 +185,27 @@ const ServiceCategories = () => {
           onClose={toggleModal}
           onAdded={onAdded}
           modalName='Create New Service Category'
+        />
+      )}
+
+      {isEditModalOpen && (
+        <AddServiceCategoryModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onUpdated={handleUpdateCategory}
+          updateData={serviceCategoryToAction}
+          modalName='Update Service Category'
+        />
+      )}
+
+      {isDeleteAlertOpen && (
+        <AlertPopup
+          isOpen={isDeleteAlertOpen}
+          setIsAlertOpen={setIsDeleteAlertOpen}
+          onConfirm={handleDeleteCategory}
+          title='Are you absolutely sure?'
+          description={`You are about to delete ${serviceCategoryToAction?.name} service category this will be removed from services, materials, labor rates and warranties if in use.`}
+          confirmActionName='Delete'
         />
       )}
 

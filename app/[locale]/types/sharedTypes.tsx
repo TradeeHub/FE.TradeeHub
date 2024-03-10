@@ -10,6 +10,7 @@ import {
 import { ApolloError, ApolloQueryResult } from '@apollo/client';
 import { ColDef } from 'ag-grid-community';
 import { ReactNode } from 'react';
+import { IconType } from 'react-icons';
 
 export type FetchMoreDataResult = {
   rows: object[];
@@ -157,4 +158,10 @@ type Reference = {
 
 export type PricingTierEntityWithId = PricingTierEntity & {
   id: string;
+};
+
+export type MenuItem = {
+  label: string;
+  icon: IconType;
+  onClick: () => void;
 };
