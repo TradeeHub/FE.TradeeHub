@@ -1,11 +1,6 @@
+import React from 'react'; // Import React for JSX syntax
 import { MenuItem } from '@/app/[locale]/types/sharedTypes';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import MenuItemButton from '../../dashboard/navbar/UserProfile/MenuItemButton';
 import { Button } from '@/components/ui/button';
 
@@ -24,21 +19,20 @@ const GenericDropdownMenu = ({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-30 gap-2'>
-        {menuItems.map((item: MenuItem, index: number) => (
-          <>
-            {index > 0 && <DropdownMenuSeparator />}{' '}
-            {/* Separator shown after the first item */}
+        {menuItems.map((item, index) => (
+          <React.Fragment key={`item-${index}`}> {/* Assign unique key here */}
+            {index > 0 && <DropdownMenuSeparator />}
             <DropdownMenuItem
-              key={item.label}
+              key={item.label} // This key is still valid but now inside a correctly keyed fragment
               className='cursor-pointer p-0 focus:bg-border focus:text-accent-foreground'
             >
               <MenuItemButton
-                name={item.label} // Assuming this is static; replace with {item.name} if it's dynamic
+                name={item.label}
                 icon={item.icon}
                 onClick={item.onClick}
               />
             </DropdownMenuItem>
-          </>
+          </React.Fragment>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
