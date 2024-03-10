@@ -6,12 +6,12 @@ import {
   GetAllServiceCategoriesQueryVariables,
   GetAllServiceCategoriesDocument,
   useAddMaterialMutation,
-  AddMaterialRequestInput,
   AddLaborRateRequestInput,
   useAddLaborRateMutation,
   useDeleteServiceCategoryMutation,
   useUpdateServiceCategoryMutation,
   UpdateServiceCategoryRequestInput,
+  AddMaterialRequestInput,
 } from '@/generatedGraphql';
 
 const useGetAllServiceCategoriesLazy = () => {
@@ -53,7 +53,7 @@ const useAddMaterial = () => {
   const [addMaterialMutation, { data, loading, error }] =
     useAddMaterialMutation();
 
-  const addMaterial = async (input: UpdateServiceCategoryRequestInput) => {
+  const addMaterial = async (input: AddMaterialRequestInput) => {
     try {
       await addMaterialMutation({
         variables: { input },
