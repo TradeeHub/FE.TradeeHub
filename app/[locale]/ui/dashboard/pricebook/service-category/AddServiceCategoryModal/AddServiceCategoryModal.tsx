@@ -21,10 +21,12 @@ import { Button } from '@/components/ui/button';
 import {
   useAddNewServiceCategory,
   useGetAllServiceCategoriesLazy,
+  useUpdateServiceCategory,
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import {
   AddNewServiceCategoryRequestInput,
   ServiceCategoryEntity,
+  UpdateServiceCategoryRequestInput,
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
@@ -39,6 +41,7 @@ import {
 
 // Assuming AddNewServiceCategoryRequestInput is correctly imported and usable here
 const formSchema = z.object({
+  id: z.string().optional().nullable(), // Now accepts string, undefined, or null
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional().nullable(), // Now accepts string, undefined, or null
   images: z.array(z.any()).optional().nullable(), // Now accepts array, undefined, or null
@@ -49,24 +52,40 @@ const AddServiceCategoryModal = ({
   isOpen,
   onClose,
   onAdded,
+  onUpdated,
   modalName,
+  updateData,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onAdded?: (newCategory: ServiceCategoryEntity) => void;
+  onUpdated?: (newCategory: ServiceCategoryEntity) => void;
   modalName: string;
+  updateData?: ServiceCategoryEntity;
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      description: '',
-      parentServiceCategoryId: null,
-    },
+    defaultValues: updateData
+      ? {
+          id: updateData.id,
+          name: updateData.name,
+          description: updateData.description,
+          parentServiceCategoryId: updateData.parentServiceCategoryId,
+          images: updateData.images,
+        }
+      : {
+          name: '',
+          description: '',
+          parentServiceCategoryId: null,
+        },
   });
+
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
   const { getAllServiceCategories, serviceCategories } =
     useGetAllServiceCategoriesLazy(); // Fetch categories
+  const { updateServiceCategory, updateServiceCategoryResponse } =
+    useUpdateServiceCategory(); // Fetch categories
+
   const fetchedRef = useRef<boolean>(false);
 
   const { toast } = useToast();
@@ -83,19 +102,44 @@ const AddServiceCategoryModal = ({
   };
 
   useEffect(() => {
-    console.log('serviceCategories', serviceCategories);
     if (serviceCategories) {
       setCategories(serviceCategories as ServiceCategoryEntity[]);
     }
   }, [serviceCategories]);
 
   const handleSelectTriggerClick = () => {
-    console.log('handleSelectTriggerClick');
     if (!fetchedRef.current) {
       getAllServiceCategories({ fetchPolicy: 'network-only' });
       fetchedRef.current = true;
     }
   };
+
+  useEffect(() => {
+    if (updateData) {
+      handleSelectTriggerClick();
+    }
+  }, []);
+
+  useEffect(() => {
+    const resp = updateServiceCategoryResponse?.updateServiceCategory.data;
+    if (resp?.id) {
+      if (onUpdated) {
+        onUpdated(resp as ServiceCategoryEntity);
+      }
+      handleClose();
+      toast({
+        title: 'Successfully Update Service Category!',
+        description: (
+          <span>
+            You have successfully update the service category{' '}
+            <b>
+              <u>{resp.name}</u>
+            </b>
+          </span>
+        ),
+      });
+    }
+  }, [updateServiceCategoryResponse]);
 
   useEffect(() => {
     const resp = addNewServiceCategoryResponse?.addNewServiceCategory;
@@ -119,16 +163,50 @@ const AddServiceCategoryModal = ({
   }, [addNewServiceCategoryResponse]);
 
   const handleSave = async (formData: z.infer<typeof formSchema>) => {
-    const request: AddNewServiceCategoryRequestInput = {
-      images: formData.images,
-      name: formData.name,
-      description: formData.description,
-      parentServiceCategoryId: formData.parentServiceCategoryId,
-    };
+    if (updateData) {
+      const isNewImageFile =
+        formData.images &&
+        formData.images.length > 0 &&
+        formData.images[0] instanceof File;
 
-    addNewServiceCategory(request);
+      let s3KeyToDelete;
 
-    fetchedRef.current = false;
+      const hasExistingImage =
+        updateData && updateData.images && updateData.images?.length > 0;
+
+      const shouldDeleteImage =
+        (hasExistingImage && formData.images?.length === 0) ||
+        (hasExistingImage && isNewImageFile);
+
+      if (shouldDeleteImage) {
+        s3KeyToDelete = updateData.images?.[0].s3Key;
+      }
+
+      const dirtyFields = form.formState.dirtyFields;
+
+      const request: UpdateServiceCategoryRequestInput = {
+        id: formData.id!,
+        newImage: isNewImageFile ? formData.images?.[0] : null,
+        name: dirtyFields.name ? formData.name : null,
+        description: dirtyFields.description ? formData.description : null,
+        parentServiceCategoryId: dirtyFields.parentServiceCategoryId
+          ? formData.parentServiceCategoryId
+          : null,
+        s3KeyToDelete: s3KeyToDelete,
+      };
+      updateServiceCategory(request);
+    } else {
+      const request: AddNewServiceCategoryRequestInput = {
+        images: formData.images,
+        name: formData.name,
+        description: formData.description,
+        parentServiceCategoryId: formData.parentServiceCategoryId,
+      };
+
+      addNewServiceCategory(request);
+
+      fetchedRef.current = false;
+    }
   };
 
   return (
@@ -240,7 +318,11 @@ const AddServiceCategoryModal = ({
                 variant='default'
                 size='default'
                 onClick={form.handleSubmit(handleSave)}
-                disabled={addNewServiceCategoryLoading} // Disable button when loading
+                disabled={
+                  updateData
+                    ? form.formState.isDirty === false
+                    : addNewServiceCategoryLoading
+                } // Disable button when loading
               >
                 {addNewServiceCategoryLoading ? 'Saving...' : 'Save'}
               </Button>

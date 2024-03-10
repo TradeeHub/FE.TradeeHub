@@ -10,6 +10,8 @@ import {
   AddLaborRateRequestInput,
   useAddLaborRateMutation,
   useDeleteServiceCategoryMutation,
+  useUpdateServiceCategoryMutation,
+  UpdateServiceCategoryRequestInput,
 } from '@/generatedGraphql';
 
 const useGetAllServiceCategoriesLazy = () => {
@@ -51,7 +53,7 @@ const useAddMaterial = () => {
   const [addMaterialMutation, { data, loading, error }] =
     useAddMaterialMutation();
 
-  const addMaterial = async (input: AddMaterialRequestInput) => {
+  const addMaterial = async (input: UpdateServiceCategoryRequestInput) => {
     try {
       await addMaterialMutation({
         variables: { input },
@@ -113,10 +115,35 @@ const useDeleteServiceCategory = () => {
   };
 };
 
+const useUpdateServiceCategory = () => {
+  const [updateServiceCategoryMutation, { data, loading, error }] =
+    useUpdateServiceCategoryMutation();
+
+  const updateServiceCategory = async (
+    input: UpdateServiceCategoryRequestInput,
+  ) => {
+    try {
+      await updateServiceCategoryMutation({
+        variables: { input },
+      });
+    } catch (e) {
+      console.error('Error deleting service category:', e);
+    }
+  };
+
+  return {
+    updateServiceCategory,
+    updateServiceCategoryResponse: data,
+    updateServiceCategoryLoading: loading,
+    updateServiceCategoryError: error,
+  };
+};
+
 export {
   useAddNewServiceCategory,
   useGetAllServiceCategoriesLazy,
   useAddMaterial,
   useAddLaborRate,
   useDeleteServiceCategory,
+  useUpdateServiceCategory,
 };

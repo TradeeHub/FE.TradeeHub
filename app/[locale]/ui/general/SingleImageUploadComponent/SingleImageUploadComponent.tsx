@@ -16,16 +16,23 @@ const SingleImageUploadForm = <
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const preview = useMemo(() => {
-    if (field.value && field.value[0]) {
-      const file = field.value[0];
-      return typeof file === 'string' ? file : URL.createObjectURL(file);
+    if (field.value && field.value.length > 0) {
+      // Check if the first item has a 'url' property, indicating it's an object with a URL
+      const firstItem = field.value[0];
+      if (typeof firstItem === 'object' && 'url' in firstItem) {
+        // Use the URL directly for the preview
+        return firstItem.url;
+      } else if (typeof firstItem === 'object' && firstItem instanceof File) {
+        // If it's a File object, create an object URL
+        return URL.createObjectURL(firstItem);
+      }
     }
-    return '';
+    return null;
   }, [field.value]);
 
   useEffect(() => {
     return () => {
-      if (preview.startsWith('blob:')) {
+      if (preview?.startsWith('blob:')) {
         URL.revokeObjectURL(preview);
       }
     };

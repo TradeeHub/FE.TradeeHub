@@ -21,9 +21,19 @@ import {
 import MenuItemButton from '../../navbar/UserProfile/MenuItemButton';
 import { FiEdit } from 'react-icons/fi';
 import { RiDeleteBin7Line } from 'react-icons/ri';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { useToast } from '@/components/ui/use-toast';
 type ServiceCategoryCardProps = {
-  onDelete: (id: string) => void;
+  onDelete: (id: string, name: string) => void;
   serviceCategory: ServiceCategoryEntity;
 };
 
@@ -61,7 +71,6 @@ const ServiceCategoryCard = ({
           >
             {serviceCategory.name}
           </h5>
-          
           <ServiceCategoryDropdownMenu
             serviceCategory={serviceCategory}
             onDelete={onDelete}
@@ -83,20 +92,23 @@ const ServiceCategoryDropdownMenu = ({
   onDelete,
 }: ServiceCategoryCardProps) => {
   const [isAlertOpen, setIsAlertOpen] = useState(false); // State to manage AlertDialog visibility
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const toggleModal = () => {
+    setIsEditModalOpen(!isEditModalOpen);
+  };
+  const onUpdated = (updatedServiceCategory: ServiceCategoryEntity) => {};
 
-  const {
-    deleteServiceCategory,
-    deleteServiceCategoryResponse,
-    deleteServiceCategoryLoading,
-    deleteServiceCategoryError,
-  } = useDeleteServiceCategory();
+  const { deleteServiceCategory, deleteServiceCategoryResponse } =
+    useDeleteServiceCategory();
 
   const handleDelete = () => {
     deleteServiceCategory(serviceCategory.id);
     setIsAlertOpen(false); // Close AlertDialog after delete
   };
 
-  const toggleAlert = () => setIsAlertOpen(!isAlertOpen);
+  const toggleAlert = () => {
+    setIsAlertOpen(!isAlertOpen);
+  };
 
   const handleEdit = () => {
     // Implementation for edit...
@@ -104,8 +116,10 @@ const ServiceCategoryDropdownMenu = ({
 
   useEffect(() => {
     if (deleteServiceCategoryResponse) {
-      if (deleteServiceCategoryResponse.deleteServiceCategory?.success === true) {
-        onDelete(serviceCategory.id);
+      if (
+        deleteServiceCategoryResponse.deleteServiceCategory?.success === true
+      ) {
+        onDelete(serviceCategory.id, serviceCategory.name);
       }
     }
   }, [deleteServiceCategoryResponse]);
@@ -120,11 +134,15 @@ const ServiceCategoryDropdownMenu = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent className='w-30 gap-2'>
           <DropdownMenuItem className='cursor-pointer p-0 focus:bg-border focus:text-accent-foreground'>
-            <MenuItemButton name='Edit' icon={FiEdit} onClick={handleEdit} />
+            <MenuItemButton name='Edit' icon={FiEdit} onClick={toggleModal} />
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-              <DropdownMenuItem className='cursor-pointer p-0 focus:bg-border focus:text-accent-foreground'>
-            <MenuItemButton name='Delete' icon={RiDeleteBin7Line} onClick={toggleAlert} />
+          <DropdownMenuItem className='cursor-pointer p-0 focus:bg-border focus:text-accent-foreground'>
+            <MenuItemButton
+              name='Delete'
+              icon={RiDeleteBin7Line}
+              onClick={toggleAlert}
+            />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -135,34 +153,65 @@ const ServiceCategoryDropdownMenu = ({
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                <span>You are about to delete <b>{serviceCategory.name}</b> service category this will be removed from services, materials, labor rates and warranties if in use.</span>
+                <span>
+                  You are about to delete <b>{serviceCategory.name}</b> service
+                  category this will be removed from services, materials, labor
+                  rates and warranties if in use.
+                </span>
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setIsAlertOpen(false)}>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+              <AlertDialogCancel onClick={() => setIsAlertOpen(false)}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete}>
+                Delete
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+      )}
+
+      {isEditModalOpen && (
+        <AddServiceCategoryModal
+          isOpen={isEditModalOpen}
+          onClose={toggleModal}
+          onUpdated={onUpdated}
+          updateData={serviceCategory}
+          modalName='Update Service Category'
+        />
       )}
     </>
   );
 };
 
-
 const ServiceCategories = () => {
   const [localServiceCategories, setLocalServiceCategories] = useState<
     ServiceCategoryEntity[]
   >([]);
+  const { toast } = useToast();
+
   const { getAllServiceCategories, serviceCategories, loading } =
     useGetAllServiceCategoriesLazy();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const handleDeleteCategory = (id: string) => {
+  const handleDeleteCategory = (id: string, name: string) => {
     setLocalServiceCategories((currentCategories) =>
       currentCategories.filter((category) => category.id !== id),
     );
+
+    toast({
+      title: 'Successfully Deleted Service Category!',
+      description: (
+        <span>
+          You have successfully deleted the service category{' '}
+          <b>
+            <u>{name}</u>
+          </b>
+        </span>
+      ),
+    });
   };
 
   const renderServiceCategories = localServiceCategories?.map((category) => (

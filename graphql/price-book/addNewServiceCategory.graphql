@@ -3,6 +3,7 @@ mutation AddNewServiceCategory($input: AddNewServiceCategoryRequestInput!) {
     id
     name
     description
+    parentServiceCategoryId
     images {
       url
     }

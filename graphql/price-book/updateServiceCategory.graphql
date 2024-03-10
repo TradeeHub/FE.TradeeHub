@@ -1,0 +1,17 @@
+mutation UpdateServiceCategory($input: UpdateServiceCategoryRequestInput!) {
+  updateServiceCategory(request: $input) {
+    data {
+      name
+      id
+      description
+      parentServiceCategoryId
+      images {
+        url
+        s3Key
+      }
+    }
+    success
+    errors
+    messages
+  }
+}

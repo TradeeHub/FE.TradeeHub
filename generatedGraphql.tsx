@@ -961,6 +961,7 @@ export type Mutation = {
   logout: LogoutResponse;
   register: SignUpResponse;
   resendVerificationCode: ResendConfirmationCodeResponse;
+  updateServiceCategory: OperationResultOfServiceCategoryEntity;
 };
 
 
@@ -1042,6 +1043,11 @@ export type MutationRegisterArgs = {
 
 export type MutationResendVerificationCodeArgs = {
   email: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateServiceCategoryArgs = {
+  request: UpdateServiceCategoryRequestInput;
 };
 
 /** The node interface is implemented by entities that have a global unique identifier. */
@@ -1130,6 +1136,26 @@ export type OperationResultAddErrorArgs = {
 
 
 export type OperationResultAddMessageArgs = {
+  error: Scalars['String']['input'];
+};
+
+export type OperationResultOfServiceCategoryEntity = IOperationResult & {
+  __typename?: 'OperationResultOfServiceCategoryEntity';
+  addError: OperationResult;
+  addMessage: OperationResult;
+  data?: Maybe<ServiceCategoryEntity>;
+  errors?: Maybe<Array<Scalars['String']['output']>>;
+  messages?: Maybe<Array<Scalars['String']['output']>>;
+  success: Scalars['Boolean']['output'];
+};
+
+
+export type OperationResultOfServiceCategoryEntityAddErrorArgs = {
+  error: Scalars['String']['input'];
+};
+
+
+export type OperationResultOfServiceCategoryEntityAddMessageArgs = {
   error: Scalars['String']['input'];
 };
 
@@ -1927,6 +1953,15 @@ export enum TaxRateType {
   SpecificRate = 'SPECIFIC_RATE'
 }
 
+export type UpdateServiceCategoryRequestInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  newImage?: InputMaybe<Scalars['Upload']['input']>;
+  parentServiceCategoryId?: InputMaybe<Scalars['ID']['input']>;
+  s3KeyToDelete?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UploadEntity = {
   __typename?: 'UploadEntity';
   byteSize?: Maybe<Scalars['Long']['output']>;
@@ -2345,19 +2380,26 @@ export type AddNewServiceCategoryMutationVariables = Exact<{
 }>;
 
 
-export type AddNewServiceCategoryMutation = { __typename?: 'Mutation', addNewServiceCategory: { __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null } };
+export type AddNewServiceCategoryMutation = { __typename?: 'Mutation', addNewServiceCategory: { __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, parentServiceCategoryId?: string | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null } };
 
 export type DeleteServiceCategoryMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type DeleteServiceCategoryMutation = { __typename?: 'Mutation', deleteServiceCategory: { __typename?: 'OperationResult', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } };
+export type DeleteServiceCategoryMutation = { __typename?: 'Mutation', deleteServiceCategory: { __typename?: 'OperationResult', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } | { __typename?: 'OperationResultOfServiceCategoryEntity', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } };
 
 export type GetAllServiceCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllServiceCategoriesQuery = { __typename?: 'Query', serviceCategories: Array<{ __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null }> };
+export type GetAllServiceCategoriesQuery = { __typename?: 'Query', serviceCategories: Array<{ __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, parentServiceCategoryId?: string | null, images?: Array<{ __typename?: 'ImageEntity', url: string, s3Key: string }> | null }> };
+
+export type UpdateServiceCategoryMutationVariables = Exact<{
+  input: UpdateServiceCategoryRequestInput;
+}>;
+
+
+export type UpdateServiceCategoryMutation = { __typename?: 'Mutation', updateServiceCategory: { __typename?: 'OperationResultOfServiceCategoryEntity', success: boolean, errors?: Array<string> | null, messages?: Array<string> | null, data?: { __typename?: 'ServiceCategoryEntity', name: string, id: string, description?: string | null, parentServiceCategoryId?: string | null, images?: Array<{ __typename?: 'ImageEntity', url: string, s3Key: string }> | null } | null } };
 
 
 export const ChangePasswordDocument = gql`
@@ -3016,6 +3058,7 @@ export const AddNewServiceCategoryDocument = gql`
     id
     name
     description
+    parentServiceCategoryId
     images {
       url
     }
@@ -3089,8 +3132,10 @@ export const GetAllServiceCategoriesDocument = gql`
     id
     name
     description
+    parentServiceCategoryId
     images {
       url
+      s3Key
     }
   }
 }
@@ -3127,3 +3172,48 @@ export type GetAllServiceCategoriesQueryHookResult = ReturnType<typeof useGetAll
 export type GetAllServiceCategoriesLazyQueryHookResult = ReturnType<typeof useGetAllServiceCategoriesLazyQuery>;
 export type GetAllServiceCategoriesSuspenseQueryHookResult = ReturnType<typeof useGetAllServiceCategoriesSuspenseQuery>;
 export type GetAllServiceCategoriesQueryResult = Apollo.QueryResult<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>;
+export const UpdateServiceCategoryDocument = gql`
+    mutation UpdateServiceCategory($input: UpdateServiceCategoryRequestInput!) {
+  updateServiceCategory(request: $input) {
+    data {
+      name
+      id
+      description
+      parentServiceCategoryId
+      images {
+        url
+        s3Key
+      }
+    }
+    success
+    errors
+    messages
+  }
+}
+    `;
+export type UpdateServiceCategoryMutationFn = Apollo.MutationFunction<UpdateServiceCategoryMutation, UpdateServiceCategoryMutationVariables>;
+
+/**
+ * __useUpdateServiceCategoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateServiceCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateServiceCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateServiceCategoryMutation, { data, loading, error }] = useUpdateServiceCategoryMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateServiceCategoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateServiceCategoryMutation, UpdateServiceCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateServiceCategoryMutation, UpdateServiceCategoryMutationVariables>(UpdateServiceCategoryDocument, options);
+      }
+export type UpdateServiceCategoryMutationHookResult = ReturnType<typeof useUpdateServiceCategoryMutation>;
+export type UpdateServiceCategoryMutationResult = Apollo.MutationResult<UpdateServiceCategoryMutation>;
+export type UpdateServiceCategoryMutationOptions = Apollo.BaseMutationOptions<UpdateServiceCategoryMutation, UpdateServiceCategoryMutationVariables>;
