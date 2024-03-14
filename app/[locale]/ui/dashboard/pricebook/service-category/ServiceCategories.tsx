@@ -3,86 +3,25 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { IoSearchOutline } from 'react-icons/io5';
 import AddServiceCategoryModal from './AddServiceCategoryModal/AddServiceCategoryModal';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   useDeleteServiceCategory,
+  useGetAllServiceCategories,
   useGetAllServiceCategoriesLazy,
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
-import { MdOutlineImageNotSupported } from 'react-icons/md';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { ServiceCategoryEntity } from '@/generatedGraphql';
-import { FiEdit } from 'react-icons/fi';
-import { RiDeleteBin7Line } from 'react-icons/ri';
+import { ServiceCategoryEntity, SortEnumType } from '@/generatedGraphql';
 import { useToast } from '@/components/ui/use-toast';
 import AlertPopup from '../../../general/Alert/AlertPopup';
-import GenericDropdownMenu from '../../../general/GenericDropdownMenu/GenericDropdownMenu';
-
-type ServiceCategoryCardProps = {
-  onDelete: (serviceCategory: ServiceCategoryEntity) => void;
-  onUpdate: (serviceCategory: ServiceCategoryEntity) => void;
-  serviceCategory: ServiceCategoryEntity;
-};
-
-const ServiceCategoryCard = ({
-  serviceCategory,
-  onDelete,
-  onUpdate,
-}: ServiceCategoryCardProps) => {
-  const imageUrl = serviceCategory.images?.[0]?.url ?? '';
-  const menuItems = [
-    { label: 'Edit', icon: FiEdit, onClick: () => onUpdate(serviceCategory) },
-    {
-      label: 'Delete',
-      icon: RiDeleteBin7Line,
-      onClick: () => onDelete(serviceCategory),
-    },
-  ];
-
-  return (
-    <div className='flex w-full flex-col'>
-      <div className='w-full'>
-        {imageUrl.length > 0 ? (
-          <img
-            src={imageUrl}
-            alt={serviceCategory.name}
-            className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-100 object-contain  shadow-sm transition-transform duration-300 ease-in-out hover:scale-110 dark:border-primary/5'
-          />
-        ) : (
-          <div className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-100 object-contain shadow-sm transition-transform duration-300 ease-in-out hover:scale-110 dark:border-primary/5'>
-            <MdOutlineImageNotSupported size={64} className='text-gray-400' />
-          </div>
-        )}
-      </div>
-      <div className='pt-4'>
-        <div className='flex items-center justify-between'>
-          <h5
-            className='text-md mb-1 line-clamp-1 font-semibold tracking-tight text-gray-800 dark:text-white'
-            title={serviceCategory.name}
-          >
-            {serviceCategory.name}
-          </h5>
-          <GenericDropdownMenu
-            triggerIcon={<BsThreeDotsVertical className='dark:text-white' />}
-            menuItems={menuItems}
-          />
-        </div>
-        <p
-          className='line-clamp-2 overflow-hidden text-gray-500'
-          title={serviceCategory.description ?? ''}
-        >
-          {serviceCategory.description}
-        </p>
-      </div>
-    </div>
-  );
-};
+import ServiceCategoryCard from './ServiceCategoryCard/ServiceCategoryCard';
 
 const ServiceCategories = () => {
   const { deleteServiceCategory, deleteServiceCategoryResponse } =
     useDeleteServiceCategory();
-  const { getAllServiceCategories, serviceCategories, loading } =
+  const { searchServiceCategories, serviceCategories } =
     useGetAllServiceCategoriesLazy();
 
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const { serviceCategoriesInitialLoad } = useGetAllServiceCategories();
   const [localServiceCategories, setLocalServiceCategories] = useState<
     ServiceCategoryEntity[]
   >([]);
@@ -95,6 +34,10 @@ const ServiceCategories = () => {
   const { toast } = useToast();
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
   const handleDeleteCategory = () => {
     deleteServiceCategory(serviceCategoryToAction?.id ?? '');
@@ -112,8 +55,10 @@ const ServiceCategories = () => {
 
   const handleUpdateCategory = (serviceCategory: ServiceCategoryEntity) => {
     setLocalServiceCategories((currentCategories) => {
-      const filteredCategories = currentCategories.filter((category) => category.id !== serviceCategory.id);
-        
+      const filteredCategories = currentCategories.filter(
+        (category) => category.id !== serviceCategory.id,
+      );
+
       return [serviceCategory, ...filteredCategories];
     });
     toast({
@@ -145,6 +90,27 @@ const ServiceCategories = () => {
     ]);
   };
 
+  const debouncedSearch = useCallback(
+    (searchTerm: string) => {
+      searchServiceCategories({
+        variables: {
+          name: searchTerm,
+          order: [{ modifiedAt: SortEnumType.Desc }],
+          pageSize: 50,
+        },
+      });
+    },
+    [searchServiceCategories],
+  );
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      debouncedSearch(searchTerm.trim());
+    }, 800); // 800ms delay after the last key press
+
+    return () => clearTimeout(handler);
+  }, [searchTerm, debouncedSearch]);
+
   useEffect(() => {
     if (
       deleteServiceCategoryResponse &&
@@ -170,13 +136,17 @@ const ServiceCategories = () => {
   }, [deleteServiceCategoryResponse]);
 
   useEffect(() => {
-    getAllServiceCategories({ fetchPolicy: 'network-only' });
-  }, []);
+    if (!serviceCategories) {
+      const initialLoadData = serviceCategoriesInitialLoad?.edges?.map(
+        (edge) => edge?.node,
+      ) as [];
+      setLocalServiceCategories(initialLoadData as ServiceCategoryEntity[]);
+    }
+  }, [serviceCategoriesInitialLoad, serviceCategories]);
 
   useEffect(() => {
-    if (serviceCategories) {
-      setLocalServiceCategories(serviceCategories as ServiceCategoryEntity[]);
-    }
+    const data = serviceCategories?.edges?.map((edge) => edge?.node) as [];
+    setLocalServiceCategories(data as ServiceCategoryEntity[]);
   }, [serviceCategories]);
 
   return (
@@ -208,9 +178,12 @@ const ServiceCategories = () => {
           title='Are you absolutely sure?'
           description={
             <span>
-              You are about to delete <strong>{serviceCategoryToAction?.name}</strong> service category this will be removed from services, materials, labor rates and warranties if in use.
+              You are about to delete{' '}
+              <strong>{serviceCategoryToAction?.name}</strong> service category
+              this will be removed from services, materials, labor rates and
+              warranties if in use.
             </span>
-          }          
+          }
           confirmActionName='Delete'
         />
       )}
@@ -220,6 +193,8 @@ const ServiceCategories = () => {
           <IoSearchOutline className='absolute left-3 h-6 w-6 text-primary/40' />
           <Input
             type='text'
+            value={searchTerm}
+            onChange={handleSearchChange}
             placeholder='Search for service categories'
             className='h-10 w-full rounded-xl border border-border bg-primary/5 pl-10 dark:text-white'
           />
@@ -239,7 +214,7 @@ const ServiceCategories = () => {
         </div>
         <div>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
-            {loading ? <p>Loading...</p> : renderServiceCategories}
+            {renderServiceCategories}
           </div>
         </div>
       </div>

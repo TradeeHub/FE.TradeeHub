@@ -1,6 +1,12 @@
 import React from 'react'; // Import React for JSX syntax
 import { MenuItem } from '@/app/[locale]/types/sharedTypes';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import MenuItemButton from '../../dashboard/navbar/UserProfile/MenuItemButton';
 import { Button } from '@/components/ui/button';
 
@@ -20,7 +26,9 @@ const GenericDropdownMenu = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-30 gap-2'>
         {menuItems.map((item, index) => (
-          <React.Fragment key={`item-${index}`}> {/* Assign unique key here */}
+          <React.Fragment key={`item-${index}`}>
+            {' '}
+            {/* Assign unique key here */}
             {index > 0 && <DropdownMenuSeparator />}
             <DropdownMenuItem
               key={item.label} // This key is still valid but now inside a correctly keyed fragment

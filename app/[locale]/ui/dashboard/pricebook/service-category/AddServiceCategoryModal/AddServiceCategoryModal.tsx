@@ -26,6 +26,7 @@ import {
 import {
   AddNewServiceCategoryRequestInput,
   ServiceCategoryEntity,
+  SortEnumType,
   UpdateServiceCategoryRequestInput,
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
@@ -81,8 +82,7 @@ const AddServiceCategoryModal = ({
   });
 
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
-  const { getAllServiceCategories, serviceCategories } =
-    useGetAllServiceCategoriesLazy(); // Fetch categories
+  const { searchServiceCategories, serviceCategories } =  useGetAllServiceCategoriesLazy(); // Fetch categories
   const { updateServiceCategory, updateServiceCategoryResponse } =
     useUpdateServiceCategory(); // Fetch categories
 
@@ -103,13 +103,21 @@ const AddServiceCategoryModal = ({
 
   useEffect(() => {
     if (serviceCategories) {
-      setCategories(serviceCategories as ServiceCategoryEntity[]);
+      const data = serviceCategories?.edges?.map((edge) => edge?.node) as [];
+      setCategories(data as ServiceCategoryEntity[]);
     }
   }, [serviceCategories]);
 
   const handleSelectTriggerClick = () => {
     if (!fetchedRef.current) {
-      getAllServiceCategories({ fetchPolicy: 'network-only' });
+        searchServiceCategories({
+        variables: {
+          name: '',
+          order: [{ modifiedAt: SortEnumType.Desc }],
+          pageSize: 100,
+        },
+        fetchPolicy: 'network-only'
+      });
       fetchedRef.current = true;
     }
   };

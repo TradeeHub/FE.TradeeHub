@@ -12,17 +12,37 @@ import {
   useUpdateServiceCategoryMutation,
   UpdateServiceCategoryRequestInput,
   AddMaterialRequestInput,
+  useGetAllServiceCategoriesQuery,
+  SortEnumType,
 } from '@/generatedGraphql';
 
 const useGetAllServiceCategoriesLazy = () => {
-  const [getAllServiceCategories, { data, loading, error }] = useLazyQuery<
+  const [searchServiceCategories, { data, loading, error }] = useLazyQuery<
     GetAllServiceCategoriesQuery,
     GetAllServiceCategoriesQueryVariables
   >(GetAllServiceCategoriesDocument, { notifyOnNetworkStatusChange: true });
 
   const serviceCategories = data?.serviceCategories;
 
-  return { getAllServiceCategories, serviceCategories, loading, error };
+  return { searchServiceCategories, serviceCategories, loading, error };
+};
+
+const useGetAllServiceCategories = () => {
+  const {
+    data,
+    loading: initialLoading,
+    error: initialError,
+  } = useGetAllServiceCategoriesQuery({
+    variables: {
+      name: '',
+      order: [{ modifiedAt: SortEnumType.Desc }],
+      pageSize: 50,
+    },
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const serviceCategoriesInitialLoad = data?.serviceCategories;
+  return { serviceCategoriesInitialLoad, initialLoading, initialError };
 };
 
 const useAddNewServiceCategory = () => {
@@ -142,6 +162,7 @@ const useUpdateServiceCategory = () => {
 export {
   useAddNewServiceCategory,
   useGetAllServiceCategoriesLazy,
+  useGetAllServiceCategories,
   useAddMaterial,
   useAddLaborRate,
   useDeleteServiceCategory,

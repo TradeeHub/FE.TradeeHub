@@ -1,12 +1,28 @@
-query GetAllServiceCategories {
-  serviceCategories {
-    id
-    name
-    description
-    parentServiceCategoryId
-    images {
-      url
-      s3Key
+query GetAllServiceCategories(
+  $name: String!
+  $order: [ServiceCategoryEntitySortInput!]
+  $pageSize: Int!
+) {
+  serviceCategories(name: $name, order: $order, first: $pageSize) {
+    edges {
+      node {
+        id
+        name
+        description
+        parentServiceCategoryId
+        images {
+          url
+          description
+          s3Key
+          createdAt
+        }
+        modifiedAt
+        createdAt
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }

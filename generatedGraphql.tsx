@@ -559,6 +559,21 @@ export type CustomersEdge = {
   node: CustomerEntity;
 };
 
+export type DateTimeOperationFilterInput = {
+  eq?: InputMaybe<Scalars['DateTime']['input']>;
+  gt?: InputMaybe<Scalars['DateTime']['input']>;
+  gte?: InputMaybe<Scalars['DateTime']['input']>;
+  in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  lt?: InputMaybe<Scalars['DateTime']['input']>;
+  lte?: InputMaybe<Scalars['DateTime']['input']>;
+  neq?: InputMaybe<Scalars['DateTime']['input']>;
+  ngt?: InputMaybe<Scalars['DateTime']['input']>;
+  ngte?: InputMaybe<Scalars['DateTime']['input']>;
+  nin?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  nlt?: InputMaybe<Scalars['DateTime']['input']>;
+  nlte?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
 export type DeliveryMediumType = {
   __typename?: 'DeliveryMediumType';
   value?: Maybe<Scalars['String']['output']>;
@@ -739,6 +754,13 @@ export type ISingleFilterOfStringFilter = {
   element_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type IdOperationFilterInput = {
+  eq?: InputMaybe<Scalars['ID']['input']>;
+  in?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
+  neq?: InputMaybe<Scalars['ID']['input']>;
+  nin?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
+};
+
 export type ImageEntity = {
   __typename?: 'ImageEntity';
   byteSize?: Maybe<Scalars['Long']['output']>;
@@ -753,6 +775,21 @@ export type ImageEntity = {
   name: Scalars['String']['output'];
   s3Key: Scalars['String']['output'];
   url: Scalars['String']['output'];
+};
+
+export type ImageEntityFilterInput = {
+  and?: InputMaybe<Array<ImageEntityFilterInput>>;
+  byteSize?: InputMaybe<LongOperationFilterInput>;
+  contentType?: InputMaybe<StringOperationFilterInput>;
+  createdAt?: InputMaybe<DateTimeOperationFilterInput>;
+  createdById?: InputMaybe<UuidOperationFilterInput>;
+  description?: InputMaybe<StringOperationFilterInput>;
+  modifiedAt?: InputMaybe<DateTimeOperationFilterInput>;
+  modifiedById?: InputMaybe<UuidOperationFilterInput>;
+  name?: InputMaybe<StringOperationFilterInput>;
+  or?: InputMaybe<Array<ImageEntityFilterInput>>;
+  s3Key?: InputMaybe<StringOperationFilterInput>;
+  url?: InputMaybe<StringOperationFilterInput>;
 };
 
 export type KeyValuePairOfStringAndString = {
@@ -786,6 +823,20 @@ export type LaborRateEntity = Node & {
 export type LinkReferenceRequestInput = {
   id: Scalars['ID']['input'];
   referenceType: ReferenceType;
+};
+
+export type ListFilterInputTypeOfImageEntityFilterInput = {
+  all?: InputMaybe<ImageEntityFilterInput>;
+  any?: InputMaybe<Scalars['Boolean']['input']>;
+  none?: InputMaybe<ImageEntityFilterInput>;
+  some?: InputMaybe<ImageEntityFilterInput>;
+};
+
+export type ListStringOperationFilterInput = {
+  all?: InputMaybe<StringOperationFilterInput>;
+  any?: InputMaybe<Scalars['Boolean']['input']>;
+  none?: InputMaybe<StringOperationFilterInput>;
+  some?: InputMaybe<StringOperationFilterInput>;
 };
 
 export type LocationEntity = {
@@ -890,6 +941,21 @@ export type LogoutResponse = {
   __typename?: 'LogoutResponse';
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
+};
+
+export type LongOperationFilterInput = {
+  eq?: InputMaybe<Scalars['Long']['input']>;
+  gt?: InputMaybe<Scalars['Long']['input']>;
+  gte?: InputMaybe<Scalars['Long']['input']>;
+  in?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
+  lt?: InputMaybe<Scalars['Long']['input']>;
+  lte?: InputMaybe<Scalars['Long']['input']>;
+  neq?: InputMaybe<Scalars['Long']['input']>;
+  ngt?: InputMaybe<Scalars['Long']['input']>;
+  ngte?: InputMaybe<Scalars['Long']['input']>;
+  nin?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>;
+  nlt?: InputMaybe<Scalars['Long']['input']>;
+  nlte?: InputMaybe<Scalars['Long']['input']>;
 };
 
 export type MarkupEntity = {
@@ -1547,7 +1613,7 @@ export type Query = {
   searchCustomerReferences: ReferenceTrackingResponse;
   service?: Maybe<ServiceEntity>;
   serviceBundle?: Maybe<ServiceBundleEntity>;
-  serviceCategories: Array<ServiceCategoryEntity>;
+  serviceCategories?: Maybe<ServiceCategoriesConnection>;
   serviceCategory?: Maybe<ServiceCategoryEntity>;
   taxRate?: Maybe<TaxRateEntity>;
   user?: Maybe<UserEntity>;
@@ -1629,6 +1695,17 @@ export type QueryServiceArgs = {
 
 export type QueryServiceBundleArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryServiceCategoriesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  order?: InputMaybe<Array<ServiceCategoryEntitySortInput>>;
+  where?: InputMaybe<ServiceCategoryEntityFilterInput>;
 };
 
 
@@ -1818,6 +1895,26 @@ export type ServiceBundleEntity = Node & {
   warrantyIds?: Maybe<Array<Scalars['ID']['output']>>;
 };
 
+/** A connection to a list of items. */
+export type ServiceCategoriesConnection = {
+  __typename?: 'ServiceCategoriesConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<ServiceCategoriesEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<ServiceCategoryEntity>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type ServiceCategoriesEdge = {
+  __typename?: 'ServiceCategoriesEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: ServiceCategoryEntity;
+};
+
 export type ServiceCategoryEntity = Node & {
   __typename?: 'ServiceCategoryEntity';
   createdAt: Scalars['DateTime']['output'];
@@ -1833,6 +1930,35 @@ export type ServiceCategoryEntity = Node & {
   parentServiceCategoryId?: Maybe<Scalars['ID']['output']>;
   serviceCategories: Array<ServiceCategoryEntity>;
   services: Array<ServiceEntity>;
+};
+
+export type ServiceCategoryEntityFilterInput = {
+  and?: InputMaybe<Array<ServiceCategoryEntityFilterInput>>;
+  createdAt?: InputMaybe<DateTimeOperationFilterInput>;
+  createdById?: InputMaybe<UuidOperationFilterInput>;
+  description?: InputMaybe<StringOperationFilterInput>;
+  id?: InputMaybe<StringOperationFilterInput>;
+  images?: InputMaybe<ListFilterInputTypeOfImageEntityFilterInput>;
+  modifiedAt?: InputMaybe<DateTimeOperationFilterInput>;
+  modifiedById?: InputMaybe<UuidOperationFilterInput>;
+  name?: InputMaybe<StringOperationFilterInput>;
+  or?: InputMaybe<Array<ServiceCategoryEntityFilterInput>>;
+  parentServiceCategoryId?: InputMaybe<IdOperationFilterInput>;
+  serviceCategoryIds?: InputMaybe<ListStringOperationFilterInput>;
+  serviceIds?: InputMaybe<ListStringOperationFilterInput>;
+  userOwnerId?: InputMaybe<UuidOperationFilterInput>;
+};
+
+export type ServiceCategoryEntitySortInput = {
+  createdAt?: InputMaybe<SortEnumType>;
+  createdById?: InputMaybe<SortEnumType>;
+  description?: InputMaybe<SortEnumType>;
+  id?: InputMaybe<SortEnumType>;
+  modifiedAt?: InputMaybe<SortEnumType>;
+  modifiedById?: InputMaybe<SortEnumType>;
+  name?: InputMaybe<SortEnumType>;
+  parentServiceCategoryId?: InputMaybe<SortEnumType>;
+  userOwnerId?: InputMaybe<SortEnumType>;
 };
 
 export enum ServiceCreationType {
@@ -1926,10 +2052,30 @@ export type SignUpResponse = {
   userSub?: Maybe<Scalars['String']['output']>;
 };
 
+export enum SortEnumType {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
+
 export enum SortOperationKind {
   Asc = 'ASC',
   Desc = 'DESC'
 }
+
+export type StringOperationFilterInput = {
+  and?: InputMaybe<Array<StringOperationFilterInput>>;
+  contains?: InputMaybe<Scalars['String']['input']>;
+  endsWith?: InputMaybe<Scalars['String']['input']>;
+  eq?: InputMaybe<Scalars['String']['input']>;
+  in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  ncontains?: InputMaybe<Scalars['String']['input']>;
+  nendsWith?: InputMaybe<Scalars['String']['input']>;
+  neq?: InputMaybe<Scalars['String']['input']>;
+  nin?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  nstartsWith?: InputMaybe<Scalars['String']['input']>;
+  or?: InputMaybe<Array<StringOperationFilterInput>>;
+  startsWith?: InputMaybe<Scalars['String']['input']>;
+};
 
 export type TaxRateEntity = Node & {
   __typename?: 'TaxRateEntity';
@@ -2197,6 +2343,21 @@ export type UsersEdge = {
   node: UserEntity;
 };
 
+export type UuidOperationFilterInput = {
+  eq?: InputMaybe<Scalars['UUID']['input']>;
+  gt?: InputMaybe<Scalars['UUID']['input']>;
+  gte?: InputMaybe<Scalars['UUID']['input']>;
+  in?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  lt?: InputMaybe<Scalars['UUID']['input']>;
+  lte?: InputMaybe<Scalars['UUID']['input']>;
+  neq?: InputMaybe<Scalars['UUID']['input']>;
+  ngt?: InputMaybe<Scalars['UUID']['input']>;
+  ngte?: InputMaybe<Scalars['UUID']['input']>;
+  nin?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  nlt?: InputMaybe<Scalars['UUID']['input']>;
+  nlte?: InputMaybe<Scalars['UUID']['input']>;
+};
+
 export type ViewportEntity = {
   __typename?: 'ViewportEntity';
   northeast: LocationEntity;
@@ -2389,10 +2550,14 @@ export type DeleteServiceCategoryMutationVariables = Exact<{
 
 export type DeleteServiceCategoryMutation = { __typename?: 'Mutation', deleteServiceCategory: { __typename?: 'OperationResult', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } | { __typename?: 'OperationResultOfServiceCategoryEntity', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } };
 
-export type GetAllServiceCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAllServiceCategoriesQueryVariables = Exact<{
+  name: Scalars['String']['input'];
+  order?: InputMaybe<Array<ServiceCategoryEntitySortInput> | ServiceCategoryEntitySortInput>;
+  pageSize: Scalars['Int']['input'];
+}>;
 
 
-export type GetAllServiceCategoriesQuery = { __typename?: 'Query', serviceCategories: Array<{ __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, parentServiceCategoryId?: string | null, images?: Array<{ __typename?: 'ImageEntity', url: string, s3Key: string }> | null }> };
+export type GetAllServiceCategoriesQuery = { __typename?: 'Query', serviceCategories?: { __typename?: 'ServiceCategoriesConnection', edges?: Array<{ __typename?: 'ServiceCategoriesEdge', node: { __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, parentServiceCategoryId?: string | null, modifiedAt?: any | null, createdAt: any, images?: Array<{ __typename?: 'ImageEntity', url: string, description?: string | null, s3Key: string, createdAt: any }> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 export type UpdateServiceCategoryMutationVariables = Exact<{
   input: UpdateServiceCategoryRequestInput;
@@ -3127,15 +3292,27 @@ export type DeleteServiceCategoryMutationHookResult = ReturnType<typeof useDelet
 export type DeleteServiceCategoryMutationResult = Apollo.MutationResult<DeleteServiceCategoryMutation>;
 export type DeleteServiceCategoryMutationOptions = Apollo.BaseMutationOptions<DeleteServiceCategoryMutation, DeleteServiceCategoryMutationVariables>;
 export const GetAllServiceCategoriesDocument = gql`
-    query GetAllServiceCategories {
-  serviceCategories {
-    id
-    name
-    description
-    parentServiceCategoryId
-    images {
-      url
-      s3Key
+    query GetAllServiceCategories($name: String!, $order: [ServiceCategoryEntitySortInput!], $pageSize: Int!) {
+  serviceCategories(name: $name, order: $order, first: $pageSize) {
+    edges {
+      node {
+        id
+        name
+        description
+        parentServiceCategoryId
+        images {
+          url
+          description
+          s3Key
+          createdAt
+        }
+        modifiedAt
+        createdAt
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }
@@ -3153,10 +3330,13 @@ export const GetAllServiceCategoriesDocument = gql`
  * @example
  * const { data, loading, error } = useGetAllServiceCategoriesQuery({
  *   variables: {
+ *      name: // value for 'name'
+ *      order: // value for 'order'
+ *      pageSize: // value for 'pageSize'
  *   },
  * });
  */
-export function useGetAllServiceCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>) {
+export function useGetAllServiceCategoriesQuery(baseOptions: Apollo.QueryHookOptions<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables> & ({ variables: GetAllServiceCategoriesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>(GetAllServiceCategoriesDocument, options);
       }
