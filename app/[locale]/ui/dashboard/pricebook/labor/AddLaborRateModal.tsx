@@ -24,6 +24,7 @@ import {
 import {
   AddLaborRateRequestInput,
   ServiceCategoryEntity,
+  SortEnumType,
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
@@ -151,7 +152,7 @@ const AddLaborRateModal = ({
 
   const user = useSelector((state: RootState) => state.user.data);
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
-  const { getAllServiceCategories, serviceCategories } =
+  const { searchServiceCategories, serviceCategories } =
     useGetAllServiceCategoriesLazy();
   const fetchedRef = useRef<boolean>(false);
   const usePriceRange = form.watch('usePriceRange');
@@ -164,17 +165,23 @@ const AddLaborRateModal = ({
     onClose();
   };
 
-  useEffect(() => {
-    console.log('serviceCategories', serviceCategories);
+   useEffect(() => {
     if (serviceCategories) {
-      setCategories(serviceCategories as ServiceCategoryEntity[]);
+      const data = serviceCategories?.edges?.map((edge) => edge?.node) as [];
+      setCategories(data as ServiceCategoryEntity[]);
     }
   }, [serviceCategories]);
 
   const handleSelectTriggerClick = () => {
-    console.log('handleSelectTriggerClick');
     if (!fetchedRef.current) {
-      getAllServiceCategories({ fetchPolicy: 'network-only' });
+      searchServiceCategories({
+        variables: {
+          name: '',
+          order: [{ modifiedAt: SortEnumType.Desc }],
+          pageSize: 100,
+        },
+      });
+
       fetchedRef.current = true;
     }
   };
