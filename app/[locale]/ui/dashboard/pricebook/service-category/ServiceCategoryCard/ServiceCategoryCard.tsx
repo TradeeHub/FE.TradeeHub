@@ -54,6 +54,7 @@ const ServiceCategoryCard = ({
             triggerIcon={<BsThreeDotsVertical className='dark:text-white' />}
             menuItems={menuItems}
           />
+          
         </div>
         <p
           className='line-clamp-2 overflow-hidden text-gray-500'
