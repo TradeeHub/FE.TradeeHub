@@ -14,6 +14,8 @@ import {
   AddMaterialRequestInput,
   useGetAllServiceCategoriesQuery,
   SortEnumType,
+  useGetMaterialsQuery,
+  useGetMaterialsLazyQuery
 } from '@/generatedGraphql';
 
 const useGetAllServiceCategoriesLazy = () => {
@@ -27,18 +29,46 @@ const useGetAllServiceCategoriesLazy = () => {
   return { searchServiceCategories, serviceCategories, loading, error };
 };
 
+const useGetMaterialsLazy = () => {
+  const [searchMaterials, { data, loading, error }] = useGetMaterialsLazyQuery({
+    notifyOnNetworkStatusChange: true
+  });
+
+  const materials = data?.materials;
+
+  return { searchMaterials, materials, loading, error };
+};
+
+const useGetMaterials = () => {
+  const {
+    data,
+    loading: allMaterialsLoading,
+    error: allMaterialsError
+  } = useGetMaterialsQuery({
+    variables: {
+      request: {},
+      order: [{ modifiedAt: SortEnumType.Desc }],
+      pageSize: 50
+    },
+    notifyOnNetworkStatusChange: true
+  });
+
+  const allMaterials = data?.materials;
+  return { allMaterials, allMaterialsLoading, allMaterialsError };
+};
+
 const useGetAllServiceCategories = () => {
   const {
     data,
     loading: initialLoading,
-    error: initialError,
+    error: initialError
   } = useGetAllServiceCategoriesQuery({
     variables: {
       name: '',
       order: [{ modifiedAt: SortEnumType.Desc }],
-      pageSize: 50,
+      pageSize: 50
     },
-    notifyOnNetworkStatusChange: true,
+    notifyOnNetworkStatusChange: true
   });
 
   const serviceCategoriesInitialLoad = data?.serviceCategories;
@@ -50,11 +80,11 @@ const useAddNewServiceCategory = () => {
     useAddNewServiceCategoryMutation();
 
   const addNewServiceCategory = async (
-    input: AddNewServiceCategoryRequestInput,
+    input: AddNewServiceCategoryRequestInput
   ) => {
     try {
       await addNewServiceCategoryMutation({
-        variables: { input },
+        variables: { input }
       });
     } catch (e) {
       console.error('Error adding new service category:', e);
@@ -65,7 +95,7 @@ const useAddNewServiceCategory = () => {
     addNewServiceCategory,
     addNewServiceCategoryResponse: data,
     addNewServiceCategoryLoading: loading,
-    addNewServiceCategoryError: error,
+    addNewServiceCategoryError: error
   };
 };
 
@@ -76,7 +106,7 @@ const useAddMaterial = () => {
   const addMaterial = async (input: AddMaterialRequestInput) => {
     try {
       await addMaterialMutation({
-        variables: { input },
+        variables: { input }
       });
     } catch (e) {
       console.error('Error adding new service category:', e);
@@ -87,7 +117,7 @@ const useAddMaterial = () => {
     addMaterial,
     addMaterialResponse: data,
     addMaterialLoading: loading,
-    addMaterialError: error,
+    addMaterialError: error
   };
 };
 
@@ -98,7 +128,7 @@ const useAddLaborRate = () => {
   const addLaborRate = async (input: AddLaborRateRequestInput) => {
     try {
       await addLaborRateMutation({
-        variables: { input },
+        variables: { input }
       });
     } catch (e) {
       console.error('Error adding new service category:', e);
@@ -109,7 +139,7 @@ const useAddLaborRate = () => {
     addLaborRate,
     addLaborRateResponse: data,
     addLaborRateLoading: loading,
-    addLaborRateError: error,
+    addLaborRateError: error
   };
 };
 
@@ -120,7 +150,7 @@ const useDeleteServiceCategory = () => {
   const deleteServiceCategory = async (id: string) => {
     try {
       await deleteServiceCategoryMutation({
-        variables: { id },
+        variables: { id }
       });
     } catch (e) {
       console.error('Error deleting service category:', e);
@@ -131,7 +161,7 @@ const useDeleteServiceCategory = () => {
     deleteServiceCategory,
     deleteServiceCategoryResponse: data,
     deleteServiceCategoryLoading: loading,
-    deleteServiceCategoryError: error,
+    deleteServiceCategoryError: error
   };
 };
 
@@ -140,11 +170,11 @@ const useUpdateServiceCategory = () => {
     useUpdateServiceCategoryMutation();
 
   const updateServiceCategory = async (
-    input: UpdateServiceCategoryRequestInput,
+    input: UpdateServiceCategoryRequestInput
   ) => {
     try {
       await updateServiceCategoryMutation({
-        variables: { input },
+        variables: { input }
       });
     } catch (e) {
       console.error('Error deleting service category:', e);
@@ -155,16 +185,18 @@ const useUpdateServiceCategory = () => {
     updateServiceCategory,
     updateServiceCategoryResponse: data,
     updateServiceCategoryLoading: loading,
-    updateServiceCategoryError: error,
+    updateServiceCategoryError: error
   };
 };
 
 export {
+  useGetMaterialsLazy,
+  useGetMaterials,
   useAddNewServiceCategory,
   useGetAllServiceCategoriesLazy,
   useGetAllServiceCategories,
   useAddMaterial,
   useAddLaborRate,
   useDeleteServiceCategory,
-  useUpdateServiceCategory,
+  useUpdateServiceCategory
 };

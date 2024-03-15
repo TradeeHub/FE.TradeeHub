@@ -9,7 +9,7 @@ import {
   Path,
   PathValue,
   UseFormReturn,
-  useFieldArray,
+  useFieldArray
 } from 'react-hook-form';
 import { FaXmark } from 'react-icons/fa6';
 import { MdAdd } from 'react-icons/md';
@@ -17,7 +17,7 @@ import { FormControl, FormItem } from '@/components/ui/form';
 
 type SelectWithInputFormProps<
   TFieldValues extends FieldValues,
-  TFieldName extends FieldPath<TFieldValues>,
+  TFieldName extends FieldPath<TFieldValues>
 > = {
   form: UseFormReturn<TFieldValues>;
   field: ControllerRenderProps<TFieldValues, TFieldName>;
@@ -27,18 +27,18 @@ type SelectWithInputFormProps<
 
 const PricingTier = <
   TFieldValues extends FieldValues,
-  TFieldName extends FieldPath<TFieldValues>,
+  TFieldName extends FieldPath<TFieldValues>
 >({
   form,
   field,
   title,
-  currencySymbol,
+  currencySymbol
 }: SelectWithInputFormProps<TFieldValues, TFieldName>) => {
   const { control, watch, setValue } = form;
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: field.name as ArrayPath<TFieldValues>,
+    name: field.name as ArrayPath<TFieldValues>
   });
 
   // New function to update the next row's "Range From"
@@ -47,19 +47,19 @@ const PricingTier = <
       const nextMinValue = currentMaxValue + 1;
       setValue(
         `${field.name}.${currentIndex + 1}.unitRange.min` as Path<TFieldValues>,
-        nextMinValue as PathValue<TFieldValues, Path<TFieldValues>>,
+        nextMinValue as PathValue<TFieldValues, Path<TFieldValues>>
       );
 
       // Get the current "Range To" of the next line to check if it needs adjustment
       const nextRangeTo = watch(
-        `${field.name}.${currentIndex + 1}.unitRange.max` as Path<TFieldValues>,
+        `${field.name}.${currentIndex + 1}.unitRange.max` as Path<TFieldValues>
       );
 
       // If the "Range To" of the next line is less than or equal to its "Range From", adjust it
       if (nextRangeTo <= nextMinValue) {
         setValue(
           `${field.name}.${currentIndex + 1}.unitRange.max` as Path<TFieldValues>,
-          (nextMinValue + 10) as PathValue<TFieldValues, Path<TFieldValues>>,
+          (nextMinValue + 10) as PathValue<TFieldValues, Path<TFieldValues>>
         );
       }
     }
@@ -72,7 +72,7 @@ const PricingTier = <
       const previousRangeTo = index > 0 ? previousField.unitRange.max : 0;
       setValue(
         `${field.name}.${index + 1}.unitRange.min` as Path<TFieldValues>,
-        (previousRangeTo + 1) as PathValue<TFieldValues, Path<TFieldValues>>,
+        (previousRangeTo + 1) as PathValue<TFieldValues, Path<TFieldValues>>
       );
     }
     remove(index);
@@ -80,25 +80,25 @@ const PricingTier = <
 
   const handleBlur = (index: number) => {
     const currentRangeTo = watch(
-      `${field.name}.${index}.unitRange.max` as Path<TFieldValues>,
+      `${field.name}.${index}.unitRange.max` as Path<TFieldValues>
     );
     const currentRangeToSet =
       currentRangeTo === '' ? 0 : Number(currentRangeTo);
     const currentRangeFrom = watch(
-      `${field.name}.${index}.unitRange.min` as Path<TFieldValues>,
+      `${field.name}.${index}.unitRange.min` as Path<TFieldValues>
     );
 
     if (currentRangeToSet <= currentRangeFrom) {
       const correctedValue = currentRangeFrom + 10;
       setValue(
         `${field.name}.${index}.unitRange.max` as Path<TFieldValues>,
-        correctedValue as PathValue<TFieldValues, Path<TFieldValues>>,
+        correctedValue as PathValue<TFieldValues, Path<TFieldValues>>
       );
       updateNextRowMin(index, correctedValue); // Ensure the next row's min is updated accordingly
     } else {
       setValue(
         `${field.name}.${index}.unitRange.max` as Path<TFieldValues>,
-        currentRangeToSet as PathValue<TFieldValues, Path<TFieldValues>>,
+        currentRangeToSet as PathValue<TFieldValues, Path<TFieldValues>>
       );
       updateNextRowMin(index, currentRangeToSet); // Still check and adjust the next row as needed
     }
@@ -115,8 +115,8 @@ const PricingTier = <
       unitRange: {
         min: minValue,
         max: minValue + 10,
-        overlaps: false, // Assuming this is required based on your type definitions
-      },
+        overlaps: false // Assuming this is required based on your type definitions
+      }
     } as FieldArray<TFieldValues, ArrayPath<TFieldValues>>);
 
     if (lastTierIndex + 1 < fields.length) {
@@ -223,7 +223,7 @@ const PricingTier = <
                           `pricingTiers.${index}.cost` as Path<TFieldValues>
                         }
                         render={({
-                          field: { ref, value, onChange, ...restField },
+                          field: { ref, value, onChange, ...restField }
                         }) => (
                           <input
                             {...restField}
@@ -233,14 +233,14 @@ const PricingTier = <
                               // Directly pass the raw input value (with currency symbol stripped) to onChange
                               const newValue = e.target.value.replace(
                                 currencySymbol ?? '',
-                                '',
+                                ''
                               );
                               onChange(newValue); // Store raw input for now
                             }}
                             onBlur={(e) => {
                               // Convert raw input to a number on blur, handling empty and incomplete inputs
                               const numericValue = parseFloat(
-                                e.target.value.replace(/[^0-9.]/g, ''),
+                                e.target.value.replace(/[^0-9.]/g, '')
                               );
                               onChange(isNaN(numericValue) ? 0 : numericValue); // Update with numeric value
                             }}
@@ -248,7 +248,7 @@ const PricingTier = <
                             type='text' // Keep as text to allow freeform input
                             className='form-input mt-1 block w-full rounded-none border-b border-gray-300 py-1 pl-4 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
                             style={{
-                              paddingLeft: `${currencySymbol?.length ?? 1}ch`,
+                              paddingLeft: `${currencySymbol?.length ?? 1}ch`
                             }}
                           />
                         )}
@@ -266,10 +266,10 @@ const PricingTier = <
                           <span className='mt-1 text-xs text-blue-500'>
                             {(() => {
                               const cost = watch(
-                                `pricingTiers.${index}.cost` as Path<TFieldValues>,
+                                `pricingTiers.${index}.cost` as Path<TFieldValues>
                               );
                               const price = watch(
-                                `pricingTiers.${index}.price` as Path<TFieldValues>,
+                                `pricingTiers.${index}.price` as Path<TFieldValues>
                               );
                               const profit = price - cost;
                               const profitPercentage =
@@ -291,7 +291,7 @@ const PricingTier = <
                             `pricingTiers.${index}.price` as Path<TFieldValues>
                           }
                           render={({
-                            field: { ref, value, onChange, ...restField },
+                            field: { ref, value, onChange, ...restField }
                           }) => (
                             <div className='relative'>
                               <input
@@ -303,23 +303,23 @@ const PricingTier = <
                                   // Directly pass the raw input value (with currency symbol stripped) to onChange
                                   const newValue = e.target.value.replace(
                                     currencySymbol ?? '',
-                                    '',
+                                    ''
                                   );
                                   onChange(newValue); // Store raw input for now
                                 }}
                                 onBlur={(e) => {
                                   // Convert raw input to a number on blur, handling empty and incomplete inputs
                                   const numericValue = parseFloat(
-                                    e.target.value.replace(/[^0-9.]/g, ''),
+                                    e.target.value.replace(/[^0-9.]/g, '')
                                   );
                                   onChange(
-                                    isNaN(numericValue) ? 0 : numericValue,
+                                    isNaN(numericValue) ? 0 : numericValue
                                   ); // Update with numeric value
                                 }}
                                 type='text' // Keep as text to display the currency symbol
                                 className='form-input mt-1 block w-full rounded-none border-b border-gray-300 py-1 pl-4 text-center focus:border-indigo-500 focus:outline-none focus:ring-0 sm:text-sm'
                                 style={{
-                                  paddingLeft: `${currencySymbol?.length ?? 1}ch`,
+                                  paddingLeft: `${currencySymbol?.length ?? 1}ch`
                                 }}
                               />
                             </div>

@@ -184,6 +184,11 @@ export enum ApplyPolicy {
   Validation = 'VALIDATION'
 }
 
+export type BooleanOperationFilterInput = {
+  eq?: InputMaybe<Scalars['Boolean']['input']>;
+  neq?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type ChangedForgottenPasswordRequestInput = {
   email: Scalars['String']['input'];
   newPassword: Scalars['String']['input'];
@@ -574,6 +579,21 @@ export type DateTimeOperationFilterInput = {
   nlte?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
+export type DecimalOperationFilterInput = {
+  eq?: InputMaybe<Scalars['Decimal']['input']>;
+  gt?: InputMaybe<Scalars['Decimal']['input']>;
+  gte?: InputMaybe<Scalars['Decimal']['input']>;
+  in?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
+  lt?: InputMaybe<Scalars['Decimal']['input']>;
+  lte?: InputMaybe<Scalars['Decimal']['input']>;
+  neq?: InputMaybe<Scalars['Decimal']['input']>;
+  ngt?: InputMaybe<Scalars['Decimal']['input']>;
+  ngte?: InputMaybe<Scalars['Decimal']['input']>;
+  nin?: InputMaybe<Array<InputMaybe<Scalars['Decimal']['input']>>>;
+  nlt?: InputMaybe<Scalars['Decimal']['input']>;
+  nlte?: InputMaybe<Scalars['Decimal']['input']>;
+};
+
 export type DeliveryMediumType = {
   __typename?: 'DeliveryMediumType';
   value?: Maybe<Scalars['String']['output']>;
@@ -832,6 +852,13 @@ export type ListFilterInputTypeOfImageEntityFilterInput = {
   some?: InputMaybe<ImageEntityFilterInput>;
 };
 
+export type ListFilterInputTypeOfPricingTierEntityFilterInput = {
+  all?: InputMaybe<PricingTierEntityFilterInput>;
+  any?: InputMaybe<Scalars['Boolean']['input']>;
+  none?: InputMaybe<PricingTierEntityFilterInput>;
+  some?: InputMaybe<PricingTierEntityFilterInput>;
+};
+
 export type ListStringOperationFilterInput = {
   all?: InputMaybe<StringOperationFilterInput>;
   any?: InputMaybe<Scalars['Boolean']['input']>;
@@ -964,9 +991,21 @@ export type MarkupEntity = {
   value: Scalars['Decimal']['output'];
 };
 
+export type MarkupEntityFilterInput = {
+  and?: InputMaybe<Array<MarkupEntityFilterInput>>;
+  or?: InputMaybe<Array<MarkupEntityFilterInput>>;
+  type?: InputMaybe<MarkupTypeOperationFilterInput>;
+  value?: InputMaybe<DecimalOperationFilterInput>;
+};
+
 export type MarkupEntityInput = {
   type: MarkupType;
   value: Scalars['Decimal']['input'];
+};
+
+export type MarkupEntitySortInput = {
+  type?: InputMaybe<SortEnumType>;
+  value?: InputMaybe<SortEnumType>;
 };
 
 export type MarkupRequestInput = {
@@ -978,6 +1017,13 @@ export enum MarkupType {
   Fixed = 'FIXED',
   Percentage = 'PERCENTAGE'
 }
+
+export type MarkupTypeOperationFilterInput = {
+  eq?: InputMaybe<MarkupType>;
+  in?: InputMaybe<Array<MarkupType>>;
+  neq?: InputMaybe<MarkupType>;
+  nin?: InputMaybe<Array<MarkupType>>;
+};
 
 export type MaterialEntity = Node & {
   __typename?: 'MaterialEntity';
@@ -1006,6 +1052,73 @@ export type MaterialEntity = Node & {
   unitType: Scalars['String']['output'];
   usePriceRange: Scalars['Boolean']['output'];
   userOwnerId: Scalars['UUID']['output'];
+};
+
+export type MaterialEntityFilterInput = {
+  allowOnlineBooking?: InputMaybe<BooleanOperationFilterInput>;
+  and?: InputMaybe<Array<MaterialEntityFilterInput>>;
+  cost?: InputMaybe<DecimalOperationFilterInput>;
+  createdAt?: InputMaybe<DateTimeOperationFilterInput>;
+  createdById?: InputMaybe<UuidOperationFilterInput>;
+  description?: InputMaybe<StringOperationFilterInput>;
+  id?: InputMaybe<StringOperationFilterInput>;
+  identifier?: InputMaybe<StringOperationFilterInput>;
+  images?: InputMaybe<ListFilterInputTypeOfImageEntityFilterInput>;
+  markup?: InputMaybe<MarkupEntityFilterInput>;
+  modifiedAt?: InputMaybe<DateTimeOperationFilterInput>;
+  modifiedById?: InputMaybe<UuidOperationFilterInput>;
+  name?: InputMaybe<StringOperationFilterInput>;
+  onlineMaterialUrls?: InputMaybe<ListStringOperationFilterInput>;
+  onlinePrice?: InputMaybe<DecimalOperationFilterInput>;
+  or?: InputMaybe<Array<MaterialEntityFilterInput>>;
+  parentServiceCategoryId?: InputMaybe<IdOperationFilterInput>;
+  price?: InputMaybe<DecimalOperationFilterInput>;
+  pricingTiers?: InputMaybe<ListFilterInputTypeOfPricingTierEntityFilterInput>;
+  taxable?: InputMaybe<BooleanOperationFilterInput>;
+  unitType?: InputMaybe<StringOperationFilterInput>;
+  usePriceRange?: InputMaybe<BooleanOperationFilterInput>;
+  userOwnerId?: InputMaybe<UuidOperationFilterInput>;
+};
+
+export type MaterialEntitySortInput = {
+  allowOnlineBooking?: InputMaybe<SortEnumType>;
+  cost?: InputMaybe<SortEnumType>;
+  createdAt?: InputMaybe<SortEnumType>;
+  createdById?: InputMaybe<SortEnumType>;
+  description?: InputMaybe<SortEnumType>;
+  id?: InputMaybe<SortEnumType>;
+  identifier?: InputMaybe<SortEnumType>;
+  markup?: InputMaybe<MarkupEntitySortInput>;
+  modifiedAt?: InputMaybe<SortEnumType>;
+  modifiedById?: InputMaybe<SortEnumType>;
+  name?: InputMaybe<SortEnumType>;
+  onlinePrice?: InputMaybe<SortEnumType>;
+  parentServiceCategoryId?: InputMaybe<SortEnumType>;
+  price?: InputMaybe<SortEnumType>;
+  taxable?: InputMaybe<SortEnumType>;
+  unitType?: InputMaybe<SortEnumType>;
+  usePriceRange?: InputMaybe<SortEnumType>;
+  userOwnerId?: InputMaybe<SortEnumType>;
+};
+
+/** A connection to a list of items. */
+export type MaterialsConnection = {
+  __typename?: 'MaterialsConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<MaterialsEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<MaterialEntity>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type MaterialsEdge = {
+  __typename?: 'MaterialsEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: MaterialEntity;
 };
 
 export type Mutation = {
@@ -1451,6 +1564,14 @@ export type PricingTierEntity = {
   unitRange: RangeOfDecimal;
 };
 
+export type PricingTierEntityFilterInput = {
+  and?: InputMaybe<Array<PricingTierEntityFilterInput>>;
+  cost?: InputMaybe<DecimalOperationFilterInput>;
+  or?: InputMaybe<Array<PricingTierEntityFilterInput>>;
+  price?: InputMaybe<DecimalOperationFilterInput>;
+  unitRange?: InputMaybe<RangeOfDecimalFilterInput>;
+};
+
 export type PricingTierEntityInput = {
   cost?: InputMaybe<Scalars['Decimal']['input']>;
   price: Scalars['Decimal']['input'];
@@ -1607,6 +1728,7 @@ export type Query = {
   laborRate?: Maybe<LaborRateEntity>;
   loggedInUser?: Maybe<UserEntity>;
   material?: Maybe<MaterialEntity>;
+  materials?: Maybe<MaterialsConnection>;
   properties?: Maybe<PropertiesConnection>;
   property?: Maybe<PropertyEntity>;
   propertyById?: Maybe<PropertyEntity>;
@@ -1660,6 +1782,17 @@ export type QueryLaborRateArgs = {
 
 export type QueryMaterialArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryMaterialsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Array<MaterialEntitySortInput>>;
+  request: SearchMaterialRequestInput;
+  where?: InputMaybe<MaterialEntityFilterInput>;
 };
 
 
@@ -1753,6 +1886,13 @@ export type RangeOfDecimal = {
 
 export type RangeOfDecimalOverlapsArgs = {
   other?: InputMaybe<RangeOfDecimalInput>;
+};
+
+export type RangeOfDecimalFilterInput = {
+  and?: InputMaybe<Array<RangeOfDecimalFilterInput>>;
+  max?: InputMaybe<DecimalOperationFilterInput>;
+  min?: InputMaybe<DecimalOperationFilterInput>;
+  or?: InputMaybe<Array<RangeOfDecimalFilterInput>>;
 };
 
 export type RangeOfDecimalInput = {
@@ -1853,6 +1993,18 @@ export type ResponseMetadata = {
   checksumValidationStatus: ChecksumValidationStatus;
   metadata?: Maybe<Array<KeyValuePairOfStringAndString>>;
   requestId?: Maybe<Scalars['String']['output']>;
+};
+
+export type SearchMaterialRequestInput = {
+  allowOnlineBooking?: InputMaybe<Scalars['Boolean']['input']>;
+  cost?: InputMaybe<Scalars['Decimal']['input']>;
+  identifier?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  onlinePrice?: InputMaybe<Scalars['Decimal']['input']>;
+  parentServiceCategoryId?: InputMaybe<Scalars['ID']['input']>;
+  price?: InputMaybe<Scalars['Decimal']['input']>;
+  taxable?: InputMaybe<Scalars['Boolean']['input']>;
+  unitType?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SearchReferenceRequestInput = {
@@ -2529,13 +2681,6 @@ export type AddLaborRateMutationVariables = Exact<{
 
 export type AddLaborRateMutation = { __typename?: 'Mutation', addLaborRate: { __typename?: 'LaborRateEntity', name: string, id: string } };
 
-export type AddMaterialMutationVariables = Exact<{
-  input: AddMaterialRequestInput;
-}>;
-
-
-export type AddMaterialMutation = { __typename?: 'Mutation', addMaterial: { __typename?: 'MaterialEntity', name: string, id: string } };
-
 export type AddNewServiceCategoryMutationVariables = Exact<{
   input: AddNewServiceCategoryRequestInput;
 }>;
@@ -2558,6 +2703,22 @@ export type GetAllServiceCategoriesQueryVariables = Exact<{
 
 
 export type GetAllServiceCategoriesQuery = { __typename?: 'Query', serviceCategories?: { __typename?: 'ServiceCategoriesConnection', edges?: Array<{ __typename?: 'ServiceCategoriesEdge', node: { __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, parentServiceCategoryId?: string | null, modifiedAt?: any | null, createdAt: any, images?: Array<{ __typename?: 'ImageEntity', url: string, description?: string | null, s3Key: string, createdAt: any }> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+
+export type AddMaterialMutationVariables = Exact<{
+  input: AddMaterialRequestInput;
+}>;
+
+
+export type AddMaterialMutation = { __typename?: 'Mutation', addMaterial: { __typename?: 'MaterialEntity', name: string, id: string } };
+
+export type GetMaterialsQueryVariables = Exact<{
+  request: SearchMaterialRequestInput;
+  order?: InputMaybe<Array<MaterialEntitySortInput> | MaterialEntitySortInput>;
+  pageSize: Scalars['Int']['input'];
+}>;
+
+
+export type GetMaterialsQuery = { __typename?: 'Query', materials?: { __typename?: 'MaterialsConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges?: Array<{ __typename?: 'MaterialsEdge', cursor: string, node: { __typename?: 'MaterialEntity', id: string, name: string, description?: string | null, identifier?: string | null, usePriceRange: boolean, taxable: boolean, allowOnlineBooking: boolean, onlinePrice?: any | null, cost?: any | null, price?: any | null, unitType: string, onlineMaterialUrls?: Array<string> | null, markup?: { __typename?: 'MarkupEntity', type: MarkupType, value: any } | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null, pricingTiers?: Array<{ __typename?: 'PricingTierEntity', cost?: any | null, price: any, unitRange: { __typename?: 'RangeOfDecimal', max: any, min: any } }> | null } }> | null } | null };
 
 export type UpdateServiceCategoryMutationVariables = Exact<{
   input: UpdateServiceCategoryRequestInput;
@@ -3183,40 +3344,6 @@ export function useAddLaborRateMutation(baseOptions?: Apollo.MutationHookOptions
 export type AddLaborRateMutationHookResult = ReturnType<typeof useAddLaborRateMutation>;
 export type AddLaborRateMutationResult = Apollo.MutationResult<AddLaborRateMutation>;
 export type AddLaborRateMutationOptions = Apollo.BaseMutationOptions<AddLaborRateMutation, AddLaborRateMutationVariables>;
-export const AddMaterialDocument = gql`
-    mutation AddMaterial($input: AddMaterialRequestInput!) {
-  addMaterial(request: $input) {
-    name
-    id
-  }
-}
-    `;
-export type AddMaterialMutationFn = Apollo.MutationFunction<AddMaterialMutation, AddMaterialMutationVariables>;
-
-/**
- * __useAddMaterialMutation__
- *
- * To run a mutation, you first call `useAddMaterialMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddMaterialMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addMaterialMutation, { data, loading, error }] = useAddMaterialMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddMaterialMutation(baseOptions?: Apollo.MutationHookOptions<AddMaterialMutation, AddMaterialMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddMaterialMutation, AddMaterialMutationVariables>(AddMaterialDocument, options);
-      }
-export type AddMaterialMutationHookResult = ReturnType<typeof useAddMaterialMutation>;
-export type AddMaterialMutationResult = Apollo.MutationResult<AddMaterialMutation>;
-export type AddMaterialMutationOptions = Apollo.BaseMutationOptions<AddMaterialMutation, AddMaterialMutationVariables>;
 export const AddNewServiceCategoryDocument = gql`
     mutation AddNewServiceCategory($input: AddNewServiceCategoryRequestInput!) {
   addNewServiceCategory(request: $input) {
@@ -3352,6 +3479,117 @@ export type GetAllServiceCategoriesQueryHookResult = ReturnType<typeof useGetAll
 export type GetAllServiceCategoriesLazyQueryHookResult = ReturnType<typeof useGetAllServiceCategoriesLazyQuery>;
 export type GetAllServiceCategoriesSuspenseQueryHookResult = ReturnType<typeof useGetAllServiceCategoriesSuspenseQuery>;
 export type GetAllServiceCategoriesQueryResult = Apollo.QueryResult<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>;
+export const AddMaterialDocument = gql`
+    mutation AddMaterial($input: AddMaterialRequestInput!) {
+  addMaterial(request: $input) {
+    name
+    id
+  }
+}
+    `;
+export type AddMaterialMutationFn = Apollo.MutationFunction<AddMaterialMutation, AddMaterialMutationVariables>;
+
+/**
+ * __useAddMaterialMutation__
+ *
+ * To run a mutation, you first call `useAddMaterialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddMaterialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addMaterialMutation, { data, loading, error }] = useAddMaterialMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddMaterialMutation(baseOptions?: Apollo.MutationHookOptions<AddMaterialMutation, AddMaterialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddMaterialMutation, AddMaterialMutationVariables>(AddMaterialDocument, options);
+      }
+export type AddMaterialMutationHookResult = ReturnType<typeof useAddMaterialMutation>;
+export type AddMaterialMutationResult = Apollo.MutationResult<AddMaterialMutation>;
+export type AddMaterialMutationOptions = Apollo.BaseMutationOptions<AddMaterialMutation, AddMaterialMutationVariables>;
+export const GetMaterialsDocument = gql`
+    query GetMaterials($request: SearchMaterialRequestInput!, $order: [MaterialEntitySortInput!], $pageSize: Int!) {
+  materials(request: $request, order: $order, first: $pageSize) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        name
+        description
+        identifier
+        markup {
+          type
+          value
+        }
+        usePriceRange
+        taxable
+        allowOnlineBooking
+        onlinePrice
+        cost
+        price
+        unitType
+        images {
+          url
+        }
+        onlineMaterialUrls
+        pricingTiers {
+          unitRange {
+            max
+            min
+          }
+          cost
+          price
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMaterialsQuery__
+ *
+ * To run a query within a React component, call `useGetMaterialsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMaterialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMaterialsQuery({
+ *   variables: {
+ *      request: // value for 'request'
+ *      order: // value for 'order'
+ *      pageSize: // value for 'pageSize'
+ *   },
+ * });
+ */
+export function useGetMaterialsQuery(baseOptions: Apollo.QueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables> & ({ variables: GetMaterialsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
+      }
+export function useGetMaterialsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
+        }
+export function useGetMaterialsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
+        }
+export type GetMaterialsQueryHookResult = ReturnType<typeof useGetMaterialsQuery>;
+export type GetMaterialsLazyQueryHookResult = ReturnType<typeof useGetMaterialsLazyQuery>;
+export type GetMaterialsSuspenseQueryHookResult = ReturnType<typeof useGetMaterialsSuspenseQuery>;
+export type GetMaterialsQueryResult = Apollo.QueryResult<GetMaterialsQuery, GetMaterialsQueryVariables>;
 export const UpdateServiceCategoryDocument = gql`
     mutation UpdateServiceCategory($input: UpdateServiceCategoryRequestInput!) {
   updateServiceCategory(request: $input) {

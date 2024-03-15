@@ -4,11 +4,15 @@ import { Input } from '@/components/ui/input';
 import { IoSearchOutline } from 'react-icons/io5';
 import AddMaterialModal from './AddMaterialModal';
 import { useState } from 'react';
+import CustomGrid from '@/app/[locale]/components/Grid';
+import { useGetMaterials } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 
 const Materials = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
-
+  const { allMaterials, allMaterialsLoading, allMaterialsError } =
+    useGetMaterials();
+  console.log(allMaterials);
   return (
     <>
       {isModalOpen && (
@@ -19,11 +23,21 @@ const Materials = () => {
         />
       )}
 
+      {/* {data && (
+        <CustomGrid
+          columnDefs={gridColumnDef}
+          fetchMoreData={fetchMoreData}
+          refetch={refetch}
+          initialData={initialData as object[]}
+          initialPageInfo={pageInfo as PageInfoSlim}
+        />
+      )} */}
+
       <div className='space-y-6 pt-4'>
         <div className='bg-linen relative flex flex-1 items-center rounded-xl'>
           <IoSearchOutline className='absolute left-3 h-6 w-6 text-primary/40' />
           <Input
-            type='text    '
+            type='text'
             placeholder='Search for materials'
             className='h-10 w-full rounded-xl border border-border bg-primary/5 pl-10'
           />

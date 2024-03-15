@@ -7,25 +7,25 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog';
 import {
   FormField,
   FormItem,
   FormControl,
   Form,
-  FormLabel,
+  FormLabel
 } from '@/components/ui/form';
 import SingleImageUploadForm from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
 import { Button } from '@/components/ui/button';
 import {
   useAddMaterial,
-  useGetAllServiceCategoriesLazy,
+  useGetAllServiceCategoriesLazy
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import {
   AddMaterialRequestInput,
   ServiceCategoryEntity,
-  SortEnumType,
+  SortEnumType
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
@@ -35,7 +35,7 @@ import {
   SimpleSelectContent,
   SimpleSelectItem,
   SimpleSelectTrigger,
-  SimpleSelectValue,
+  SimpleSelectValue
 } from '../../../general/SimpleSelect/SimpleSelect';
 import SelectWithInput from '../../../general/SelectWithInput/SelectWithInput';
 import { useSelector } from 'react-redux';
@@ -60,13 +60,13 @@ const unitOptions = [
   { label: 'Pound (lbs)', value: 'Pound' },
   { label: 'Foot', value: 'Foot' },
   { label: 'Yard', value: 'Yard' },
-  { label: 'Bundle', value: 'Bundle' },
+  { label: 'Bundle', value: 'Bundle' }
 ];
 
 const rangeOfDecimalSchema = z.object({
   max: z.number().optional(),
   min: z.number().optional(),
-  overlaps: z.boolean(),
+  overlaps: z.boolean()
 });
 
 const pricingTierEntitySchema = z
@@ -75,8 +75,8 @@ const pricingTierEntitySchema = z
       id: z.string().optional().nullable(),
       cost: z.number().optional().nullable(), // Assuming cost can be nullable
       price: z.number().optional().nullable(),
-      unitRange: rangeOfDecimalSchema,
-    }),
+      unitRange: rangeOfDecimalSchema
+    })
   )
   .optional()
   .nullable();
@@ -95,12 +95,12 @@ const formSchema = z.object({
   unitType: z.string(),
   images: z.array(z.any()).optional().nullable(), // Assuming a placeholder for file upload input
   onlineMaterialUrl: z.string().optional().nullable(),
-  pricingTiers: pricingTierEntitySchema,
+  pricingTiers: pricingTierEntitySchema
 });
 
 const MarginProfitDisplay = ({
   cost,
-  price,
+  price
 }: {
   cost: number;
   price: number;
@@ -137,7 +137,7 @@ const MarginProfitDisplay = ({
 const AddMaterialModal = ({
   isOpen,
   onClose,
-  modalName,
+  modalName
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -160,8 +160,8 @@ const AddMaterialModal = ({
       unitType: '',
       images: [],
       onlineMaterialUrl: '',
-      pricingTiers: [],
-    },
+      pricingTiers: []
+    }
   });
 
   const { addMaterial, addMaterialResponse, addMaterialLoading } =
@@ -196,8 +196,8 @@ const AddMaterialModal = ({
         variables: {
           name: '',
           order: [{ modifiedAt: SortEnumType.Desc }],
-          pageSize: 100,
-        },
+          pageSize: 100
+        }
       });
 
       fetchedRef.current = true;
@@ -225,12 +225,12 @@ const AddMaterialModal = ({
         price: tier.price,
         unitRange: {
           max: tier.unitRange.max,
-          min: tier.unitRange.min,
-        },
+          min: tier.unitRange.min
+        }
       })),
       parentServiceCategoryId: formData.parentServiceCategoryId,
       taxable: formData.taxable,
-      unitType: formData.unitType,
+      unitType: formData.unitType
     };
 
     addMaterial(request);
@@ -251,7 +251,7 @@ const AddMaterialModal = ({
               <u>{resp.name}</u>
             </b>
           </span>
-        ),
+        )
       });
     }
   }, [addMaterialResponse]);

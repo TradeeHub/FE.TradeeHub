@@ -28,6 +28,5 @@
         "jsx-quotes": ["error", "prefer-single"],
         "prettier/prettier": "error",
         "react/react-in-jsx-scope": "off"
-
     }
 }

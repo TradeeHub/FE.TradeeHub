@@ -1,0 +1,44 @@
+query GetMaterials(
+  $request: SearchMaterialRequestInput!
+  $order: [MaterialEntitySortInput!]
+  $pageSize: Int!
+) {
+  materials(request: $request, order: $order, first: $pageSize) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        name
+        description
+        identifier
+        markup {
+          type
+          value
+        }
+        usePriceRange
+        taxable
+        allowOnlineBooking
+        onlinePrice
+        cost
+        price
+        unitType
+        images {
+          url
+        }
+        onlineMaterialUrls
+        pricingTiers {
+          unitRange {
+            max
+            min
+          }
+          cost
+          price
+        }
+      }
+    }
+  }
+}
