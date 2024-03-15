@@ -165,7 +165,7 @@ const AddLaborRateModal = ({
     onClose();
   };
 
-   useEffect(() => {
+  useEffect(() => {
     if (serviceCategories) {
       const data = serviceCategories?.edges?.map((edge) => edge?.node) as [];
       setCategories(data as ServiceCategoryEntity[]);

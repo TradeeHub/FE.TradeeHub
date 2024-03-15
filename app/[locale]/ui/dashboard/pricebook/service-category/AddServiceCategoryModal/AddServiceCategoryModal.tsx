@@ -82,7 +82,8 @@ const AddServiceCategoryModal = ({
   });
 
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
-  const { searchServiceCategories, serviceCategories } =  useGetAllServiceCategoriesLazy(); // Fetch categories
+  const { searchServiceCategories, serviceCategories } =
+    useGetAllServiceCategoriesLazy(); // Fetch categories
   const { updateServiceCategory, updateServiceCategoryResponse } =
     useUpdateServiceCategory(); // Fetch categories
 
@@ -110,13 +111,13 @@ const AddServiceCategoryModal = ({
 
   const handleSelectTriggerClick = () => {
     if (!fetchedRef.current) {
-        searchServiceCategories({
+      searchServiceCategories({
         variables: {
           name: '',
           order: [{ modifiedAt: SortEnumType.Desc }],
           pageSize: 100,
         },
-        fetchPolicy: 'network-only'
+        fetchPolicy: 'network-only',
       });
       fetchedRef.current = true;
     }
