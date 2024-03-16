@@ -4,11 +4,11 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
+  FormLabel
 } from '@/components/ui/form'; // Adjust import path as necessary
 import {
   AddCustomerFormRequest,
-  UserPlace,
+  UserPlace
 } from '@/app/[locale]/types/sharedTypes'; // Adjust import path as necessary
 import AddressAutocomplete from '@/app/[locale]/ui/general/AddressAutocomplete/AddressAutocomplete';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -25,7 +25,7 @@ const MultiProperty: React.FC<MultiPropertyProps> = ({ form }) => {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'properties',
+    name: 'properties'
   });
 
   const properties = watch('properties');

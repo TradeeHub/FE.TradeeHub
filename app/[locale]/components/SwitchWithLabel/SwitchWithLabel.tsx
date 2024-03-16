@@ -16,7 +16,7 @@ const SwitchWithLabel = React.forwardRef<
 >(
   (
     { className, checked, onCheckedChange, onLabel, offLabel, label, ...props },
-    ref,
+    ref
   ) => (
     <div className='no-block relative font-roboto'>
       <label
@@ -34,14 +34,14 @@ const SwitchWithLabel = React.forwardRef<
         className={cn(
           'focus-visible:ring-primary-500 mt-2 inline-flex h-6 w-14 items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75',
           checked ? 'bg-primary' : 'bg-input',
-          className,
+          className
         )}
       >
         <span
           className={cn(
             'absolute',
             'left-7',
-            'text-accent-playground top-3 text-xs font-bold',
+            'text-accent-playground top-3 text-xs font-bold'
           )}
         >
           {offLabel}
@@ -50,7 +50,7 @@ const SwitchWithLabel = React.forwardRef<
         <SwitchPrimitives.Thumb
           className={cn(
             'block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300 ease-in-out',
-            checked ? 'translate-x-8' : 'translate-x-[0]',
+            checked ? 'translate-x-8' : 'translate-x-[0]'
           )}
         />
 
@@ -61,7 +61,7 @@ const SwitchWithLabel = React.forwardRef<
         </span>
       </SwitchPrimitives.Root>
     </div>
-  ),
+  )
 );
 
 SwitchWithLabel.displayName = 'SwitchWithLabel';

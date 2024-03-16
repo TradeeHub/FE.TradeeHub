@@ -6,7 +6,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogTitle
 } from '@/components/ui/alert-dialog';
 
 const AlertPopup = ({
@@ -15,7 +15,7 @@ const AlertPopup = ({
   onConfirm,
   title,
   description,
-  confirmActionName,
+  confirmActionName
 }: {
   isOpen: boolean;
   setIsAlertOpen: (isOpen: boolean) => void;

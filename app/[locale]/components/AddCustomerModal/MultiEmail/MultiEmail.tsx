@@ -4,7 +4,7 @@ import { RxCross2 } from 'react-icons/rx';
 import {
   ControllerRenderProps,
   UseFormReturn,
-  useFieldArray,
+  useFieldArray
 } from 'react-hook-form';
 import { AddCustomerFormRequest } from '@/app/[locale]/types/sharedTypes';
 import { FormField } from '@/components/ui/form';
@@ -16,7 +16,7 @@ import { SwitchWithLabel } from '../../SwitchWithLabel/SwitchWithLabel';
 const emailTypeOptions = [
   { label: 'Personal', value: 'Personal' },
   { label: 'Work', value: 'Work' },
-  { label: 'Other', value: 'Other' },
+  { label: 'Other', value: 'Other' }
 ];
 
 type MultiEmailProps = {
@@ -28,17 +28,17 @@ const MultiEmail: React.FC<MultiEmailProps> = ({ form }) => {
   const {
     fields: emailFields,
     append: appendEmail,
-    remove: removeEmail,
+    remove: removeEmail
   } = useFieldArray({
     control,
-    name: 'emails',
+    name: 'emails'
   });
 
   const addEmail = () => {
     appendEmail({
       email: '',
       emailType: '',
-      receiveNotifications: true,
+      receiveNotifications: true
     });
   };
 

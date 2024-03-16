@@ -10,7 +10,7 @@ import { AuthenticationGuardProps } from './types/sharedTypes';
 import { useGetLoggedInUser } from './hooks/auth/useAuth';
 
 const AuthenticationGuard = ({
-  children,
+  children
 }: AuthenticationGuardProps): JSX.Element | null => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -25,7 +25,7 @@ const AuthenticationGuard = ({
     const authPages = [
       `/${locale}/login`,
       `/${locale}/register`,
-      `/${locale}/reset-password`,
+      `/${locale}/reset-password`
     ];
     return authPages.includes(pathname);
   };

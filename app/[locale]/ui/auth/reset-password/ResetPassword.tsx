@@ -11,7 +11,7 @@ import Step1ResetPasswordForm from './ResetFormSteps/Step1ResetPasswordForm';
 import { Card } from '@/components/ui/card';
 import {
   useChangePassword,
-  useForgotPassword,
+  useForgotPassword
 } from '@/app/[locale]/hooks/auth/useAuth';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
@@ -31,17 +31,17 @@ const formSchema = z.object({
     .min(8, { message: 'Password must be at least 8 characters.' })
     .regex(/[0-9]/, { message: 'Password must contain at least 1 number.' })
     .regex(/[!@#$%^&*(),.?":{}|<>]/, {
-      message: 'Password must contain at least 1 special character.',
+      message: 'Password must contain at least 1 special character.'
     })
     .regex(/[A-Z]/, {
-      message: 'Password must contain at least 1 uppercase letter.',
+      message: 'Password must contain at least 1 uppercase letter.'
     })
     .regex(/[a-z]/, {
-      message: 'Password must contain at least 1 lowercase letter.',
+      message: 'Password must contain at least 1 lowercase letter.'
     }),
   resetConfirmationCode: z
     .string()
-    .min(6, { message: 'Reset code must best 6 digits.' }),
+    .min(6, { message: 'Reset code must best 6 digits.' })
 });
 
 const ResetPassword = () => {
@@ -49,13 +49,13 @@ const ResetPassword = () => {
     changePassword,
     changePasswordResponse,
     changePasswordLoading,
-    changePasswordError,
+    changePasswordError
   } = useChangePassword();
   const {
     requestChangePasswordResetCode,
     requestChangePasswordResponse,
     requestChangePasswordLoading,
-    requestChangePasswordError,
+    requestChangePasswordError
   } = useForgotPassword();
   const [isClient, setIsClient] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -68,8 +68,8 @@ const ResetPassword = () => {
     defaultValues: {
       email: '',
       newPassword: '',
-      resetConfirmationCode: '',
-    },
+      resetConfirmationCode: ''
+    }
   });
 
   const onContinue = async () => {
@@ -121,7 +121,7 @@ const ResetPassword = () => {
     await changePassword({
       email,
       newPassword,
-      resetConfirmationCode,
+      resetConfirmationCode
     });
   };
 

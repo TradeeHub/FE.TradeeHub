@@ -8,7 +8,7 @@ import {
   ApolloNextAppProvider,
   NextSSRInMemoryCache,
   NextSSRApolloClient,
-  SSRMultipartLink,
+  SSRMultipartLink
 } from '@apollo/experimental-nextjs-app-support/ssr';
 import authenticatedVar from './constants/authenticated';
 
@@ -19,8 +19,8 @@ function makeClient() {
     credentials: 'include',
     fetchOptions: { cache: 'no-store' },
     headers: {
-      'graphql-preflight': '',
-    },
+      'graphql-preflight': ''
+    }
   });
 
   const errorLink = onError(({ graphQLErrors }) => {
@@ -43,9 +43,9 @@ function makeClient() {
       typeof window === 'undefined'
         ? ApolloLink.from([
             new SSRMultipartLink({ stripDefer: true }),
-            combinedLink,
+            combinedLink
           ])
-        : combinedLink,
+        : combinedLink
   });
 }
 

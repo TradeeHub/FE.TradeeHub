@@ -7,27 +7,27 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog';
 import {
   FormField,
   FormItem,
   FormControl,
   FormMessage,
-  Form,
+  Form
 } from '@/components/ui/form';
 import SingleImageUploadForm from '@/app/[locale]/ui/general/SingleImageUploadComponent/SingleImageUploadComponent';
 import { Button } from '@/components/ui/button';
 import {
   useAddNewServiceCategory,
   useGetAllServiceCategoriesLazy,
-  useUpdateServiceCategory,
+  useUpdateServiceCategory
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import {
   AddNewServiceCategoryRequestInput,
   ServiceCategoryEntity,
   SortEnumType,
-  UpdateServiceCategoryRequestInput,
+  UpdateServiceCategoryRequestInput
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
@@ -37,7 +37,7 @@ import {
   SimpleSelectContent,
   SimpleSelectItem,
   SimpleSelectTrigger,
-  SimpleSelectValue,
+  SimpleSelectValue
 } from '@/app/[locale]/ui/general/SimpleSelect/SimpleSelect';
 
 // Assuming AddNewServiceCategoryRequestInput is correctly imported and usable here
@@ -46,7 +46,7 @@ const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional().nullable(), // Now accepts string, undefined, or null
   images: z.array(z.any()).optional().nullable(), // Now accepts array, undefined, or null
-  parentServiceCategoryId: z.string().optional().nullable(), // Now accepts string, undefined, or null
+  parentServiceCategoryId: z.string().optional().nullable() // Now accepts string, undefined, or null
 });
 
 const AddServiceCategoryModal = ({
@@ -55,7 +55,7 @@ const AddServiceCategoryModal = ({
   onAdded,
   onUpdated,
   modalName,
-  updateData,
+  updateData
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -72,13 +72,13 @@ const AddServiceCategoryModal = ({
           name: updateData.name,
           description: updateData.description,
           parentServiceCategoryId: updateData.parentServiceCategoryId,
-          images: updateData.images,
+          images: updateData.images
         }
       : {
           name: '',
           description: '',
-          parentServiceCategoryId: null,
-        },
+          parentServiceCategoryId: null
+        }
   });
 
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
@@ -94,7 +94,7 @@ const AddServiceCategoryModal = ({
   const {
     addNewServiceCategory,
     addNewServiceCategoryResponse,
-    addNewServiceCategoryLoading,
+    addNewServiceCategoryLoading
   } = useAddNewServiceCategory();
 
   const handleClose = () => {
@@ -115,9 +115,9 @@ const AddServiceCategoryModal = ({
         variables: {
           name: '',
           order: [{ modifiedAt: SortEnumType.Desc }],
-          pageSize: 100,
+          pageSize: 100
         },
-        fetchPolicy: 'network-only',
+        fetchPolicy: 'network-only'
       });
       fetchedRef.current = true;
     }
@@ -145,7 +145,7 @@ const AddServiceCategoryModal = ({
               <u>{resp.name}</u>
             </b>
           </span>
-        ),
+        )
       });
     }
   }, [updateServiceCategoryResponse]);
@@ -166,7 +166,7 @@ const AddServiceCategoryModal = ({
               <u>{resp.name}</u>
             </b>
           </span>
-        ),
+        )
       });
     }
   }, [addNewServiceCategoryResponse]);
@@ -201,7 +201,7 @@ const AddServiceCategoryModal = ({
         parentServiceCategoryId: dirtyFields.parentServiceCategoryId
           ? formData.parentServiceCategoryId
           : null,
-        s3KeyToDelete: s3KeyToDelete,
+        s3KeyToDelete: s3KeyToDelete
       };
       updateServiceCategory(request);
     } else {
@@ -209,7 +209,7 @@ const AddServiceCategoryModal = ({
         images: formData.images,
         name: formData.name,
         description: formData.description,
-        parentServiceCategoryId: formData.parentServiceCategoryId,
+        parentServiceCategoryId: formData.parentServiceCategoryId
       };
 
       addNewServiceCategory(request);

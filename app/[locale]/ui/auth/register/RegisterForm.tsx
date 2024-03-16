@@ -28,13 +28,13 @@ import getSymbolFromCurrency from 'currency-symbol-map';
 
 const LocationSchema = z.object({
   lat: z.number(),
-  lng: z.number(),
+  lng: z.number()
 });
 
 // Define the Zod schema for Viewport
 const ViewportSchema = z.object({
   northeast: LocationSchema,
-  southwest: LocationSchema,
+  southwest: LocationSchema
 });
 
 const UserPlaceSchema = z
@@ -45,12 +45,12 @@ const UserPlaceSchema = z
     CountryCode: z.string(),
     CallingCode: z.string(),
     Location: LocationSchema,
-    Viewport: ViewportSchema,
+    Viewport: ViewportSchema
   })
   .nullable()
   .nullable()
   .refine((data) => data !== null, {
-    message: 'Please enter your address.',
+    message: 'Please enter your address.'
     // You can add custom logic to check the properties of UserPlace if needed
   });
 
@@ -62,13 +62,13 @@ const formSchema = z
       .min(8, { message: 'Password must be at least 8 characters.' })
       .regex(/[0-9]/, { message: 'Password must contain at least 1 number.' })
       .regex(/[!@#$%^&*(),.?":{}|<>]/, {
-        message: 'Password must contain at least 1 special character.',
+        message: 'Password must contain at least 1 special character.'
       })
       .regex(/[A-Z]/, {
-        message: 'Password must contain at least 1 uppercase letter.',
+        message: 'Password must contain at least 1 uppercase letter.'
       })
       .regex(/[a-z]/, {
-        message: 'Password must contain at least 1 lowercase letter.',
+        message: 'Password must contain at least 1 lowercase letter.'
       }),
     confirmPassword: z.string(),
     name: z.string().min(2, { message: 'Please enter your name.' }),
@@ -76,7 +76,7 @@ const formSchema = z
       .string()
       .min(9, { message: 'Invalid phone number.' })
       .regex(/^\+\d{9,14}$/, {
-        message: 'Phone number must include country code.',
+        message: 'Phone number must include country code.'
       }),
     userPlace: UserPlaceSchema,
     companyName: z
@@ -88,15 +88,15 @@ const formSchema = z
     companyPriority: z
       .string()
       .min(1, { message: 'Please select an option above.' }),
-    marketingPreference: z.boolean(),
+    marketingPreference: z.boolean()
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match.",
-    path: ['confirmPassword'], // This shows where the error occurred
+    path: ['confirmPassword'] // This shows where the error occurred
   });
 
 const transformRegisterRequest = (
-  request: RegisterRequest,
+  request: RegisterRequest
 ): RegisterRequestInput => {
   const currency = countryToCurrency[
     request.userPlace?.CountryCode as Countries
@@ -118,19 +118,19 @@ const transformRegisterRequest = (
       placeId: request.userPlace?.PlaceId ?? '',
       location: {
         lat: request.userPlace?.Location.lat,
-        lng: request.userPlace?.Location.lng,
+        lng: request.userPlace?.Location.lng
       },
       viewport: {
         northeast: request.userPlace?.Viewport.northeast ?? { lat: 0, lng: 0 },
-        southwest: request.userPlace?.Viewport.southwest ?? { lat: 0, lng: 0 },
-      },
+        southwest: request.userPlace?.Viewport.southwest ?? { lat: 0, lng: 0 }
+      }
     },
     companyName: request.companyName,
     companyType: request.companyType,
     companySize: request.companySize,
     referralSource: request.referralSource,
     companyPriority: request.companyPriority,
-    marketingPreference: request.marketingPreference,
+    marketingPreference: request.marketingPreference
   };
 };
 
@@ -158,8 +158,8 @@ const RegisterForm = () => {
       companySize: '',
       referralSource: '',
       companyPriority: '',
-      marketingPreference: false,
-    },
+      marketingPreference: false
+    }
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -173,21 +173,21 @@ const RegisterForm = () => {
         const step1IsValid = await form.trigger([
           'email',
           'password',
-          'confirmPassword',
+          'confirmPassword'
         ]);
         if (step1IsValid) setCurrentStep((prev) => prev + 1);
       } else if (currentStep === 2) {
         const step2IsValid = await form.trigger([
           'name',
           'phoneNumber',
-          'userPlace',
+          'userPlace'
         ]);
         if (step2IsValid) setCurrentStep((prev) => prev + 1);
       } else if (currentStep === 3) {
         const step3IsValid = await form.trigger([
           'companyName',
           'companyType',
-          'companySize',
+          'companySize'
         ]);
         if (step3IsValid) setCurrentStep((prev) => prev + 1);
       }

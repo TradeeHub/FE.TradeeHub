@@ -5,7 +5,7 @@ import { RegisterRequest } from '@/app/[locale]/types/sharedTypes';
 import { AuthInputWithIcon } from '../../AuthInputWithIcon/AuthInputWithIcon';
 
 const Step1RegisterForm = ({
-  control,
+  control
 }: {
   control: Control<RegisterRequest>;
 }) => {

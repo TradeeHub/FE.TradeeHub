@@ -3,23 +3,23 @@ import {
   Command,
   CommandItem,
   CommandList,
-  CommandGroup,
+  CommandGroup
 } from '@/components/ui/command';
 import {
   Popover,
   PopoverTrigger,
-  PopoverContent,
+  PopoverContent
 } from '@radix-ui/react-popover';
 import { useSearchCustomerReferences } from '@/app/[locale]/hooks/customer/useCustomers';
 import {
   ReferenceResponse,
-  SearchReferenceRequestInput,
+  SearchReferenceRequestInput
 } from '@/generatedGraphql';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 
 type ReferenceProps<
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues>
 > = {
   field: ControllerRenderProps<TFieldValues, TName>;
   placeholder?: string;
@@ -27,10 +27,10 @@ type ReferenceProps<
 
 const CustomerReferenceSearch = <
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues>
 >({
   field,
-  placeholder,
+  placeholder
 }: ReferenceProps<TFieldValues, TName>) => {
   const [inputValue, setInputValue] = useState<string>('');
   const [references, setReferences] = useState<ReferenceResponse[]>([]);
@@ -58,7 +58,7 @@ const CustomerReferenceSearch = <
     if (term.trim() !== '') {
       const request: SearchReferenceRequestInput = {
         searchTerm: term.trim(),
-        pageSize: 10,
+        pageSize: 10
       };
       const customerReferences = await searchCustomerReferences(request);
       setReferences(customerReferences.references);
@@ -72,7 +72,7 @@ const CustomerReferenceSearch = <
     const referenceObject = {
       id: reference.id.toString(),
       displayName: reference.displayName, // Ensure displayName is stored
-      referenceType: reference.referenceType,
+      referenceType: reference.referenceType
     };
     field.onChange(referenceObject);
     setReferences([]);
@@ -97,7 +97,7 @@ const CustomerReferenceSearch = <
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setHighlightedIndex((prevIndex) =>
-        Math.min(prevIndex + 1, references.length - 1),
+        Math.min(prevIndex + 1, references.length - 1)
       );
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();

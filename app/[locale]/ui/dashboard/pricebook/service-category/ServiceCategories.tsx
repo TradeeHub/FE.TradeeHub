@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   useDeleteServiceCategory,
   useGetAllServiceCategories,
-  useGetAllServiceCategoriesLazy,
+  useGetAllServiceCategoriesLazy
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import { ServiceCategoryEntity, SortEnumType } from '@/generatedGraphql';
 import { useToast } from '@/components/ui/use-toast';
@@ -56,7 +56,7 @@ const ServiceCategories = () => {
   const handleUpdateCategory = (serviceCategory: ServiceCategoryEntity) => {
     setLocalServiceCategories((currentCategories) => {
       const filteredCategories = currentCategories.filter(
-        (category) => category.id !== serviceCategory.id,
+        (category) => category.id !== serviceCategory.id
       );
 
       return [serviceCategory, ...filteredCategories];
@@ -70,7 +70,7 @@ const ServiceCategories = () => {
             <u>{serviceCategory.name}</u>
           </b>
         </span>
-      ),
+      )
     });
   };
 
@@ -86,7 +86,7 @@ const ServiceCategories = () => {
   const onAdded = (newCategory: ServiceCategoryEntity) => {
     setLocalServiceCategories((prevCategories) => [
       newCategory,
-      ...prevCategories,
+      ...prevCategories
     ]);
   };
 
@@ -96,11 +96,11 @@ const ServiceCategories = () => {
         variables: {
           name: searchTerm,
           order: [{ modifiedAt: SortEnumType.Desc }],
-          pageSize: 50,
-        },
+          pageSize: 50
+        }
       });
     },
-    [searchServiceCategories],
+    [searchServiceCategories]
   );
 
   useEffect(() => {
@@ -118,8 +118,8 @@ const ServiceCategories = () => {
     ) {
       setLocalServiceCategories((currentCategories) =>
         currentCategories.filter(
-          (category) => category.id !== serviceCategoryToAction?.id,
-        ),
+          (category) => category.id !== serviceCategoryToAction?.id
+        )
       );
       toast({
         title: 'Successfully Deleted Service Category!',
@@ -130,7 +130,7 @@ const ServiceCategories = () => {
               <u>{serviceCategoryToAction?.name}</u>
             </b>
           </span>
-        ),
+        )
       });
     }
   }, [deleteServiceCategoryResponse]);
@@ -138,7 +138,7 @@ const ServiceCategories = () => {
   useEffect(() => {
     if (!serviceCategories) {
       const initialLoadData = serviceCategoriesInitialLoad?.edges?.map(
-        (edge) => edge?.node,
+        (edge) => edge?.node
       ) as [];
       setLocalServiceCategories(initialLoadData as ServiceCategoryEntity[]);
     }

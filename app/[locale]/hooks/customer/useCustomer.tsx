@@ -5,7 +5,7 @@ import {
   CustomerQuery,
   CustomerQueryVariables,
   CustomerEntity,
-  useAddNewCustomerMutation,
+  useAddNewCustomerMutation
 } from '@/generatedGraphql';
 import { UseCustomerReturnType } from '@/app/[locale]/types/sharedTypes';
 
@@ -15,7 +15,7 @@ const useCustomer = (customerId: string): UseCustomerReturnType => {
     CustomerQueryVariables
   >(CustomerDocument, {
     variables: { id: decodeURIComponent(customerId) },
-    notifyOnNetworkStatusChange: true,
+    notifyOnNetworkStatusChange: true
   });
 
   if (error) {
@@ -34,7 +34,7 @@ const useAddNewCustomer = () => {
   const addNewCustomer = async (input: AddNewCustomerRequestInput) => {
     try {
       await addNewCustomerMutation({
-        variables: { input },
+        variables: { input }
       });
     } catch (e) {
       console.error('Register error:', e);
@@ -45,7 +45,7 @@ const useAddNewCustomer = () => {
     addNewCustomer,
     addNewCustomerResponse: data,
     addNewCustomerLoading: loading,
-    addNewCustomerError: error,
+    addNewCustomerError: error
   };
 };
 

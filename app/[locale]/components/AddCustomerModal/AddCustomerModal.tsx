@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import React, { useEffect, useState } from 'react';
@@ -20,7 +20,7 @@ import {
   AddNewCustomerRequestInput,
   CustomerEntity,
   // AddNewCustomerMutation,
-  ReferenceType,
+  ReferenceType
 } from '@/generatedGraphql';
 import { useAddNewCustomer } from '../../hooks/customer/useCustomer';
 import { useToast } from '@/components/ui/use-toast';
@@ -45,12 +45,12 @@ type ModalProps = {
 
 const LocationSchema = z.object({
   lat: z.number(),
-  lng: z.number(),
+  lng: z.number()
 });
 
 const ViewportSchema = z.object({
   northeast: LocationSchema,
-  southwest: LocationSchema,
+  southwest: LocationSchema
 });
 
 const UserPlaceSchema = z.object({
@@ -60,14 +60,14 @@ const UserPlaceSchema = z.object({
   CountryCode: z.string(),
   CallingCode: z.string(),
   Location: LocationSchema,
-  Viewport: ViewportSchema,
+  Viewport: ViewportSchema
 });
 
 const AddCustomerModal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   onCustomerAdded,
-  modalName,
+  modalName
 }) => {
   const { toast } = useToast();
   const router = useRouter();
@@ -97,10 +97,10 @@ const AddCustomerModal: React.FC<ModalProps> = ({
               .optional()
               .nullable()
               .refine((val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
-                message: 'Invalid email format',
+                message: 'Invalid email format'
               }),
-            receiveNotifications: z.boolean(),
-          }),
+            receiveNotifications: z.boolean()
+          })
         )
         .nullable(),
       phoneNumbers: z
@@ -120,11 +120,11 @@ const AddCustomerModal: React.FC<ModalProps> = ({
               },
               {
                 message:
-                  'Phone number must include correct country code and be 9 to 14 digits long.',
-              },
+                  'Phone number must include correct country code and be 9 to 14 digits long.'
+              }
             ),
-            receiveNotifications: z.boolean(),
-          }),
+            receiveNotifications: z.boolean()
+          })
         )
         .nullable(),
       properties: z
@@ -132,8 +132,8 @@ const AddCustomerModal: React.FC<ModalProps> = ({
           z.object({
             isBillingAddress: z.boolean(),
             billing: UserPlaceSchema.optional().nullable(), // Assuming UserPlaceSchema is already defined and suitable
-            property: UserPlaceSchema.optional().nullable(),
-          }),
+            property: UserPlaceSchema.optional().nullable()
+          })
         )
         .optional()
         .nullable(),
@@ -141,12 +141,12 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       reference: z
         .object({
           id: z.string(),
-          referenceType: z.string(),
+          referenceType: z.string()
         })
         .optional()
         .nullable(),
       comment: z.string().nullable(),
-      multiValidation: z.string().nullable().optional(),
+      multiValidation: z.string().nullable().optional()
     })
     .refine(
       (data) =>
@@ -155,8 +155,8 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       {
         message:
           'Company Name is required when "Use company name as main" checkbox is checked.',
-        path: ['companyName'],
-      },
+        path: ['companyName']
+      }
     )
     .refine(
       (data) =>
@@ -166,8 +166,8 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       {
         message:
           'At least one of the Name, Surname, or Alias must be provided.',
-        path: ['multiValidation'], // Adjust path as necessary
-      },
+        path: ['multiValidation'] // Adjust path as necessary
+      }
     );
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -182,19 +182,19 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       useCompanyName: false,
       emails: [{ emailType: '', email: '', receiveNotifications: true }],
       phoneNumbers: [
-        { phoneNumberType: '', phoneNumber: '', receiveNotifications: true },
+        { phoneNumberType: '', phoneNumber: '', receiveNotifications: true }
       ],
       properties: [
         {
           isBillingAddress: true, // Assuming this is a mandatory field in your schema
           billing: null, // Initialize as null or provide a default structure
-          property: null, // Initialize as null or provide a default structure
-        },
+          property: null // Initialize as null or provide a default structure
+        }
       ],
       tags: [],
       reference: null,
-      comment: '',
-    },
+      comment: ''
+    }
   });
 
   const handleAddCustomer = async (formData: z.infer<typeof formSchema>) => {
@@ -212,13 +212,13 @@ const AddCustomerModal: React.FC<ModalProps> = ({
         formData.emails?.map((email) => ({
           emailType: email.emailType,
           email: email.email ?? '',
-          receiveNotifications: email.receiveNotifications,
+          receiveNotifications: email.receiveNotifications
         })) ?? [],
       phoneNumbers:
         formData.phoneNumbers?.map((phone) => ({
           phoneNumberType: phone.phoneNumberType,
           phoneNumber: phone.phoneNumber ?? '',
-          receiveNotifications: phone.receiveNotifications,
+          receiveNotifications: phone.receiveNotifications
         })) ?? [],
       properties:
         formData.properties?.map((property) => ({
@@ -232,12 +232,12 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                 callingCode: property.billing.CallingCode,
                 location: {
                   lat: property.billing.Location.lat,
-                  lng: property.billing.Location.lng,
+                  lng: property.billing.Location.lng
                 },
                 viewport: {
                   northeast: property.billing.Viewport.northeast,
-                  southwest: property.billing.Viewport.southwest,
-                },
+                  southwest: property.billing.Viewport.southwest
+                }
               }
             : null,
           property: property.property
@@ -249,23 +249,23 @@ const AddCustomerModal: React.FC<ModalProps> = ({
                 callingCode: property.property.CallingCode,
                 location: {
                   lat: property.property.Location.lat,
-                  lng: property.property.Location.lng,
+                  lng: property.property.Location.lng
                 },
                 viewport: {
                   northeast: property.property.Viewport.northeast,
-                  southwest: property.property.Viewport.southwest,
-                },
+                  southwest: property.property.Viewport.southwest
+                }
               }
-            : null,
+            : null
         })) ?? [],
       tags: formData.tags ?? [],
       reference: formData.reference
         ? {
             id: formData.reference.id,
-            referenceType: formData.reference.referenceType as ReferenceType,
+            referenceType: formData.reference.referenceType as ReferenceType
           }
         : null,
-      comment: formData.comment ?? '',
+      comment: formData.comment ?? ''
     };
 
     addNewCustomer(customerData);
@@ -296,7 +296,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
           >
             View
           </ToastAction>
-        ),
+        )
       });
       onCustomerAdded();
     }
@@ -309,7 +309,7 @@ const AddCustomerModal: React.FC<ModalProps> = ({
       const criticalFields = ['companyName', 'multiValidation', 'phoneNumbers'];
       console.log('errors', errors);
       const hasCriticalErrors = criticalFields.some(
-        (fieldName) => errors[fieldName as keyof typeof errors],
+        (fieldName) => errors[fieldName as keyof typeof errors]
       );
       if (isFormValid || !hasCriticalErrors) {
         setCurrentStep((prevStep) => prevStep + 1);

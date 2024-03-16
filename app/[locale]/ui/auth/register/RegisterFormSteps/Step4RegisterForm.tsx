@@ -5,24 +5,24 @@ import {
   FormItem,
   FormControl,
   FormDescription,
-  FormLabel,
+  FormLabel
 } from '@/components/ui/form';
 import { RegisterRequest } from '@/app/[locale]/types/sharedTypes';
 import {
   AuthInputWithIcon,
-  StyledFormMessage,
+  StyledFormMessage
 } from '../../AuthInputWithIcon/AuthInputWithIcon';
 import {
   SelectContent,
   SelectTrigger,
   SelectValue,
   Select,
-  SelectItem,
+  SelectItem
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 
 const Step4RegisterForm = ({
-  control,
+  control
 }: {
   control: Control<RegisterRequest>;
 }) => {

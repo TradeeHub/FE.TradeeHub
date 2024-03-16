@@ -4,7 +4,7 @@ import {
   FieldPath,
   FieldValues,
   PathValue,
-  UseFormReturn,
+  UseFormReturn
 } from 'react-hook-form';
 import { RxCross2 } from 'react-icons/rx';
 import { SimpleInput } from '../SimpleInput/SimpleInput';
@@ -13,7 +13,7 @@ import {
   SimpleSelectContent,
   SimpleSelectItem,
   SimpleSelectTrigger,
-  SimpleSelectValue,
+  SimpleSelectValue
 } from '../SimpleSelect/SimpleSelect';
 
 type Option = {
@@ -23,7 +23,7 @@ type Option = {
 
 type SelectWithInputFormProps<
   TFieldValues extends FieldValues,
-  TFieldName extends FieldPath<TFieldValues>,
+  TFieldName extends FieldPath<TFieldValues>
 > = {
   form: UseFormReturn<TFieldValues>;
   field: ControllerRenderProps<TFieldValues, TFieldName>;
@@ -35,14 +35,14 @@ type SelectWithInputFormProps<
 
 const SelectWithInput = <
   TFieldValues extends FieldValues,
-  TFieldName extends FieldPath<TFieldValues>,
+  TFieldName extends FieldPath<TFieldValues>
 >({
   form,
   field,
   title,
   options,
   defaultValue,
-  inputPlaceHolder,
+  inputPlaceHolder
 }: SelectWithInputFormProps<TFieldValues, TFieldName>) => {
   // Determine if the current value is a custom value not found in the options
   const initialValue = form.getValues(field.name);
@@ -62,7 +62,7 @@ const SelectWithInput = <
       form.setValue(
         field.name,
         effectiveValue as PathValue<TFieldValues, TFieldName>,
-        { shouldValidate: true },
+        { shouldValidate: true }
       );
     }
   }, [form, field.name, defaultValue, options]);
@@ -71,12 +71,12 @@ const SelectWithInput = <
     if (value.toLowerCase() === 'other') {
       setIsEditable(true);
       form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>, {
-        shouldDirty: true,
+        shouldDirty: true
       });
     } else {
       setIsEditable(false);
       form.setValue(field.name, value as PathValue<TFieldValues, TFieldName>, {
-        shouldDirty: true,
+        shouldDirty: true
       });
     }
   };
@@ -86,7 +86,7 @@ const SelectWithInput = <
     form.setValue(
       field.name,
       defaultValue as PathValue<TFieldValues, TFieldName>,
-      { shouldDirty: true },
+      { shouldDirty: true }
     );
   };
 
@@ -117,12 +117,13 @@ const SelectWithInput = <
         </SimpleSelect>
       )}
       {isEditable && (
-        <span
+        <button
           className='absolute inset-y-0 right-0 flex cursor-pointer items-center pr-4 text-xs font-bold text-gray-500 text-secondary'
           onClick={handleCancel}
+          tabIndex={0}
         >
           <RxCross2 /> {/* Assuming this is the red 'x' cross icon */}
-        </span>
+        </button>
       )}
     </div>
   );

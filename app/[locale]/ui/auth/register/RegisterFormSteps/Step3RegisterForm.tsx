@@ -8,11 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
   Select,
-  SelectItem,
+  SelectItem
 } from '@/components/ui/select';
 
 const Step3RegisterForm = ({
-  control,
+  control
 }: {
   control: Control<RegisterRequest>;
 }) => {

@@ -6,7 +6,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select';
 import { LanguageOption } from '../types/sharedTypes';
 
@@ -20,7 +20,7 @@ const languageOptions: Record<string, LanguageOption> = {
   hi: { name: 'हिन्दी' },
   pl: { name: 'Polski' },
   sq: { name: 'Shqip' },
-  zh: { name: '中文' },
+  zh: { name: '中文' }
 };
 const ChangeLanguage = () => {
   const pathname = usePathname();

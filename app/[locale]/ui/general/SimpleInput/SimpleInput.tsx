@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 
 type InputWithIconProps<
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues>
 > = {
   field: ControllerRenderProps<TFieldValues, TName>;
   icon?: IconType; // Make icon optional
@@ -21,7 +21,7 @@ type InputWithIconProps<
 
 const SimpleInput = <
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues>
 >({
   field,
   icon: Icon,
@@ -30,7 +30,7 @@ const SimpleInput = <
   placeholder = '',
   type = 'text',
   onEnterPress = () => {},
-  currencySymbol,
+  currencySymbol
 }: InputWithIconProps<TFieldValues, TName>) => {
   const [showPassword, setShowPassword] = useState(false);
   const [labelFloat, setLabelFloat] = useState(false);
@@ -116,12 +116,13 @@ const SimpleInput = <
           {labelFloat || field.value || isFocused ? title : placeholder}
         </label>
         {isPasswordType && (
-          <span
+          <button
+            type='button'
             className='absolute right-3 top-3 cursor-pointer text-xs text-gray-500'
             onClick={handleToggleShowPassword}
           >
             {showPassword ? 'Hide' : 'Show'}
-          </span>
+          </button>
         )}
       </div>
 
@@ -137,7 +138,7 @@ const StyledFormMessage = () => {
         marginTop: '0',
         marginLeft: '0.75rem',
         fontSize: '0.75rem',
-        color: '#ef4444',
+        color: '#ef4444'
       }}
       className='text-red-500' // You can keep this if you still want to apply Tailwind's red color
     />

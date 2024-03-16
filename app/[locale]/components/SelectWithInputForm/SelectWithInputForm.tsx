@@ -5,14 +5,14 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select';
 import {
   ControllerRenderProps,
   FieldPath,
   FieldValues,
   PathValue,
-  UseFormReturn,
+  UseFormReturn
 } from 'react-hook-form';
 import { RxCross2 } from 'react-icons/rx';
 
@@ -23,7 +23,7 @@ type Option = {
 
 type SelectWithInputFormProps<
   TFieldValues extends FieldValues,
-  TFieldName extends FieldPath<TFieldValues>,
+  TFieldName extends FieldPath<TFieldValues>
 > = {
   form: UseFormReturn<TFieldValues>;
   field: ControllerRenderProps<TFieldValues, TFieldName>;
@@ -34,13 +34,13 @@ type SelectWithInputFormProps<
 
 const SelectWithInputForm = <
   TFieldValues extends FieldValues,
-  TFieldName extends FieldPath<TFieldValues>,
+  TFieldName extends FieldPath<TFieldValues>
 >({
   form,
   field,
   options,
   defaultValue,
-  inputPlaceHolder,
+  inputPlaceHolder
 }: SelectWithInputFormProps<TFieldValues, TFieldName>) => {
   // Determine if the current value is a custom value not found in the options
   const initialValue = form.getValues(field.name);
@@ -60,7 +60,7 @@ const SelectWithInputForm = <
       form.setValue(
         field.name,
         effectiveValue as PathValue<TFieldValues, TFieldName>,
-        { shouldValidate: true },
+        { shouldValidate: true }
       );
     }
   }, [form, field.name, defaultValue, options]);
@@ -69,12 +69,12 @@ const SelectWithInputForm = <
     if (value.toLowerCase() === 'other') {
       setIsEditable(true);
       form.setValue(field.name, '' as PathValue<TFieldValues, TFieldName>, {
-        shouldDirty: true,
+        shouldDirty: true
       });
     } else {
       setIsEditable(false);
       form.setValue(field.name, value as PathValue<TFieldValues, TFieldName>, {
-        shouldDirty: true,
+        shouldDirty: true
       });
     }
   };
@@ -84,7 +84,7 @@ const SelectWithInputForm = <
     form.setValue(
       field.name,
       defaultValue as PathValue<TFieldValues, TFieldName>,
-      { shouldDirty: true },
+      { shouldDirty: true }
     );
   };
 
@@ -115,12 +115,12 @@ const SelectWithInputForm = <
         </Select>
       )}
       {isEditable && (
-        <span
+        <button
           className='absolute right-0 top-2 cursor-pointer text-xs font-bold text-gray-500 text-secondary'
           onClick={handleCancel}
         >
           <RxCross2 />
-        </span>
+        </button>
       )}
     </div>
   );

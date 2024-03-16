@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 
 export function VerificationCodeInput({
   length,
-  onComplete,
+  onComplete
 }: {
   length: number;
   onComplete: (code: string) => void;
@@ -34,7 +34,7 @@ export function VerificationCodeInput({
 
   const handleKeyDown = (
     event: React.KeyboardEvent<HTMLInputElement>,
-    index: number,
+    index: number
   ) => {
     if (event.key === 'Backspace') {
       if (inputs[index] === '' && index > 0) {

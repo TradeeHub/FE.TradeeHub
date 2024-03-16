@@ -4,14 +4,13 @@ import { Input } from '@/components/ui/input';
 import { IoSearchOutline } from 'react-icons/io5';
 import AddMaterialModal from './AddMaterialModal';
 import { useState } from 'react';
-import CustomGrid from '@/app/[locale]/components/Grid';
+// import CustomGrid from '@/app/[locale]/components/Grid';
 import { useGetMaterials } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 
 const Materials = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
-  const { allMaterials, allMaterialsLoading, allMaterialsError } =
-    useGetMaterials();
+  const { allMaterials } = useGetMaterials();
   console.log(allMaterials);
   return (
     <>

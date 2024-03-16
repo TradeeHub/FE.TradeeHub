@@ -40,56 +40,56 @@ const SideBar = () => {
       title: t('dashboard'),
       path: `/${locale}/dashboard`,
       icon: AiOutlineDashboard,
-      inactiveIcon: AiFillDashboard,
+      inactiveIcon: AiFillDashboard
     },
     {
       title: t('customers'),
       path: `/${locale}/dashboard/customers`,
       icon: HiOutlineUsers,
-      inactiveIcon: HiUsers,
+      inactiveIcon: HiUsers
     },
     {
       title: t('properties'),
       path: `/${locale}/dashboard/properties`,
       icon: BsHouses,
-      inactiveIcon: BsHousesFill,
+      inactiveIcon: BsHousesFill
     },
     {
       title: t('quotes'),
       path: `/${locale}/dashboard/quotes`,
       icon: AiOutlineThunderbolt,
-      inactiveIcon: AiFillThunderbolt,
+      inactiveIcon: AiFillThunderbolt
     },
     {
       title: t('jobs'),
       path: `/${locale}/dashboard/jobs`,
       icon: VscTools,
-      inactiveIcon: VscTools,
+      inactiveIcon: VscTools
     },
     {
       title: t('invoices'),
       path: `/${locale}/dashboard/invoices`,
       icon: LiaFileInvoiceDollarSolid,
-      inactiveIcon: LiaFileInvoiceDollarSolid,
+      inactiveIcon: LiaFileInvoiceDollarSolid
     },
     {
       title: t('appointments'),
       path: `/${locale}/dashboard/appointments`,
       icon: IoCalendarOutline,
-      inactiveIcon: IoCalendarSharp,
+      inactiveIcon: IoCalendarSharp
     },
     {
       title: t('analytics'),
       path: `/${locale}/dashboard/analytics`,
       icon: PiChartPieSliceThin,
-      inactiveIcon: PiChartPieSliceFill,
+      inactiveIcon: PiChartPieSliceFill
     },
     {
       title: t('pricebook'),
       path: `/${locale}/dashboard/pricebook`,
       icon: IoBookOutline,
-      inactiveIcon: IoBookSharp,
-    },
+      inactiveIcon: IoBookSharp
+    }
   ];
 
   return (
@@ -102,7 +102,7 @@ const SideBar = () => {
           </div>
         </div>
         <nav>
-          <ul role='list' className='space-y-1'>
+          <ul className='space-y-1'>
             {navigation.map((item) => (
               <li key={item.title} className='w-full'>
                 <Link href={item.path} passHref locale={locale}>

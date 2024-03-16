@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import {
   CustomerEntity,
   PhoneNumberEntity,
-  PropertyEntity,
+  PropertyEntity
 } from '@/generatedGraphql';
 
 const getInitials = (fullName: string) => {
@@ -38,7 +38,7 @@ const gridColumnDef: ColDef[] = [
     cellClass: 'text-center font-bold text-primary',
     filter: true,
     hide: false,
-    flex: 1,
+    flex: 1
   },
   {
     headerName: 'Name',
@@ -70,7 +70,7 @@ const gridColumnDef: ColDef[] = [
     filter: true,
     hide: false,
     flex: 1,
-    cellClass: 'items-center font-roboto',
+    cellClass: 'items-center font-roboto'
   },
   {
     headerName: 'Phone',
@@ -91,14 +91,14 @@ const gridColumnDef: ColDef[] = [
     filter: true,
     cellClass: 'text-center',
     hide: false,
-    flex: 1,
+    flex: 1
   },
   {
     headerName: 'Properties',
     field: 'properties',
     cellRenderer: (params: { value: PropertyEntity[] }) => {
       const propertyAddresses = params?.value?.map(
-        (x) => x.property?.address as string,
+        (x) => x.property?.address as string
       );
       return <ArrayDataPopover items={propertyAddresses || []} />;
     },
@@ -109,7 +109,7 @@ const gridColumnDef: ColDef[] = [
     headerClass: 'text-base',
     filter: true,
     hide: false,
-    flex: 1,
+    flex: 1
   },
   {
     headerName: 'Status',
@@ -119,7 +119,7 @@ const gridColumnDef: ColDef[] = [
     cellClass: 'text-center',
     filter: true,
     hide: false,
-    flex: 1,
+    flex: 1
   },
   {
     headerName: 'Tags',
@@ -134,7 +134,7 @@ const gridColumnDef: ColDef[] = [
     headerClass: 'text-base',
     filter: true,
     hide: false,
-    flex: 1,
+    flex: 1
   },
   {
     headerName: 'Last Activity',
@@ -149,7 +149,7 @@ const gridColumnDef: ColDef[] = [
     filter: true,
     hide: false,
     flex: 1,
-    cellClass: 'text-center', // Custom class for centering cell content
+    cellClass: 'text-center' // Custom class for centering cell content
   },
   {
     headerName: 'Created By',
@@ -159,7 +159,7 @@ const gridColumnDef: ColDef[] = [
     cellClass: 'text-center',
     filter: true,
     hide: true,
-    flex: 1,
+    flex: 1
   },
   {
     headerName: 'Created Date',
@@ -172,8 +172,8 @@ const gridColumnDef: ColDef[] = [
     headerClass: 'text-base',
     filter: true,
     hide: true,
-    flex: 1,
-  },
+    flex: 1
+  }
 ];
 
 const Customers = () => {

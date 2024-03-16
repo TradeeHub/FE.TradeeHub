@@ -11,7 +11,7 @@ import {
   GridReadyEvent,
   IDatasource,
   IGetRowsParams,
-  RowClickedEvent,
+  RowClickedEvent
 } from 'ag-grid-community';
 import { HiOutlineUserAdd } from 'react-icons/hi';
 import AddCustomerModal from './AddCustomerModal/AddCustomerModal';
@@ -21,13 +21,13 @@ const gridOptions = {
     sortable: true,
     filter: true,
     floatingFilter: true,
-    resizable: true,
+    resizable: true
   },
   // rowModelType: 'infinite', // Necessary for infinite scrolling
   cacheBlockSize: 30, // Number of rows per block
   cacheOverflowSize: 1, // Number of extra rows to request outside current view
   maxConcurrentDatasourceRequests: -1, // Number of concurrent data requests
-  infiniteInitialRowCount: 1, // Initial placeholder count
+  infiniteInitialRowCount: 1 // Initial placeholder count
   // maxBlocksInCache: undefined, // No limit to the number of blocks in cache
   // Additional properties can be set as needed
 };
@@ -38,7 +38,7 @@ const CustomGrid = ({
   fetchMoreData,
   refetch,
   initialData,
-  initialPageInfo,
+  initialPageInfo
 }: CustomGridProps) => {
   const [gridColumnDef, setColumnDefs] = useState(columnDefs || []);
   const pageInfoTrack = useRef<PageInfoSlim>(initialPageInfo); // Using useRef for cursor
@@ -62,7 +62,7 @@ const CustomGrid = ({
             : newDataRef.current;
           params.successCallback(
             dataToUse as [],
-            pageInfoTrack.current.hasNextPage ? -1 : dataToUse?.length,
+            pageInfoTrack.current.hasNextPage ? -1 : dataToUse?.length
           );
           if (isFirstLoad.current) {
             gridRowCount.current = initialData.length;
@@ -74,19 +74,19 @@ const CustomGrid = ({
         } else {
           const { rows, pageInfo } = await fetchMoreData(
             pageInfoTrack.current.endCursor,
-            gridOptions.cacheBlockSize,
+            gridOptions.cacheBlockSize
           );
           gridRowCount.current += rows.length;
           pageInfoTrack.current = pageInfo as PageInfoSlim;
           params.successCallback(
             rows as [],
-            pageInfoTrack.current.hasNextPage ? -1 : gridRowCount.current,
+            pageInfoTrack.current.hasNextPage ? -1 : gridRowCount.current
           );
         }
       } catch (error) {
         params.failCallback();
       }
-    },
+    }
   });
 
   const onGridReady = (params: GridReadyEvent) => {
@@ -108,8 +108,8 @@ const CustomGrid = ({
     setColumnDefs((currentDefs) =>
       currentDefs.map((col, idx) => ({
         ...col,
-        hide: idx === index ? !col.hide : col.hide,
-      })),
+        hide: idx === index ? !col.hide : col.hide
+      }))
     );
   };
 

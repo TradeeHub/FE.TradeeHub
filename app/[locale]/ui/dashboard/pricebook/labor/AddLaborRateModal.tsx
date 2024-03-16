@@ -7,24 +7,24 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog';
 import {
   FormField,
   FormItem,
   FormControl,
   Form,
-  FormLabel,
+  FormLabel
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import {
   useAddLaborRate,
-  useGetAllServiceCategoriesLazy,
+  useGetAllServiceCategoriesLazy
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import {
   AddLaborRateRequestInput,
   ServiceCategoryEntity,
-  SortEnumType,
+  SortEnumType
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
@@ -34,7 +34,7 @@ import {
   SimpleSelectContent,
   SimpleSelectItem,
   SimpleSelectTrigger,
-  SimpleSelectValue,
+  SimpleSelectValue
 } from '../../../general/SimpleSelect/SimpleSelect';
 import SelectWithInput from '../../../general/SelectWithInput/SelectWithInput';
 import { useSelector } from 'react-redux';
@@ -55,13 +55,13 @@ const laborUnitOptions = [
   { label: 'Per Visit', value: 'Per Visit' }, // For services charged per visit or call-out
   { label: 'Per Unit Installed', value: 'Per Unit Installed' }, // For installations charged per unit
   { label: 'Per Mile', value: 'Per Mile' }, // For services that include travel distance
-  { label: 'Per Kilometer', value: 'Per Kilometer' },
+  { label: 'Per Kilometer', value: 'Per Kilometer' }
 ];
 
 const rangeOfDecimalSchema = z.object({
   max: z.number().optional(),
   min: z.number().optional(),
-  overlaps: z.boolean(),
+  overlaps: z.boolean()
 });
 
 const pricingTierEntitySchema = z
@@ -70,8 +70,8 @@ const pricingTierEntitySchema = z
       id: z.string().optional().nullable(),
       cost: z.number().optional().nullable(), // Assuming cost can be nullable
       price: z.number().optional().nullable(),
-      unitRange: rangeOfDecimalSchema,
-    }),
+      unitRange: rangeOfDecimalSchema
+    })
   )
   .optional()
   .nullable();
@@ -84,12 +84,12 @@ const formSchema = z.object({
   cost: z.number().optional().nullable(),
   price: z.number().optional().nullable(),
   rateType: z.string(),
-  pricingTiers: pricingTierEntitySchema,
+  pricingTiers: pricingTierEntitySchema
 });
 
 const MarginProfitDisplay = ({
   cost,
-  price,
+  price
 }: {
   cost: number;
   price: number;
@@ -126,7 +126,7 @@ const MarginProfitDisplay = ({
 const AddLaborRateModal = ({
   isOpen,
   onClose,
-  modalName,
+  modalName
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -143,8 +143,8 @@ const AddLaborRateModal = ({
       cost: null,
       price: null,
       parentServiceCategoryId: null,
-      pricingTiers: [],
-    },
+      pricingTiers: []
+    }
   });
 
   const { addLaborRate, addLaborRateResponse, addLaborRateLoading } =
@@ -178,8 +178,8 @@ const AddLaborRateModal = ({
         variables: {
           name: '',
           order: [{ modifiedAt: SortEnumType.Desc }],
-          pageSize: 100,
-        },
+          pageSize: 100
+        }
       });
 
       fetchedRef.current = true;
@@ -200,11 +200,11 @@ const AddLaborRateModal = ({
         price: tier.price,
         unitRange: {
           max: tier.unitRange.max,
-          min: tier.unitRange.min,
-        },
+          min: tier.unitRange.min
+        }
       })),
       parentServiceCategoryId: formData.parentServiceCategoryId,
-      rateType: formData.rateType ?? '',
+      rateType: formData.rateType ?? ''
     };
 
     addLaborRate(request);
@@ -225,7 +225,7 @@ const AddLaborRateModal = ({
               <u>{resp.name}</u>
             </b>
           </span>
-        ),
+        )
       });
     }
   }, [addLaborRateResponse]);

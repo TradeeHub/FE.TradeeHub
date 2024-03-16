@@ -4,7 +4,7 @@ import React, {
   useRef,
   useEffect,
   MouseEvent,
-  FunctionComponent,
+  FunctionComponent
 } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -13,7 +13,7 @@ interface ArrayDataPopoverProps {
 }
 
 const ArrayDataPopover: FunctionComponent<ArrayDataPopoverProps> = ({
-  items,
+  items
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -56,7 +56,7 @@ const ArrayDataPopover: FunctionComponent<ArrayDataPopoverProps> = ({
       window.removeEventListener('resize', positionPopover);
       document.addEventListener(
         'mousedown',
-        handleClickOutside as EventListener,
+        handleClickOutside as EventListener
       );
       window.removeEventListener('scroll', () => setShowPopover(false), true);
     };
@@ -84,7 +84,7 @@ const ArrayDataPopover: FunctionComponent<ArrayDataPopoverProps> = ({
 
   return (
     <div className='relative inline-block text-sm'>
-      <span
+      <button
         ref={buttonRef}
         onClick={handleButtonClick}
         className='popover-trigger focus:outline-none'
@@ -102,7 +102,7 @@ const ArrayDataPopover: FunctionComponent<ArrayDataPopoverProps> = ({
           )}
           <span>{firstItem}</span>
         </div>
-      </span>
+      </button>
 
       {showPopover && ReactDOM.createPortal(popoverContent, document.body)}
     </div>

@@ -10,7 +10,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
     { name: 'Jobs', href: '#', current: false },
     { name: 'Invoices', href: '#', current: false },
     { name: 'Appointments', href: '#', current: false },
-    { name: 'Activity', href: '#', current: false },
+    { name: 'Activity', href: '#', current: false }
   ];
 
   function classNames(...classes: string[]) {
@@ -55,7 +55,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                         : 'text-gray-500 hover:text-gray-700',
                       tabIdx === 0 ? 'rounded-l-lg' : '',
                       tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
-                      'group relative min-w-0 flex-1 overflow-hidden bg-white px-4 py-4 text-center text-sm font-medium hover:bg-gray-50 focus:z-10',
+                      'group relative min-w-0 flex-1 overflow-hidden bg-white px-4 py-4 text-center text-sm font-medium hover:bg-gray-50 focus:z-10'
                     )}
                     aria-current={tab.current ? 'page' : undefined}
                   >
@@ -64,7 +64,7 @@ const Customer = ({ params }: { params: { customerId: string } }) => {
                       aria-hidden='true'
                       className={classNames(
                         tab.current ? 'bg-indigo-500' : 'bg-transparent',
-                        'absolute inset-x-0 bottom-0 h-0.5',
+                        'absolute inset-x-0 bottom-0 h-0.5'
                       )}
                     />
                   </a>

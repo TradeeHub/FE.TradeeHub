@@ -10,7 +10,7 @@ import {
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
-  useResendVerificationCodeMutation,
+  useResendVerificationCodeMutation
 } from '@/generatedGraphql';
 
 const useLogin = () => {
@@ -19,15 +19,15 @@ const useLogin = () => {
   const login = async (
     username: string,
     password: string,
-    rememberMe: boolean = false,
+    rememberMe: boolean = false
   ) => {
     try {
       await loginMutation({
         variables: {
           username,
           password,
-          rememberMe,
-        },
+          rememberMe
+        }
       });
     } catch (e) {
       console.error('Login error:', e);
@@ -38,7 +38,7 @@ const useLogin = () => {
     login,
     loginResponse: data?.login as LoginState,
     loginLoading: loading,
-    loginError: error,
+    loginError: error
   };
 };
 
@@ -65,8 +65,8 @@ const useConfirmAccount = () => {
       await confirmAccountMutation({
         variables: {
           confirmationCode,
-          email,
-        },
+          email
+        }
       });
     } catch (e) {
       console.error('Account confirmation error:', e);
@@ -77,7 +77,7 @@ const useConfirmAccount = () => {
     confirmAccount,
     verificationResponse: data,
     verificationLoading: loading,
-    verificationError: error,
+    verificationError: error
   };
 };
 
@@ -89,8 +89,8 @@ const useResendVerificationCode = () => {
     try {
       await resendVerificationCodeMutation({
         variables: {
-          email,
-        },
+          email
+        }
       });
     } catch (e) {
       console.error('Resend verification code error:', e);
@@ -101,7 +101,7 @@ const useResendVerificationCode = () => {
     resendVerificationCode,
     resendVerificationResponse: data,
     resendVerificationLoading: loading,
-    resendVerificationError: error,
+    resendVerificationError: error
   };
 };
 
@@ -111,7 +111,7 @@ const useRegister = () => {
   const register = async (input: RegisterRequestInput) => {
     try {
       await registerMutation({
-        variables: { input },
+        variables: { input }
       });
     } catch (e) {
       console.error('Register error:', e);
@@ -122,7 +122,7 @@ const useRegister = () => {
     register,
     registerResponse: data?.register,
     registerLoading: loading,
-    registerError: error,
+    registerError: error
   };
 };
 
@@ -132,7 +132,7 @@ const useGetLoggedInUser = () => {
   return {
     loggedInUser: data?.loggedInUser as UserEntity | undefined,
     loggedInUserLoading: loading,
-    loggedInUserError: error,
+    loggedInUserError: error
   };
 };
 
@@ -141,11 +141,11 @@ const useChangePassword = () => {
     useChangePasswordMutation();
 
   const changePassword = async (
-    input: ChangedForgottenPasswordRequestInput,
+    input: ChangedForgottenPasswordRequestInput
   ) => {
     try {
       await changePasswordMutation({
-        variables: { input },
+        variables: { input }
       });
     } catch (e) {
       console.error('Change Password error:', e);
@@ -156,7 +156,7 @@ const useChangePassword = () => {
     changePassword,
     changePasswordResponse: data,
     changePasswordLoading: loading,
-    changePasswordError: error,
+    changePasswordError: error
   };
 };
 
@@ -168,8 +168,8 @@ const useForgotPassword = () => {
     try {
       await forgotPasswordMutation({
         variables: {
-          email,
-        },
+          email
+        }
       });
     } catch (e) {
       console.error('Request reset password change error:', e);
@@ -180,7 +180,7 @@ const useForgotPassword = () => {
     requestChangePasswordResetCode,
     requestChangePasswordResponse: data,
     requestChangePasswordLoading: loading,
-    requestChangePasswordError: error,
+    requestChangePasswordError: error
   };
 };
 
@@ -192,5 +192,5 @@ export {
   useRegister,
   useGetLoggedInUser,
   useChangePassword,
-  useForgotPassword,
+  useForgotPassword
 };

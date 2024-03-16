@@ -5,14 +5,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import MenuItemButton from '../../dashboard/navbar/UserProfile/MenuItemButton';
 import { Button } from '@/components/ui/button';
 
 const GenericDropdownMenu = ({
   triggerIcon,
-  menuItems,
+  menuItems
 }: {
   triggerIcon: React.ReactNode;
   menuItems: MenuItem[];

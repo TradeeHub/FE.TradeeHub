@@ -2,12 +2,13 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 import { HiX } from 'react-icons/hi';
 import { MdOutlineAddPhotoAlternate } from 'react-icons/md';
+import Image from 'next/image';
 
 const SingleImageUploadForm = <
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues>
 >({
-  field,
+  field
 }: {
   field: ControllerRenderProps<TFieldValues, TName>;
 }) => {
@@ -84,6 +85,12 @@ const SingleImageUploadForm = <
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter') {
+      handleUploadAreaClick();
+    }
+  };
+
   return (
     <div className='space-y-4'>
       {!preview && (
@@ -93,6 +100,9 @@ const SingleImageUploadForm = <
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
+          onKeyDown={handleKeyDown} // Add keyboard event listener
+          role='button' // Add appropriate role
+          tabIndex={0} // Add tabindex
           style={{ position: 'relative' }} // Add relative positioning here
         >
           <input
@@ -112,7 +122,7 @@ const SingleImageUploadForm = <
               height: '100%',
               cursor: 'pointer',
               opacity: 0,
-              pointerEvents: 'none',
+              pointerEvents: 'none'
             }} // Add pointer-events: none
           />
           <div
@@ -121,25 +131,32 @@ const SingleImageUploadForm = <
               position: 'absolute',
               top: '50%',
               left: '50%',
-              transform: 'translate(-50%, -50%)',
+              transform: 'translate(-50%, -50%)'
             }}
           >
             <MdOutlineAddPhotoAlternate className='mx-auto h-8 w-8 text-gray-400' />
             <p className='mt-1 text-sm text-gray-400'>
-              Drag 'n' drop, or click to select
+              Drag &apos;n&apos; drop, or click to select
             </p>
           </div>
         </div>
       )}
       {preview && (
-        <div className='relative' onClick={handleUploadAreaClick}>
-          <img
+        <div
+          className='relative h-32 w-full'
+          onClick={handleUploadAreaClick}
+          onKeyDown={handleKeyDown} // Add keyboard event listener
+          role='button'
+          tabIndex={0}
+        >
+          <Image
             src={preview}
             alt='Preview'
-            className='h-32 w-full rounded-lg object-contain'
+            layout='fill'
+            objectFit='contain'
+            className='rounded-lg'
           />
           <button
-            type='button'
             className='absolute right-0 top-0 rounded-full bg-black p-1 text-white'
             onClick={handleRemoveImage}
           >

@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { Provider } from 'react-redux';
 
 export default function StoreProvider({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {

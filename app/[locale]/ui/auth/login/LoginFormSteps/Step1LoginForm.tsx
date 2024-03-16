@@ -6,7 +6,7 @@ import { AuthInputWithIcon } from '../../AuthInputWithIcon/AuthInputWithIcon';
 
 const Step1LoginForm = ({
   control,
-  onEnterPress,
+  onEnterPress
 }: {
   control: Control<LoginRequest>;
   onEnterPress?: () => void;

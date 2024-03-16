@@ -3,7 +3,7 @@ import { UserEntity } from '@/generatedGraphql';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: UserState = {
-  data: null,
+  data: null
 };
 
 export const userSlice = createSlice({
@@ -15,8 +15,8 @@ export const userSlice = createSlice({
     },
     resetUser: (state) => {
       state.data = null;
-    },
-  },
+    }
+  }
 });
 
 export const { setUser, resetUser } = userSlice.actions;

@@ -1,7 +1,7 @@
 const ProgressBar = ({
   totalSteps,
   currentStep,
-  labels = [],
+  labels = []
 }: {
   totalSteps: number;
   currentStep: number;

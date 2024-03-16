@@ -6,7 +6,7 @@ import { AddCustomerFormRequest } from '@/app/[locale]/types/sharedTypes';
 import SelectWithInputForm from '../../SelectWithInputForm/SelectWithInputForm';
 import {
   AuthInputWithIcon,
-  StyledFormMessage,
+  StyledFormMessage
 } from '@/app/[locale]/ui/auth/AuthInputWithIcon/AuthInputWithIcon';
 
 const titleOptions = [
@@ -16,7 +16,7 @@ const titleOptions = [
   { label: 'Ms.', value: 'Ms.' },
   { label: 'Miss.', value: 'Miss.' },
   { label: 'Dr.', value: 'Dr.' },
-  { label: 'Other', value: 'Other' },
+  { label: 'Other', value: 'Other' }
 ];
 
 type CustomerIdentityFormProps = {
@@ -24,7 +24,7 @@ type CustomerIdentityFormProps = {
 };
 
 const CustomerIdentityForm: React.FC<CustomerIdentityFormProps> = ({
-  form,
+  form
 }) => {
   return (
     <>

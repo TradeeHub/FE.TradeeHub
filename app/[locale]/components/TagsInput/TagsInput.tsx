@@ -3,7 +3,7 @@ import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 
 type TagsInputProps<
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues>
 > = {
   field: ControllerRenderProps<TFieldValues, TName>;
   placeholder?: string;
@@ -11,10 +11,10 @@ type TagsInputProps<
 
 const TagsInput = <
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues>
 >({
   field,
-  placeholder = 'Add tags',
+  placeholder = 'Add tags'
 }: TagsInputProps<TFieldValues, TName>) => {
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -64,6 +64,9 @@ const TagsInput = <
       <div
         className='flex flex-wrap items-center gap-2 py-1 pl-3'
         onClick={() => setIsFocused(true)}
+        role='button' // Add role attribute
+        tabIndex={0} // Add tabIndex attribute
+        onKeyDown={handleKeyDown} // Add onKeyDown event listener
       >
         {field.value.map((tag: string, index: number) => (
           <div key={index} className='flex items-center rounded bg-border px-2'>

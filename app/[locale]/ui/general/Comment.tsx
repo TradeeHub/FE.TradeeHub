@@ -4,7 +4,7 @@ import { IconType } from 'react-icons';
 
 type CommentInputProps<
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues>
 > = {
   field: ControllerRenderProps<TFieldValues, TName>;
   icon?: IconType;
@@ -14,12 +14,12 @@ type CommentInputProps<
 
 const CommentInput = <
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues>
 >({
   field,
   icon: Icon,
   title = 'Internal Comment',
-  placeholder = 'Add an internal comment...',
+  placeholder = 'Add an internal comment...'
 }: CommentInputProps<TFieldValues, TName>) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);

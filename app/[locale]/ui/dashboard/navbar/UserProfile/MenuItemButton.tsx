@@ -12,7 +12,7 @@ const MenuItemButton: React.FC<MenuItemButtonProps> = ({
   icon: Icon,
   name,
   onClick,
-  className,
+  className
 }) => {
   // Destructure and rename to Icon
   return (

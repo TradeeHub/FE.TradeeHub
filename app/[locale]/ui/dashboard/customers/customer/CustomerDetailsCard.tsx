@@ -9,13 +9,13 @@ import moment from 'moment';
 import {
   CustomerEntity,
   PropertyEntity,
-  ReferenceInfoEntity,
+  ReferenceInfoEntity
 } from '@/generatedGraphql';
 import {
   Tabs,
   TabsContent,
   TabsList,
-  TabsTrigger,
+  TabsTrigger
 } from '@/app/[locale]/components/TabsCustom/TabsCustom';
 import Link from 'next/link';
 import { CiTimer } from 'react-icons/ci';
@@ -48,7 +48,7 @@ const CustomerDetailsCard = ({ customer }: { customer: CustomerEntity }) => {
 
   const customerWithSortedProperties = {
     ...customer,
-    properties: sortedProperties,
+    properties: sortedProperties
   };
 
   return (
@@ -109,7 +109,7 @@ const CustomerDetailsCard = ({ customer }: { customer: CustomerEntity }) => {
 
 const ReferenceDetails = ({
   reference,
-  plForDd,
+  plForDd
 }: {
   reference: ReferenceInfoEntity | undefined;
   plForDd: string;

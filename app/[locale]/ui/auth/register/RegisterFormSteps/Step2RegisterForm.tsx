@@ -7,7 +7,7 @@ import { AuthInputWithIcon } from '../../AuthInputWithIcon/AuthInputWithIcon';
 
 const Step2RegisterForm = ({
   control,
-  onPlaceSelected,
+  onPlaceSelected
 }: {
   control: Control<RegisterRequest>;
   onPlaceSelected: (userPlace: UserPlace | null) => void;
@@ -48,7 +48,7 @@ const Step2RegisterForm = ({
         control={control}
         name='userPlace'
         render={(
-          { field }, // Destructure to only pass field
+          { field } // Destructure to only pass field
         ) => (
           <FormItem>
             <FormControl>

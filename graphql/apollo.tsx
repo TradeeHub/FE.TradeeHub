@@ -11,7 +11,7 @@ const GRAPHQL_ENDPOINT = 'http://localhost:5020/graphql/';
 const StrapiApolloProvider = ({ children }: Props) => {
   const client = new ApolloClient({
     uri: GRAPHQL_ENDPOINT,
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache()
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

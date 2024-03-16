@@ -5,7 +5,7 @@ import {
   Exact,
   InputMaybe,
   PricingTierEntity,
-  UserEntity,
+  UserEntity
 } from '@/generatedGraphql';
 import { ApolloError, ApolloQueryResult } from '@apollo/client';
 import { ColDef } from 'ag-grid-community';
@@ -26,7 +26,7 @@ export type CustomGridProps = {
   columnDefs: ColDef[];
   fetchMoreData: (
     endCursor: string | null,
-    pageSize: number,
+    pageSize: number
   ) => Promise<FetchMoreDataResult>;
   refetch: (
     variables?: Partial<
@@ -34,7 +34,7 @@ export type CustomGridProps = {
         pageSize: number;
         cursor?: InputMaybe<string> | undefined;
       }>
-    >,
+    >
   ) => Promise<ApolloQueryResult<CustomersPagedQuery>>;
   initialData: object[];
   initialPageInfo: PageInfoSlim;

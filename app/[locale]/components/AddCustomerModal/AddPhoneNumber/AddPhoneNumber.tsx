@@ -5,7 +5,7 @@ import { AddCustomerFormRequest } from '@/app/[locale]/types/sharedTypes';
 import {
   ControllerRenderProps,
   UseFormReturn,
-  useFieldArray,
+  useFieldArray
 } from 'react-hook-form';
 import SelectWithInputForm from '../../SelectWithInputForm/SelectWithInputForm';
 import { AuthInputWithIcon } from '@/app/[locale]/ui/auth/AuthInputWithIcon/AuthInputWithIcon';
@@ -17,7 +17,7 @@ const phoneNumberTypeOptions = [
   { label: 'Mobile', value: 'Mobile' },
   { label: 'Home', value: 'Home' },
   { label: 'Work', value: 'Work' },
-  { label: 'Other', value: 'Other' },
+  { label: 'Other', value: 'Other' }
 ];
 
 type MultiPhoneNumberProps = {
@@ -29,17 +29,17 @@ const MultiPhoneNumber: React.FC<MultiPhoneNumberProps> = ({ form }) => {
   const {
     fields: phoneFields,
     append: appendPhone,
-    remove: removePhone,
+    remove: removePhone
   } = useFieldArray({
     control,
-    name: 'phoneNumbers',
+    name: 'phoneNumbers'
   });
 
   const addPhoneNumber = () => {
     appendPhone({
       phoneNumber: '',
       phoneNumberType: '',
-      receiveNotifications: true,
+      receiveNotifications: true
     });
   };
 
@@ -103,7 +103,7 @@ const MultiPhoneNumber: React.FC<MultiPhoneNumberProps> = ({ form }) => {
                   onCheckedChange={(checked) =>
                     form.setValue(
                       `phoneNumbers.${index}.receiveNotifications`,
-                      checked,
+                      checked
                     )
                   }
                   onLabel='ON'

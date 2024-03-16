@@ -25,7 +25,7 @@ import Link from 'next/link';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email format.' }),
-  password: z.string().min(1, { message: 'Password must be provided' }),
+  password: z.string().min(1, { message: 'Password must be provided' })
 });
 
 const Login = () => {
@@ -45,8 +45,8 @@ const Login = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
-      password: '',
-    },
+      password: ''
+    }
   });
 
   const handleLogin = () => {
@@ -176,7 +176,7 @@ const Login = () => {
                     </Link>
                   </div>
                   <div className='text-center'>
-                    <span>Don't have an account? </span>
+                    <span>Don&apos;t have an account? </span>
                     <Link
                       href={'register'}
                       passHref

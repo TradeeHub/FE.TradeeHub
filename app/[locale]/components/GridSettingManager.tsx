@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 
 const GridSettingManager = ({
   columnDefs,
-  onToggleColumnVisibility,
+  onToggleColumnVisibility
 }: {
   columnDefs: ColDef[];
   onToggleColumnVisibility: (index: number) => void;
@@ -56,7 +56,7 @@ const GridSettingManager = ({
 // SidebarContent Component
 const SidebarContent = ({
   columnDefs,
-  onToggleColumnVisibility,
+  onToggleColumnVisibility
 }: {
   columnDefs: ColDef[];
   onToggleColumnVisibility: (index: number) => void;

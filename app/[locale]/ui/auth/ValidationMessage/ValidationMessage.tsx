@@ -1,7 +1,7 @@
 import { ApolloError, ServerError } from '@apollo/client';
 
 const ValidationMessage = ({
-  validationMessage,
+  validationMessage
 }: {
   validationMessage: string | undefined | null | ApolloError;
 }) => {
@@ -28,7 +28,7 @@ const ValidationMessage = ({
               <p key={index} className='text-sm text-secondary'>
                 {error.message}
               </p>
-            ),
+            )
           );
           return errorMessages.length > 0 ? (
             errorMessages

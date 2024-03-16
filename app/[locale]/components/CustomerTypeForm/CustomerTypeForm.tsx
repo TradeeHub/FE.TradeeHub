@@ -4,7 +4,7 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
+  FormLabel
 } from '@/components/ui/form';
 import SelectWithInputForm from '../SelectWithInputForm/SelectWithInputForm';
 import { AddCustomerFormRequest } from '../../types/sharedTypes';
@@ -23,7 +23,7 @@ const customerTypeOptions = [
   { label: 'Property Management Company', value: 'Property Management' },
   { label: 'Construction Firm', value: 'Construction Firm' },
   { label: 'Educational Institution', value: 'Educational Institution' },
-  { label: 'Other', value: 'Other' },
+  { label: 'Other', value: 'Other' }
 ];
 
 type CustomerTypeFormProps = {

@@ -4,13 +4,13 @@ import {
   Command,
   CommandGroup,
   CommandItem,
-  CommandList,
+  CommandList
 } from '@/components/ui/command';
 import debounce from 'lodash.debounce';
 import {
   Popover,
   PopoverContent,
-  PopoverTrigger,
+  PopoverTrigger
 } from '@radix-ui/react-popover';
 import { PiMapPinLight } from 'react-icons/pi';
 import { UserPlace } from '@/app/[locale]/types/sharedTypes';
@@ -21,7 +21,7 @@ import { useSelector } from 'react-redux';
 
 type AddressAutocompleteProps<
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues>
 > = {
   // ControllerRenderProps includes everything that comes from `render` prop of Controller
   field: ControllerRenderProps<TFieldValues, TName>;
@@ -36,7 +36,7 @@ type AutocompletePrediction = {
 };
 
 function getCountryAndCode(
-  addressComponents: google.maps.GeocoderAddressComponent[] | undefined,
+  addressComponents: google.maps.GeocoderAddressComponent[] | undefined
 ) {
   let country: string | null = null;
   let countryCode: string | null = null;
@@ -56,10 +56,10 @@ function getCountryAndCode(
 }
 
 function mapPlaceResultToUserPlace(
-  placeResult: google.maps.places.PlaceResult,
+  placeResult: google.maps.places.PlaceResult
 ): UserPlace {
   const { country, countryCode } = getCountryAndCode(
-    placeResult.address_components,
+    placeResult.address_components
   );
 
   return {
@@ -67,31 +67,31 @@ function mapPlaceResultToUserPlace(
     Address: placeResult.formatted_address || '',
     Location: {
       lat: placeResult.geometry?.location.lat() || 0,
-      lng: placeResult.geometry?.location.lng() || 0,
+      lng: placeResult.geometry?.location.lng() || 0
     },
     Viewport: {
       northeast: {
         lat: placeResult.geometry?.viewport.getNorthEast().lat() || 0,
-        lng: placeResult.geometry?.viewport.getNorthEast().lng() || 0,
+        lng: placeResult.geometry?.viewport.getNorthEast().lng() || 0
       },
       southwest: {
         lat: placeResult.geometry?.viewport.getSouthWest().lat() || 0,
-        lng: placeResult.geometry?.viewport.getSouthWest().lng() || 0,
-      },
+        lng: placeResult.geometry?.viewport.getSouthWest().lng() || 0
+      }
     },
     Country: country || '',
     CountryCode: countryCode || '',
-    CallingCode: getCountryCallingCode(countryCode as CountryCode) || '',
+    CallingCode: getCountryCallingCode(countryCode as CountryCode) || ''
   };
 }
 
 const AddressAutocomplete = <
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues>
 >({
   field,
   placeholder = 'Address',
-  onPlaceSelected,
+  onPlaceSelected
 }: AddressAutocompleteProps<TFieldValues, TName>) => {
   const user = useSelector((state: RootState) => state.user.data);
   const [labelFloat, setLabelFloat] = useState(false);
@@ -114,7 +114,7 @@ const AddressAutocomplete = <
     if (input && autocompleteServiceRef.current) {
       const location = new google.maps.LatLng(
         user?.place.location.lat,
-        user?.place.location.lng,
+        user?.place.location.lng
       );
       autocompleteServiceRef.current.getPlacePredictions(
         {
@@ -122,7 +122,7 @@ const AddressAutocomplete = <
           location: user ? location : undefined,
           radius: user ? 48280 : undefined,
           types: ['address'],
-          sessionToken: sessionTokenRef.current,
+          sessionToken: sessionTokenRef.current
         },
         (predictions, status) => {
           if (
@@ -135,13 +135,13 @@ const AddressAutocomplete = <
             setSuggestions(
               predictions.map(({ description, place_id }) => ({
                 description,
-                place_id,
-              })),
+                place_id
+              }))
             );
           } else {
             setSuggestions([]);
           }
-        },
+        }
       );
     } else {
       setSuggestions([]);
@@ -151,7 +151,7 @@ const AddressAutocomplete = <
   const handleSelect = (location: AutocompletePrediction) => {
     if (location) {
       const placesService = new google.maps.places.PlacesService(
-        document.createElement('div'),
+        document.createElement('div')
       );
 
       if (location.place_id) {
@@ -163,8 +163,8 @@ const AddressAutocomplete = <
               'geometry',
               'formatted_address',
               'place_id',
-              'address_components',
-            ], // Specify the fields here
+              'address_components'
+            ] // Specify the fields here
           },
           (place, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK && place) {
@@ -177,7 +177,7 @@ const AddressAutocomplete = <
             } else {
               console.error('Error getting details:', status);
             }
-          },
+          }
         );
       } else {
         console.error('Invalid place_id:', location.place_id);
@@ -204,7 +204,7 @@ const AddressAutocomplete = <
   useEffect(() => {
     const loader = new Loader({
       apiKey: apiKey ?? '',
-      libraries: ['places'],
+      libraries: ['places']
     });
 
     loader.load().then(() => {
@@ -238,7 +238,7 @@ const AddressAutocomplete = <
     if (e.key === 'ArrowDown') {
       e.preventDefault(); // Prevent the cursor from moving
       setHighlightedIndex((prevIndex) =>
-        Math.min(prevIndex + 1, suggestions.length - 1),
+        Math.min(prevIndex + 1, suggestions.length - 1)
       );
     }
     // Arrow up
@@ -278,8 +278,6 @@ const AddressAutocomplete = <
                   hasMadeSelection.current = false;
                   setInputValue(v.target.value);
                 }}
-                autoComplete='nope'
-                // iconClass='text-secondary opacity-100 h-5 w-5'
               />
             </Command>
           </PopoverTrigger>

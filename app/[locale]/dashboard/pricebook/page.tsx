@@ -2,7 +2,7 @@ import {
   Tabs,
   TabsContent,
   TabsList,
-  TabsTrigger,
+  TabsTrigger
 } from '../../components/TabsCustom/TabsCustom';
 import LaborRates from '../../ui/dashboard/pricebook/labor/LaborRates';
 import Materials from '../../ui/dashboard/pricebook/material/Materials';

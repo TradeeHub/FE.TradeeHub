@@ -3,13 +3,13 @@ import { Control } from 'react-hook-form';
 import { FormField, FormItem, FormControl } from '@/components/ui/form';
 import {
   AuthInputWithIcon,
-  StyledFormMessage,
+  StyledFormMessage
 } from '../../AuthInputWithIcon/AuthInputWithIcon';
 import { ChangedForgottenPasswordRequestInput } from '@/generatedGraphql';
 
 const Step2ResetPasswordForm = ({
   control,
-  onEnterPress,
+  onEnterPress
 }: {
   control: Control<ChangedForgottenPasswordRequestInput>;
   onEnterPress?: () => void;

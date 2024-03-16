@@ -5,7 +5,7 @@ import {
   CustomersPagedQuery,
   CustomersPagedQueryVariables,
   SearchReferenceRequestInput,
-  useSearchCustomerReferencesQuery,
+  useSearchCustomerReferencesQuery
 } from '@/generatedGraphql';
 
 const useCustomers = () => {
@@ -14,14 +14,14 @@ const useCustomers = () => {
     CustomersPagedQueryVariables
   >(CustomersPagedDocument, {
     variables: { pageSize: 30 },
-    notifyOnNetworkStatusChange: true,
+    notifyOnNetworkStatusChange: true
   });
 
   const fetchMoreData = useCallback(
     async (endCursor: string | null, pageSize: number) => {
       try {
         const fetchResult = await fetchMore({
-          variables: { cursor: endCursor, pageSize: pageSize },
+          variables: { cursor: endCursor, pageSize: pageSize }
         });
         const newRows =
           fetchResult?.data?.customers?.edges?.map((edge) => edge.node) || [];
@@ -30,7 +30,7 @@ const useCustomers = () => {
         const pageInfo = fetchResult?.data?.customers?.pageInfo
           ? {
               ...fetchResult.data.customers.pageInfo,
-              endCursor: fetchResult.data.customers.pageInfo.endCursor || null, // Convert undefined to null
+              endCursor: fetchResult.data.customers.pageInfo.endCursor || null // Convert undefined to null
             }
           : null;
 
@@ -39,7 +39,7 @@ const useCustomers = () => {
         return { rows: [], pageInfo: null };
       }
     },
-    [fetchMore],
+    [fetchMore]
   );
 
   return { data, loading, error, fetchMoreData, refetch };
@@ -51,28 +51,28 @@ const useSearchCustomerReferences = () => {
     data,
     error,
     loading,
-    refetch, // Use refetch to perform the search with new searchTerm
+    refetch // Use refetch to perform the search with new searchTerm
   } = useSearchCustomerReferencesQuery({
     skip: true,
-    notifyOnNetworkStatusChange: true,
+    notifyOnNetworkStatusChange: true
   });
 
   const searchCustomerReferences = useCallback(
     async (request: SearchReferenceRequestInput) => {
       const reference = await refetch({
-        request,
+        request
       });
 
       return reference?.data?.searchCustomerReferences;
     },
-    [refetch],
+    [refetch]
   );
 
   return {
     searchCustomerReferences,
     searchResults: data?.searchCustomerReferences,
     loading,
-    error,
+    error
   };
 };
 

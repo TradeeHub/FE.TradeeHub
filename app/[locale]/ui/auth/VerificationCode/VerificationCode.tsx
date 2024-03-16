@@ -3,7 +3,7 @@ import VerificationCodeInput from '../../general/AddressAutocomplete/Verificatio
 import {
   useConfirmAccount,
   useLogin,
-  useResendVerificationCode,
+  useResendVerificationCode
 } from '@/app/[locale]/hooks/auth/useAuth';
 import { useEffect, useState } from 'react';
 import ValidationMessage from '../ValidationMessage/ValidationMessage';

@@ -5,6 +5,7 @@ import { MdOutlineImageNotSupported } from 'react-icons/md';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { ServiceCategoryEntity } from '@/generatedGraphql';
 import GenericDropdownMenu from '@/app/[locale]/ui/general/GenericDropdownMenu/GenericDropdownMenu';
+import Image from 'next/image';
 
 type ServiceCategoryCardProps = {
   onDelete: (serviceCategory: ServiceCategoryEntity) => void;
@@ -15,7 +16,7 @@ type ServiceCategoryCardProps = {
 const ServiceCategoryCard = ({
   serviceCategory,
   onDelete,
-  onUpdate,
+  onUpdate
 }: ServiceCategoryCardProps) => {
   const imageUrl = serviceCategory.images?.[0]?.url ?? '';
   const menuItems = [
@@ -23,19 +24,23 @@ const ServiceCategoryCard = ({
     {
       label: 'Delete',
       icon: RiDeleteBin7Line,
-      onClick: () => onDelete(serviceCategory),
-    },
+      onClick: () => onDelete(serviceCategory)
+    }
   ];
 
   return (
     <div className='flex w-full flex-col'>
       <div className='w-full'>
         {imageUrl.length > 0 ? (
-          <img
-            src={imageUrl}
-            alt={serviceCategory.name}
-            className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-100 object-contain  shadow-sm transition-transform duration-300 ease-in-out hover:scale-110 dark:border-primary/5'
-          />
+          <div className='relative h-32 w-full'>
+            <Image
+              src={imageUrl}
+              alt={serviceCategory.name}
+              layout='fill'
+              objectFit='contain'
+              className='rounded-lg border border-gray-100 shadow-sm transition-transform duration-300 ease-in-out hover:scale-110 dark:border-primary/5'
+            />
+          </div>
         ) : (
           <div className='flex h-32 w-full items-center justify-center rounded-lg border border-gray-100 object-contain shadow-sm transition-transform duration-300 ease-in-out hover:scale-110 dark:border-primary/5'>
             <MdOutlineImageNotSupported size={64} className='text-gray-400' />
