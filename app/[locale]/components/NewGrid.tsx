@@ -20,9 +20,14 @@ const gridOptions = {
   defaultColDef: {
     sortable: true,
     filter: true,
-    floatingFilter: true,
+    // floatingFilter: true,
     resizable: true
   },
+  rowHeight: 70,
+  tooltipInteraction: true,
+  enableBrowserTooltips: true,
+  alwaysShowHorizontalScroll: true,
+  suppressScrollOnNewData: true,
   // rowModelType: 'infinite', // Necessary for infinite scrolling
   cacheBlockSize: 30, // Number of rows per block
   cacheOverflowSize: 1, // Number of extra rows to request outside current view
@@ -33,7 +38,7 @@ const gridOptions = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomGrid = ({
+const NewGrid = ({
   columnDefs,
   fetchMoreData,
   refetch,
@@ -97,11 +102,11 @@ const CustomGrid = ({
   const onRowClicked = (event: RowClickedEvent) => {
     const target = event?.event?.target as Element;
 
-    if (target && target.closest('.popover-trigger')) {
-      return;
-    }
+    // if (target && target.closest('.popover-trigger')) {
+    //   return;
+    // }
 
-    router.push(`${pathname}/${event.data.id}`);
+    // router.push(`${pathname}/${event.data.id}`);
   };
 
   const onToggleColumnVisibility = (index: number) => {
@@ -128,40 +133,32 @@ const CustomGrid = ({
       gridApiRef.current.setGridOption('datasource', dataSource()); // Refresh the datasource to reflect new data
     }
   };
-
   return (
     <>
-      <div className='mt-2 flex flex-col gap-4 rounded-lg md:mr-12  md:flex-row md:gap-4'>
-        <div className='xs:flex-row flex flex-row items-center gap-5 p-2 sm:items-start sm:p-0 md:mr-1 md:flex-col'>
-          <CustomSidebar
+      <div className='header'>
+        {' '}
+        {/* Start of the header section */}
+        <CustomSidebar
+          columnDefs={gridColumnDef}
+          onToggleColumnVisibility={onToggleColumnVisibility}
+        />
+        {/* Include other header content here, like a title or buttons */}
+      </div>
+      <div className='flex h-screen flex-col'>
+        <div className='ag-theme-quartz w-full flex-grow'>
+          <AgGridReact
             columnDefs={gridColumnDef}
-            onToggleColumnVisibility={onToggleColumnVisibility}
+            gridOptions={gridOptions}
+            rowModelType='infinite'
+            rowSelection='multiple'
+            onGridReady={onGridReady}
+            onRowClicked={onRowClicked}
+            className=''
           />
-          <RoundButton
-            icon={<HiOutlineUserAdd className='h-7 w-7' />}
-            onClick={toggleModal}
-          />
-          <AddCustomerModal
-            isOpen={isModalOpen}
-            onClose={toggleModal}
-            onCustomerAdded={refreshGridData} // Assuming you have such a prop
-            modalName='Add New Customer'
-          />
-        </div>
-        <div className='flex-grow'>
-          <div className='ag-theme-quartz h-[calc(100vh-11rem)] w-full md:h-[calc(100vh-7.5rem)]'>
-            <AgGridReact
-              columnDefs={gridColumnDef}
-              gridOptions={gridOptions}
-              rowModelType='infinite'
-              onGridReady={onGridReady}
-              onRowClicked={onRowClicked}
-            />
-          </div>
         </div>
       </div>
     </>
   );
 };
 
-export default CustomGrid;
+export default NewGrid;

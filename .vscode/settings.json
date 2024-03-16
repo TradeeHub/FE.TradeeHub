@@ -3,8 +3,9 @@
         "SSH_AUTH_SOCK": "$env:SSH_AUTH_SOCK"
     },
     "cSpell.words": [
-        "pricebook",
-        "Xmark"
+      "pricebook",
+      "unoptimized",
+      "Xmark"
     ],
     "files.autoSave": "onFocusChange",
     "editor.codeActionsOnSave": {

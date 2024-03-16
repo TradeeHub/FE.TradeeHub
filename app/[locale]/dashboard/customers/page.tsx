@@ -12,6 +12,10 @@ import {
   PhoneNumberEntity,
   PropertyEntity
 } from '@/generatedGraphql';
+import AddCustomerModal from '../../components/AddCustomerModal/AddCustomerModal';
+import { useState } from 'react';
+import RoundButton from '../../components/RoundButton';
+import { HiOutlineUserAdd } from 'react-icons/hi';
 
 const getInitials = (fullName: string) => {
   const nameParts = fullName.split(' ');
@@ -182,9 +186,41 @@ const Customers = () => {
     ? data?.customers?.pageInfo
     : null;
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const initialData = data?.customers?.edges?.map((edge) => edge.node);
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+  const refreshGridData = async () => {
+    const { data } = await refetch();
+    const newData = data?.customers?.edges?.map((edge) => edge.node);
+    console.log('refreshGridData', newData);
+    // newDataRef.current = newData as [];
+    // const newDataPageInfo = data?.customers?.pageInfo;
+
+    // pageInfoTrack.current = (
+    //   newDataPageInfo ? newDataPageInfo : pageInfoTrack.current
+    // ) as PageInfoSlim;
+
+    // if (gridApiRef.current) {
+    //   gridRowCount.current = newDataRef.current.length; // Reset gridRowCount to reflect the new total
+    //   gridApiRef.current.setGridOption('datasource', dataSource()); // Refresh the datasource to reflect new data
+    // }
+  };
+
   return (
     <>
+      <RoundButton
+        icon={<HiOutlineUserAdd className='h-7 w-7' />}
+        onClick={toggleModal}
+      />
+      <AddCustomerModal
+        isOpen={isModalOpen}
+        onClose={toggleModal}
+        onCustomerAdded={refreshGridData} // Assuming you have such a prop
+        modalName='Add New Customer'
+      />
+
       {data && (
         <CustomGrid
           columnDefs={gridColumnDef}

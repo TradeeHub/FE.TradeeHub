@@ -17,6 +17,7 @@ import {
   useGetMaterialsQuery,
   useGetMaterialsLazyQuery
 } from '@/generatedGraphql';
+import { useCallback } from 'react';
 
 const useGetAllServiceCategoriesLazy = () => {
   const [searchServiceCategories, { data, loading, error }] = useLazyQuery<
@@ -30,18 +31,41 @@ const useGetAllServiceCategoriesLazy = () => {
 };
 
 const useGetMaterialsLazy = () => {
-  const [searchMaterials, { data, loading, error }] = useGetMaterialsLazyQuery({
-    notifyOnNetworkStatusChange: true
-  });
+  const [searchMaterials, { data, loading, error, fetchMore }] =
+    useGetMaterialsLazyQuery({
+      notifyOnNetworkStatusChange: true
+    });
 
-  const materials = data?.materials;
+  const fetchMoreMaterials = useCallback(
+    async (cursor: string | null, pageSize: number) => {
+      try {
+        const fetchResult = await fetchMore({
+          variables: { cursor, pageSize }
+        });
+        const newMaterials =
+          fetchResult?.data?.materials?.edges?.map((edge) => edge.node) || [];
 
-  return { searchMaterials, materials, loading, error };
+        const pageInfo = fetchResult?.data?.materials?.pageInfo
+          ? {
+              ...fetchResult.data.materials.pageInfo,
+              endCursor: fetchResult.data.materials.pageInfo.endCursor || null
+            }
+          : null;
+
+        return { rows: newMaterials, pageInfo };
+      } catch (error) {
+        return { rows: [], pageInfo: null };
+      }
+    },
+    [fetchMore]
+  );
+
+  return { searchMaterials, data, loading, error, fetchMoreMaterials };
 };
 
 const useGetMaterials = () => {
   const {
-    data,
+    data: allMaterials,
     loading: allMaterialsLoading,
     error: allMaterialsError
   } = useGetMaterialsQuery({
@@ -53,7 +77,6 @@ const useGetMaterials = () => {
     notifyOnNetworkStatusChange: true
   });
 
-  const allMaterials = data?.materials;
   return { allMaterials, allMaterialsLoading, allMaterialsError };
 };
 

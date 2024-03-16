@@ -3,6 +3,10 @@
 @tailwind utilities;
 @import '~ag-grid-community/styles/ag-grid.css';
 @import '~ag-grid-community/styles/ag-theme-material.css';
+@import '~ag-grid-community/styles/ag-theme-quartz.css';
+@import '~ag-grid-community/styles/ag-theme-quartz-no-font.css';
+@import '~ag-grid-community/styles/ag-theme-alpine.css';
+
 @import '@fontsource/roboto/400.css';
 
 /* Weight 500 */
@@ -63,7 +67,7 @@
   }
 }
 
-.ag-header-cell {
+/* .ag-header-cell {
   background-color: hsl(var(--card));
   color: hsl(var(--card-foreground));
   border-bottom: 1px solid hsl(var(--border));
@@ -91,11 +95,17 @@
 
 .ag-theme-material {
   border-radius: 1.5rem;
-  /* This should be on the container that holds the entire grid */
   overflow: hidden;
-  /* This will ensure that any child elements do not bleed outside the rounded corners */
+} */
+
+/* .ag-header-cell .ag-header-cell-label {
+  justify-content: center !important;
+} */
+
+.ag-cell-focus .ag-checkbox-input:focus {
+  outline: none;
 }
 
-.ag-header-cell .ag-header-cell-label {
-  justify-content: center !important;
+.ag-header-cell-label {
+  justify-content: center;
 }
