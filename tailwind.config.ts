@@ -74,7 +74,9 @@ const config = {
         'accordion-up': 'accordion-up 0.2s ease-out'
       },
       fontFamily: {
-        roboto: ['Roboto', 'sans-serif']
+        roboto: ['Roboto', 'sans-serif'],
+        special: ['Plus Jakarta Sans', 'sans-serif'],
+        normal: ['sans-serif', 'Plus Jakarta Sans']
       }
     }
   },

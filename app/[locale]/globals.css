@@ -29,7 +29,7 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 60 9.1% 97.8%;
     --border: 20 5.9% 90%;
-    --input: 20 5.9% 90%;
+    --input: 203 10% 15%;
     --ring: 20 14.3% 4.1%;
     --radius: 1rem;
   }
@@ -108,4 +108,137 @@
 
 .ag-header-cell-label {
   justify-content: center;
+}
+
+.ag-theme-quartz .ag-header-cell-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  /* Equivalent to Tailwind's font-semibold */
+  color: hsl(var(--primary));
+  /* Replace with your own color variable or value */
+}
+
+/* Target the quartz theme cell content */
+.ag-theme-quartz .ag-cell {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+  /* Equivalent to Tailwind's font-normal */
+  color: hsl(var(--input));
+  /* Replace with your own color variable or value */
+}
+
+/* styles/global.css */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-SemiBoldItalic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-ExtraBoldItalic.ttf') format('truetype');
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-ExtraLightItalic.ttf') format('truetype');
+  font-weight: 200;
+  font-style: italic;
+}
+
+/* Variable font files, use if needed */
+@font-face {
+  font-family: 'Plus Jakarta Sans Variable';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  /* The range of weight that the variable font supports */
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans Variable';
+  src: url('/fonts/PlusJakartaSans/PlusJakartaSans-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  /* The range of weight that the variable font supports */
+  font-style: normal;
 }

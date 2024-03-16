@@ -153,7 +153,7 @@ const NewGrid = ({
             rowSelection='multiple'
             onGridReady={onGridReady}
             onRowClicked={onRowClicked}
-            className=''
+            className='font-normal'
           />
         </div>
       </div>

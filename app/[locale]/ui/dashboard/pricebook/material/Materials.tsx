@@ -47,8 +47,13 @@ const Materials = () => {
         </div>
         <div className='flex flex-row items-center justify-between rounded-xl border-[1px] border-solid p-5'>
           <div>
-            <div className='flex flex-col font-bold'>Materials</div>
-            <div className=''>Manage your materials</div>
+            <div className='font-special flex flex-col font-bold'>
+              Materials
+            </div>
+
+            <div className='text-input-special font-normal'>
+              Manage your materials
+            </div>
           </div>
           <Button variant='default' onClick={toggleModal}>
             New
@@ -89,8 +94,8 @@ const nameCellRenderer = (params: ValueGetterParams) => {
   // Tailwind CSS classes
   const cellStyle = 'flex items-center justify-start h-full pl-2'; // padding-left to ensure some space from the cell start
   const imageStyle = 'object-contain w-16 h-16'; // Tailwind class for object-fit and width/height
-  const imageContainerStyle = `flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden ${imageUrl ? 'mr-2' : 'invisible'}`; // invisible when no image to preserve space
-  const textStyle = 'font-semibold text-primary';
+  const imageContainerStyle = `flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden ${imageUrl ? 'mr-2' : 'invisible'}`; // invisible when no image to preserve space
+  const textStyle = 'font-semibold';
 
   return (
     <div className={cellStyle}>
@@ -131,19 +136,20 @@ const gridColumnDef: ColDef[] = [
     cellRenderer: nameCellRenderer,
     width: 200,
     sortable: false,
-    headerClass: 'text-base text-center flex items-center justify-center',
+    headerClass:
+      'text-base text-center flex items-center justify-center font-semibold',
     filter: false,
     hide: false
   },
   {
     headerName: 'Description',
+    width: 120,
     field: 'description',
     sortable: false,
     headerClass: 'text-base text-center flex items-center justify-center',
     cellClass: 'flex items-center',
     filter: false,
-    hide: false,
-    flex: 1
+    hide: false
   },
   {
     headerName: 'Cost',
@@ -183,7 +189,8 @@ const gridColumnDef: ColDef[] = [
     cellClass: 'flex items-center justify-center',
     filter: false,
     hide: false,
-    flex: 1
+    flex: 1,
+    valueFormatter: (params) => (params.value ? 'Yes' : 'No') // Add this line
   },
   {
     headerName: 'Unit Type',
