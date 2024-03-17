@@ -2718,7 +2718,7 @@ export type GetMaterialsQueryVariables = Exact<{
 }>;
 
 
-export type GetMaterialsQuery = { __typename?: 'Query', materials?: { __typename?: 'MaterialsConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges?: Array<{ __typename?: 'MaterialsEdge', cursor: string, node: { __typename?: 'MaterialEntity', id: string, name: string, description?: string | null, identifier?: string | null, usePriceRange: boolean, taxable: boolean, allowOnlineBooking: boolean, onlinePrice?: any | null, cost?: any | null, price?: any | null, unitType: string, onlineMaterialUrls?: Array<string> | null, markup?: { __typename?: 'MarkupEntity', type: MarkupType, value: any } | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null, pricingTiers?: Array<{ __typename?: 'PricingTierEntity', cost?: any | null, price: any, unitRange: { __typename?: 'RangeOfDecimal', max: any, min: any } }> | null } }> | null } | null };
+export type GetMaterialsQuery = { __typename?: 'Query', materials?: { __typename?: 'MaterialsConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges?: Array<{ __typename?: 'MaterialsEdge', cursor: string, node: { __typename?: 'MaterialEntity', id: string, name: string, description?: string | null, identifier?: string | null, usePriceRange: boolean, taxable: boolean, allowOnlineBooking: boolean, onlinePrice?: any | null, cost?: any | null, price?: any | null, unitType: string, onlineMaterialUrls?: Array<string> | null, markup?: { __typename?: 'MarkupEntity', type: MarkupType, value: any } | null, serviceCategory?: { __typename?: 'ServiceCategoryEntity', id: string, name: string } | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null, pricingTiers?: Array<{ __typename?: 'PricingTierEntity', cost?: any | null, price: any, unitRange: { __typename?: 'RangeOfDecimal', max: any, min: any } }> | null } }> | null } | null };
 
 export type UpdateServiceCategoryMutationVariables = Exact<{
   input: UpdateServiceCategoryRequestInput;
@@ -3538,6 +3538,10 @@ export const GetMaterialsDocument = gql`
         cost
         price
         unitType
+        serviceCategory {
+          id
+          name
+        }
         images {
           url
         }

@@ -153,16 +153,6 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
     flex: 1
   },
   {
-    headerName: 'Description',
-    width: 120,
-    field: 'description',
-    sortable: false,
-    headerClass: 'text-base text-center flex items-center justify-center',
-    cellClass: 'flex items-center',
-    filter: false,
-    hide: false
-  },
-  {
     headerName: 'Cost',
     field: 'cost',
     sortable: false,
@@ -182,6 +172,26 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
     cellClass: 'flex items-center justify-center',
     valueFormatter: (params) =>
       params.value ? `${currencySymbol}${params.value}` : '',
+    filter: false,
+    hide: false,
+    flex: 1
+  },
+  {
+    headerName: 'Unit Type',
+    field: 'unitType',
+    sortable: false,
+    headerClass: 'text-base',
+    cellClass: 'flex items-center justify-center',
+    filter: false,
+    hide: false,
+    flex: 1
+  },
+  {
+    headerName: 'Category',
+    field: 'serviceCategory.name',
+    sortable: false,
+    headerClass: 'text-base',
+    cellClass: 'flex items-center justify-center',
     filter: false,
     hide: false,
     flex: 1
@@ -208,24 +218,26 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
     valueFormatter: (params) => (params.value ? 'Yes' : 'No') // Add this line
   },
   {
-    headerName: 'Unit Type',
-    field: 'unitType',
+    headerName: 'Description',
+    width: 120,
+    field: 'description',
     sortable: false,
-    headerClass: 'text-base',
-    cellClass: 'flex items-center justify-center',
+    headerClass: 'text-base text-center flex items-center justify-center',
+    cellClass: 'flex items-center',
     filter: false,
-    hide: false,
-    flex: 1
+    hide: false
   },
   {
     headerName: 'Actions',
     field: 'actions',
+    headerClass: 'text-base',
     cellClass: 'flex items-center justify-center',
     cellRenderer: actionCellRenderer,
     pinned: 'right',
     resizable: false,
     width: 120,
     suppressMovable: true,
+    sortable: false,
     filter: false
   }
 ];

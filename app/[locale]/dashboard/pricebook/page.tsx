@@ -13,7 +13,9 @@ const PriceBook = () => {
   return (
     <>
       <div className={centerStyle}>
-        <h1 className='text-[32px] font-bold dark:text-white'>Price Book</h1>
+        <h1 className='font-special text-[32px] font-bold dark:text-white'>
+          Price Book
+        </h1>
       </div>
       <Tabs defaultValue='serviceCategories' className='w-full'>
         <div className={centerStyle}>

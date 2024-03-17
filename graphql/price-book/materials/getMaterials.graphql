@@ -26,6 +26,10 @@ query GetMaterials(
         cost
         price
         unitType
+        serviceCategory {
+          id
+          name
+        }
         images {
           url
         }
