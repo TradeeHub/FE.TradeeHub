@@ -135,26 +135,30 @@ const NewGrid = ({
   };
   return (
     <>
-      <div className='header'>
-        {' '}
-        {/* Start of the header section */}
-        <CustomSidebar
-          columnDefs={gridColumnDef}
-          onToggleColumnVisibility={onToggleColumnVisibility}
-        />
-        {/* Include other header content here, like a title or buttons */}
-      </div>
-      <div className='flex h-screen flex-col'>
-        <div className='ag-theme-quartz w-full flex-grow overflow-x-auto'>
-          <AgGridReact
+      <div className='flex flex-col'>
+        <div className='header'>
+          {' '}
+          {/* Start of the header section */}
+          <CustomSidebar
             columnDefs={gridColumnDef}
-            gridOptions={gridOptions}
-            rowModelType='infinite'
-            rowSelection='multiple'
-            onGridReady={onGridReady}
-            onRowClicked={onRowClicked}
-            className='overflow-x-auto'
+            onToggleColumnVisibility={onToggleColumnVisibility}
           />
+          {/* Include other header content here, like a title or buttons */}
+        </div>{' '}
+        {/* Providing a fixed portion of the screen to the grid container */}
+        <div className='flex-grow overflow-y-auto'>
+          <div className='ag-theme-quartz h-[calc(100vh-400px)] w-full'>
+            <AgGridReact
+              containerStyle={{ width: '100%', height: '100%' }}
+              columnDefs={gridColumnDef}
+              gridOptions={gridOptions}
+              rowModelType='infinite'
+              rowSelection='multiple'
+              onGridReady={onGridReady}
+              onRowClicked={onRowClicked}
+              className='w-full'
+            />
+          </div>
         </div>
       </div>
     </>

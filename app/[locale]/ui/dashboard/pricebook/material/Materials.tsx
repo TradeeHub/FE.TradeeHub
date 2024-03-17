@@ -52,7 +52,7 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
           </div>
           <div className='flex flex-row items-center justify-between rounded-xl border-[1px] border-solid p-5'>
             <div>
-              <div className='font-special flex flex-col font-bold'>
+              <div className='flex flex-col font-special font-bold'>
                 Materials
               </div>
 
@@ -150,7 +150,8 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
     cellClass: 'flex items-center',
     filter: false,
     hide: false,
-    flex: 1
+    flex: 1,
+    tooltipField: 'name'
   },
   {
     headerName: 'Cost',
@@ -162,7 +163,8 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
       params.value ? `${currencySymbol}${params.value}` : '',
     filter: false,
     hide: false,
-    flex: 1
+    flex: 1,
+    tooltipField: 'cost'
   },
   {
     headerName: 'Price',
@@ -174,7 +176,8 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
       params.value ? `${currencySymbol}${params.value}` : '',
     filter: false,
     hide: false,
-    flex: 1
+    flex: 1,
+    tooltipField: 'price'
   },
   {
     headerName: 'Unit Type',
@@ -184,7 +187,8 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
     cellClass: 'flex items-center justify-center',
     filter: false,
     hide: false,
-    flex: 1
+    flex: 1,
+    tooltipField: 'unitType'
   },
   {
     headerName: 'Category',
@@ -194,7 +198,8 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
     cellClass: 'flex items-center justify-center',
     filter: false,
     hide: false,
-    flex: 1
+    flex: 1,
+    tooltipField: 'serviceCategory.name'
   },
   {
     headerName: 'Identifier',
@@ -204,7 +209,8 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
     cellClass: 'flex items-center justify-center',
     filter: false,
     hide: false,
-    flex: 1
+    flex: 1,
+    tooltipField: 'identifier'
   },
   {
     headerName: 'Taxable',
@@ -215,6 +221,9 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
     filter: false,
     hide: false,
     flex: 1,
+    tooltipValueGetter: (params) => {
+      return `Taxable: ${params.value ? 'Yes' : 'No'}`;
+    },
     valueFormatter: (params) => (params.value ? 'Yes' : 'No') // Add this line
   },
   {
@@ -225,7 +234,8 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
     headerClass: 'text-base text-center flex items-center justify-center',
     cellClass: 'flex items-center',
     filter: false,
-    hide: false
+    hide: false,
+    tooltipField: 'description'
   },
   {
     headerName: 'Actions',
@@ -257,11 +267,6 @@ const actionCellRenderer = (params: ValueGetterParams) => {
 
   return (
     <>
-      {/* size: {
-        default: 'h-9 px-4 py-2',
-        sm: 'h-8 rounded-md px-3 text-xs',
-        lg: 'h-10 rounded-md px-8',
-        icon: 'h-9 w-9' */}
       <div className='flex items-center justify-center'>
         <Button
           variant='ghost'
