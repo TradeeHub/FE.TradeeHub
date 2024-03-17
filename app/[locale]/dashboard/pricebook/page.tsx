@@ -9,11 +9,14 @@ import Materials from '../../ui/dashboard/pricebook/material/Materials';
 import ServiceCategories from '../../ui/dashboard/pricebook/service-category/ServiceCategories';
 
 const PriceBook = () => {
+  const centerStyle = `mx-auto flex w-full max-w-4xl flex-col gap-4`;
   return (
-    <div className='flex w-full flex-col items-start'>
-      <div className='mx-auto flex w-full max-w-4xl flex-col gap-4'>
+    <>
+      <div className={centerStyle}>
         <h1 className='text-[32px] font-bold dark:text-white'>Price Book</h1>
-        <Tabs defaultValue='serviceCategories' className='w-full'>
+      </div>
+      <Tabs defaultValue='serviceCategories' className='w-full'>
+        <div className={centerStyle}>
           <div className='flex justify-start'>
             <TabsList className='flex flex-row gap-4'>
               <TabsTrigger value='serviceCategories'>
@@ -25,24 +28,25 @@ const PriceBook = () => {
               <TabsTrigger value='warranties'>Warranties</TabsTrigger>
             </TabsList>
           </div>
-          <TabsContent value='serviceCategories'>
-            <ServiceCategories />
-          </TabsContent>
-          <TabsContent value='services'>
-            <div>Services coming soon...</div>
-          </TabsContent>
-          <TabsContent value='materials'>
-            <Materials />
-          </TabsContent>
-          <TabsContent value='laborRates'>
-            <LaborRates />
-          </TabsContent>
-          <TabsContent value='warranties'>
-            <div>Warranties coming soon...</div>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>
+        </div>
+
+        <TabsContent value='serviceCategories'>
+          <ServiceCategories centerStyle={centerStyle} />
+        </TabsContent>
+        <TabsContent value='services'>
+          <div>Services coming soon...</div>
+        </TabsContent>
+        <TabsContent value='materials'>
+          <Materials centerStyle={centerStyle} />
+        </TabsContent>
+        <TabsContent value='laborRates'>
+          <LaborRates />
+        </TabsContent>
+        <TabsContent value='warranties'>
+          <div>Warranties coming soon...</div>
+        </TabsContent>
+      </Tabs>
+    </>
   );
 };
 

@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { IoSearchOutline } from 'react-icons/io5';
 import AddMaterialModal from './AddMaterialModal';
 import { useState } from 'react';
-import CustomGrid from '@/app/[locale]/components/Grid';
 import {
   useGetMaterials,
   useGetMaterialsLazy
@@ -14,19 +13,24 @@ import {
   ColDef,
   ValueGetterParams
 } from 'ag-grid-community/dist/lib/entities/colDef';
-import ArrayDataPopover from '@/app/[locale]/components/ArrayDataPopover';
 import { MaterialEntity, PropertyEntity } from '@/generatedGraphql';
 import moment from 'moment';
 import NewGrid from '@/app/[locale]/components/NewGrid';
 import Image from 'next/image';
+import { RootState } from '@/lib/store';
+import { useSelector } from 'react-redux';
+import { RiDeleteBin7Line } from 'react-icons/ri';
+import { FiEdit } from 'react-icons/fi';
 
-const Materials = () => {
+const Materials = ({ centerStyle }: { centerStyle: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const { allMaterials } = useGetMaterials();
   const { searchMaterials, data, loading, error, fetchMoreMaterials } =
     useGetMaterialsLazy();
+  const user = useSelector((state: RootState) => state.user.data);
 
+  const symbol = user?.currencySymbol;
   const pageInfo = allMaterials?.materials?.pageInfo?.endCursor
     ? allMaterials?.materials?.pageInfo
     : null;
@@ -36,30 +40,33 @@ const Materials = () => {
   console.log('initialData', initialData);
   return (
     <>
-      <div className='space-y-6 pt-4'>
-        <div className='bg-linen relative flex flex-1 items-center rounded-xl'>
-          <IoSearchOutline className='absolute left-3 h-6 w-6 text-primary/40' />
-          <Input
-            type='text'
-            placeholder='Search for materials'
-            className='h-10 w-full rounded-xl border border-border bg-primary/5 pl-10'
-          />
-        </div>
-        <div className='flex flex-row items-center justify-between rounded-xl border-[1px] border-solid p-5'>
-          <div>
-            <div className='font-special flex flex-col font-bold'>
-              Materials
-            </div>
-
-            <div className='text-input-special font-normal'>
-              Manage your materials
-            </div>
+      <div className={centerStyle}>
+        <div className='max-w-none space-y-6 pt-4'>
+          <div className='bg-linen relative flex flex-1 items-center rounded-xl'>
+            <IoSearchOutline className='absolute left-3 h-6 w-6 text-primary/40' />
+            <Input
+              type='text'
+              placeholder='Search for materials'
+              className='h-10 w-full rounded-xl border border-border bg-primary/5 pl-10'
+            />
           </div>
-          <Button variant='default' onClick={toggleModal}>
-            New
-          </Button>
+          <div className='flex flex-row items-center justify-between rounded-xl border-[1px] border-solid p-5'>
+            <div>
+              <div className='font-special flex flex-col font-bold'>
+                Materials
+              </div>
+
+              <div className='text-input-special font-normal'>
+                Manage your materials
+              </div>
+            </div>
+            <Button variant='default' onClick={toggleModal}>
+              New
+            </Button>
+          </div>
         </div>
       </div>
+
       {isModalOpen && (
         <AddMaterialModal
           isOpen={isModalOpen}
@@ -72,14 +79,16 @@ const Materials = () => {
         <MaterialCard key={material.id} material={material as MaterialEntity} />
       ))} */}
 
-      {allMaterials && (
-        <NewGrid
-          columnDefs={gridColumnDef}
-          fetchMoreData={fetchMoreMaterials}
-          initialData={initialData as object[]}
-          initialPageInfo={pageInfo as PageInfoSlim}
-        />
-      )}
+      <div className='mx-auto flex w-full max-w-7xl flex-col gap-4'>
+        {allMaterials && (
+          <NewGrid
+            columnDefs={getGridColumnDef(symbol as string)}
+            fetchMoreData={fetchMoreMaterials}
+            initialData={initialData as object[]}
+            initialPageInfo={pageInfo as PageInfoSlim}
+          />
+        )}
+      </div>
     </>
   );
 };
@@ -89,17 +98,13 @@ export default Materials;
 const nameCellRenderer = (params: ValueGetterParams) => {
   const data = params.data;
   const imageUrl = data?.images?.[0]?.url;
-  const name = data?.name;
 
-  // Tailwind CSS classes
   const cellStyle = 'flex items-center justify-start h-full pl-2'; // padding-left to ensure some space from the cell start
   const imageStyle = 'object-contain w-16 h-16'; // Tailwind class for object-fit and width/height
   const imageContainerStyle = `flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden ${imageUrl ? 'mr-2' : 'invisible'}`; // invisible when no image to preserve space
-  const textStyle = 'font-semibold';
 
   return (
     <div className={cellStyle}>
-      {/* Image container to maintain the width even if there's no image */}
       {imageUrl && (
         <div className={imageContainerStyle}>
           <Image
@@ -108,20 +113,16 @@ const nameCellRenderer = (params: ValueGetterParams) => {
             width={64}
             height={64}
             className={imageStyle}
-            unoptimized={true} // Disable image optimization
-            quality={100} // Set image quality to 100%
+            unoptimized={true}
+            quality={100}
           />
         </div>
       )}
-
-      <div className={imageUrl ? 'text-left' : 'w-full'}>
-        <span className={textStyle}>{name}</span>
-      </div>
     </div>
   );
 };
 
-const gridColumnDef: ColDef[] = [
+const getGridColumnDef = (currencySymbol: string): ColDef[] => [
   {
     checkboxSelection: true,
     width: 35,
@@ -131,15 +132,25 @@ const gridColumnDef: ColDef[] = [
     filter: false
   },
   {
+    headerName: 'Image',
+    field: 'Images',
+    cellRenderer: nameCellRenderer,
+    sortable: false,
+    headerClass: 'text-base text-center flex items-center justify-center',
+    cellClass: 'flex items-center justify-center',
+    filter: false,
+    hide: false,
+    flex: 1
+  },
+  {
     headerName: 'Name',
     field: 'name',
-    cellRenderer: nameCellRenderer,
-    width: 200,
     sortable: false,
-    headerClass:
-      'text-base text-center flex items-center justify-center font-semibold',
+    headerClass: 'text-base text-center flex items-center justify-center',
+    cellClass: 'flex items-center',
     filter: false,
-    hide: false
+    hide: false,
+    flex: 1
   },
   {
     headerName: 'Description',
@@ -157,6 +168,8 @@ const gridColumnDef: ColDef[] = [
     sortable: false,
     headerClass: 'text-base text-center flex items-center justify-center',
     cellClass: 'flex items-center justify-center',
+    valueFormatter: (params) =>
+      params.value ? `${currencySymbol}${params.value}` : '',
     filter: false,
     hide: false,
     flex: 1
@@ -167,6 +180,8 @@ const gridColumnDef: ColDef[] = [
     sortable: false,
     headerClass: 'text-base',
     cellClass: 'flex items-center justify-center',
+    valueFormatter: (params) =>
+      params.value ? `${currencySymbol}${params.value}` : '',
     filter: false,
     hide: false,
     flex: 1
@@ -201,48 +216,53 @@ const gridColumnDef: ColDef[] = [
     filter: false,
     hide: false,
     flex: 1
+  },
+  {
+    headerName: 'Actions',
+    field: 'actions',
+    cellClass: 'flex items-center justify-center',
+    cellRenderer: actionCellRenderer,
+    pinned: 'right',
+    resizable: false,
+    width: 120,
+    suppressMovable: true,
+    filter: false
   }
 ];
 
-// const MaterialCard = ({ material }: { material: MaterialEntity }) => {
-//   // Provide a default image or handle the absence of images gracefully
-//   const imageUrl = material?.images?.length
-//     ? material.images[0].url
-//     : 'default_image_path.jpg';
+const actionCellRenderer = (params: ValueGetterParams) => {
+  // Function to handle the edit action
+  const onEdit = () => {
+    // Implement your edit logic here
+    console.log(`Editing row: ${params.data.id}`);
+  };
 
-//   // Define a function to handle Add to Cart action
-//   const handleAddToCart = () => {
-//     // Implement add to cart logic
-//     console.log(`Adding ${material.name} to cart.`);
-//   };
+  // Function to handle the delete action
+  const onDelete = () => {
+    // Implement your delete logic here
+    console.log(`Deleting row: ${params.data.id}`);
+  };
 
-//   return (
-//     <div className='flex flex-row items-center rounded-lg bg-white p-4 pt-2 shadow-md'>
-//       <img
-//         src={imageUrl}
-//         alt={material.name}
-//         className='mr-4 h-24 w-24 rounded-lg'
-//       />
-//       <div className='flex-grow'>
-//         <h3 className='text-lg font-bold'>{material.name}</h3>
-//         <p className='text-gray-600'>{material.description}</p>
-//         {/* Assuming `parentServiceCategoryId` is used to display the category */}
-//         <span
-//           className={`tag ${material.taxable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
-//         >
-//           {material.serviceCategory?.name || 'No Category'}
-//         </span>
-//       </div>
-//       <div className='flex flex-col items-end'>
-//         <span className='text-xl font-bold'>{`$${material.cost?.toFixed(2)}`}</span>
-//         <span className='text-sm text-gray-500 line-through'>{`$${material.price?.toFixed(2)}`}</span>
-//         <button
-//           onClick={handleAddToCart}
-//           className='mt-2 inline-flex items-center justify-center rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
-//         >
-//           Add to Cart
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
+  return (
+    <>
+      {/* size: {
+        default: 'h-9 px-4 py-2',
+        sm: 'h-8 rounded-md px-3 text-xs',
+        lg: 'h-10 rounded-md px-8',
+        icon: 'h-9 w-9' */}
+      <div className='flex items-center justify-center'>
+        <Button
+          variant='ghost'
+          size='default'
+          onClick={onEdit}
+          className='mr-2'
+        >
+          <FiEdit>Edit</FiEdit>
+        </Button>
+        <Button variant='ghost' size='default' onClick={onDelete}>
+          <RiDeleteBin7Line>Delete </RiDeleteBin7Line>
+        </Button>
+      </div>
+    </>
+  );
+};

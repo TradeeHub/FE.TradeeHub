@@ -145,7 +145,7 @@ const NewGrid = ({
         {/* Include other header content here, like a title or buttons */}
       </div>
       <div className='flex h-screen flex-col'>
-        <div className='ag-theme-quartz w-full flex-grow'>
+        <div className='ag-theme-quartz w-full flex-grow overflow-x-auto'>
           <AgGridReact
             columnDefs={gridColumnDef}
             gridOptions={gridOptions}
@@ -153,7 +153,7 @@ const NewGrid = ({
             rowSelection='multiple'
             onGridReady={onGridReady}
             onRowClicked={onRowClicked}
-            className='font-normal'
+            className='overflow-x-auto'
           />
         </div>
       </div>

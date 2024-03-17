@@ -36,7 +36,7 @@ const ServiceCategoryCard = ({
             <Image
               src={imageUrl}
               alt={serviceCategory.name}
-              layout='fill'
+              fill={true}
               objectFit='contain'
               className='rounded-lg border border-gray-100 shadow-sm transition-transform duration-300 ease-in-out hover:scale-110 dark:border-primary/5'
             />

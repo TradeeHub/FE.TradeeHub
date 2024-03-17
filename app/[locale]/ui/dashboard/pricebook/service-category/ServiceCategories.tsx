@@ -14,7 +14,7 @@ import { useToast } from '@/components/ui/use-toast';
 import AlertPopup from '../../../general/Alert/AlertPopup';
 import ServiceCategoryCard from './ServiceCategoryCard/ServiceCategoryCard';
 
-const ServiceCategories = () => {
+const ServiceCategories = ({ centerStyle }: { centerStyle: string }) => {
   const { deleteServiceCategory, deleteServiceCategoryResponse } =
     useDeleteServiceCategory();
   const { searchServiceCategories, serviceCategories } =
@@ -187,34 +187,35 @@ const ServiceCategories = () => {
           confirmActionName='Delete'
         />
       )}
-
-      <div className='space-y-6 pt-4'>
-        <div className='bg-linen relative flex flex-1 items-center rounded-xl'>
-          <IoSearchOutline className='absolute left-3 h-6 w-6 text-primary/40' />
-          <Input
-            type='text'
-            value={searchTerm}
-            onChange={handleSearchChange}
-            placeholder='Search for service categories'
-            className='h-10 w-full rounded-xl border border-border bg-primary/5 pl-10 dark:text-white'
-          />
-        </div>
-        <div className='flex flex-row items-center justify-between rounded-xl border-[1px] border-solid p-5'>
-          <div>
-            <div className='flex flex-col font-bold dark:text-white'>
-              Service Categories
-            </div>
-            <div className='text-muted-foreground'>
-              Manage your service categories
-            </div>
+      <div className={centerStyle}>
+        <div className='space-y-6 pt-4'>
+          <div className='bg-linen relative flex flex-1 items-center rounded-xl'>
+            <IoSearchOutline className='absolute left-3 h-6 w-6 text-primary/40' />
+            <Input
+              type='text'
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder='Search for service categories'
+              className='h-10 w-full rounded-xl border border-border bg-primary/5 pl-10 dark:text-white'
+            />
           </div>
-          <Button variant='default' onClick={toggleModal}>
-            New
-          </Button>
-        </div>
-        <div>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
-            {renderServiceCategories}
+          <div className='flex flex-row items-center justify-between rounded-xl border-[1px] border-solid p-5'>
+            <div>
+              <div className='flex flex-col font-bold dark:text-white'>
+                Service Categories
+              </div>
+              <div className='text-muted-foreground'>
+                Manage your service categories
+              </div>
+            </div>
+            <Button variant='default' onClick={toggleModal}>
+              New
+            </Button>
+          </div>
+          <div>
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
+              {renderServiceCategories}
+            </div>
           </div>
         </div>
       </div>
