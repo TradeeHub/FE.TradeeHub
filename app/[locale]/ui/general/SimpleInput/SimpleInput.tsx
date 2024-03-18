@@ -85,6 +85,7 @@ const SimpleInput = <
           {...field}
           id={inputId}
           step={currencySymbol ? '1.00' : undefined}
+          value={field.value === null ? '' : field.value}
           type={isPasswordType && !showPassword ? 'password' : type}
           autoFocus={autoFocus}
           className={`text-md w-full rounded-md border-gray-300 bg-white py-2 focus:border-primary focus:outline-none focus:ring-0 focus:ring-primary ${

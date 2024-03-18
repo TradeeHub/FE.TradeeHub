@@ -147,41 +147,43 @@ const MaterialModal = ({
   modalName: string;
   updateData?: MaterialEntity;
 }) => {
+  console.log('updateData', updateData);
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: updateData
-      ? {
-          name: updateData.name,
-          description: updateData?.description,
-          identifier: updateData?.identifier,
-          parentServiceCategoryId: updateData?.parentServiceCategoryId,
-          usePriceRange: updateData?.usePriceRange,
-          taxable: updateData?.taxable,
-          allowOnlineBooking: updateData?.allowOnlineBooking,
-          onlinePrice: updateData?.onlinePrice,
-          cost: updateData?.cost,
-          price: updateData?.price,
-          unitType: updateData?.unitType,
-          images: updateData?.images,
-          onlineMaterialUrl: updateData?.onlineMaterialUrls,
-          pricingTiers: updateData?.pricingTiers
-        }
-      : {
-          name: '',
-          description: null,
-          identifier: null,
-          parentServiceCategoryId: null,
-          usePriceRange: false,
-          taxable: false,
-          allowOnlineBooking: false,
-          onlinePrice: null,
-          cost: null,
-          price: null,
-          unitType: '',
-          images: [],
-          onlineMaterialUrl: '',
-          pricingTiers: []
-        }
+    defaultValues:
+      updateData !== undefined
+        ? {
+            name: updateData.name,
+            description: updateData?.description,
+            identifier: updateData?.identifier,
+            parentServiceCategoryId: updateData?.parentServiceCategoryId,
+            usePriceRange: updateData?.usePriceRange,
+            taxable: updateData?.taxable,
+            allowOnlineBooking: updateData?.allowOnlineBooking,
+            onlinePrice: updateData?.onlinePrice,
+            cost: updateData?.cost,
+            price: updateData?.price,
+            unitType: updateData?.unitType,
+            images: updateData?.images,
+            onlineMaterialUrl: updateData?.onlineMaterialUrls,
+            pricingTiers: updateData?.pricingTiers
+          }
+        : {
+            name: '',
+            description: null,
+            identifier: null,
+            parentServiceCategoryId: null,
+            usePriceRange: false,
+            taxable: false,
+            allowOnlineBooking: false,
+            onlinePrice: null,
+            cost: null,
+            price: null,
+            unitType: '',
+            images: [],
+            onlineMaterialUrl: '',
+            pricingTiers: []
+          }
   });
 
   const { addMaterial, addMaterialResponse, addMaterialLoading } =
