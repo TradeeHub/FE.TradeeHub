@@ -13,7 +13,7 @@ const PriceBook = () => {
   return (
     <>
       <div className={centerStyle}>
-        <h1 className='font-special text-[32px] font-bold dark:text-white'>
+        <h1 className='font-special text-[32px] font-semibold dark:text-white'>
           Price Book
         </h1>
       </div>

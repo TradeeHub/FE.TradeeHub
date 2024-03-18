@@ -2,7 +2,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { IoSearchOutline } from 'react-icons/io5';
-import AddServiceCategoryModal from './AddServiceCategoryModal/AddServiceCategoryModal';
 import { useCallback, useEffect, useState } from 'react';
 import {
   useDeleteServiceCategory,
@@ -13,6 +12,7 @@ import { ServiceCategoryEntity, SortEnumType } from '@/generatedGraphql';
 import { useToast } from '@/components/ui/use-toast';
 import AlertPopup from '../../../general/Alert/AlertPopup';
 import ServiceCategoryCard from './ServiceCategoryCard/ServiceCategoryCard';
+import ServiceCategoryModal from './ServiceCategoryModal/ServiceCategoryModal';
 
 const ServiceCategories = ({ centerStyle }: { centerStyle: string }) => {
   const { deleteServiceCategory, deleteServiceCategoryResponse } =
@@ -25,8 +25,7 @@ const ServiceCategories = ({ centerStyle }: { centerStyle: string }) => {
   const [localServiceCategories, setLocalServiceCategories] = useState<
     ServiceCategoryEntity[]
   >([]);
-  const [serviceCategoryToAction, setServiceCategoryToAction] =
-    useState<ServiceCategoryEntity>();
+  const [actionableItem, setActionableItem] = useState<ServiceCategoryEntity>();
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -40,38 +39,17 @@ const ServiceCategories = ({ centerStyle }: { centerStyle: string }) => {
   };
 
   const handleDeleteCategory = () => {
-    deleteServiceCategory(serviceCategoryToAction?.id ?? '');
+    deleteServiceCategory(actionableItem?.id ?? '');
   };
 
   const toggleUpdateModal = (serviceCategory: ServiceCategoryEntity) => {
-    setServiceCategoryToAction(serviceCategory);
+    setActionableItem(serviceCategory);
     setIsEditModalOpen(!isEditModalOpen);
   };
 
   const toggleDeleteAlert = (serviceCategory: ServiceCategoryEntity) => {
-    setServiceCategoryToAction(serviceCategory);
+    setActionableItem(serviceCategory);
     setIsDeleteAlertOpen(!isDeleteAlertOpen);
-  };
-
-  const handleUpdateCategory = (serviceCategory: ServiceCategoryEntity) => {
-    setLocalServiceCategories((currentCategories) => {
-      const filteredCategories = currentCategories.filter(
-        (category) => category.id !== serviceCategory.id
-      );
-
-      return [serviceCategory, ...filteredCategories];
-    });
-    toast({
-      title: 'Successfully Updated Service Category!',
-      description: (
-        <span>
-          You have successfully updated the service category{' '}
-          <b>
-            <u>{serviceCategory.name}</u>
-          </b>
-        </span>
-      )
-    });
   };
 
   const renderServiceCategories = localServiceCategories?.map((category) => (
@@ -118,7 +96,7 @@ const ServiceCategories = ({ centerStyle }: { centerStyle: string }) => {
     ) {
       setLocalServiceCategories((currentCategories) =>
         currentCategories.filter(
-          (category) => category.id !== serviceCategoryToAction?.id
+          (category) => category.id !== actionableItem?.id
         )
       );
       toast({
@@ -127,7 +105,7 @@ const ServiceCategories = ({ centerStyle }: { centerStyle: string }) => {
           <span>
             You have successfully deleted the service category{' '}
             <b>
-              <u>{serviceCategoryToAction?.name}</u>
+              <u>{actionableItem?.name}</u>
             </b>
           </span>
         )
@@ -152,7 +130,7 @@ const ServiceCategories = ({ centerStyle }: { centerStyle: string }) => {
   return (
     <>
       {isModalOpen && (
-        <AddServiceCategoryModal
+        <ServiceCategoryModal
           isOpen={isModalOpen}
           onClose={toggleModal}
           onAdded={onAdded}
@@ -161,11 +139,10 @@ const ServiceCategories = ({ centerStyle }: { centerStyle: string }) => {
       )}
 
       {isEditModalOpen && (
-        <AddServiceCategoryModal
+        <ServiceCategoryModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          onUpdated={handleUpdateCategory}
-          updateData={serviceCategoryToAction}
+          updateData={actionableItem}
           modalName='Update Service Category'
         />
       )}
@@ -178,10 +155,9 @@ const ServiceCategories = ({ centerStyle }: { centerStyle: string }) => {
           title='Are you absolutely sure?'
           description={
             <span>
-              You are about to delete{' '}
-              <strong>{serviceCategoryToAction?.name}</strong> service category
-              this will be removed from services, materials, labor rates and
-              warranties if in use.
+              You are about to delete <strong>{actionableItem?.name}</strong>{' '}
+              service category this will be removed from services, materials,
+              labor rates and warranties if in use.
             </span>
           }
           confirmActionName='Delete'

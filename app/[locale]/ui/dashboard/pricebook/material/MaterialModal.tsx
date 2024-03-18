@@ -24,6 +24,7 @@ import {
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import {
   AddMaterialRequestInput,
+  MaterialEntity,
   ServiceCategoryEntity,
   SortEnumType
 } from '@/generatedGraphql';
@@ -134,34 +135,53 @@ const MarginProfitDisplay = ({
   );
 };
 
-const AddMaterialModal = ({
+const MaterialModal = ({
   isOpen,
   onClose,
-  modalName
+  modalName,
+  updateData
 }: {
   isOpen: boolean;
   onClose: () => void;
   onAdded?: () => void;
   modalName: string;
+  updateData?: MaterialEntity;
 }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      description: null,
-      identifier: null,
-      parentServiceCategoryId: null,
-      usePriceRange: false,
-      taxable: false,
-      allowOnlineBooking: false,
-      onlinePrice: null,
-      cost: null,
-      price: null,
-      unitType: '',
-      images: [],
-      onlineMaterialUrl: '',
-      pricingTiers: []
-    }
+    defaultValues: updateData
+      ? {
+          name: updateData.name,
+          description: updateData?.description,
+          identifier: updateData?.identifier,
+          parentServiceCategoryId: updateData?.parentServiceCategoryId,
+          usePriceRange: updateData?.usePriceRange,
+          taxable: updateData?.taxable,
+          allowOnlineBooking: updateData?.allowOnlineBooking,
+          onlinePrice: updateData?.onlinePrice,
+          cost: updateData?.cost,
+          price: updateData?.price,
+          unitType: updateData?.unitType,
+          images: updateData?.images,
+          onlineMaterialUrl: updateData?.onlineMaterialUrls,
+          pricingTiers: updateData?.pricingTiers
+        }
+      : {
+          name: '',
+          description: null,
+          identifier: null,
+          parentServiceCategoryId: null,
+          usePriceRange: false,
+          taxable: false,
+          allowOnlineBooking: false,
+          onlinePrice: null,
+          cost: null,
+          price: null,
+          unitType: '',
+          images: [],
+          onlineMaterialUrl: '',
+          pricingTiers: []
+        }
   });
 
   const { addMaterial, addMaterialResponse, addMaterialLoading } =
@@ -197,12 +217,18 @@ const AddMaterialModal = ({
           name: '',
           order: [{ modifiedAt: SortEnumType.Desc }],
           pageSize: 100
-        }
+        },
+        fetchPolicy: 'network-only'
       });
-
       fetchedRef.current = true;
     }
   };
+
+  useEffect(() => {
+    if (updateData) {
+      handleSelectTriggerClick();
+    }
+  }, []);
 
   const handleSave = async (formData: z.infer<typeof formSchema>) => {
     console.log('formData', formData);
@@ -295,7 +321,7 @@ const AddMaterialModal = ({
                         <SimpleInput
                           title='Name'
                           field={field}
-                          autoFocus={true}
+                          autoFocus={updateData ? false : true}
                           placeholder='Name'
                         />
                       </FormItem>
@@ -599,7 +625,7 @@ const AddMaterialModal = ({
   );
 };
 
-export default AddMaterialModal;
+export default MaterialModal;
 
 // const BreakpointIndicator = () => {
 //   return (

@@ -49,18 +49,16 @@ const formSchema = z.object({
   parentServiceCategoryId: z.string().optional().nullable() // Now accepts string, undefined, or null
 });
 
-const AddServiceCategoryModal = ({
+const ServiceCategoryModal = ({
   isOpen,
   onClose,
   onAdded,
-  onUpdated,
   modalName,
   updateData
 }: {
   isOpen: boolean;
   onClose: () => void;
   onAdded?: (newCategory: ServiceCategoryEntity) => void;
-  onUpdated?: (newCategory: ServiceCategoryEntity) => void;
   modalName: string;
   updateData?: ServiceCategoryEntity;
 }) => {
@@ -132,9 +130,6 @@ const AddServiceCategoryModal = ({
   useEffect(() => {
     const resp = updateServiceCategoryResponse?.updateServiceCategory.data;
     if (resp?.id) {
-      if (onUpdated) {
-        onUpdated(resp as ServiceCategoryEntity);
-      }
       handleClose();
       toast({
         title: 'Successfully Update Service Category!',
@@ -331,7 +326,7 @@ const AddServiceCategoryModal = ({
                   updateData
                     ? form.formState.isDirty === false
                     : addNewServiceCategoryLoading
-                } // Disable button when loading
+                }
               >
                 {addNewServiceCategoryLoading ? 'Saving...' : 'Save'}
               </Button>
@@ -343,4 +338,4 @@ const AddServiceCategoryModal = ({
   );
 };
 
-export default AddServiceCategoryModal;
+export default ServiceCategoryModal;

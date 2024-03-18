@@ -1,11 +1,13 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+  useState
+} from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/navigation';
 import CustomSidebar from '@/app/[locale]/components/GridSettingManager';
-import RoundButton from '@/app/[locale]/components/RoundButton';
-import { CustomGridProps, PageInfoSlim } from '../types/sharedTypes';
+import { CustomGridProps, GridRef, PageInfoSlim } from '../types/sharedTypes';
 import {
   GridApi,
   GridReadyEvent,
@@ -13,8 +15,6 @@ import {
   IGetRowsParams,
   RowClickedEvent
 } from 'ag-grid-community';
-import { HiOutlineUserAdd } from 'react-icons/hi';
-import AddCustomerModal from './AddCustomerModal/AddCustomerModal';
 
 const gridOptions = {
   defaultColDef: {
@@ -38,25 +38,35 @@ const gridOptions = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const NewGrid = ({
-  columnDefs,
-  fetchMoreData,
-  refetch,
-  initialData,
-  initialPageInfo
-}: CustomGridProps) => {
+const NewGridInner = <T,>(
+  {
+    columnDefs,
+    fetchMoreData,
+    initialData,
+    initialPageInfo
+  }: CustomGridProps<T>,
+  ref: React.ForwardedRef<GridRef<T>>
+) => {
   const [gridColumnDef, setColumnDefs] = useState(columnDefs || []);
   const pageInfoTrack = useRef<PageInfoSlim>(initialPageInfo); // Using useRef for cursor
   const isFirstLoad = useRef<boolean>(true);
   const gridRowCount = useRef<number>(0);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gridApiRef = useRef<GridApi<any> | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const newDataRef = useRef<object[]>([]);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  const newDataRef = useRef<T[]>([]);
 
-  const toggleModal = () => setIsModalOpen(!isModalOpen);
-  const router = useRouter();
-  const pathname = usePathname();
+  // const toggleModal = () => setIsModalOpen(!isModalOpen);
+  // const router = useRouter();
+  // const pathname = usePathname();
+
+  useImperativeHandle(ref, () => ({
+    handleGetSelectedItems: (): T[] => {
+      const selectedNodes = gridApiRef.current?.getSelectedNodes();
+      const selectedData = selectedNodes?.map((node) => node.data) ?? [];
+      return selectedData;
+    }
+  }));
 
   const dataSource = (): IDatasource => ({
     getRows: async (params: IGetRowsParams) => {
@@ -118,21 +128,21 @@ const NewGrid = ({
     );
   };
 
-  const refreshGridData = async () => {
-    const { data } = await refetch();
-    const newData = data?.customers?.edges?.map((edge) => edge.node);
-    newDataRef.current = newData as [];
-    const newDataPageInfo = data?.customers?.pageInfo;
+  // const refreshGridData = async () => {
+  //   const { data } = await refetch();
+  //   const newData = data?.customers?.edges?.map((edge) => edge.node);
+  //   newDataRef.current = newData as [];
+  //   const newDataPageInfo = data?.customers?.pageInfo;
 
-    pageInfoTrack.current = (
-      newDataPageInfo ? newDataPageInfo : pageInfoTrack.current
-    ) as PageInfoSlim;
+  //   pageInfoTrack.current = (
+  //     newDataPageInfo ? newDataPageInfo : pageInfoTrack.current
+  //   ) as PageInfoSlim;
 
-    if (gridApiRef.current) {
-      gridRowCount.current = newDataRef.current.length; // Reset gridRowCount to reflect the new total
-      gridApiRef.current.setGridOption('datasource', dataSource()); // Refresh the datasource to reflect new data
-    }
-  };
+  //   if (gridApiRef.current) {
+  //     gridRowCount.current = newDataRef.current.length; // Reset gridRowCount to reflect the new total
+  //     gridApiRef.current.setGridOption('datasource', dataSource()); // Refresh the datasource to reflect new data
+  //   }
+  // };
   return (
     <>
       <div className='flex flex-col'>
@@ -147,7 +157,7 @@ const NewGrid = ({
         </div>{' '}
         {/* Providing a fixed portion of the screen to the grid container */}
         <div className='flex-grow overflow-y-auto'>
-          <div className='ag-theme-quartz h-[calc(100vh-400px)] w-full'>
+          <div className='ag-theme-quartz h-[calc(100vh-450px)] w-full'>
             <AgGridReact
               containerStyle={{ width: '100%', height: '100%' }}
               columnDefs={gridColumnDef}
@@ -164,5 +174,9 @@ const NewGrid = ({
     </>
   );
 };
+
+const NewGrid = forwardRef(NewGridInner) as <T>(
+  props: CustomGridProps<T> & { ref?: React.ForwardedRef<GridRef<T>> }
+) => ReturnType<typeof NewGridInner>;
 
 export default NewGrid;

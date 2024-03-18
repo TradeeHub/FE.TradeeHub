@@ -2,18 +2,17 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { IoSearchOutline } from 'react-icons/io5';
-import AddMaterialModal from './AddMaterialModal';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   useGetMaterials,
   useGetMaterialsLazy
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
-import { PageInfoSlim } from '@/app/[locale]/types/sharedTypes';
+import { GridRef, PageInfoSlim } from '@/app/[locale]/types/sharedTypes';
 import {
   ColDef,
   ValueGetterParams
 } from 'ag-grid-community/dist/lib/entities/colDef';
-import { MaterialEntity, PropertyEntity } from '@/generatedGraphql';
+import { MaterialEntity } from '@/generatedGraphql';
 import moment from 'moment';
 import NewGrid from '@/app/[locale]/components/NewGrid';
 import Image from 'next/image';
@@ -21,9 +20,13 @@ import { RootState } from '@/lib/store';
 import { useSelector } from 'react-redux';
 import { RiDeleteBin7Line } from 'react-icons/ri';
 import { FiEdit } from 'react-icons/fi';
+import MaterialModal from './MaterialModal';
+import { set } from 'react-hook-form';
 
 const Materials = ({ centerStyle }: { centerStyle: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const gridRef = useRef<GridRef<MaterialEntity>>(null);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const { allMaterials } = useGetMaterials();
   const { searchMaterials, data, loading, error, fetchMoreMaterials } =
@@ -34,10 +37,26 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
   const pageInfo = allMaterials?.materials?.pageInfo?.endCursor
     ? allMaterials?.materials?.pageInfo
     : null;
+  const [actionableItem, setActionableItem] = useState<MaterialEntity>();
+
+  const handleDeleteMaterial = (data: MaterialEntity) => {
+    setActionableItem(data);
+  };
+
+  const handleUpdateMaterial = (data: MaterialEntity) => {
+    setActionableItem(data);
+    setIsEditModalOpen(true);
+    console.log('data', data);
+  };
 
   const initialData = allMaterials?.materials?.edges?.map((edge) => edge.node);
 
-  console.log('initialData', initialData);
+  const handleGetGridSelection = () => {
+    const selectedMaterials =
+      gridRef.current?.handleGetSelectedItems() as MaterialEntity[];
+    console.log('selectedMaterials', selectedMaterials);
+  };
+
   return (
     <>
       <div className={centerStyle}>
@@ -63,15 +82,27 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
             <Button variant='default' onClick={toggleModal}>
               New
             </Button>
+            <Button variant='default' onClick={handleGetGridSelection}>
+              test
+            </Button>
           </div>
         </div>
       </div>
 
       {isModalOpen && (
-        <AddMaterialModal
+        <MaterialModal
           isOpen={isModalOpen}
           onClose={toggleModal}
           modalName='Create New Material'
+        />
+      )}
+
+      {isEditModalOpen && (
+        <MaterialModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          updateData={actionableItem}
+          modalName='Update Material'
         />
       )}
 
@@ -81,10 +112,20 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
 
       <div className='mx-auto flex w-full max-w-7xl flex-col gap-4'>
         {allMaterials && (
-          <NewGrid
-            columnDefs={getGridColumnDef(symbol as string)}
-            fetchMoreData={fetchMoreMaterials}
-            initialData={initialData as object[]}
+          <NewGrid<MaterialEntity>
+            ref={gridRef}
+            columnDefs={getGridColumnDef(
+              symbol,
+              handleDeleteMaterial,
+              handleUpdateMaterial
+            )}
+            fetchMoreData={(endCursor, pageSize) =>
+              fetchMoreMaterials(endCursor, pageSize).then((result) => ({
+                rows: result.rows as MaterialEntity[],
+                pageInfo: result.pageInfo
+              }))
+            }
+            initialData={initialData as MaterialEntity[]}
             initialPageInfo={pageInfo as PageInfoSlim}
           />
         )}
@@ -122,7 +163,11 @@ const nameCellRenderer = (params: ValueGetterParams) => {
   );
 };
 
-const getGridColumnDef = (currencySymbol: string): ColDef[] => [
+const getGridColumnDef = (
+  currencySymbol: string,
+  handleDelete: (data: MaterialEntity) => void,
+  handleUpdate: (data: MaterialEntity) => void
+): ColDef[] => [
   {
     checkboxSelection: true,
     width: 35,
@@ -242,7 +287,7 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
     field: 'actions',
     headerClass: 'text-base',
     cellClass: 'flex items-center justify-center',
-    cellRenderer: actionCellRenderer,
+    cellRenderer: actionCellRenderer(handleDelete, handleUpdate),
     pinned: 'right',
     resizable: false,
     width: 120,
@@ -252,34 +297,35 @@ const getGridColumnDef = (currencySymbol: string): ColDef[] => [
   }
 ];
 
-const actionCellRenderer = (params: ValueGetterParams) => {
-  // Function to handle the edit action
-  const onEdit = () => {
-    // Implement your edit logic here
-    console.log(`Editing row: ${params.data.id}`);
-  };
+const actionCellRenderer = (
+  handleDelete: (data: MaterialEntity) => void,
+  handleUpdate: (data: MaterialEntity) => void
+) => {
+  return (params: ValueGetterParams) => {
+    const onEdit = () => {
+      handleUpdate(params.data);
+    };
 
-  // Function to handle the delete action
-  const onDelete = () => {
-    // Implement your delete logic here
-    console.log(`Deleting row: ${params.data.id}`);
-  };
+    const onDelete = () => {
+      handleDelete(params.data);
+    };
 
-  return (
-    <>
-      <div className='flex items-center justify-center'>
-        <Button
-          variant='ghost'
-          size='default'
-          onClick={onEdit}
-          className='mr-2'
-        >
-          <FiEdit>Edit</FiEdit>
-        </Button>
-        <Button variant='ghost' size='default' onClick={onDelete}>
-          <RiDeleteBin7Line>Delete </RiDeleteBin7Line>
-        </Button>
-      </div>
-    </>
-  );
+    return (
+      <>
+        <div className='flex items-center justify-center'>
+          <Button
+            variant='ghost'
+            size='default'
+            onClick={onEdit}
+            className='mr-2'
+          >
+            <FiEdit>Edit</FiEdit>
+          </Button>
+          <Button variant='ghost' size='default' onClick={onDelete}>
+            <RiDeleteBin7Line>Delete </RiDeleteBin7Line>
+          </Button>
+        </div>
+      </>
+    );
+  };
 };

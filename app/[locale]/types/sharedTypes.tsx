@@ -12,8 +12,8 @@ import { ColDef } from 'ag-grid-community';
 import { ReactNode } from 'react';
 import { IconType } from 'react-icons';
 
-export type FetchMoreDataResult = {
-  rows: object[];
+export type FetchMoreDataResult<T> = {
+  rows: T[];
   pageInfo: PageInfoSlim | null | undefined;
 };
 
@@ -22,13 +22,13 @@ export type PageInfoSlim = {
   hasNextPage: boolean;
 };
 
-export type CustomGridProps = {
-  columnDefs: ColDef[];
+export type CustomGridProps<T> = {
+  columnDefs: ColDef<T>[];
   fetchMoreData: (
     endCursor: string | null,
     pageSize: number
-  ) => Promise<FetchMoreDataResult>;
-  initialData: object[];
+  ) => Promise<FetchMoreDataResult<T>>;
+  initialData: T[];
   initialPageInfo: PageInfoSlim;
 };
 
@@ -156,4 +156,8 @@ export type MenuItem = {
   label: string;
   icon: IconType;
   onClick: () => void;
+};
+
+export type GridRef<T> = {
+  handleGetSelectedItems: () => T[];
 };

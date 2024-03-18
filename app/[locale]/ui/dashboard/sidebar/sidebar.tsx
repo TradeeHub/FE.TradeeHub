@@ -97,8 +97,10 @@ const SideBar = () => {
       <div className='flex flex-col overflow-y-auto px-6 pb-4'>
         <div className='flex h-16 items-center justify-start'>
           <div className='pl-2 text-3xl font-bold'>
-            <span className='text-primary dark:text-accent'>Tradee</span>
-            <span className='text-secondary'>Hub</span>
+            <span className='font-special text-primary dark:text-accent '>
+              Tradee
+            </span>
+            <span className='font-special text-secondary'>Hub</span>
           </div>
         </div>
         <nav>
