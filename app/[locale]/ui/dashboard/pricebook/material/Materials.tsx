@@ -21,7 +21,6 @@ import { useSelector } from 'react-redux';
 import { RiDeleteBin7Line } from 'react-icons/ri';
 import { FiEdit } from 'react-icons/fi';
 import MaterialModal from './MaterialModal';
-import { set } from 'react-hook-form';
 
 const Materials = ({ centerStyle }: { centerStyle: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -110,12 +109,12 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
         <MaterialCard key={material.id} material={material as MaterialEntity} />
       ))} */}
 
-      <div className='mx-auto flex w-full max-w-7xl flex-col gap-4'>
+      <div className='mx-auto flex w-full max-w-screen-2xl flex-col gap-4'>
         {allMaterials && (
           <NewGrid<MaterialEntity>
             ref={gridRef}
             columnDefs={getGridColumnDef(
-              symbol,
+              symbol as string,
               handleDeleteMaterial,
               handleUpdateMaterial
             )}
@@ -272,8 +271,19 @@ const getGridColumnDef = (
     valueFormatter: (params) => (params.value ? 'Yes' : 'No') // Add this line
   },
   {
-    headerName: 'Description',
+    headerName: 'Vendor',
     width: 120,
+    field: 'vendor',
+    sortable: false,
+    headerClass: 'text-base text-center flex items-center justify-center',
+    cellClass: 'flex items-center',
+    filter: false,
+    hide: false,
+    tooltipField: 'vendor'
+  },
+  {
+    headerName: 'Description',
+    width: 140,
     field: 'description',
     sortable: false,
     headerClass: 'text-base text-center flex items-center justify-center',
@@ -294,6 +304,38 @@ const getGridColumnDef = (
     suppressMovable: true,
     sortable: false,
     filter: false
+  },
+  {
+    headerName: 'Created Date',
+    field: 'createdAt',
+    cellClass: 'flex items-center',
+    valueGetter: (params: ValueGetterParams) => {
+      return moment(params?.data?.createdAt).format('Do MMM YYYY h:mma');
+    },
+    sortable: true,
+    headerClass: 'text-base',
+    filter: true,
+    hide: true,
+    flex: 1,
+    tooltipValueGetter: (params) => {
+      return moment(params?.data?.createdAt).format('Do MMM YYYY h:mma');
+    }
+  },
+  {
+    headerName: 'Updated Date',
+    field: 'modifiedAt',
+    valueGetter: (params: ValueGetterParams) => {
+      return moment(params?.data?.createdAt).format('Do MMM YYYY h:mma');
+    },
+    cellClass: 'flex items-center',
+    sortable: true,
+    headerClass: 'text-base',
+    filter: true,
+    hide: true,
+    flex: 1,
+    tooltipValueGetter: (params) => {
+      return moment(params?.data?.createdAt).format('Do MMM YYYY h:mma');
+    }
   }
 ];
 

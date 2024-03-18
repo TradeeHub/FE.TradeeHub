@@ -15,10 +15,6 @@ query GetMaterials(
         name
         description
         identifier
-        markup {
-          type
-          value
-        }
         usePriceRange
         taxable
         allowOnlineBooking
@@ -33,7 +29,7 @@ query GetMaterials(
         images {
           url
         }
-        onlineMaterialUrls
+        vendor
         pricingTiers {
           unitRange {
             max
@@ -42,6 +38,8 @@ query GetMaterials(
           cost
           price
         }
+        createdAt
+        modifiedAt
       }
     }
   }

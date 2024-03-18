@@ -49,7 +49,6 @@ export type AddMaterialRequestInput = {
   images?: InputMaybe<Array<Scalars['Upload']['input']>>;
   markup?: InputMaybe<MarkupEntityInput>;
   name: Scalars['String']['input'];
-  onlineMaterialUrls?: InputMaybe<Array<Scalars['String']['input']>>;
   onlinePrice?: InputMaybe<Scalars['Decimal']['input']>;
   parentServiceCategoryId?: InputMaybe<Scalars['ID']['input']>;
   price?: InputMaybe<Scalars['Decimal']['input']>;
@@ -57,6 +56,7 @@ export type AddMaterialRequestInput = {
   taxable: Scalars['Boolean']['input'];
   unitType: Scalars['String']['input'];
   usePriceRange: Scalars['Boolean']['input'];
+  vendor?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type AddNewCustomerRequestInput = {
@@ -991,21 +991,9 @@ export type MarkupEntity = {
   value: Scalars['Decimal']['output'];
 };
 
-export type MarkupEntityFilterInput = {
-  and?: InputMaybe<Array<MarkupEntityFilterInput>>;
-  or?: InputMaybe<Array<MarkupEntityFilterInput>>;
-  type?: InputMaybe<MarkupTypeOperationFilterInput>;
-  value?: InputMaybe<DecimalOperationFilterInput>;
-};
-
 export type MarkupEntityInput = {
   type: MarkupType;
   value: Scalars['Decimal']['input'];
-};
-
-export type MarkupEntitySortInput = {
-  type?: InputMaybe<SortEnumType>;
-  value?: InputMaybe<SortEnumType>;
 };
 
 export type MarkupRequestInput = {
@@ -1018,13 +1006,6 @@ export enum MarkupType {
   Percentage = 'PERCENTAGE'
 }
 
-export type MarkupTypeOperationFilterInput = {
-  eq?: InputMaybe<MarkupType>;
-  in?: InputMaybe<Array<MarkupType>>;
-  neq?: InputMaybe<MarkupType>;
-  nin?: InputMaybe<Array<MarkupType>>;
-};
-
 export type MaterialEntity = Node & {
   __typename?: 'MaterialEntity';
   allowOnlineBooking: Scalars['Boolean']['output'];
@@ -1036,12 +1017,10 @@ export type MaterialEntity = Node & {
   id: Scalars['ID']['output'];
   identifier?: Maybe<Scalars['String']['output']>;
   images?: Maybe<Array<ImageEntity>>;
-  markup?: Maybe<MarkupEntity>;
   modifiedAt?: Maybe<Scalars['DateTime']['output']>;
   modifiedById?: Maybe<Scalars['UUID']['output']>;
   modifier?: Maybe<UserEntity>;
   name: Scalars['String']['output'];
-  onlineMaterialUrls?: Maybe<Array<Scalars['String']['output']>>;
   onlinePrice?: Maybe<Scalars['Decimal']['output']>;
   owner: UserEntity;
   parentServiceCategoryId?: Maybe<Scalars['ID']['output']>;
@@ -1052,6 +1031,7 @@ export type MaterialEntity = Node & {
   unitType: Scalars['String']['output'];
   usePriceRange: Scalars['Boolean']['output'];
   userOwnerId: Scalars['UUID']['output'];
+  vendor?: Maybe<Scalars['String']['output']>;
 };
 
 export type MaterialEntityFilterInput = {
@@ -1064,11 +1044,9 @@ export type MaterialEntityFilterInput = {
   id?: InputMaybe<StringOperationFilterInput>;
   identifier?: InputMaybe<StringOperationFilterInput>;
   images?: InputMaybe<ListFilterInputTypeOfImageEntityFilterInput>;
-  markup?: InputMaybe<MarkupEntityFilterInput>;
   modifiedAt?: InputMaybe<DateTimeOperationFilterInput>;
   modifiedById?: InputMaybe<UuidOperationFilterInput>;
   name?: InputMaybe<StringOperationFilterInput>;
-  onlineMaterialUrls?: InputMaybe<ListStringOperationFilterInput>;
   onlinePrice?: InputMaybe<DecimalOperationFilterInput>;
   or?: InputMaybe<Array<MaterialEntityFilterInput>>;
   parentServiceCategoryId?: InputMaybe<IdOperationFilterInput>;
@@ -1078,6 +1056,7 @@ export type MaterialEntityFilterInput = {
   unitType?: InputMaybe<StringOperationFilterInput>;
   usePriceRange?: InputMaybe<BooleanOperationFilterInput>;
   userOwnerId?: InputMaybe<UuidOperationFilterInput>;
+  vendor?: InputMaybe<StringOperationFilterInput>;
 };
 
 export type MaterialEntitySortInput = {
@@ -1088,7 +1067,6 @@ export type MaterialEntitySortInput = {
   description?: InputMaybe<SortEnumType>;
   id?: InputMaybe<SortEnumType>;
   identifier?: InputMaybe<SortEnumType>;
-  markup?: InputMaybe<MarkupEntitySortInput>;
   modifiedAt?: InputMaybe<SortEnumType>;
   modifiedById?: InputMaybe<SortEnumType>;
   name?: InputMaybe<SortEnumType>;
@@ -1099,6 +1077,7 @@ export type MaterialEntitySortInput = {
   unitType?: InputMaybe<SortEnumType>;
   usePriceRange?: InputMaybe<SortEnumType>;
   userOwnerId?: InputMaybe<SortEnumType>;
+  vendor?: InputMaybe<SortEnumType>;
 };
 
 /** A connection to a list of items. */
@@ -2718,7 +2697,7 @@ export type GetMaterialsQueryVariables = Exact<{
 }>;
 
 
-export type GetMaterialsQuery = { __typename?: 'Query', materials?: { __typename?: 'MaterialsConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges?: Array<{ __typename?: 'MaterialsEdge', cursor: string, node: { __typename?: 'MaterialEntity', id: string, name: string, description?: string | null, identifier?: string | null, usePriceRange: boolean, taxable: boolean, allowOnlineBooking: boolean, onlinePrice?: any | null, cost?: any | null, price?: any | null, unitType: string, onlineMaterialUrls?: Array<string> | null, markup?: { __typename?: 'MarkupEntity', type: MarkupType, value: any } | null, serviceCategory?: { __typename?: 'ServiceCategoryEntity', id: string, name: string } | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null, pricingTiers?: Array<{ __typename?: 'PricingTierEntity', cost?: any | null, price: any, unitRange: { __typename?: 'RangeOfDecimal', max: any, min: any } }> | null } }> | null } | null };
+export type GetMaterialsQuery = { __typename?: 'Query', materials?: { __typename?: 'MaterialsConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges?: Array<{ __typename?: 'MaterialsEdge', cursor: string, node: { __typename?: 'MaterialEntity', id: string, name: string, description?: string | null, identifier?: string | null, usePriceRange: boolean, taxable: boolean, allowOnlineBooking: boolean, onlinePrice?: any | null, cost?: any | null, price?: any | null, unitType: string, vendor?: string | null, createdAt: any, modifiedAt?: any | null, serviceCategory?: { __typename?: 'ServiceCategoryEntity', id: string, name: string } | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null, pricingTiers?: Array<{ __typename?: 'PricingTierEntity', cost?: any | null, price: any, unitRange: { __typename?: 'RangeOfDecimal', max: any, min: any } }> | null } }> | null } | null };
 
 export type UpdateServiceCategoryMutationVariables = Exact<{
   input: UpdateServiceCategoryRequestInput;
@@ -3527,10 +3506,6 @@ export const GetMaterialsDocument = gql`
         name
         description
         identifier
-        markup {
-          type
-          value
-        }
         usePriceRange
         taxable
         allowOnlineBooking
@@ -3545,7 +3520,7 @@ export const GetMaterialsDocument = gql`
         images {
           url
         }
-        onlineMaterialUrls
+        vendor
         pricingTiers {
           unitRange {
             max
@@ -3554,6 +3529,8 @@ export const GetMaterialsDocument = gql`
           cost
           price
         }
+        createdAt
+        modifiedAt
       }
     }
   }

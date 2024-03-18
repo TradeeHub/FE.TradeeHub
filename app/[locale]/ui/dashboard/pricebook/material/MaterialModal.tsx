@@ -83,7 +83,7 @@ const pricingTierEntitySchema = z
   .nullable();
 
 const formSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, 'Name is required'),
   description: z.string().optional().nullable(),
   identifier: z.string().optional().nullable(),
   parentServiceCategoryId: z.string().optional().nullable(),
@@ -95,7 +95,7 @@ const formSchema = z.object({
   price: z.number().optional().nullable(),
   unitType: z.string(),
   images: z.array(z.any()).optional().nullable(), // Assuming a placeholder for file upload input
-  onlineMaterialUrl: z.string().optional().nullable(),
+  vendor: z.string().optional().nullable(),
   pricingTiers: pricingTierEntitySchema
 });
 
@@ -120,7 +120,7 @@ const MarginProfitDisplay = ({
     return 0;
   };
 
-  const margin = calculateMargin(cost, price).toFixed(2); // toFixed(2) for rounding to 2 decimal places
+  const margin = calculateMargin(cost, price).toFixed(2);
   const profit = calculateProfit(cost, price).toFixed(2);
 
   return (
@@ -156,7 +156,7 @@ const MaterialModal = ({
             name: updateData.name,
             description: updateData?.description,
             identifier: updateData?.identifier,
-            parentServiceCategoryId: updateData?.parentServiceCategoryId,
+            parentServiceCategoryId: updateData?.serviceCategory?.id,
             usePriceRange: updateData?.usePriceRange,
             taxable: updateData?.taxable,
             allowOnlineBooking: updateData?.allowOnlineBooking,
@@ -165,7 +165,7 @@ const MaterialModal = ({
             price: updateData?.price,
             unitType: updateData?.unitType,
             images: updateData?.images,
-            onlineMaterialUrl: updateData?.onlineMaterialUrls,
+            vendor: updateData?.vendor,
             pricingTiers: updateData?.pricingTiers
           }
         : {
@@ -181,7 +181,7 @@ const MaterialModal = ({
             price: null,
             unitType: '',
             images: [],
-            onlineMaterialUrl: '',
+            vendor: '',
             pricingTiers: []
           }
   });
@@ -233,8 +233,6 @@ const MaterialModal = ({
   }, []);
 
   const handleSave = async (formData: z.infer<typeof formSchema>) => {
-    console.log('formData', formData);
-
     const request: AddMaterialRequestInput = {
       allowOnlineBooking: formData.allowOnlineBooking,
       cost: formData.cost,
@@ -243,9 +241,7 @@ const MaterialModal = ({
       usePriceRange: formData.usePriceRange,
       images: formData.images,
       name: formData.name,
-      onlineMaterialUrls: formData.onlineMaterialUrl
-        ? [formData.onlineMaterialUrl]
-        : [],
+      vendor: formData.vendor,
       onlinePrice: formData.onlinePrice,
       price: formData.price,
       pricingTiers: formData.pricingTiers?.map((tier) => ({
@@ -393,14 +389,14 @@ const MaterialModal = ({
                 <div className='flex flex-col'>
                   <FormField
                     control={form.control}
-                    name='onlineMaterialUrl'
+                    name='vendor'
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
                           <SimpleInput
                             field={field}
-                            title='Purchase Url'
-                            placeholder='Input online purchase url'
+                            title='Vendor'
+                            placeholder='Input vendor (name or URL)'
                           />
                         </FormControl>
                       </FormItem>
