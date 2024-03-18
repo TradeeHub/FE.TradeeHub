@@ -15,7 +15,9 @@ import {
   useGetAllServiceCategoriesQuery,
   SortEnumType,
   useGetMaterialsQuery,
-  useGetMaterialsLazyQuery
+  useGetMaterialsLazyQuery,
+  UpdateMaterialRequestInput,
+  useUpdateMaterialMutation
 } from '@/generatedGraphql';
 import { useCallback } from 'react';
 
@@ -212,6 +214,28 @@ const useUpdateServiceCategory = () => {
   };
 };
 
+const useUpdateMaterial = () => {
+  const [updateMaterialMutation, { data, loading, error }] =
+    useUpdateMaterialMutation();
+
+  const updateMaterial = async (request: UpdateMaterialRequestInput) => {
+    try {
+      await updateMaterialMutation({
+        variables: { request }
+      });
+    } catch (e) {
+      console.error('Error deleting service category:', e);
+    }
+  };
+
+  return {
+    updateMaterial,
+    updateMaterialResponse: data,
+    updateMaterialLoading: loading,
+    updateMaterialError: error
+  };
+};
+
 export {
   useGetMaterialsLazy,
   useGetMaterials,
@@ -221,5 +245,6 @@ export {
   useAddMaterial,
   useAddLaborRate,
   useDeleteServiceCategory,
-  useUpdateServiceCategory
+  useUpdateServiceCategory,
+  useUpdateMaterial
 };

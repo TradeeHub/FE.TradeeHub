@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { UseFormReturn, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Textarea } from '@/components/ui/textarea';
@@ -20,13 +20,15 @@ import SingleImageUploadForm from '@/app/[locale]/ui/general/SingleImageUploadCo
 import { Button } from '@/components/ui/button';
 import {
   useAddMaterial,
-  useGetAllServiceCategoriesLazy
+  useGetAllServiceCategoriesLazy,
+  useUpdateMaterial
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import {
   AddMaterialRequestInput,
   MaterialEntity,
   ServiceCategoryEntity,
-  SortEnumType
+  SortEnumType,
+  UpdateMaterialRequestInput
 } from '@/generatedGraphql';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
@@ -83,6 +85,7 @@ const pricingTierEntitySchema = z
   .nullable();
 
 const formSchema = z.object({
+  id: z.string().optional().nullable(),
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional().nullable(),
   identifier: z.string().optional().nullable(),
@@ -148,11 +151,12 @@ const MaterialModal = ({
   updateData?: MaterialEntity;
 }) => {
   console.log('updateData', updateData);
-  const form = useForm({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues:
       updateData !== undefined
         ? {
+            id: updateData.id,
             name: updateData.name,
             description: updateData?.description,
             identifier: updateData?.identifier,
@@ -188,6 +192,9 @@ const MaterialModal = ({
 
   const { addMaterial, addMaterialResponse, addMaterialLoading } =
     useAddMaterial();
+
+  const { updateMaterial, updateMaterialResponse, updateMaterialLoading } =
+    useUpdateMaterial();
 
   const user = useSelector((state: RootState) => state.user.data);
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
@@ -233,31 +240,13 @@ const MaterialModal = ({
   }, []);
 
   const handleSave = async (formData: z.infer<typeof formSchema>) => {
-    const request: AddMaterialRequestInput = {
-      allowOnlineBooking: formData.allowOnlineBooking,
-      cost: formData.cost,
-      description: formData.description,
-      identifier: formData.identifier,
-      usePriceRange: formData.usePriceRange,
-      images: formData.images,
-      name: formData.name,
-      vendor: formData.vendor,
-      onlinePrice: formData.onlinePrice,
-      price: formData.price,
-      pricingTiers: formData.pricingTiers?.map((tier) => ({
-        cost: tier.cost ? tier.cost : null,
-        price: tier.price,
-        unitRange: {
-          max: tier.unitRange.max,
-          min: tier.unitRange.min
-        }
-      })),
-      parentServiceCategoryId: formData.parentServiceCategoryId,
-      taxable: formData.taxable,
-      unitType: formData.unitType
-    };
-
-    addMaterial(request);
+    if (updateData) {
+      const request = generateUpdateRequest(formData, updateData, form);
+      updateMaterial(request);
+    } else {
+      const request = generateCreateRequest(formData);
+      addMaterial(request);
+    }
 
     fetchedRef.current = false;
   };
@@ -279,6 +268,24 @@ const MaterialModal = ({
       });
     }
   }, [addMaterialResponse]);
+
+  useEffect(() => {
+    const resp = updateMaterialResponse?.updateMaterial.data;
+    if (resp?.id) {
+      handleClose();
+      toast({
+        title: 'Successfully Update Material!',
+        description: (
+          <span>
+            You have successfully update {''}
+            <b>
+              <u>{resp.name}</u>
+            </b>
+          </span>
+        )
+      });
+    }
+  }, [updateMaterialResponse]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -625,15 +632,90 @@ const MaterialModal = ({
 
 export default MaterialModal;
 
-// const BreakpointIndicator = () => {
-//   return (
-//     <div className='fixed bottom-0 left-0 z-50 bg-gray-900 p-2 text-white'>
-//       <div className='sm:hidden'>XS</div>
-//       <div className='hidden sm:block md:hidden'>SM</div>
-//       <div className='hidden md:block lg:hidden'>MD</div>
-//       <div className='hidden lg:block xl:hidden'>LG</div>
-//       <div className='hidden xl:block 2xl:hidden'>XL</div>
-//       <div className='hidden 2xl:block'>2XL</div>
-//     </div>
-//   );
-// };
+const generateCreateRequest = (
+  formData: z.infer<typeof formSchema>
+): AddMaterialRequestInput => {
+  return {
+    allowOnlineBooking: formData.allowOnlineBooking,
+    cost: formData.cost,
+    description: formData.description,
+    identifier: formData.identifier,
+    usePriceRange: formData.usePriceRange,
+    images: formData.images,
+    name: formData.name,
+    vendor: formData.vendor,
+    onlinePrice: formData.onlinePrice,
+    price: formData.price,
+    pricingTiers: formData.pricingTiers?.map((tier) => ({
+      cost: tier.cost ? tier.cost : null,
+      price: tier.price,
+      unitRange: {
+        max: tier.unitRange.max,
+        min: tier.unitRange.min
+      }
+    })),
+    parentServiceCategoryId: formData.parentServiceCategoryId,
+    taxable: formData.taxable,
+    unitType: formData.unitType
+  };
+};
+
+const generateUpdateRequest = (
+  formData: z.infer<typeof formSchema>,
+  updateData: MaterialEntity,
+  form: UseFormReturn<z.infer<typeof formSchema>>
+): UpdateMaterialRequestInput => {
+  console.log('formDataaaaaaaaaaaaaaaaaaaaaaaaaaaaa', formData);
+  const isNewImageFile =
+    formData.images &&
+    formData.images.length > 0 &&
+    formData.images[0] instanceof File;
+
+  let s3KeyToDelete;
+
+  const hasExistingImage =
+    updateData && updateData.images && updateData.images?.length > 0;
+
+  const shouldDeleteImage =
+    (hasExistingImage && formData.images?.length === 0) ||
+    (hasExistingImage && isNewImageFile);
+
+  if (shouldDeleteImage) {
+    s3KeyToDelete = updateData.images?.[0].s3Key;
+  }
+
+  const dirtyFields = form.formState.dirtyFields;
+
+  console.log('dirtyFields', formData.id, dirtyFields);
+  return {
+    id: formData.id!,
+    newImage: isNewImageFile ? formData.images?.[0] : null,
+    allowOnlineBooking: dirtyFields.allowOnlineBooking
+      ? formData.allowOnlineBooking
+      : null,
+    cost: dirtyFields.cost ? formData.cost : null,
+    description: dirtyFields.description ? formData.description : null,
+    identifier: dirtyFields.identifier ? formData.identifier : null,
+    usePriceRange: dirtyFields.usePriceRange ? formData.usePriceRange : null,
+    name: dirtyFields.name ? formData.name : null,
+    vendor: dirtyFields.vendor ? formData.vendor : null,
+    onlinePrice: dirtyFields.onlinePrice ? formData.onlinePrice : null,
+    price: dirtyFields.price ? formData.price : null,
+    pricingTiers: dirtyFields.pricingTiers
+      ? formData.pricingTiers?.map((tier) => ({
+          cost: tier.cost ? tier.cost : null,
+          price: tier.price,
+          unitRange: {
+            max: tier.unitRange.max,
+            min: tier.unitRange.min
+          }
+        }))
+      : null,
+    parentServiceCategoryId: dirtyFields.parentServiceCategoryId
+      ? formData.parentServiceCategoryId
+      : null,
+    taxable: dirtyFields.taxable ? formData.taxable : null,
+    unitType: dirtyFields.unitType ? formData.unitType : null,
+    s3KeyToDelete: s3KeyToDelete
+  };
+};

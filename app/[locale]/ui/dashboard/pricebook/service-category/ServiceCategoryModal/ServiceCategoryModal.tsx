@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { UseFormReturn, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Textarea } from '@/components/ui/textarea';
@@ -168,49 +168,13 @@ const ServiceCategoryModal = ({
 
   const handleSave = async (formData: z.infer<typeof formSchema>) => {
     if (updateData) {
-      const isNewImageFile =
-        formData.images &&
-        formData.images.length > 0 &&
-        formData.images[0] instanceof File;
-
-      let s3KeyToDelete;
-
-      const hasExistingImage =
-        updateData && updateData.images && updateData.images?.length > 0;
-
-      const shouldDeleteImage =
-        (hasExistingImage && formData.images?.length === 0) ||
-        (hasExistingImage && isNewImageFile);
-
-      if (shouldDeleteImage) {
-        s3KeyToDelete = updateData.images?.[0].s3Key;
-      }
-
-      const dirtyFields = form.formState.dirtyFields;
-
-      const request: UpdateServiceCategoryRequestInput = {
-        id: formData.id!,
-        newImage: isNewImageFile ? formData.images?.[0] : null,
-        name: dirtyFields.name ? formData.name : null,
-        description: dirtyFields.description ? formData.description : null,
-        parentServiceCategoryId: dirtyFields.parentServiceCategoryId
-          ? formData.parentServiceCategoryId
-          : null,
-        s3KeyToDelete: s3KeyToDelete
-      };
+      const request = generateUpdateRequest(formData, updateData, form);
       updateServiceCategory(request);
     } else {
-      const request: AddNewServiceCategoryRequestInput = {
-        images: formData.images,
-        name: formData.name,
-        description: formData.description,
-        parentServiceCategoryId: formData.parentServiceCategoryId
-      };
-
+      const request = generateCreateRequest(formData);
       addNewServiceCategory(request);
-
-      fetchedRef.current = false;
     }
+    fetchedRef.current = false;
   };
 
   return (
@@ -339,3 +303,53 @@ const ServiceCategoryModal = ({
 };
 
 export default ServiceCategoryModal;
+
+const generateCreateRequest = (
+  formData: z.infer<typeof formSchema>
+): AddNewServiceCategoryRequestInput => {
+  return {
+    images: formData.images,
+    name: formData.name,
+    description: formData.description,
+    parentServiceCategoryId: formData.parentServiceCategoryId
+  };
+};
+
+const generateUpdateRequest = (
+  formData: z.infer<typeof formSchema>,
+  updateData: ServiceCategoryEntity,
+  form: UseFormReturn<z.infer<typeof formSchema>>
+): UpdateServiceCategoryRequestInput => {
+  const isNewImageFile =
+    formData.images &&
+    formData.images.length > 0 &&
+    formData.images[0] instanceof File;
+
+  let s3KeyToDelete;
+
+  const hasExistingImage =
+    updateData && updateData.images && updateData.images?.length > 0;
+
+  const shouldDeleteImage =
+    (hasExistingImage && formData.images?.length === 0) ||
+    (hasExistingImage && isNewImageFile);
+
+  if (shouldDeleteImage) {
+    s3KeyToDelete = updateData.images?.[0].s3Key;
+  }
+
+  const dirtyFields = form.formState.dirtyFields;
+
+  const request: UpdateServiceCategoryRequestInput = {
+    id: formData.id!,
+    newImage: isNewImageFile ? formData.images?.[0] : null,
+    name: dirtyFields.name ? formData.name : null,
+    description: dirtyFields.description ? formData.description : null,
+    parentServiceCategoryId: dirtyFields.parentServiceCategoryId
+      ? formData.parentServiceCategoryId
+      : null,
+    s3KeyToDelete: s3KeyToDelete
+  };
+
+  return request;
+};

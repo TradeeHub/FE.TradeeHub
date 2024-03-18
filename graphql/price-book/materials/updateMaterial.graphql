@@ -1,0 +1,35 @@
+mutation UpdateMaterial($request: UpdateMaterialRequestInput!) {
+  updateMaterial(request: $request) {
+    data {
+      id
+      name
+      description
+      identifier
+      usePriceRange
+      taxable
+      allowOnlineBooking
+      onlinePrice
+      cost
+      price
+      unitType
+      serviceCategory {
+        id
+        name
+      }
+      images {
+        url
+      }
+      vendor
+      pricingTiers {
+        unitRange {
+          max
+          min
+        }
+        cost
+        price
+      }
+      createdAt
+      modifiedAt
+    }
+  }
+}

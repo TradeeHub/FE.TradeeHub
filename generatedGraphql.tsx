@@ -47,7 +47,6 @@ export type AddMaterialRequestInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   identifier?: InputMaybe<Scalars['String']['input']>;
   images?: InputMaybe<Array<Scalars['Upload']['input']>>;
-  markup?: InputMaybe<MarkupEntityInput>;
   name: Scalars['String']['input'];
   onlinePrice?: InputMaybe<Scalars['Decimal']['input']>;
   parentServiceCategoryId?: InputMaybe<Scalars['ID']['input']>;
@@ -991,11 +990,6 @@ export type MarkupEntity = {
   value: Scalars['Decimal']['output'];
 };
 
-export type MarkupEntityInput = {
-  type: MarkupType;
-  value: Scalars['Decimal']['input'];
-};
-
 export type MarkupRequestInput = {
   type: MarkupType;
   value: Scalars['Decimal']['input'];
@@ -1119,6 +1113,7 @@ export type Mutation = {
   logout: LogoutResponse;
   register: SignUpResponse;
   resendVerificationCode: ResendConfirmationCodeResponse;
+  updateMaterial: OperationResultOfMaterialEntity;
   updateServiceCategory: OperationResultOfServiceCategoryEntity;
 };
 
@@ -1201,6 +1196,11 @@ export type MutationRegisterArgs = {
 
 export type MutationResendVerificationCodeArgs = {
   email: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateMaterialArgs = {
+  request: UpdateMaterialRequestInput;
 };
 
 
@@ -1294,6 +1294,26 @@ export type OperationResultAddErrorArgs = {
 
 
 export type OperationResultAddMessageArgs = {
+  error: Scalars['String']['input'];
+};
+
+export type OperationResultOfMaterialEntity = IOperationResult & {
+  __typename?: 'OperationResultOfMaterialEntity';
+  addError: OperationResult;
+  addMessage: OperationResult;
+  data?: Maybe<MaterialEntity>;
+  errors?: Maybe<Array<Scalars['String']['output']>>;
+  messages?: Maybe<Array<Scalars['String']['output']>>;
+  success: Scalars['Boolean']['output'];
+};
+
+
+export type OperationResultOfMaterialEntityAddErrorArgs = {
+  error: Scalars['String']['input'];
+};
+
+
+export type OperationResultOfMaterialEntityAddMessageArgs = {
   error: Scalars['String']['input'];
 };
 
@@ -2230,6 +2250,25 @@ export enum TaxRateType {
   SpecificRate = 'SPECIFIC_RATE'
 }
 
+export type UpdateMaterialRequestInput = {
+  allowOnlineBooking?: InputMaybe<Scalars['Boolean']['input']>;
+  cost?: InputMaybe<Scalars['Decimal']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  identifier?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  newImage?: InputMaybe<Scalars['Upload']['input']>;
+  onlinePrice?: InputMaybe<Scalars['Decimal']['input']>;
+  parentServiceCategoryId?: InputMaybe<Scalars['ID']['input']>;
+  price?: InputMaybe<Scalars['Decimal']['input']>;
+  pricingTiers?: InputMaybe<Array<PricingTierEntityInput>>;
+  s3KeyToDelete?: InputMaybe<Scalars['String']['input']>;
+  taxable?: InputMaybe<Scalars['Boolean']['input']>;
+  unitType?: InputMaybe<Scalars['String']['input']>;
+  usePriceRange?: InputMaybe<Scalars['Boolean']['input']>;
+  vendor?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdateServiceCategoryRequestInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
@@ -2660,29 +2699,6 @@ export type AddLaborRateMutationVariables = Exact<{
 
 export type AddLaborRateMutation = { __typename?: 'Mutation', addLaborRate: { __typename?: 'LaborRateEntity', name: string, id: string } };
 
-export type AddNewServiceCategoryMutationVariables = Exact<{
-  input: AddNewServiceCategoryRequestInput;
-}>;
-
-
-export type AddNewServiceCategoryMutation = { __typename?: 'Mutation', addNewServiceCategory: { __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, parentServiceCategoryId?: string | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null } };
-
-export type DeleteServiceCategoryMutationVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type DeleteServiceCategoryMutation = { __typename?: 'Mutation', deleteServiceCategory: { __typename?: 'OperationResult', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } | { __typename?: 'OperationResultOfServiceCategoryEntity', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } };
-
-export type GetAllServiceCategoriesQueryVariables = Exact<{
-  name: Scalars['String']['input'];
-  order?: InputMaybe<Array<ServiceCategoryEntitySortInput> | ServiceCategoryEntitySortInput>;
-  pageSize: Scalars['Int']['input'];
-}>;
-
-
-export type GetAllServiceCategoriesQuery = { __typename?: 'Query', serviceCategories?: { __typename?: 'ServiceCategoriesConnection', edges?: Array<{ __typename?: 'ServiceCategoriesEdge', node: { __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, parentServiceCategoryId?: string | null, modifiedAt?: any | null, createdAt: any, images?: Array<{ __typename?: 'ImageEntity', url: string, description?: string | null, s3Key: string, createdAt: any }> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
-
 export type AddMaterialMutationVariables = Exact<{
   input: AddMaterialRequestInput;
 }>;
@@ -2698,6 +2714,36 @@ export type GetMaterialsQueryVariables = Exact<{
 
 
 export type GetMaterialsQuery = { __typename?: 'Query', materials?: { __typename?: 'MaterialsConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, edges?: Array<{ __typename?: 'MaterialsEdge', cursor: string, node: { __typename?: 'MaterialEntity', id: string, name: string, description?: string | null, identifier?: string | null, usePriceRange: boolean, taxable: boolean, allowOnlineBooking: boolean, onlinePrice?: any | null, cost?: any | null, price?: any | null, unitType: string, vendor?: string | null, createdAt: any, modifiedAt?: any | null, serviceCategory?: { __typename?: 'ServiceCategoryEntity', id: string, name: string } | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null, pricingTiers?: Array<{ __typename?: 'PricingTierEntity', cost?: any | null, price: any, unitRange: { __typename?: 'RangeOfDecimal', max: any, min: any } }> | null } }> | null } | null };
+
+export type UpdateMaterialMutationVariables = Exact<{
+  request: UpdateMaterialRequestInput;
+}>;
+
+
+export type UpdateMaterialMutation = { __typename?: 'Mutation', updateMaterial: { __typename?: 'OperationResultOfMaterialEntity', data?: { __typename?: 'MaterialEntity', id: string, name: string, description?: string | null, identifier?: string | null, usePriceRange: boolean, taxable: boolean, allowOnlineBooking: boolean, onlinePrice?: any | null, cost?: any | null, price?: any | null, unitType: string, vendor?: string | null, createdAt: any, modifiedAt?: any | null, serviceCategory?: { __typename?: 'ServiceCategoryEntity', id: string, name: string } | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null, pricingTiers?: Array<{ __typename?: 'PricingTierEntity', cost?: any | null, price: any, unitRange: { __typename?: 'RangeOfDecimal', max: any, min: any } }> | null } | null } };
+
+export type AddNewServiceCategoryMutationVariables = Exact<{
+  input: AddNewServiceCategoryRequestInput;
+}>;
+
+
+export type AddNewServiceCategoryMutation = { __typename?: 'Mutation', addNewServiceCategory: { __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, parentServiceCategoryId?: string | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null } };
+
+export type DeleteServiceCategoryMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteServiceCategoryMutation = { __typename?: 'Mutation', deleteServiceCategory: { __typename?: 'OperationResult', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } | { __typename?: 'OperationResultOfMaterialEntity', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } | { __typename?: 'OperationResultOfServiceCategoryEntity', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } };
+
+export type GetAllServiceCategoriesQueryVariables = Exact<{
+  name: Scalars['String']['input'];
+  order?: InputMaybe<Array<ServiceCategoryEntitySortInput> | ServiceCategoryEntitySortInput>;
+  pageSize: Scalars['Int']['input'];
+}>;
+
+
+export type GetAllServiceCategoriesQuery = { __typename?: 'Query', serviceCategories?: { __typename?: 'ServiceCategoriesConnection', edges?: Array<{ __typename?: 'ServiceCategoriesEdge', node: { __typename?: 'ServiceCategoryEntity', id: string, name: string, description?: string | null, parentServiceCategoryId?: string | null, modifiedAt?: any | null, createdAt: any, images?: Array<{ __typename?: 'ImageEntity', url: string, description?: string | null, s3Key: string, createdAt: any }> | null } }> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 export type UpdateServiceCategoryMutationVariables = Exact<{
   input: UpdateServiceCategoryRequestInput;
@@ -3323,6 +3369,182 @@ export function useAddLaborRateMutation(baseOptions?: Apollo.MutationHookOptions
 export type AddLaborRateMutationHookResult = ReturnType<typeof useAddLaborRateMutation>;
 export type AddLaborRateMutationResult = Apollo.MutationResult<AddLaborRateMutation>;
 export type AddLaborRateMutationOptions = Apollo.BaseMutationOptions<AddLaborRateMutation, AddLaborRateMutationVariables>;
+export const AddMaterialDocument = gql`
+    mutation AddMaterial($input: AddMaterialRequestInput!) {
+  addMaterial(request: $input) {
+    name
+    id
+  }
+}
+    `;
+export type AddMaterialMutationFn = Apollo.MutationFunction<AddMaterialMutation, AddMaterialMutationVariables>;
+
+/**
+ * __useAddMaterialMutation__
+ *
+ * To run a mutation, you first call `useAddMaterialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddMaterialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addMaterialMutation, { data, loading, error }] = useAddMaterialMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddMaterialMutation(baseOptions?: Apollo.MutationHookOptions<AddMaterialMutation, AddMaterialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddMaterialMutation, AddMaterialMutationVariables>(AddMaterialDocument, options);
+      }
+export type AddMaterialMutationHookResult = ReturnType<typeof useAddMaterialMutation>;
+export type AddMaterialMutationResult = Apollo.MutationResult<AddMaterialMutation>;
+export type AddMaterialMutationOptions = Apollo.BaseMutationOptions<AddMaterialMutation, AddMaterialMutationVariables>;
+export const GetMaterialsDocument = gql`
+    query GetMaterials($request: SearchMaterialRequestInput!, $order: [MaterialEntitySortInput!], $pageSize: Int!) {
+  materials(request: $request, order: $order, first: $pageSize) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        name
+        description
+        identifier
+        usePriceRange
+        taxable
+        allowOnlineBooking
+        onlinePrice
+        cost
+        price
+        unitType
+        serviceCategory {
+          id
+          name
+        }
+        images {
+          url
+        }
+        vendor
+        pricingTiers {
+          unitRange {
+            max
+            min
+          }
+          cost
+          price
+        }
+        createdAt
+        modifiedAt
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMaterialsQuery__
+ *
+ * To run a query within a React component, call `useGetMaterialsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMaterialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMaterialsQuery({
+ *   variables: {
+ *      request: // value for 'request'
+ *      order: // value for 'order'
+ *      pageSize: // value for 'pageSize'
+ *   },
+ * });
+ */
+export function useGetMaterialsQuery(baseOptions: Apollo.QueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables> & ({ variables: GetMaterialsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
+      }
+export function useGetMaterialsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
+        }
+export function useGetMaterialsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
+        }
+export type GetMaterialsQueryHookResult = ReturnType<typeof useGetMaterialsQuery>;
+export type GetMaterialsLazyQueryHookResult = ReturnType<typeof useGetMaterialsLazyQuery>;
+export type GetMaterialsSuspenseQueryHookResult = ReturnType<typeof useGetMaterialsSuspenseQuery>;
+export type GetMaterialsQueryResult = Apollo.QueryResult<GetMaterialsQuery, GetMaterialsQueryVariables>;
+export const UpdateMaterialDocument = gql`
+    mutation UpdateMaterial($request: UpdateMaterialRequestInput!) {
+  updateMaterial(request: $request) {
+    data {
+      id
+      name
+      description
+      identifier
+      usePriceRange
+      taxable
+      allowOnlineBooking
+      onlinePrice
+      cost
+      price
+      unitType
+      serviceCategory {
+        id
+        name
+      }
+      images {
+        url
+      }
+      vendor
+      pricingTiers {
+        unitRange {
+          max
+          min
+        }
+        cost
+        price
+      }
+      createdAt
+      modifiedAt
+    }
+  }
+}
+    `;
+export type UpdateMaterialMutationFn = Apollo.MutationFunction<UpdateMaterialMutation, UpdateMaterialMutationVariables>;
+
+/**
+ * __useUpdateMaterialMutation__
+ *
+ * To run a mutation, you first call `useUpdateMaterialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMaterialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMaterialMutation, { data, loading, error }] = useUpdateMaterialMutation({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useUpdateMaterialMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMaterialMutation, UpdateMaterialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMaterialMutation, UpdateMaterialMutationVariables>(UpdateMaterialDocument, options);
+      }
+export type UpdateMaterialMutationHookResult = ReturnType<typeof useUpdateMaterialMutation>;
+export type UpdateMaterialMutationResult = Apollo.MutationResult<UpdateMaterialMutation>;
+export type UpdateMaterialMutationOptions = Apollo.BaseMutationOptions<UpdateMaterialMutation, UpdateMaterialMutationVariables>;
 export const AddNewServiceCategoryDocument = gql`
     mutation AddNewServiceCategory($input: AddNewServiceCategoryRequestInput!) {
   addNewServiceCategory(request: $input) {
@@ -3458,119 +3680,6 @@ export type GetAllServiceCategoriesQueryHookResult = ReturnType<typeof useGetAll
 export type GetAllServiceCategoriesLazyQueryHookResult = ReturnType<typeof useGetAllServiceCategoriesLazyQuery>;
 export type GetAllServiceCategoriesSuspenseQueryHookResult = ReturnType<typeof useGetAllServiceCategoriesSuspenseQuery>;
 export type GetAllServiceCategoriesQueryResult = Apollo.QueryResult<GetAllServiceCategoriesQuery, GetAllServiceCategoriesQueryVariables>;
-export const AddMaterialDocument = gql`
-    mutation AddMaterial($input: AddMaterialRequestInput!) {
-  addMaterial(request: $input) {
-    name
-    id
-  }
-}
-    `;
-export type AddMaterialMutationFn = Apollo.MutationFunction<AddMaterialMutation, AddMaterialMutationVariables>;
-
-/**
- * __useAddMaterialMutation__
- *
- * To run a mutation, you first call `useAddMaterialMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddMaterialMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addMaterialMutation, { data, loading, error }] = useAddMaterialMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddMaterialMutation(baseOptions?: Apollo.MutationHookOptions<AddMaterialMutation, AddMaterialMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddMaterialMutation, AddMaterialMutationVariables>(AddMaterialDocument, options);
-      }
-export type AddMaterialMutationHookResult = ReturnType<typeof useAddMaterialMutation>;
-export type AddMaterialMutationResult = Apollo.MutationResult<AddMaterialMutation>;
-export type AddMaterialMutationOptions = Apollo.BaseMutationOptions<AddMaterialMutation, AddMaterialMutationVariables>;
-export const GetMaterialsDocument = gql`
-    query GetMaterials($request: SearchMaterialRequestInput!, $order: [MaterialEntitySortInput!], $pageSize: Int!) {
-  materials(request: $request, order: $order, first: $pageSize) {
-    pageInfo {
-      hasNextPage
-      endCursor
-    }
-    edges {
-      cursor
-      node {
-        id
-        name
-        description
-        identifier
-        usePriceRange
-        taxable
-        allowOnlineBooking
-        onlinePrice
-        cost
-        price
-        unitType
-        serviceCategory {
-          id
-          name
-        }
-        images {
-          url
-        }
-        vendor
-        pricingTiers {
-          unitRange {
-            max
-            min
-          }
-          cost
-          price
-        }
-        createdAt
-        modifiedAt
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetMaterialsQuery__
- *
- * To run a query within a React component, call `useGetMaterialsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMaterialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetMaterialsQuery({
- *   variables: {
- *      request: // value for 'request'
- *      order: // value for 'order'
- *      pageSize: // value for 'pageSize'
- *   },
- * });
- */
-export function useGetMaterialsQuery(baseOptions: Apollo.QueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables> & ({ variables: GetMaterialsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
-      }
-export function useGetMaterialsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
-        }
-export function useGetMaterialsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
-        }
-export type GetMaterialsQueryHookResult = ReturnType<typeof useGetMaterialsQuery>;
-export type GetMaterialsLazyQueryHookResult = ReturnType<typeof useGetMaterialsLazyQuery>;
-export type GetMaterialsSuspenseQueryHookResult = ReturnType<typeof useGetMaterialsSuspenseQuery>;
-export type GetMaterialsQueryResult = Apollo.QueryResult<GetMaterialsQuery, GetMaterialsQueryVariables>;
 export const UpdateServiceCategoryDocument = gql`
     mutation UpdateServiceCategory($input: UpdateServiceCategoryRequestInput!) {
   updateServiceCategory(request: $input) {
