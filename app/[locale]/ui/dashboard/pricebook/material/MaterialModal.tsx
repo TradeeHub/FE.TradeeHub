@@ -45,6 +45,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { Switch } from '@/components/ui/switch';
 import PricingTier from './PricingTier/PricingTier';
+import { ModalAction } from '@/app/[locale]/types/sharedTypes';
 
 const unitOptions = [
   { label: 'Other', value: 'Other' },
@@ -252,16 +253,15 @@ const MaterialModal = ({
   };
 
   useEffect(() => {
-    const resp = addMaterialResponse?.addMaterial;
-    if (resp?.id) {
-      handleClose();
+    const material = addMaterialResponse?.addMaterial as MaterialEntity;
+    if (material?.id) {
       toast({
         title: 'Successfully Created a New Material!',
         description: (
           <span>
             You have successfully created a new material{' '}
             <b>
-              <u>{resp.name}</u>
+              <u>{material.name}</u>
             </b>
           </span>
         )
@@ -270,8 +270,8 @@ const MaterialModal = ({
   }, [addMaterialResponse]);
 
   useEffect(() => {
-    const resp = updateMaterialResponse?.updateMaterial.data;
-    if (resp?.id) {
+    const material = updateMaterialResponse?.updateMaterial.data;
+    if (material?.id) {
       handleClose();
       toast({
         title: 'Successfully Update Material!',
@@ -279,7 +279,7 @@ const MaterialModal = ({
           <span>
             You have successfully update {''}
             <b>
-              <u>{resp.name}</u>
+              <u>{material.name}</u>
             </b>
           </span>
         )
@@ -292,7 +292,6 @@ const MaterialModal = ({
       <DialogContent className='w-full max-w-4xl p-6'>
         <DialogHeader className='mb-4'>
           <DialogTitle className='text-center'>{modalName}</DialogTitle>
-          {/* <BreakpointIndicator /> */}
         </DialogHeader>
 
         <Form {...form}>

@@ -2,17 +2,26 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { IoSearchOutline } from 'react-icons/io5';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   useGetMaterials,
   useGetMaterialsLazy
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
-import { GridRef, PageInfoSlim } from '@/app/[locale]/types/sharedTypes';
+import {
+  GridData,
+  GridRef,
+  ModalAction,
+  PageInfoSlim
+} from '@/app/[locale]/types/sharedTypes';
 import {
   ColDef,
   ValueGetterParams
 } from 'ag-grid-community/dist/lib/entities/colDef';
-import { MaterialEntity } from '@/generatedGraphql';
+import {
+  GetMaterialsQuery,
+  MaterialEntity,
+  SortEnumType
+} from '@/generatedGraphql';
 import moment from 'moment';
 import NewGrid from '@/app/[locale]/components/NewGrid';
 import Image from 'next/image';
@@ -27,16 +36,15 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const gridRef = useRef<GridRef<MaterialEntity>>(null);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
-  const { allMaterials } = useGetMaterials();
+  const { allMaterials, refetch } = useGetMaterials();
   const { searchMaterials, data, loading, error, fetchMoreMaterials } =
     useGetMaterialsLazy();
   const user = useSelector((state: RootState) => state.user.data);
 
-  const symbol = user?.currencySymbol;
-  const pageInfo = allMaterials?.materials?.pageInfo?.endCursor
-    ? allMaterials?.materials?.pageInfo
-    : null;
+  const [gridData, setGridData] = useState<GridData<MaterialEntity>>();
+
   const [actionableItem, setActionableItem] = useState<MaterialEntity>();
+  const symbol = user?.currencySymbol;
 
   const handleDeleteMaterial = (data: MaterialEntity) => {
     setActionableItem(data);
@@ -48,13 +56,46 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
     console.log('data', data);
   };
 
-  const initialData = allMaterials?.materials?.edges?.map((edge) => edge.node);
-
   const handleGetGridSelection = () => {
     const selectedMaterials =
       gridRef.current?.handleGetSelectedItems() as MaterialEntity[];
     console.log('selectedMaterials', selectedMaterials);
   };
+
+  const handleClose = async () => {
+    const resp = await refetch({
+      request: {},
+      order: [{ modifiedAt: SortEnumType.Desc }],
+      pageSize: 50
+    });
+
+    const { rows, pageInfo } = normalizeMaterialData(resp.data);
+
+    // setGridData({
+    //   rows: rows,
+    //   pageInfo
+    // });
+
+    const gridData = {
+      rows: rows,
+      pageInfo
+    } as GridData<MaterialEntity>;
+
+    if (resp.data) {
+      gridRef.current?.refreshGridData(gridData);
+    }
+  };
+
+  useEffect(() => {
+    if (allMaterials) {
+      const { rows, pageInfo } = normalizeMaterialData(allMaterials);
+
+      setGridData({
+        rows: rows,
+        pageInfo
+      });
+    }
+  }, [allMaterials]);
 
   return (
     <>
@@ -91,7 +132,10 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
       {isModalOpen && (
         <MaterialModal
           isOpen={isModalOpen}
-          onClose={toggleModal}
+          onClose={() => {
+            handleClose();
+            setIsModalOpen(false);
+          }}
           modalName='Create New Material'
         />
       )}
@@ -99,18 +143,17 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
       {isEditModalOpen && (
         <MaterialModal
           isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
+          onClose={() => {
+            handleClose();
+            setIsEditModalOpen(false);
+          }}
           updateData={actionableItem}
           modalName='Update Material'
         />
       )}
 
-      {/* {initialData?.map((material) => (
-        <MaterialCard key={material.id} material={material as MaterialEntity} />
-      ))} */}
-
       <div className='mx-auto flex w-full max-w-screen-2xl flex-col gap-4'>
-        {allMaterials && (
+        {gridData && (
           <NewGrid<MaterialEntity>
             ref={gridRef}
             columnDefs={getGridColumnDef(
@@ -124,8 +167,7 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
                 pageInfo: result.pageInfo
               }))
             }
-            initialData={initialData as MaterialEntity[]}
-            initialPageInfo={pageInfo as PageInfoSlim}
+            gridData={gridData as GridData<MaterialEntity>}
           />
         )}
       </div>
@@ -370,4 +412,18 @@ const actionCellRenderer = (
       </>
     );
   };
+};
+
+const normalizeMaterialData = (allMaterials: GetMaterialsQuery) => {
+  // Check if allMaterials is not null or undefined.
+  if (!allMaterials || !allMaterials.materials) {
+    return { rows: [], pageInfo: { hasNextPage: false, endCursor: null } };
+  }
+
+  const pageInfo = allMaterials.materials.pageInfo as PageInfoSlim;
+  const rows = allMaterials.materials.edges?.map(
+    (edge) => edge.node
+  ) as MaterialEntity[];
+
+  return { rows, pageInfo };
 };

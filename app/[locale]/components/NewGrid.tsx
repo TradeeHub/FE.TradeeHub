@@ -7,7 +7,12 @@ import React, {
 } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import CustomSidebar from '@/app/[locale]/components/GridSettingManager';
-import { CustomGridProps, GridRef, PageInfoSlim } from '../types/sharedTypes';
+import {
+  CustomGridProps,
+  GridData,
+  GridRef,
+  PageInfoSlim
+} from '../types/sharedTypes';
 import {
   GridApi,
   GridReadyEvent,
@@ -28,7 +33,6 @@ const gridOptions = {
   enableBrowserTooltips: true,
   alwaysShowHorizontalScroll: true,
   suppressScrollOnNewData: true,
-  // rowModelType: 'infinite', // Necessary for infinite scrolling
   cacheBlockSize: 30, // Number of rows per block
   cacheOverflowSize: 1, // Number of extra rows to request outside current view
   maxConcurrentDatasourceRequests: -1, // Number of concurrent data requests
@@ -39,32 +43,29 @@ const gridOptions = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const NewGridInner = <T,>(
-  {
-    columnDefs,
-    fetchMoreData,
-    initialData,
-    initialPageInfo
-  }: CustomGridProps<T>,
+  { columnDefs, fetchMoreData, gridData }: CustomGridProps<T>,
   ref: React.ForwardedRef<GridRef<T>>
 ) => {
+  console.log('columnDefs', gridData);
   const [gridColumnDef, setColumnDefs] = useState(columnDefs || []);
-  const pageInfoTrack = useRef<PageInfoSlim>(initialPageInfo); // Using useRef for cursor
+  const pageInfoTrack = useRef<PageInfoSlim>(gridData?.pageInfo); // Using useRef for cursor
   const isFirstLoad = useRef<boolean>(true);
   const gridRowCount = useRef<number>(0);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gridApiRef = useRef<GridApi<any> | null>(null);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
   const newDataRef = useRef<T[]>([]);
-
-  // const toggleModal = () => setIsModalOpen(!isModalOpen);
-  // const router = useRouter();
-  // const pathname = usePathname();
 
   useImperativeHandle(ref, () => ({
     handleGetSelectedItems: (): T[] => {
       const selectedNodes = gridApiRef.current?.getSelectedNodes();
       const selectedData = selectedNodes?.map((node) => node.data) ?? [];
       return selectedData;
+    },
+    refreshGridData: (gridData: GridData<T>) => {
+      newDataRef.current = gridData.rows;
+      if (gridApiRef.current) {
+        gridApiRef.current.setGridOption('datasource', dataSource());
+      }
     }
   }));
 
@@ -72,15 +73,18 @@ const NewGridInner = <T,>(
     getRows: async (params: IGetRowsParams) => {
       try {
         if (isFirstLoad.current || newDataRef.current.length > 0) {
+          console.log('is first load ', gridData);
           const dataToUse = isFirstLoad.current
-            ? initialData
+            ? gridData.rows
             : newDataRef.current;
+
+          console.log('dataToUse', dataToUse);
           params.successCallback(
             dataToUse as [],
             pageInfoTrack.current.hasNextPage ? -1 : dataToUse?.length
           );
           if (isFirstLoad.current) {
-            gridRowCount.current = initialData.length;
+            gridRowCount.current = gridData.rows.length;
             isFirstLoad.current = false;
           } else {
             gridRowCount.current = newDataRef.current.length;
@@ -128,6 +132,11 @@ const NewGridInner = <T,>(
     );
   };
 
+  // useEffect(() => {
+  //   if (gridApiRef.current) {
+  //     gridApiRef.current.setRowData(gridData.rows);
+  //   }
+  // }, [gridData]);
   // const refreshGridData = async () => {
   //   const { data } = await refetch();
   //   const newData = data?.customers?.edges?.map((edge) => edge.node);

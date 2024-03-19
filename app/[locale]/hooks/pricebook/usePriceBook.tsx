@@ -69,7 +69,8 @@ const useGetMaterials = () => {
   const {
     data: allMaterials,
     loading: allMaterialsLoading,
-    error: allMaterialsError
+    error: allMaterialsError,
+    refetch
   } = useGetMaterialsQuery({
     variables: {
       request: {},
@@ -79,7 +80,7 @@ const useGetMaterials = () => {
     notifyOnNetworkStatusChange: true
   });
 
-  return { allMaterials, allMaterialsLoading, allMaterialsError };
+  return { allMaterials, allMaterialsLoading, allMaterialsError, refetch };
 };
 
 const useGetAllServiceCategories = () => {

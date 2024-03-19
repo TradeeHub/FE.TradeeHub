@@ -22,14 +22,18 @@ export type PageInfoSlim = {
   hasNextPage: boolean;
 };
 
+export type GridData<T> = {
+  rows: T[];
+  pageInfo: PageInfoSlim;
+};
+
 export type CustomGridProps<T> = {
   columnDefs: ColDef<T>[];
   fetchMoreData: (
     endCursor: string | null,
     pageSize: number
   ) => Promise<FetchMoreDataResult<T>>;
-  initialData: T[];
-  initialPageInfo: PageInfoSlim;
+  gridData: GridData<T>;
 };
 
 export type LanguageOption = {
@@ -160,4 +164,10 @@ export type MenuItem = {
 
 export type GridRef<T> = {
   handleGetSelectedItems: () => T[];
+  refreshGridData: (data: GridData<T>) => void;
 };
+
+export enum ModalAction {
+  Update = 'UPDATE',
+  Create = 'CREATE'
+}
