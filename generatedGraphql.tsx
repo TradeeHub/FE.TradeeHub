@@ -2710,6 +2710,7 @@ export type GetMaterialsQueryVariables = Exact<{
   request: SearchMaterialRequestInput;
   order?: InputMaybe<Array<MaterialEntitySortInput> | MaterialEntitySortInput>;
   pageSize: Scalars['Int']['input'];
+  cursor?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -3404,8 +3405,8 @@ export type AddMaterialMutationHookResult = ReturnType<typeof useAddMaterialMuta
 export type AddMaterialMutationResult = Apollo.MutationResult<AddMaterialMutation>;
 export type AddMaterialMutationOptions = Apollo.BaseMutationOptions<AddMaterialMutation, AddMaterialMutationVariables>;
 export const GetMaterialsDocument = gql`
-    query GetMaterials($request: SearchMaterialRequestInput!, $order: [MaterialEntitySortInput!], $pageSize: Int!) {
-  materials(request: $request, order: $order, first: $pageSize) {
+    query GetMaterials($request: SearchMaterialRequestInput!, $order: [MaterialEntitySortInput!], $pageSize: Int!, $cursor: String) {
+  materials(request: $request, order: $order, first: $pageSize, after: $cursor) {
     pageInfo {
       hasNextPage
       endCursor
@@ -3463,6 +3464,7 @@ export const GetMaterialsDocument = gql`
  *      request: // value for 'request'
  *      order: // value for 'order'
  *      pageSize: // value for 'pageSize'
+ *      cursor: // value for 'cursor'
  *   },
  * });
  */

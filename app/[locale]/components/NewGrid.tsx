@@ -1,59 +1,69 @@
-'use client';
 import React, {
   forwardRef,
   useRef,
   useImperativeHandle,
-  useState
+  useState,
+  useMemo,
+  useCallback
 } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import CustomSidebar from '@/app/[locale]/components/GridSettingManager';
 import {
   CustomGridProps,
-  GridData,
+  DataOperation,
   GridRef,
   PageInfoSlim
 } from '../types/sharedTypes';
 import {
+  ColDef,
+  GetRowIdParams,
   GridApi,
   GridReadyEvent,
   IDatasource,
   IGetRowsParams,
+  ModuleRegistry,
   RowClickedEvent
 } from 'ag-grid-community';
+import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
+import page from '../reset-password/page';
 
-const gridOptions = {
-  defaultColDef: {
-    sortable: true,
-    filter: true,
-    // floatingFilter: true,
-    resizable: true
-  },
-  rowHeight: 70,
-  tooltipInteraction: true,
-  enableBrowserTooltips: true,
-  alwaysShowHorizontalScroll: true,
-  suppressScrollOnNewData: true,
-  cacheBlockSize: 30, // Number of rows per block
-  cacheOverflowSize: 1, // Number of extra rows to request outside current view
-  maxConcurrentDatasourceRequests: -1, // Number of concurrent data requests
-  infiniteInitialRowCount: 1 // Initial placeholder count
-  // maxBlocksInCache: undefined, // No limit to the number of blocks in cache
-  // Additional properties can be set as needed
-};
+ModuleRegistry.registerModules([InfiniteRowModelModule]);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const NewGridInner = <T,>(
-  { columnDefs, fetchMoreData, gridData }: CustomGridProps<T>,
+  { pageSize, columnDefs, fetchMoreData }: CustomGridProps<T>,
   ref: React.ForwardedRef<GridRef<T>>
 ) => {
-  console.log('columnDefs', gridData);
-  const [gridColumnDef, setColumnDefs] = useState(columnDefs || []);
-  const pageInfoTrack = useRef<PageInfoSlim>(gridData?.pageInfo); // Using useRef for cursor
-  const isFirstLoad = useRef<boolean>(true);
+  const [gridColumnDef, setColumnDefs] = useState<ColDef[]>(columnDefs || []);
+  const pageInfoTrack = useRef<PageInfoSlim | null>(); // Using useRef for cursor
   const gridRowCount = useRef<number>(0);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gridApiRef = useRef<GridApi<any> | null>(null);
-  const newDataRef = useRef<T[]>([]);
+
+  const gridOptions = useMemo(
+    () => ({
+      rowHeight: 70,
+      tooltipInteraction: true,
+      enableBrowserTooltips: true,
+      alwaysShowHorizontalScroll: true,
+      suppressScrollOnNewData: true,
+      cacheBlockSize: pageSize,
+      rowBuffer: 1,
+      cacheOverflowSize: 1, // Number of extra rows to request outside current view
+      maxConcurrentDatasourceRequests: 2, // Number of concurrent data requests
+      infiniteInitialRowCount: 1 // Initial placeholder count
+    }),
+    [pageSize]
+  );
+
+  const defaultColDef = useMemo<ColDef>(() => {
+    return {
+      sortable: true,
+      filter: true,
+      resizable: true
+    };
+  }, []);
 
   useImperativeHandle(ref, () => ({
     handleGetSelectedItems: (): T[] => {
@@ -61,59 +71,82 @@ const NewGridInner = <T,>(
       const selectedData = selectedNodes?.map((node) => node.data) ?? [];
       return selectedData;
     },
-    refreshGridData: (gridData: GridData<T>) => {
-      newDataRef.current = gridData.rows;
+    refreshGridData: (operation: DataOperation, data: T) => {
+      console.log('HHHHHHHHHHHHHHH ');
+
       if (gridApiRef.current) {
-        gridApiRef.current.setGridOption('datasource', dataSource());
+        // const rowCount = gridApiRef.current.getInfiniteRowCount();
+        // console.log('ROW COUNT ', rowCount);
+
+        // // Assuming you want to refetch based on the current row count or some other size
+        // const newGridData = await dataRefetch(rowCount);
+
+        // // Assuming newDataRef and pageInfoTrack are refs to keep track of your data
+        // newDataRef.current = newGridData.rows;
+        // pageInfoTrack.current = newGridData.pageInfo;
+
+        // // Refresh the grid to reflect the new data
+        console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ');
+
+        const maxRowFound = gridApiRef.current.isLastRowIndexKnown();
+
+        if (maxRowFound && operation === DataOperation.Create) {
+          const rowCount = gridApiRef.current!.getInfiniteRowCount() || 0;
+          gridRowCount.current += 1;
+          gridApiRef.current!.setRowCount(rowCount + 1);
+        }
+        const rowNode = gridApiRef.current.getRowNode(
+          (data as { id: string })?.id
+        );
+
+        if (rowNode) {
+          rowNode.setData(data);
+        }
+
+        // console.log('ROW NODE ', rowNode);
+
+        // gridApiRef.current.purgeInfiniteCache();
+
+        // pageInfoTrack.current = null;
+        // // gridRowCount.current = 0;
+        // // gridApiRef.current!.setRowCount(0);
+        // gridApiRef.current.purgeInfiniteCache();
+        // gridApiRef.current.refreshInfiniteCache();
       }
     }
   }));
 
-  const dataSource = (): IDatasource => ({
-    getRows: async (params: IGetRowsParams) => {
-      try {
-        if (isFirstLoad.current || newDataRef.current.length > 0) {
-          console.log('is first load ', gridData);
-          const dataToUse = isFirstLoad.current
-            ? gridData.rows
-            : newDataRef.current;
-
-          console.log('dataToUse', dataToUse);
-          params.successCallback(
-            dataToUse as [],
-            pageInfoTrack.current.hasNextPage ? -1 : dataToUse?.length
-          );
-          if (isFirstLoad.current) {
-            gridRowCount.current = gridData.rows.length;
-            isFirstLoad.current = false;
-          } else {
-            gridRowCount.current = newDataRef.current.length;
-            newDataRef.current = [];
-          }
-        } else {
+  const datasource = useMemo<IDatasource>(() => {
+    return {
+      rowCount: undefined,
+      getRows: async (params: IGetRowsParams) => {
+        console.log('INFINITE CACHE REFRESH ', params);
+        try {
           const { rows, pageInfo } = await fetchMoreData(
-            pageInfoTrack.current.endCursor,
+            pageInfoTrack?.current?.endCursor ?? null,
             gridOptions.cacheBlockSize
           );
+
+          console.log('ROWS ', rows, pageInfo, params);
+
           gridRowCount.current += rows.length;
           pageInfoTrack.current = pageInfo as PageInfoSlim;
+
+          // console.log('ROWS ', rows, pageInfo, gridRowCount.current);
+          console.log('ROW COUNTSSSS ', gridRowCount.current);
           params.successCallback(
             rows as [],
             pageInfoTrack.current.hasNextPage ? -1 : gridRowCount.current
           );
+        } catch (error) {
+          console.error('Error fetching data: ', error);
+          params.failCallback();
         }
-      } catch (error) {
-        params.failCallback();
       }
-    }
-  });
+    };
+  }, []);
 
-  const onGridReady = (params: GridReadyEvent) => {
-    params.api.setGridOption('datasource', dataSource()); // Ensure this is correctly spelled and set
-    gridApiRef.current = params.api;
-  };
-
-  const onRowClicked = (event: RowClickedEvent) => {
+  const onRowClicked = useCallback((event: RowClickedEvent) => {
     const target = event?.event?.target as Element;
 
     // if (target && target.closest('.popover-trigger')) {
@@ -121,7 +154,7 @@ const NewGridInner = <T,>(
     // }
 
     // router.push(`${pathname}/${event.data.id}`);
-  };
+  }, []);
 
   const onToggleColumnVisibility = (index: number) => {
     setColumnDefs((currentDefs) =>
@@ -132,47 +165,35 @@ const NewGridInner = <T,>(
     );
   };
 
-  // useEffect(() => {
-  //   if (gridApiRef.current) {
-  //     gridApiRef.current.setRowData(gridData.rows);
-  //   }
-  // }, [gridData]);
-  // const refreshGridData = async () => {
-  //   const { data } = await refetch();
-  //   const newData = data?.customers?.edges?.map((edge) => edge.node);
-  //   newDataRef.current = newData as [];
-  //   const newDataPageInfo = data?.customers?.pageInfo;
+  const onGridReady = useCallback((params: GridReadyEvent) => {
+    gridApiRef.current = params.api;
+    // gridApiRef.current.refreshInfiniteCache();
+  }, []);
 
-  //   pageInfoTrack.current = (
-  //     newDataPageInfo ? newDataPageInfo : pageInfoTrack.current
-  //   ) as PageInfoSlim;
+  const getRowId = useCallback(function (params: GetRowIdParams) {
+    return params.data.id.toString();
+  }, []);
 
-  //   if (gridApiRef.current) {
-  //     gridRowCount.current = newDataRef.current.length; // Reset gridRowCount to reflect the new total
-  //     gridApiRef.current.setGridOption('datasource', dataSource()); // Refresh the datasource to reflect new data
-  //   }
-  // };
   return (
     <>
       <div className='flex flex-col'>
         <div className='header'>
-          {' '}
-          {/* Start of the header section */}
           <CustomSidebar
             columnDefs={gridColumnDef}
             onToggleColumnVisibility={onToggleColumnVisibility}
           />
-          {/* Include other header content here, like a title or buttons */}
-        </div>{' '}
-        {/* Providing a fixed portion of the screen to the grid container */}
+        </div>
         <div className='flex-grow overflow-y-auto'>
           <div className='ag-theme-quartz h-[calc(100vh-450px)] w-full'>
             <AgGridReact
               containerStyle={{ width: '100%', height: '100%' }}
               columnDefs={gridColumnDef}
+              datasource={datasource}
+              defaultColDef={defaultColDef}
               gridOptions={gridOptions}
               rowModelType='infinite'
               rowSelection='multiple'
+              getRowId={getRowId}
               onGridReady={onGridReady}
               onRowClicked={onRowClicked}
               className='w-full'

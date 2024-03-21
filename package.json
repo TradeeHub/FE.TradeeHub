@@ -12,6 +12,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@ag-grid-community/core": "^31.2.0",
+    "@ag-grid-community/infinite-row-model": "^31.2.0",
+    "@ag-grid-community/react": "^31.2.0",
     "@apollo/client": "^3.9.7",
     "@apollo/experimental-nextjs-app-support": "^0.8.0",
     "@emotion/react": "^11.11.4",

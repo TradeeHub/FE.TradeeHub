@@ -28,12 +28,12 @@ export type GridData<T> = {
 };
 
 export type CustomGridProps<T> = {
-  columnDefs: ColDef<T>[];
+  pageSize: number;
+  columnDefs: ColDef[];
   fetchMoreData: (
     endCursor: string | null,
     pageSize: number
   ) => Promise<FetchMoreDataResult<T>>;
-  gridData: GridData<T>;
 };
 
 export type LanguageOption = {
@@ -164,10 +164,10 @@ export type MenuItem = {
 
 export type GridRef<T> = {
   handleGetSelectedItems: () => T[];
-  refreshGridData: (data: GridData<T>) => void;
+  refreshGridData: (operation: DataOperation, material: T) => void;
 };
 
-export enum ModalAction {
+export enum DataOperation {
   Update = 'UPDATE',
   Create = 'CREATE'
 }

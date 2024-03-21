@@ -4,19 +4,16 @@ import { Input } from '@/components/ui/input';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useEffect, useRef, useState } from 'react';
 import {
-  useGetMaterials,
+  // useGetMaterials,
   useGetMaterialsLazy
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
 import {
+  DataOperation,
   GridData,
   GridRef,
-  ModalAction,
   PageInfoSlim
 } from '@/app/[locale]/types/sharedTypes';
-import {
-  ColDef,
-  ValueGetterParams
-} from 'ag-grid-community/dist/lib/entities/colDef';
+import { ValueGetterParams } from 'ag-grid-community/dist/lib/entities/colDef';
 import {
   GetMaterialsQuery,
   MaterialEntity,
@@ -30,15 +27,16 @@ import { useSelector } from 'react-redux';
 import { RiDeleteBin7Line } from 'react-icons/ri';
 import { FiEdit } from 'react-icons/fi';
 import MaterialModal from './MaterialModal';
+import { ColDef } from '@ag-grid-community/core';
 
 const Materials = ({ centerStyle }: { centerStyle: string }) => {
+  const MATERIAL_TABLE_SIZE = 15;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const gridRef = useRef<GridRef<MaterialEntity>>(null);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
-  const { allMaterials, refetch } = useGetMaterials();
-  const { searchMaterials, data, loading, error, fetchMoreMaterials } =
-    useGetMaterialsLazy();
+  const { searchMaterials, data, loading, error, fetchMoreMaterials, refetch } =
+    useGetMaterialsLazy(MATERIAL_TABLE_SIZE);
   const user = useSelector((state: RootState) => state.user.data);
 
   const [gridData, setGridData] = useState<GridData<MaterialEntity>>();
@@ -62,40 +60,12 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
     console.log('selectedMaterials', selectedMaterials);
   };
 
-  const handleClose = async () => {
-    const resp = await refetch({
-      request: {},
-      order: [{ modifiedAt: SortEnumType.Desc }],
-      pageSize: 50
-    });
-
-    const { rows, pageInfo } = normalizeMaterialData(resp.data);
-
-    // setGridData({
-    //   rows: rows,
-    //   pageInfo
-    // });
-
-    const gridData = {
-      rows: rows,
-      pageInfo
-    } as GridData<MaterialEntity>;
-
-    if (resp.data) {
-      gridRef.current?.refreshGridData(gridData);
-    }
+  const triggerDataRefetch = (
+    operation: DataOperation,
+    material: MaterialEntity
+  ) => {
+    gridRef.current?.refreshGridData(operation, material);
   };
-
-  useEffect(() => {
-    if (allMaterials) {
-      const { rows, pageInfo } = normalizeMaterialData(allMaterials);
-
-      setGridData({
-        rows: rows,
-        pageInfo
-      });
-    }
-  }, [allMaterials]);
 
   return (
     <>
@@ -132,10 +102,10 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
       {isModalOpen && (
         <MaterialModal
           isOpen={isModalOpen}
-          onClose={() => {
-            handleClose();
-            setIsModalOpen(false);
-          }}
+          onClose={() => setIsModalOpen(false)}
+          triggerDataRefetch={(material) =>
+            triggerDataRefetch(DataOperation.Create, material)
+          }
           modalName='Create New Material'
         />
       )}
@@ -143,33 +113,33 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
       {isEditModalOpen && (
         <MaterialModal
           isOpen={isEditModalOpen}
-          onClose={() => {
-            handleClose();
-            setIsEditModalOpen(false);
-          }}
+          onClose={() => setIsEditModalOpen(false)}
+          triggerDataRefetch={(material) =>
+            triggerDataRefetch(DataOperation.Update, material)
+          }
           updateData={actionableItem}
           modalName='Update Material'
         />
       )}
 
       <div className='mx-auto flex w-full max-w-screen-2xl flex-col gap-4'>
-        {gridData && (
-          <NewGrid<MaterialEntity>
-            ref={gridRef}
-            columnDefs={getGridColumnDef(
-              symbol as string,
-              handleDeleteMaterial,
-              handleUpdateMaterial
-            )}
-            fetchMoreData={(endCursor, pageSize) =>
-              fetchMoreMaterials(endCursor, pageSize).then((result) => ({
-                rows: result.rows as MaterialEntity[],
-                pageInfo: result.pageInfo
-              }))
-            }
-            gridData={gridData as GridData<MaterialEntity>}
-          />
-        )}
+        {/* {gridData && ( */}
+        <NewGrid<MaterialEntity>
+          ref={gridRef}
+          pageSize={MATERIAL_TABLE_SIZE}
+          columnDefs={getGridColumnDef(
+            symbol as string,
+            handleDeleteMaterial,
+            handleUpdateMaterial
+          )}
+          fetchMoreData={(endCursor, pageSize) =>
+            fetchMoreMaterials(endCursor, pageSize).then((result) => ({
+              rows: result.rows as MaterialEntity[],
+              pageInfo: result.pageInfo
+            }))
+          }
+        />
+        {/* )} */}
       </div>
     </>
   );
@@ -351,7 +321,7 @@ const getGridColumnDef = (
     headerName: 'Created Date',
     field: 'createdAt',
     cellClass: 'flex items-center',
-    valueGetter: (params: ValueGetterParams) => {
+    valueGetter: (params) => {
       return moment(params?.data?.createdAt).format('Do MMM YYYY h:mma');
     },
     sortable: true,
@@ -366,7 +336,7 @@ const getGridColumnDef = (
   {
     headerName: 'Updated Date',
     field: 'modifiedAt',
-    valueGetter: (params: ValueGetterParams) => {
+    valueGetter: (params) => {
       return moment(params?.data?.createdAt).format('Do MMM YYYY h:mma');
     },
     cellClass: 'flex items-center',

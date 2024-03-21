@@ -142,12 +142,13 @@ const MarginProfitDisplay = ({
 const MaterialModal = ({
   isOpen,
   onClose,
+  triggerDataRefetch,
   modalName,
   updateData
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onAdded?: () => void;
+  triggerDataRefetch?: (material: MaterialEntity) => void;
   modalName: string;
   updateData?: MaterialEntity;
 }) => {
@@ -197,6 +198,7 @@ const MaterialModal = ({
   const { updateMaterial, updateMaterialResponse, updateMaterialLoading } =
     useUpdateMaterial();
 
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(isOpen);
   const user = useSelector((state: RootState) => state.user.data);
   const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
   const { searchServiceCategories, serviceCategories } =
@@ -209,8 +211,10 @@ const MaterialModal = ({
   const { toast } = useToast();
 
   const handleClose = () => {
-    form.reset();
+    console.log('refresh modal');
     onClose();
+    // setModalIsOpen(false);
+    form.reset();
   };
 
   useEffect(() => {
@@ -238,6 +242,8 @@ const MaterialModal = ({
     if (updateData) {
       handleSelectTriggerClick();
     }
+    console.log('isOpen', isOpen);
+    setModalIsOpen(isOpen);
   }, []);
 
   const handleSave = async (formData: z.infer<typeof formSchema>) => {
@@ -255,6 +261,12 @@ const MaterialModal = ({
   useEffect(() => {
     const material = addMaterialResponse?.addMaterial as MaterialEntity;
     if (material?.id) {
+      if (triggerDataRefetch) {
+        triggerDataRefetch(material);
+      }
+      handleClose();
+      // setModalIsOpen(false);
+
       toast({
         title: 'Successfully Created a New Material!',
         description: (
@@ -272,7 +284,11 @@ const MaterialModal = ({
   useEffect(() => {
     const material = updateMaterialResponse?.updateMaterial.data;
     if (material?.id) {
+      if (triggerDataRefetch) {
+        triggerDataRefetch(material);
+      }
       handleClose();
+      // setModalIsOpen(false);
       toast({
         title: 'Successfully Update Material!',
         description: (
@@ -286,6 +302,10 @@ const MaterialModal = ({
       });
     }
   }, [updateMaterialResponse]);
+
+  useEffect(() => {
+    setModalIsOpen(isOpen);
+  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>

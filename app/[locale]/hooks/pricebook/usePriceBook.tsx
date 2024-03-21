@@ -14,7 +14,6 @@ import {
   AddMaterialRequestInput,
   useGetAllServiceCategoriesQuery,
   SortEnumType,
-  useGetMaterialsQuery,
   useGetMaterialsLazyQuery,
   UpdateMaterialRequestInput,
   useUpdateMaterialMutation
@@ -32,17 +31,28 @@ const useGetAllServiceCategoriesLazy = () => {
   return { searchServiceCategories, serviceCategories, loading, error };
 };
 
-const useGetMaterialsLazy = () => {
-  const [searchMaterials, { data, loading, error, fetchMore }] =
+const useGetMaterialsLazy = (pageSize: number) => {
+  const [searchMaterials, { data, loading, error, fetchMore, refetch }] =
     useGetMaterialsLazyQuery({
-      notifyOnNetworkStatusChange: true
+      notifyOnNetworkStatusChange: true,
+      variables: {
+        request: {},
+        order: [{ modifiedAt: SortEnumType.Desc }],
+        pageSize: pageSize,
+        cursor: null
+      }
     });
 
   const fetchMoreMaterials = useCallback(
-    async (cursor: string | null, pageSize: number) => {
+    async (cursor: string | null) => {
       try {
         const fetchResult = await fetchMore({
-          variables: { cursor, pageSize }
+          variables: {
+            request: {},
+            order: [{ modifiedAt: SortEnumType.Desc }],
+            pageSize: pageSize,
+            cursor: cursor
+          }
         });
         const newMaterials =
           fetchResult?.data?.materials?.edges?.map((edge) => edge.node) || [];
@@ -59,29 +69,28 @@ const useGetMaterialsLazy = () => {
         return { rows: [], pageInfo: null };
       }
     },
-    [fetchMore]
+    [fetchMore, pageSize] // Include pageSize in the dependency array
   );
 
-  return { searchMaterials, data, loading, error, fetchMoreMaterials };
+  return { searchMaterials, data, loading, error, fetchMoreMaterials, refetch };
 };
 
-const useGetMaterials = () => {
-  const {
-    data: allMaterials,
-    loading: allMaterialsLoading,
-    error: allMaterialsError,
-    refetch
-  } = useGetMaterialsQuery({
-    variables: {
-      request: {},
-      order: [{ modifiedAt: SortEnumType.Desc }],
-      pageSize: 50
-    },
-    notifyOnNetworkStatusChange: true
-  });
+// const useGetMaterials = (pageSize: number) => {
+//   const {
+//     data: allMaterials,
+//     loading: allMaterialsLoading,
+//     error: allMaterialsError,
+//     refetch
+//   } = useGetMaterialsQuery({
+//     variables: {
+//       request: {},
+//       order: [{ modifiedAt: SortEnumType.Desc }],
+//       pageSize: pageSize
+//     }
+//   });
 
-  return { allMaterials, allMaterialsLoading, allMaterialsError, refetch };
-};
+//   return { allMaterials, allMaterialsLoading, allMaterialsError, refetch };
+// };
 
 const useGetAllServiceCategories = () => {
   const {
@@ -239,7 +248,6 @@ const useUpdateMaterial = () => {
 
 export {
   useGetMaterialsLazy,
-  useGetMaterials,
   useAddNewServiceCategory,
   useGetAllServiceCategoriesLazy,
   useGetAllServiceCategories,

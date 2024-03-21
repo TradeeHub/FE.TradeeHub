@@ -2,8 +2,14 @@ query GetMaterials(
   $request: SearchMaterialRequestInput!
   $order: [MaterialEntitySortInput!]
   $pageSize: Int!
+  $cursor: String
 ) {
-  materials(request: $request, order: $order, first: $pageSize) {
+  materials(
+    request: $request
+    order: $order
+    first: $pageSize
+    after: $cursor
+  ) {
     pageInfo {
       hasNextPage
       endCursor
