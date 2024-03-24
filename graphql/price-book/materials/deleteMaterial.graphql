@@ -1,0 +1,7 @@
+mutation DeleteMaterial($id: ID!) {
+  deleteMaterial(id: $id) {
+    success
+    messages
+    errors
+  }
+}

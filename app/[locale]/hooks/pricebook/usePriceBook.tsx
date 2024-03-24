@@ -16,7 +16,8 @@ import {
   SortEnumType,
   useGetMaterialsLazyQuery,
   UpdateMaterialRequestInput,
-  useUpdateMaterialMutation
+  useUpdateMaterialMutation,
+  useDeleteMaterialMutation
 } from '@/generatedGraphql';
 import { useCallback } from 'react';
 
@@ -178,6 +179,28 @@ const useAddLaborRate = () => {
   };
 };
 
+const useDeleteMaterial = () => {
+  const [deleteMaterialMutation, { data, loading, error }] =
+    useDeleteMaterialMutation();
+
+  const deleteMaterial = async (id: string) => {
+    try {
+      await deleteMaterialMutation({
+        variables: { id }
+      });
+    } catch (e) {
+      console.error('Error deleting service category:', e);
+    }
+  };
+
+  return {
+    deleteMaterial,
+    deleteMaterialResponse: data,
+    deleteMaterialLoading: loading,
+    deleteMaterialError: error
+  };
+};
+
 const useDeleteServiceCategory = () => {
   const [deleteServiceCategoryMutation, { data, loading, error }] =
     useDeleteServiceCategoryMutation();
@@ -247,6 +270,7 @@ const useUpdateMaterial = () => {
 };
 
 export {
+  useDeleteMaterial,
   useGetMaterialsLazy,
   useAddNewServiceCategory,
   useGetAllServiceCategoriesLazy,

@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useEffect, useRef, useState } from 'react';
 import {
+  useDeleteMaterial,
   // useGetMaterials,
   useGetMaterialsLazy
 } from '@/app/[locale]/hooks/pricebook/usePriceBook';
@@ -28,6 +29,8 @@ import { RiDeleteBin7Line } from 'react-icons/ri';
 import { FiEdit } from 'react-icons/fi';
 import MaterialModal from './MaterialModal';
 import { ColDef } from '@ag-grid-community/core';
+import { useToast } from '@/components/ui/use-toast';
+import { set } from 'react-hook-form';
 
 const Materials = ({ centerStyle }: { centerStyle: string }) => {
   const MATERIAL_TABLE_SIZE = 15;
@@ -38,15 +41,37 @@ const Materials = ({ centerStyle }: { centerStyle: string }) => {
   const { searchMaterials, data, loading, error, fetchMoreMaterials, refetch } =
     useGetMaterialsLazy(MATERIAL_TABLE_SIZE);
   const user = useSelector((state: RootState) => state.user.data);
-
+  const { deleteMaterial, deleteMaterialResponse } = useDeleteMaterial();
   const [gridData, setGridData] = useState<GridData<MaterialEntity>>();
+  const { toast } = useToast();
 
   const [actionableItem, setActionableItem] = useState<MaterialEntity>();
   const symbol = user?.currencySymbol;
 
   const handleDeleteMaterial = (data: MaterialEntity) => {
     setActionableItem(data);
+    deleteMaterial(data.id);
+    triggerDataRefetch(DataOperation.Delete, data);
   };
+
+  useEffect(() => {
+    if (
+      deleteMaterialResponse &&
+      deleteMaterialResponse.deleteMaterial?.success === true
+    ) {
+      toast({
+        title: 'Successfully Deleted Material!',
+        description: (
+          <span>
+            You have successfully deleted the material{' '}
+            <b>
+              <u>{actionableItem?.name}</u>
+            </b>
+          </span>
+        )
+      });
+    }
+  }, [deleteMaterialResponse]);
 
   const handleUpdateMaterial = (data: MaterialEntity) => {
     setActionableItem(data);

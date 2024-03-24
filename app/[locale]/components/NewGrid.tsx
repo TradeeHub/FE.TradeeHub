@@ -25,7 +25,6 @@ import {
   RowClickedEvent
 } from 'ag-grid-community';
 import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
-import page from '../reset-password/page';
 
 ModuleRegistry.registerModules([InfiniteRowModelModule]);
 
@@ -37,6 +36,8 @@ const NewGridInner = <T,>(
   const [gridColumnDef, setColumnDefs] = useState<ColDef[]>(columnDefs || []);
   const pageInfoTrack = useRef<PageInfoSlim | null>(); // Using useRef for cursor
   const gridRowCount = useRef<number>(0);
+  const operationPerformedRef = useRef<DataOperation | null>();
+  const newDataRef = useRef<T[]>([]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gridApiRef = useRef<GridApi<any> | null>(null);
@@ -72,46 +73,81 @@ const NewGridInner = <T,>(
       return selectedData;
     },
     refreshGridData: (operation: DataOperation, data: T) => {
-      console.log('HHHHHHHHHHHHHHH ');
+      switch (operation) {
+        case DataOperation.Update: {
+          operationPerformedRef.current = operation;
 
-      if (gridApiRef.current) {
-        // const rowCount = gridApiRef.current.getInfiniteRowCount();
-        // console.log('ROW COUNT ', rowCount);
-
-        // // Assuming you want to refetch based on the current row count or some other size
-        // const newGridData = await dataRefetch(rowCount);
-
-        // // Assuming newDataRef and pageInfoTrack are refs to keep track of your data
-        // newDataRef.current = newGridData.rows;
-        // pageInfoTrack.current = newGridData.pageInfo;
-
-        // // Refresh the grid to reflect the new data
-        console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ');
-
-        const maxRowFound = gridApiRef.current.isLastRowIndexKnown();
-
-        if (maxRowFound && operation === DataOperation.Create) {
-          const rowCount = gridApiRef.current!.getInfiniteRowCount() || 0;
-          gridRowCount.current += 1;
-          gridApiRef.current!.setRowCount(rowCount + 1);
+          const rowNode = gridApiRef?.current?.getRowNode(
+            (data as { id: string }).id
+          );
+          if (rowNode) {
+            rowNode.setData(data);
+          }
+          break;
         }
-        const rowNode = gridApiRef.current.getRowNode(
-          (data as { id: string })?.id
-        );
+        case DataOperation.Create: {
+          operationPerformedRef.current = operation;
+          // Prepending the new item to maintain the order if that's the intended behavior
+          newDataRef.current = [data, ...newDataRef.current];
 
-        if (rowNode) {
-          rowNode.setData(data);
+          // Important: Update the grid's knowledge about the total row count
+          gridApiRef.current?.setRowCount(newDataRef.current.length, false);
+
+          // Purge the cache to force the grid to re-query the datasource based on the new total row count
+          gridApiRef.current?.purgeInfiniteCache();
+
+          // Optionally, if you need to ensure the new row is visible, you can scroll to it
+          // gridApiRef.current?.ensureIndexVisible(0);
+
+          break;
+        }
+        case DataOperation.Delete: {
+          operationPerformedRef.current = operation;
+          const idToDelete = (data as { id: string }).id;
+          console.log('Deleting ID:', idToDelete);
+
+          // Filter out the deleted item directly
+          newDataRef.current = newDataRef.current.filter(
+            (item) => item.id !== idToDelete
+          );
+
+          // Update the row count to reflect the new data length
+          gridApiRef.current?.setRowCount(newDataRef.current.length);
+          // Purge cache to force grid to re-fetch visible rows
+          gridApiRef.current?.purgeInfiniteCache();
+
+          //           operationPerformedRef.current = operation;
+
+          // const idToDelete = (data as { id: string }).id;
+
+          // console.log('idToDelete', idToDelete);
+
+          // const updatedData: T[] = [];
+          // gridApiRef.current?.forEachNode((rowNode) => {
+          //   console.log('rowNode.data', rowNode);
+          //   // Safely access 'id' with proper checks
+          //   const nodeId = (rowNode.data as { id: string | undefined }).id;
+          //   if (nodeId && nodeId !== idToDelete) {
+          //     updatedData.push(rowNode.data);
+          //   }
+          // });
+
+          // newDataRef.current = updatedData;
+
+          // console.log('newDataRef.current', newDataRef.current);
+          // newDataRef.current = newDataRef.current.filter(
+          //   (item) => (item as { id: string }).id !== idToDelete
+          // );
+
+          // gridApiRef.current?.purgeInfiniteCache();
+
+          // console.log('newDataRef.current 222', newDataRef.current);
+
+          break;
         }
 
-        // console.log('ROW NODE ', rowNode);
-
-        // gridApiRef.current.purgeInfiniteCache();
-
-        // pageInfoTrack.current = null;
-        // // gridRowCount.current = 0;
-        // // gridApiRef.current!.setRowCount(0);
-        // gridApiRef.current.purgeInfiniteCache();
-        // gridApiRef.current.refreshInfiniteCache();
+        default:
+          console.warn('Unhandled data operation:', operation);
       }
     }
   }));
@@ -120,27 +156,66 @@ const NewGridInner = <T,>(
     return {
       rowCount: undefined,
       getRows: async (params: IGetRowsParams) => {
-        console.log('INFINITE CACHE REFRESH ', params);
-        try {
-          const { rows, pageInfo } = await fetchMoreData(
-            pageInfoTrack?.current?.endCursor ?? null,
-            gridOptions.cacheBlockSize
+        const { startRow, endRow } = params;
+
+        // Check if we need to initially fetch data: either newDataRef is empty or specifically on first load
+        if (
+          newDataRef.current.length === 0 ||
+          (startRow === 0 && pageInfoTrack.current === null)
+        ) {
+          try {
+            // Assuming fetchMoreData is a function that fetches data and updates pageInfo
+            const { rows, pageInfo } = await fetchMoreData(null, pageSize);
+            newDataRef.current = rows; // Initialize newDataRef with the first batch of fetched data
+            pageInfoTrack.current = pageInfo; // Update your pageInfoTrack with the new pageInfo
+
+            // Now, calculate the slice to display after fetching
+            const rowsThisPage = newDataRef.current.slice(
+              startRow,
+              Math.min(endRow, newDataRef.current.length)
+            );
+            const lastRow = pageInfo?.hasNextPage
+              ? -1
+              : newDataRef.current.length; // Set lastRow based on pageInfo
+            params.successCallback(rowsThisPage, lastRow);
+          } catch (error) {
+            console.error('Error fetching initial data:', error);
+            params.failCallback();
+          }
+        } else {
+          // Your existing logic for subsequent data fetching and displaying
+          let rowsThisPage = newDataRef.current.slice(
+            startRow,
+            Math.min(endRow, newDataRef.current.length)
           );
+          let lastRow = -1;
 
-          console.log('ROWS ', rows, pageInfo, params);
+          if (
+            rowsThisPage.length < endRow - startRow &&
+            pageInfoTrack.current?.hasNextPage
+          ) {
+            try {
+              const { rows, pageInfo } = await fetchMoreData(
+                pageInfoTrack.current?.endCursor ?? null,
+                pageSize - rowsThisPage.length
+              );
+              pageInfoTrack.current = pageInfo;
+              newDataRef.current = [...newDataRef.current, ...rows];
 
-          gridRowCount.current += rows.length;
-          pageInfoTrack.current = pageInfo as PageInfoSlim;
+              rowsThisPage = newDataRef.current.slice(
+                startRow,
+                Math.min(endRow, newDataRef.current.length)
+              );
+              lastRow = !pageInfo?.hasNextPage ? newDataRef.current.length : -1;
+            } catch (error) {
+              console.error('Error fetching more data:', error);
+              params.failCallback();
+            }
+          } else if (!pageInfoTrack.current?.hasNextPage) {
+            lastRow = newDataRef.current.length;
+          }
 
-          // console.log('ROWS ', rows, pageInfo, gridRowCount.current);
-          console.log('ROW COUNTSSSS ', gridRowCount.current);
-          params.successCallback(
-            rows as [],
-            pageInfoTrack.current.hasNextPage ? -1 : gridRowCount.current
-          );
-        } catch (error) {
-          console.error('Error fetching data: ', error);
-          params.failCallback();
+          params.successCallback(rowsThisPage, lastRow);
         }
       }
     };

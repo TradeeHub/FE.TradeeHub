@@ -169,5 +169,6 @@ export type GridRef<T> = {
 
 export enum DataOperation {
   Update = 'UPDATE',
-  Create = 'CREATE'
+  Create = 'CREATE',
+  Delete = 'DELETE'
 }

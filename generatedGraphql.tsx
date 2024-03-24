@@ -1107,6 +1107,7 @@ export type Mutation = {
   addWarranty: WarrantyEntity;
   changePassword: ConfirmForgotPasswordResponse;
   confirmAccount: AccountConfirmationResponse;
+  deleteMaterial: IOperationResult;
   deleteServiceCategory: IOperationResult;
   forgotPassword: ForgotPasswordResponse;
   login: LoginResponse;
@@ -1171,6 +1172,11 @@ export type MutationChangePasswordArgs = {
 export type MutationConfirmAccountArgs = {
   confirmationCode: Scalars['String']['input'];
   email: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteMaterialArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -2704,7 +2710,14 @@ export type AddMaterialMutationVariables = Exact<{
 }>;
 
 
-export type AddMaterialMutation = { __typename?: 'Mutation', addMaterial: { __typename?: 'MaterialEntity', name: string, id: string } };
+export type AddMaterialMutation = { __typename?: 'Mutation', addMaterial: { __typename?: 'MaterialEntity', id: string, name: string, description?: string | null, identifier?: string | null, usePriceRange: boolean, taxable: boolean, allowOnlineBooking: boolean, onlinePrice?: any | null, cost?: any | null, price?: any | null, unitType: string, vendor?: string | null, createdAt: any, modifiedAt?: any | null, serviceCategory?: { __typename?: 'ServiceCategoryEntity', id: string, name: string } | null, images?: Array<{ __typename?: 'ImageEntity', url: string }> | null, pricingTiers?: Array<{ __typename?: 'PricingTierEntity', cost?: any | null, price: any, unitRange: { __typename?: 'RangeOfDecimal', max: any, min: any } }> | null } };
+
+export type DeleteMaterialMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteMaterialMutation = { __typename?: 'Mutation', deleteMaterial: { __typename?: 'OperationResult', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } | { __typename?: 'OperationResultOfMaterialEntity', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } | { __typename?: 'OperationResultOfServiceCategoryEntity', success: boolean, messages?: Array<string> | null, errors?: Array<string> | null } };
 
 export type GetMaterialsQueryVariables = Exact<{
   request: SearchMaterialRequestInput;
@@ -3373,8 +3386,35 @@ export type AddLaborRateMutationOptions = Apollo.BaseMutationOptions<AddLaborRat
 export const AddMaterialDocument = gql`
     mutation AddMaterial($input: AddMaterialRequestInput!) {
   addMaterial(request: $input) {
-    name
     id
+    name
+    description
+    identifier
+    usePriceRange
+    taxable
+    allowOnlineBooking
+    onlinePrice
+    cost
+    price
+    unitType
+    serviceCategory {
+      id
+      name
+    }
+    images {
+      url
+    }
+    vendor
+    pricingTiers {
+      unitRange {
+        max
+        min
+      }
+      cost
+      price
+    }
+    createdAt
+    modifiedAt
   }
 }
     `;
@@ -3404,6 +3444,41 @@ export function useAddMaterialMutation(baseOptions?: Apollo.MutationHookOptions<
 export type AddMaterialMutationHookResult = ReturnType<typeof useAddMaterialMutation>;
 export type AddMaterialMutationResult = Apollo.MutationResult<AddMaterialMutation>;
 export type AddMaterialMutationOptions = Apollo.BaseMutationOptions<AddMaterialMutation, AddMaterialMutationVariables>;
+export const DeleteMaterialDocument = gql`
+    mutation DeleteMaterial($id: ID!) {
+  deleteMaterial(id: $id) {
+    success
+    messages
+    errors
+  }
+}
+    `;
+export type DeleteMaterialMutationFn = Apollo.MutationFunction<DeleteMaterialMutation, DeleteMaterialMutationVariables>;
+
+/**
+ * __useDeleteMaterialMutation__
+ *
+ * To run a mutation, you first call `useDeleteMaterialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMaterialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMaterialMutation, { data, loading, error }] = useDeleteMaterialMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteMaterialMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMaterialMutation, DeleteMaterialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMaterialMutation, DeleteMaterialMutationVariables>(DeleteMaterialDocument, options);
+      }
+export type DeleteMaterialMutationHookResult = ReturnType<typeof useDeleteMaterialMutation>;
+export type DeleteMaterialMutationResult = Apollo.MutationResult<DeleteMaterialMutation>;
+export type DeleteMaterialMutationOptions = Apollo.BaseMutationOptions<DeleteMaterialMutation, DeleteMaterialMutationVariables>;
 export const GetMaterialsDocument = gql`
     query GetMaterials($request: SearchMaterialRequestInput!, $order: [MaterialEntitySortInput!], $pageSize: Int!, $cursor: String) {
   materials(request: $request, order: $order, first: $pageSize, after: $cursor) {
