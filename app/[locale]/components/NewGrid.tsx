@@ -157,33 +157,28 @@ const NewGridInner = <T,>(
       rowCount: undefined,
       getRows: async (params: IGetRowsParams) => {
         const { startRow, endRow } = params;
-
-        // Check if we need to initially fetch data: either gridDataRef is empty or specifically on first load
         if (
           gridDataRef.current.length === 0 ||
           (startRow === 0 && pageInfoTrack.current === null)
         ) {
           try {
-            // Assuming fetchMoreData is a function that fetches data and updates pageInfo
             const { rows, pageInfo } = await fetchMoreData(null, pageSize);
-            gridDataRef.current = rows; // Initialize gridDataRef with the first batch of fetched data
-            pageInfoTrack.current = pageInfo; // Update your pageInfoTrack with the new pageInfo
+            gridDataRef.current = rows;
+            pageInfoTrack.current = pageInfo;
 
-            // Now, calculate the slice to display after fetching
             const rowsThisPage = gridDataRef.current.slice(
               startRow,
               Math.min(endRow, gridDataRef.current.length)
             );
             const lastRow = pageInfo?.hasNextPage
               ? -1
-              : gridDataRef.current.length; // Set lastRow based on pageInfo
+              : gridDataRef.current.length;
             params.successCallback(rowsThisPage, lastRow);
           } catch (error) {
             console.error('Error fetching initial data:', error);
             params.failCallback();
           }
         } else {
-          // Your existing logic for subsequent data fetching and displaying
           let rowsThisPage = gridDataRef.current.slice(
             startRow,
             Math.min(endRow, gridDataRef.current.length)
