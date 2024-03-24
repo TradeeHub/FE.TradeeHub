@@ -37,7 +37,7 @@ const NewGridInner = <T,>(
   const pageInfoTrack = useRef<PageInfoSlim | null>(); // Using useRef for cursor
   const gridRowCount = useRef<number>(0);
   const operationPerformedRef = useRef<DataOperation | null>();
-  const newDataRef = useRef<T[]>([]);
+  const gridDataRef = useRef<T[]>([]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gridApiRef = useRef<GridApi<any> | null>(null);
@@ -88,10 +88,10 @@ const NewGridInner = <T,>(
         case DataOperation.Create: {
           operationPerformedRef.current = operation;
           // Prepending the new item to maintain the order if that's the intended behavior
-          newDataRef.current = [data, ...newDataRef.current];
+          gridDataRef.current = [data, ...gridDataRef.current];
 
           // Important: Update the grid's knowledge about the total row count
-          gridApiRef.current?.setRowCount(newDataRef.current.length, false);
+          gridApiRef.current?.setRowCount(gridDataRef.current.length, false);
 
           // Purge the cache to force the grid to re-query the datasource based on the new total row count
           gridApiRef.current?.purgeInfiniteCache();
@@ -107,12 +107,12 @@ const NewGridInner = <T,>(
           console.log('Deleting ID:', idToDelete);
 
           // Filter out the deleted item directly
-          newDataRef.current = newDataRef.current.filter(
+          gridDataRef.current = gridDataRef.current.filter(
             (item) => item.id !== idToDelete
           );
 
           // Update the row count to reflect the new data length
-          gridApiRef.current?.setRowCount(newDataRef.current.length);
+          gridApiRef.current?.setRowCount(gridDataRef.current.length);
           // Purge cache to force grid to re-fetch visible rows
           gridApiRef.current?.purgeInfiniteCache();
 
@@ -132,16 +132,16 @@ const NewGridInner = <T,>(
           //   }
           // });
 
-          // newDataRef.current = updatedData;
+          // gridDataRef.current = updatedData;
 
-          // console.log('newDataRef.current', newDataRef.current);
-          // newDataRef.current = newDataRef.current.filter(
+          // console.log('gridDataRef.current', gridDataRef.current);
+          // gridDataRef.current = gridDataRef.current.filter(
           //   (item) => (item as { id: string }).id !== idToDelete
           // );
 
           // gridApiRef.current?.purgeInfiniteCache();
 
-          // console.log('newDataRef.current 222', newDataRef.current);
+          // console.log('gridDataRef.current 222', gridDataRef.current);
 
           break;
         }
@@ -158,25 +158,25 @@ const NewGridInner = <T,>(
       getRows: async (params: IGetRowsParams) => {
         const { startRow, endRow } = params;
 
-        // Check if we need to initially fetch data: either newDataRef is empty or specifically on first load
+        // Check if we need to initially fetch data: either gridDataRef is empty or specifically on first load
         if (
-          newDataRef.current.length === 0 ||
+          gridDataRef.current.length === 0 ||
           (startRow === 0 && pageInfoTrack.current === null)
         ) {
           try {
             // Assuming fetchMoreData is a function that fetches data and updates pageInfo
             const { rows, pageInfo } = await fetchMoreData(null, pageSize);
-            newDataRef.current = rows; // Initialize newDataRef with the first batch of fetched data
+            gridDataRef.current = rows; // Initialize gridDataRef with the first batch of fetched data
             pageInfoTrack.current = pageInfo; // Update your pageInfoTrack with the new pageInfo
 
             // Now, calculate the slice to display after fetching
-            const rowsThisPage = newDataRef.current.slice(
+            const rowsThisPage = gridDataRef.current.slice(
               startRow,
-              Math.min(endRow, newDataRef.current.length)
+              Math.min(endRow, gridDataRef.current.length)
             );
             const lastRow = pageInfo?.hasNextPage
               ? -1
-              : newDataRef.current.length; // Set lastRow based on pageInfo
+              : gridDataRef.current.length; // Set lastRow based on pageInfo
             params.successCallback(rowsThisPage, lastRow);
           } catch (error) {
             console.error('Error fetching initial data:', error);
@@ -184,9 +184,9 @@ const NewGridInner = <T,>(
           }
         } else {
           // Your existing logic for subsequent data fetching and displaying
-          let rowsThisPage = newDataRef.current.slice(
+          let rowsThisPage = gridDataRef.current.slice(
             startRow,
-            Math.min(endRow, newDataRef.current.length)
+            Math.min(endRow, gridDataRef.current.length)
           );
           let lastRow = -1;
 
@@ -200,19 +200,21 @@ const NewGridInner = <T,>(
                 pageSize - rowsThisPage.length
               );
               pageInfoTrack.current = pageInfo;
-              newDataRef.current = [...newDataRef.current, ...rows];
+              gridDataRef.current = [...gridDataRef.current, ...rows];
 
-              rowsThisPage = newDataRef.current.slice(
+              rowsThisPage = gridDataRef.current.slice(
                 startRow,
-                Math.min(endRow, newDataRef.current.length)
+                Math.min(endRow, gridDataRef.current.length)
               );
-              lastRow = !pageInfo?.hasNextPage ? newDataRef.current.length : -1;
+              lastRow = !pageInfo?.hasNextPage
+                ? gridDataRef.current.length
+                : -1;
             } catch (error) {
               console.error('Error fetching more data:', error);
               params.failCallback();
             }
           } else if (!pageInfoTrack.current?.hasNextPage) {
-            lastRow = newDataRef.current.length;
+            lastRow = gridDataRef.current.length;
           }
 
           params.successCallback(rowsThisPage, lastRow);
