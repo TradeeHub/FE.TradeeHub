@@ -30,7 +30,7 @@ import {
   SortEnumType,
   UpdateMaterialRequestInput
 } from '@/generatedGraphql';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { SimpleInput } from '../../../general/SimpleInput/SimpleInput';
 import {
@@ -45,7 +45,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { Switch } from '@/components/ui/switch';
 import PricingTier from './PricingTier/PricingTier';
-import { ModalAction } from '@/app/[locale]/types/sharedTypes';
 
 const unitOptions = [
   { label: 'Other', value: 'Other' },
@@ -139,20 +138,30 @@ const MarginProfitDisplay = ({
   );
 };
 
+type MaterialProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  triggerDataRefetch?: (material: MaterialEntity) => void;
+  modalName: string;
+  updateData?: MaterialEntity;
+};
+
 const MaterialModal = ({
   isOpen,
   onClose,
   triggerDataRefetch,
   modalName,
   updateData
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  triggerDataRefetch?: (material: MaterialEntity) => void;
-  modalName: string;
-  updateData?: MaterialEntity;
-}) => {
-  console.log('updateData', updateData);
+}: MaterialProps) => {
+  console.log(
+    'updateData',
+    updateData,
+    isOpen,
+    modalName,
+    onClose,
+    triggerDataRefetch
+  );
+  // console.log('updateData', updateData);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues:
@@ -194,15 +203,13 @@ const MaterialModal = ({
 
   const { addMaterial, addMaterialResponse, addMaterialLoading } =
     useAddMaterial();
-
-  const { updateMaterial, updateMaterialResponse, updateMaterialLoading } =
-    useUpdateMaterial();
-
-  const [modalIsOpen, setModalIsOpen] = useState<boolean>(isOpen);
-  const user = useSelector((state: RootState) => state.user.data);
-  const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
+  const { updateMaterial, updateMaterialResponse } = useUpdateMaterial();
   const { searchServiceCategories, serviceCategories } =
     useGetAllServiceCategoriesLazy();
+
+  const user = useSelector((state: RootState) => state.user.data);
+  const [categories, setCategories] = useState<ServiceCategoryEntity[]>([]); // State to hold categories
+
   const fetchedRef = useRef<boolean>(false);
   const usePriceRange = form.watch('usePriceRange');
   const allowOnlineBooking = form.watch('allowOnlineBooking');
@@ -213,18 +220,10 @@ const MaterialModal = ({
   const handleClose = () => {
     console.log('refresh modal');
     onClose();
-    // setModalIsOpen(false);
     form.reset();
   };
 
-  useEffect(() => {
-    if (serviceCategories) {
-      const data = serviceCategories?.edges?.map((edge) => edge?.node) as [];
-      setCategories(data as ServiceCategoryEntity[]);
-    }
-  }, [serviceCategories]);
-
-  const handleSelectTriggerClick = () => {
+  const handleSelectTriggerClick = useCallback(() => {
     if (!fetchedRef.current) {
       searchServiceCategories({
         variables: {
@@ -236,14 +235,6 @@ const MaterialModal = ({
       });
       fetchedRef.current = true;
     }
-  };
-
-  useEffect(() => {
-    if (updateData) {
-      handleSelectTriggerClick();
-    }
-    console.log('isOpen', isOpen);
-    setModalIsOpen(isOpen);
   }, []);
 
   const handleSave = async (formData: z.infer<typeof formSchema>) => {
@@ -259,13 +250,26 @@ const MaterialModal = ({
   };
 
   useEffect(() => {
+    if (serviceCategories) {
+      const data = serviceCategories?.edges?.map((edge) => edge?.node) as [];
+      setCategories(data as ServiceCategoryEntity[]);
+    }
+  }, [serviceCategories]);
+
+  useEffect(() => {
+    if (updateData) {
+      console.log('aaaaaaaaaa', updateData);
+      handleSelectTriggerClick();
+    }
+  }, []);
+
+  useEffect(() => {
     const material = addMaterialResponse?.addMaterial as MaterialEntity;
     if (material?.id) {
       if (triggerDataRefetch) {
         triggerDataRefetch(material);
       }
       handleClose();
-      // setModalIsOpen(false);
 
       toast({
         title: 'Successfully Created a New Material!',
@@ -282,13 +286,13 @@ const MaterialModal = ({
   }, [addMaterialResponse]);
 
   useEffect(() => {
-    const material = updateMaterialResponse?.updateMaterial.data;
+    const material = updateMaterialResponse?.updateMaterial
+      .data as MaterialEntity;
     if (material?.id) {
       if (triggerDataRefetch) {
         triggerDataRefetch(material);
       }
       handleClose();
-      // setModalIsOpen(false);
       toast({
         title: 'Successfully Update Material!',
         description: (
@@ -302,10 +306,6 @@ const MaterialModal = ({
       });
     }
   }, [updateMaterialResponse]);
-
-  useEffect(() => {
-    setModalIsOpen(isOpen);
-  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -387,7 +387,7 @@ const MaterialModal = ({
                         <SimpleSelectTrigger
                           className='w-full'
                           label='Parent Category (optional)'
-                          onClick={handleSelectTriggerClick}
+                          // onClick={handleSelectTriggerClick}
                         >
                           <SimpleSelectValue placeholder='Select Parent Category (optional)' />
                         </SimpleSelectTrigger>
@@ -420,7 +420,8 @@ const MaterialModal = ({
                       <FormItem>
                         <FormControl>
                           <SimpleInput
-                            field={field}
+                            field={field} // Pass the entire field object
+                            setValue={form.setValue} // Optionally pass setValue for manual updates
                             title='Vendor'
                             placeholder='Input vendor (name or URL)'
                           />
@@ -461,6 +462,7 @@ const MaterialModal = ({
                       <FormItem className='w-full'>
                         <SimpleInput
                           field={field}
+                          setValue={form.setValue}
                           title='Identifier'
                           placeholder='Identifier'
                         />
@@ -484,7 +486,7 @@ const MaterialModal = ({
                             id='taxable-switch'
                             checked={field.value}
                             onCheckedChange={field.onChange}
-                            className='flex items-center' // Ensuring the switch itself is also centered if needed
+                            className='' // Ensuring the switch itself is also centered if needed
                           />
                         </div>
                       </FormItem>

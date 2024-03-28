@@ -28,7 +28,6 @@ import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 
 ModuleRegistry.registerModules([InfiniteRowModelModule]);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const NewGridInner = <T,>(
   { pageSize, columnDefs, fetchMoreData }: CustomGridProps<T>,
   ref: React.ForwardedRef<GridRef<T>>
@@ -98,15 +97,6 @@ const NewGridInner = <T,>(
 
           gridApiRef.current?.setRowCount(gridDataRef.current.length);
           gridApiRef.current?.purgeInfiniteCache();
-
-          // gridApiRef.current?.forEachNode((rowNode) => {
-          //   console.log('rowNode.data', rowNode);
-          //   // Safely access 'id' with proper checks
-          //   const nodeId = (rowNode.data as { id: string | undefined }).id;
-          //   if (nodeId && nodeId !== idToDelete) {
-          //     gridDataRef.current.push(rowNode.data);
-          //   }
-          // });
           break;
         }
 

@@ -25,7 +25,7 @@ const useGetAllServiceCategoriesLazy = () => {
   const [searchServiceCategories, { data, loading, error }] = useLazyQuery<
     GetAllServiceCategoriesQuery,
     GetAllServiceCategoriesQueryVariables
-  >(GetAllServiceCategoriesDocument, { notifyOnNetworkStatusChange: true });
+  >(GetAllServiceCategoriesDocument, { notifyOnNetworkStatusChange: false });
 
   const serviceCategories = data?.serviceCategories;
 
