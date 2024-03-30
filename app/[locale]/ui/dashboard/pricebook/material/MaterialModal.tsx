@@ -387,7 +387,6 @@ const MaterialModal = ({
                         <SimpleSelectTrigger
                           className='w-full'
                           label='Parent Category (optional)'
-                          // onClick={handleSelectTriggerClick}
                         >
                           <SimpleSelectValue placeholder='Select Parent Category (optional)' />
                         </SimpleSelectTrigger>
